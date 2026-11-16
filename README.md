@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="KillCord/Assets.xcassets/AppIcon.appiconset/icon_256x256@2x.png" width="128" alt="Kill Cord icon (placeholder)">
+  <img src="KillCord/Assets.xcassets/AppIcon.appiconset/icon_256x256@2x.png" width="128" alt="Kill Cord icon">
 </p>
 
 <h1 align="center">Kill Cord</h1>
