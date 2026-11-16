@@ -31,6 +31,6 @@
 	<key>SUFeedURL</key>
 	<string>https://github.com/coreyhaines31/killcord/releases/latest/download/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>REPLACE_WITH_SPARKLE_PUBLIC_ED_KEY_BEFORE_RELEASE</string>
+	<string>sBmJKONk2QDdL3IGMxCTG5099eDwWX1TYC4F7ENyfq4=</string>
 </dict>
 </plist>

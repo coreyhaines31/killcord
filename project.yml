@@ -13,6 +13,7 @@ settings:
     DEVELOPMENT_TEAM: KPQU8X839X
     CODE_SIGN_STYLE: Automatic
     DEAD_CODE_STRIPPING: YES
+    ARCHS: "arm64 x86_64"
 packages:
   KillCordCore:
     path: Packages/KillCordCore
@@ -42,9 +43,8 @@ targets:
         LSApplicationCategoryType: public.app-category.developer-tools
         NSHumanReadableCopyright: Copyright © 2026 Corey Haines. FSL-1.1-MIT.
         SUFeedURL: https://github.com/coreyhaines31/killcord/releases/latest/download/appcast.xml
-        # PLACEHOLDER: replace with the real Sparkle EdDSA public key before the first release
-        # (generate_keys --account killcord). Sparkle rejects updates signed with any other key.
-        SUPublicEDKey: REPLACE_WITH_SPARKLE_PUBLIC_ED_KEY_BEFORE_RELEASE
+        # Private key stays in the login Keychain under the killcord account.
+        SUPublicEDKey: sBmJKONk2QDdL3IGMxCTG5099eDwWX1TYC4F7ENyfq4=
         SUEnableAutomaticChecks: true
     settings:
       base:
