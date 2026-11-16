@@ -1,0 +1,47 @@
+name: CI
+
+# The repository is public, so macOS runners are free: the full app build runs on every push and pull
+# request, like Fuel Gauge's. KillCordCore has no AppKit, so its tests also run on Linux.
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  core:
+    name: KillCordCore tests (Linux)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
+
+      - name: Test
+        working-directory: Packages/KillCordCore
+        run: swift test
+
+  build:
+    name: App build, lint, and tests (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: brew install xcodegen swiftlint
+
+      - name: Lint
+        run: swiftlint --strict
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build and test
+        run: |
+          xcodebuild -project KillCord.xcodeproj -scheme KillCord \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            test

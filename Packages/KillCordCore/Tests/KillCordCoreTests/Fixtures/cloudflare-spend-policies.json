@@ -1,0 +1,8 @@
+{
+  "result": [
+    {"id": "pol_1", "action": "usage_block", "product_id": "workers", "threshold_cents": 5000, "enabled": true,
+     "current_state": {"balance_cents": 1234, "billing_period_start": "2026-11-03T00:00:00Z", "billing_period_end": "2026-12-03T00:00:00Z", "evaluated_at": "2026-11-15T17:00:00Z", "status": "below_limit"}},
+    {"id": "pol_2", "action": "notification", "product_id": "workers", "threshold_cents": 4000, "enabled": true}
+  ],
+  "success": true, "errors": [], "messages": []
+}

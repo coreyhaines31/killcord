@@ -1,0 +1,201 @@
+import Foundation
+
+/// One provider's spend, as read at one moment.
+public struct SpendSnapshot: Sendable, Equatable, Codable {
+    public enum MonthKind: Sendable, Equatable, Codable {
+        /// The calendar month in the provider's billing time zone.
+        case calendarMonth
+        /// The provider's own billing period, which may start mid-month (Cloudflare).
+        case billingPeriod(start: Date)
+    }
+
+    public let provider: ProviderID
+    /// Spend so far today. Nil when the provider hasn't reported today yet: not the same as $0.
+    public var today: Money?
+    /// Spend so far this month (or billing period). Nil when the provider reports no money.
+    public var month: Money?
+    public var monthKind: MonthKind
+    /// Usage in the provider's units, for providers that don't report money (Neon).
+    public var usage: [UsageMetric]
+    /// True when the numbers are worked out by Kill Cord rather than reported by the provider.
+    public var isEstimate: Bool
+    /// The provider's own "current through" time, when it says.
+    public var dataAsOf: Date?
+    /// When Kill Cord read it.
+    public var fetchedAt: Date
+
+    public init(provider: ProviderID, today: Money?, month: Money?, monthKind: MonthKind = .calendarMonth,
+                usage: [UsageMetric] = [], isEstimate: Bool = false, dataAsOf: Date? = nil, fetchedAt: Date) {
+        self.provider = provider
+        self.today = today
+        self.month = month
+        self.monthKind = monthKind
+        self.usage = usage
+        self.isEstimate = isEstimate
+        self.dataAsOf = dataAsOf
+        self.fetchedAt = fetchedAt
+    }
+}
+
+/// An amount of something that isn't money: "1,234 CU-hours".
+public struct UsageMetric: Sendable, Equatable, Codable, Identifiable {
+    public let id: String
+    public let name: String
+    public let value: Decimal
+    public let unit: String
+
+    public init(id: String, name: String, value: Decimal, unit: String) {
+        self.id = id
+        self.name = name
+        self.value = value
+        self.unit = unit
+    }
+}
+
+/// "Today" and "this month" on a provider's billing clock.
+public struct BillingWindow: Sendable, Equatable {
+    public let now: Date
+    public let timeZone: TimeZone
+    public let dayStart: Date
+    public let monthStart: Date
+    /// "2026-11-15"
+    public let dayKey: String
+    /// "2026-11"
+    public let monthKey: String
+
+    public init(now: Date, timeZone: TimeZone) {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        self.now = now
+        self.timeZone = timeZone
+        dayStart = calendar.startOfDay(for: now)
+        let parts = calendar.dateComponents([.year, .month, .day], from: now)
+        monthStart = calendar.date(from: DateComponents(year: parts.year, month: parts.month, day: 1))!
+        dayKey = String(format: "%04d-%02d-%02d", parts.year!, parts.month!, parts.day!)
+        monthKey = String(format: "%04d-%02d", parts.year!, parts.month!)
+    }
+
+    /// The start of tomorrow, the exclusive end for "today".
+    public var dayEnd: Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        return calendar.date(byAdding: .day, value: 1, to: dayStart)!
+    }
+}
+
+/// What an API said about a native cap, for providers that let Kill Cord check.
+public struct CapVerification: Sendable, Equatable, Codable {
+    public enum Status: Sendable, Equatable, Codable {
+        /// The provider says the cap is set. The detail says how ("Hard limit at $500 a month").
+        case on(String)
+        /// The provider says there's no such cap.
+        case off(String)
+        /// The cap is set and has been hit: usage is stopped now.
+        case enforced(String)
+    }
+
+    public let capID: String
+    public let status: Status
+    public let checkedAt: Date
+
+    public init(capID: String, status: Status, checkedAt: Date) {
+        self.capID = capID
+        self.status = status
+        self.checkedAt = checkedAt
+    }
+}
+
+/// An adapter for one provider's official billing API. Pure apart from `HTTPClient`, so each can be
+/// tested with recorded responses.
+public protocol SpendProvider: Sendable {
+    var id: ProviderID { get }
+    /// A cheap call that proves the key works and can read billing. Throws `SpendError`.
+    func validate(_ credentials: ProviderCredentials, now: Date) async throws
+    /// Today and this month. Throws `SpendError`.
+    func fetchSpend(_ credentials: ProviderCredentials, now: Date) async throws -> SpendSnapshot
+    /// Caps the API can confirm. Empty when it can't confirm any; failures are skipped, not thrown, since
+    /// the audit falls back to what the person marked.
+    func verifyCaps(_ credentials: ProviderCredentials, now: Date) async -> [CapVerification]
+}
+
+extension SpendProvider {
+    public func verifyCaps(_ credentials: ProviderCredentials, now: Date) async -> [CapVerification] { [] }
+
+    public func window(_ now: Date) -> BillingWindow {
+        BillingWindow(now: now, timeZone: id.info.billingTimeZone)
+    }
+}
+
+public enum SpendProviders {
+    public static func make(_ id: ProviderID, http: HTTPClient) -> SpendProvider {
+        switch id {
+        case .anthropic: AnthropicProvider(http: http)
+        case .google: GoogleCloudProvider(http: http)
+        case .openai: OpenAIProvider(http: http)
+        case .vercel: VercelProvider(http: http)
+        case .cloudflare: CloudflareProvider(http: http)
+        case .twilio: TwilioProvider(http: http)
+        case .neon: NeonProvider(http: http)
+        case .supabase: SupabaseProvider()
+        }
+    }
+}
+
+/// Shared plumbing for adapters: send, map HTTP failures to `SpendError`, decode.
+struct APIRequester: Sendable {
+    let http: HTTPClient
+    let missingScopeHint: String
+
+    func send(_ request: HTTPRequest) async throws -> HTTPResponse {
+        let response: HTTPResponse
+        do {
+            response = try await http.send(request)
+        } catch let error as SpendError {
+            throw error
+        } catch {
+            throw SpendError.network
+        }
+        guard (200..<300).contains(response.status) else {
+            throw SpendError.from(status: response.status, headers: response.headers,
+                                  missingScopeHint: missingScopeHint)
+        }
+        return response
+    }
+
+    func decode<T: Decodable>(_ type: T.Type, from response: HTTPResponse) throws -> T {
+        do {
+            return try JSONDecoder().decode(type, from: response.body)
+        } catch {
+            throw SpendError.unexpectedResponse
+        }
+    }
+
+    func get<T: Decodable>(_ type: T.Type, _ url: URL, headers: [String: String]) async throws -> T {
+        try decode(type, from: try await send(HTTPRequest(url: url, headers: headers)))
+    }
+}
+
+enum ISO8601 {
+    static func string(_ date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        return formatter.string(from: date)
+    }
+
+    static func date(_ text: String) -> Date? {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        if let date = formatter.date(from: text) { return date }
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.date(from: text)
+    }
+
+    /// "2026-11-15" in a time zone.
+    static func day(_ date: Date, in timeZone: TimeZone) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let parts = calendar.dateComponents([.year, .month, .day], from: date)
+        return String(format: "%04d-%02d-%02d", parts.year!, parts.month!, parts.day!)
+    }
+}

@@ -1,0 +1,6 @@
+{
+  "end": 0, "next_page_uri": null, "page": 0, "page_size": 50, "start": 0,
+  "usage_triggers": [
+    {"sid": "UTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "friendly_name": "Monthly spend", "usage_category": "totalprice", "trigger_by": "price", "trigger_value": "100", "current_value": "12.34", "recurring": "monthly", "callback_url": "https://example.com/hook", "callback_method": "POST", "date_fired": null}
+  ]
+}

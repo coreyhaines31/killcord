@@ -1,0 +1,4 @@
+{"projects":[{"project_id":"delicate-dawn-54854667","periods":[{"period_id":"90c7f107-0000","period_plan":"launch","period_start":"2026-11-01T00:00:00Z","consumption":[
+  {"timeframe_start":"2026-11-14T00:00:00Z","timeframe_end":"2026-11-15T00:00:00Z","metrics":[{"metric_name":"compute_unit_seconds","value":3600},{"metric_name":"root_branch_bytes_month","value":500000000},{"metric_name":"public_network_transfer_bytes","value":1414}]},
+  {"timeframe_start":"2026-11-15T00:00:00Z","timeframe_end":"2026-11-16T00:00:00Z","metrics":[{"metric_name":"compute_unit_seconds","value":5400}]}
+]}]}],"pagination":{"cursor":"delicate-dawn-54854667"}}
