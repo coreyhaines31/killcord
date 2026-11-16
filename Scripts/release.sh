@@ -3,9 +3,8 @@
 #
 #   Scripts/release.sh 1.0.0
 #
-# SKELETON: modeled on Fuel Gauge's release script and not yet run for Kill Cord. Before the first release:
-#   - replace SUPublicEDKey in project.yml with the real Sparkle public key (see RELEASING.md)
-#   - check NOTARY_PROFILE below names a notarytool profile on the release Mac
+# Before the first release, confirm NOTARY_PROFILE names a notarytool profile on the release Mac.
+# Signing, notarization, and publication still need a release rehearsal from main.
 #
 # Needs, one time:
 #   - Developer ID signing: either Xcode signed in to the team (cloud signing), or
@@ -18,6 +17,7 @@
 # No secret belongs in this file. Everything sensitive comes from the keychain or the environment.
 set -euo pipefail
 
+cd "$(dirname "$0")/.."
 VERSION="${1:?usage: Scripts/release.sh <version>}"
 if [ "$(git branch --show-current)" != "main" ]; then
   echo "✗ Release from main (in a separate worktree: git worktree add ../killcord-release main)" >&2
@@ -31,7 +31,10 @@ CASK="killcord"
 SITE="https://github.com/coreyhaines31/killcord"
 SPARKLE_ACCOUNT="killcord"
 
-cd "$(dirname "$0")/.."
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Release requires a clean worktree." >&2
+  exit 1
+fi
 if grep -q "REPLACE_WITH_SPARKLE_PUBLIC_ED_KEY" project.yml; then
   echo "✗ Set the real SUPublicEDKey in project.yml first (see RELEASING.md)" >&2
   exit 1
@@ -41,7 +44,7 @@ case "${DEVELOPER_DIR:-}" in
   ""|*CommandLineTools*) export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer ;;
 esac
 BUILD=build/release
-[ -d "$BUILD" ] && rm -r "$BUILD"
+if [ -d "$BUILD" ]; then trash "$BUILD"; fi
 mkdir -p "$BUILD"
 BUILD_NUMBER=$(git rev-list --count HEAD)
 
@@ -62,6 +65,9 @@ if [ -n "${ASC_KEY_PATH:-}" ]; then
   AUTH_ARGS+=(-authenticationKeyPath "$ASC_KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
 fi
 
+echo "▶ Linting"
+swiftlint --strict
+
 echo "▶ Testing KillCordCore"
 (cd Packages/KillCordCore && swift test --quiet)
 
@@ -71,6 +77,8 @@ xcodegen generate -q
 echo "▶ Archiving $APP_NAME $VERSION ($BUILD_NUMBER)"
 xcodebuild -project KillCord.xcodeproj -scheme KillCord -configuration Release \
   -archivePath "$BUILD/KillCord.xcarchive" \
+  -derivedDataPath build/DerivedData \
+  ONLY_ACTIVE_ARCH=NO \
   "${AUTH_ARGS[@]}" \
   MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
   DEVELOPMENT_TEAM="$TEAM_ID" \
