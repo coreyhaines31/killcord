@@ -17,8 +17,6 @@
 
 ---
 
-> **Not released yet.** This is v1 in development. There's no signed build or Homebrew cask yet.
-
 Usage-billed APIs don't send a bill until it's too late to matter. An agent loop, a leaked key, or a forgotten batch job can run all night. Kill Cord puts today's and this month's spend for every provider in one glance, says honestly how fresh each number is, and walks you through turning on the caps each provider already offers, since those are what actually stop a runaway bill.
 
 It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. They never leave your Mac except to go to the provider they belong to.
@@ -51,8 +49,6 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 ## Install
 
 Requires macOS 14 Sonoma or later.
-
-Once released:
 
 ```sh
 brew install --cask coreyhaines31/tap/killcord
