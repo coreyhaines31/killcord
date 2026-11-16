@@ -16,6 +16,9 @@ settings:
 packages:
   KillCordCore:
     path: Packages/KillCordCore
+  PanelKit:
+    url: https://github.com/coreyhaines31/panelkit
+    exactVersion: "0.2.0"
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     exactVersion: "2.10.0"
@@ -28,6 +31,7 @@ targets:
     dependencies:
       - package: KillCordCore
       - package: Sparkle
+      - package: PanelKit
     info:
       path: KillCord/Info.plist
       properties:

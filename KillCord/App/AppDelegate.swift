@@ -1,5 +1,6 @@
 import AppKit
 import KillCordCore
+import PanelKit
 import ServiceManagement
 
 @MainActor
@@ -11,6 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: SettingsWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        PanelFont.register()
         Preferences.registerDefaults()
         #if !DEBUG
         applyLaunchAtLoginDefault()
