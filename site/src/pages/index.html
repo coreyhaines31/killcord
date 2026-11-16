@@ -1,0 +1,204 @@
+<section class="bx-hero hero" aria-labelledby="hero-title">
+  <div class="bx-wrap bx-hero-grid">
+    <div class="hero-copy">
+      <p class="bx-badge"><i aria-hidden="true"></i>Free · Source available · macOS 14+</p>
+      <h1 id="hero-title">See your API spend <span>before the bill does.</span></h1>
+      <p class="bx-lede">Today’s and this month’s spend for every provider, one click from your menu bar. Kill Cord says honestly how fresh each number is, and walks you through turning on the caps each provider already offers, since those are what actually stop a runaway bill.</p>
+      <div class="bx-cta">
+        <a class="bx-btn" href="{{download_url}}">Download for Mac <span aria-hidden="true">↓</span></a>
+        <a class="bx-btn sec" href="https://github.com/coreyhaines31/killcord">View source <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="brew-label">Or install with Homebrew</p>
+      <pre class="bx-code brew"><code>brew install --cask coreyhaines31/tap/killcord</code></pre>
+      <p class="bx-meta">Free with no account · Keys stay in your Keychain · macOS 14 Sonoma or later</p>
+    </div>
+    <figure class="stage" aria-labelledby="stage-caption">
+      <div class="bx-mount stage-mount">
+        <span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span>
+        {{popover}}
+      </div>
+      <figcaption id="stage-caption">Kill Cord’s panel with sample data: totals up top, then each provider with when it was last checked.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="bx-section problem" id="problem" aria-labelledby="problem-title">
+  <div class="bx-wrap problem-grid">
+    <div>
+      <span class="bx-eyebrow">The problem</span>
+      <h2 id="problem-title">The bill arrives after the money is gone.</h2>
+    </div>
+    <div class="problem-copy">
+      <p>Usage-billed APIs don’t send a bill until it’s too late to matter. An agent loop, a leaked key, or a forgotten batch job can run all night, and you find out from an invoice.</p>
+      <p>Every provider already offers some kind of spend cap. They’re just easy to leave unset, spread across a different console for each one. Kill Cord puts the spend in one glance and gets those caps turned on.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bx-section" id="spend" aria-labelledby="spend-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">How it works</span>
+    <h2 id="spend-title">Every bill, one glance.</h2>
+    <p class="bx-intro">Total spend sits next to a small plug in your menu bar. Click it for each provider’s today and month to date.</p>
+    <div class="bx-grid">
+      <article class="bx-card"><span class="bx-led">In the menu bar</span><h3>Spend where you already look</h3><p>Today’s total, or this month’s, right in the menu bar. No more opening five billing consoles to add it up.</p></article>
+      <article class="bx-card"><span class="bx-led">Every provider</span><h3>Today and this month, side by side</h3><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon in one panel, each on its own billing clock.</p></article>
+      <article class="bx-card"><span class="bx-led ca">Alerts</span><h3>A nudge at the amount you choose</h3><p>Notifications at daily and monthly amounts you pick, per provider and in total, once per day or month.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="bx-section" id="honest" aria-labelledby="honest-title">
+  <div class="bx-wrap honest-grid">
+    <div>
+      <span class="bx-eyebrow">Honest numbers</span>
+      <h2 id="honest-title">It tells you how fresh every number is.</h2>
+      <p class="bx-intro">Kill Cord checks only while your Mac is awake, and it never pretends otherwise. Every provider shows when it was last checked. After sleep, or offline, a number says it isn’t live until the next check.</p>
+      <ul class="facts">
+        <li><b>Shows provider lag.</b> Some providers run behind. Google’s billing export can be most of a day behind, and the panel says so.</li>
+        <li><b>Says what it can’t see.</b> Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.</li>
+        <li><b>Never implies overnight coverage.</b> It doesn’t check while your Mac sleeps, and checks again about 10 seconds after wake.</li>
+      </ul>
+    </div>
+    <dl class="readings" aria-label="What the panel says">
+      <div><dt><span class="bx-led">Checked 3:42p</span></dt><dd>The number is current as of that check.</dd></div>
+      <div><dt><span class="bx-led ca">Last checked 11:42p, not live</span></dt><dd>Kill Cord couldn’t check since then: your Mac slept, went offline, or the check failed. The line under it says which.</dd></div>
+      <div><dt><code>$25.47*</code></dt><dd>The total includes a number that isn’t live.</dd></div>
+      <div><dt><code>Not reported yet</code></dt><dd>The provider hasn’t reported that period. Not the same as $0. Vercel and Cloudflare report by day.</dd></div>
+      <div><dt><code>Billing period from Nov 3</code></dt><dd>Cloudflare reports by billing period, not calendar month.</dd></div>
+      <div><dt><code>data current through 11:00a</code></dt><dd>The provider’s own freshness stamp, where it gives one.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="bx-section" id="caps" aria-labelledby="caps-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">Caps audit</span>
+    <h2 id="caps-title">The caps that actually stop a runaway bill.</h2>
+    <p class="bx-intro">A menu bar number can’t stop spend. Each provider’s own caps can. For every provider, Kill Cord lists the spend controls it offers, says whether each is a hard stop or only an alert, and opens the exact console page to turn it on.</p>
+    <div class="bx-grid steps3">
+      <article class="bx-card"><span class="bx-strip">No. 1</span><h3>See what each provider offers</h3><p>Every native control, labeled hard stop, partial stop, or alert only, so you know what will actually stop spend.</p></article>
+      <article class="bx-card"><span class="bx-strip">No. 2</span><h3>Open This Setting</h3><p>One button goes straight to the right page in the provider’s console. Kill Cord never changes a cap for you.</p></article>
+      <article class="bx-card"><span class="bx-strip">No. 3</span><h3>Confirmed, or your checkmark</h3><p>Where an API can confirm a cap (OpenAI, Google budgets, Cloudflare, Twilio, Neon), Kill Cord checks it every few hours. Elsewhere it’s your checkmark, and it asks you to look again after 30 days.</p></article>
+    </div>
+    <ul class="caps-list" aria-label="Native caps by provider">
+      <li><b>Anthropic</b><span>Organization spend limit and per-workspace spend limits</span><em class="kind stop">Hard stop</em></li>
+      <li><b>Google Cloud and Gemini</b><span>Spend cap budgets that pause the Gemini API, Vertex AI, or Cloud Run; the AI Studio project spend cap; budget alerts</span><em class="kind stop">Hard stop + alerts</em></li>
+      <li><b>OpenAI</b><span>Organization hard limit and project limits, and spend alerts</span><em class="kind stop">Hard stop + alerts</em></li>
+      <li><b>Vercel</b><span>Spend Management with pause production deployments, and its notifications</span><em class="kind part">Partial stop</em></li>
+      <li><b>Cloudflare</b><span>Spend Management limits for Workers and Durable Objects, and budget alerts</span><em class="kind stop">Hard stop + alerts</em></li>
+      <li><b>Twilio</b><span>Usage triggers on total price (Twilio has no native hard cap)</span><em class="kind alert">Alert only</em></li>
+      <li><b>Neon</b><span>Spending threshold, and per-project consumption quotas</span><em class="kind stop">Alert + hard stop</em></li>
+      <li><b>Supabase</b><span>The Pro plan Spend Cap</span><em class="kind part">Partial stop</em></li>
+    </ul>
+    <p class="fine">Providers say even hard stops aren’t instant, so spend can run a little past a cap.</p>
+  </div>
+</section>
+
+<section class="bx-section" id="providers" aria-labelledby="providers-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">Providers</span>
+    <h2 id="providers-title">Eight providers, read only.</h2>
+    <p class="bx-intro">Kill Cord reads each provider’s own billing data with a key you create. Here’s what it reads, and what it can and can’t see.</p>
+    <div class="table-wrap" role="region" aria-label="Provider coverage" tabindex="0">
+      <table class="coverage">
+        <thead><tr><th scope="col">Provider</th><th scope="col">Spend source</th><th scope="col">Key you need</th><th scope="col">Dollars?</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Anthropic</th><td data-label="Spend source">Admin API cost report</td><td data-label="Key you need">Admin API key</td><td data-label="Dollars?">Yes, within about 5 minutes</td></tr>
+          <tr><th scope="row">Google Cloud and Gemini</th><td data-label="Spend source">Cloud Billing export to BigQuery</td><td data-label="Key you need">Service account key with read access to the export</td><td data-label="Dollars?">Yes, after one-time setup; hours behind</td></tr>
+          <tr><th scope="row">OpenAI</th><td data-label="Spend source">Organization costs</td><td data-label="Key you need">Admin API key</td><td data-label="Dollars?">Yes</td></tr>
+          <tr><th scope="row">Vercel</th><td data-label="Spend source">Billing charges (FOCUS)</td><td data-label="Key you need">Access token</td><td data-label="Dollars?">Yes, daily</td></tr>
+          <tr><th scope="row">Cloudflare</th><td data-label="Spend source">Billable usage (pay-as-you-go accounts)</td><td data-label="Key you need">API token with Billing Read</td><td data-label="Dollars?">Yes, daily; by billing period</td></tr>
+          <tr><th scope="row">Twilio</th><td data-label="Spend source">Usage records (total price)</td><td data-label="Key you need">API key or Auth Token</td><td data-label="Dollars?">Yes</td></tr>
+          <tr><th scope="row">Neon</th><td data-label="Spend source">Consumption history</td><td data-label="Key you need">Organization API key</td><td data-label="Dollars?">No: usage only</td></tr>
+          <tr><th scope="row">Supabase</th><td data-label="Spend source">None</td><td data-label="Key you need">Nothing to connect</td><td data-label="Dollars?">No: no billing API (caps audit only)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="bx-section bx-band" id="privacy" aria-labelledby="privacy-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">Privacy</span>
+    <h2 id="privacy-title">Your keys stay on your Mac.</h2>
+    <p class="bx-intro">Each key goes to one place: the provider it belongs to. Nothing else leaves your Mac except Kill Cord’s update check.</p>
+    <div class="bx-grid">
+      <article class="bx-card"><h3>Keys in the Keychain</h3><p>Not in files, preferences, logs, or exports. Kill Cord checks a key with its provider first, then saves it to your login Keychain.</p></article>
+      <article class="bx-card"><h3>Read only</h3><p>Kill Cord only reads billing and never changes a provider setting. Anthropic, Twilio, and Neon have no read-only keys, and Kill Cord says so before you save one.</p></article>
+      <article class="bx-card"><h3>No telemetry</h3><p>No analytics, no account, no tracking. The only other network request is the update check against the GitHub releases.</p></article>
+    </div>
+    <p class="band-link"><a href="/privacy/">Read the full privacy details <span aria-hidden="true">→</span></a></p>
+  </div>
+</section>
+
+<section class="bx-section" id="why">
+  <div class="bx-wrap">
+    <div class="bx-maker">
+      <img src="/corey.jpg" alt="Corey Haines" width="76" height="76">
+      <div>
+        <span class="bx-strip">Why it exists</span>
+        <p>I run coding agents and build on a handful of usage-billed APIs, and any of them can run all night: an agent stuck in a loop, a leaked key, a batch job I forgot. The bill shows up after the money is spent, and the caps that would have stopped it were sitting unset in five different consoles. So I built the app I wanted: today’s spend for every provider in my menu bar, and a checklist that gets those caps turned on. And it’s free.</p>
+        <cite>Corey Haines, maker of Kill Cord and <a href="#apps">more free Mac apps</a></cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bx-section" id="faq" aria-labelledby="faq-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">Questions</span>
+    <h2 id="faq-title">Before you plug it in.</h2>
+    <div class="bx-faq faq-list">
+      <details><summary>Does Kill Cord stop my spending?</summary><p>No. Kill Cord only reads billing and never changes a provider setting. The hard stops are each provider’s own caps, and Kill Cord’s caps audit walks you through turning them on and opens the right console page.</p></details>
+      <details><summary>Does it watch my spend while my Mac is asleep?</summary><p>No. Kill Cord checks only while your Mac is awake. After sleep or time offline, numbers say “Last checked 11:42p, not live” until the next check, which happens about 10 seconds after wake. That’s why native caps matter: they keep working when your Mac doesn’t.</p></details>
+      <details><summary>Which providers does it support?</summary><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon for spend, plus Supabase in the caps audit. Neon reports usage rather than dollars, and Supabase has no billing API. <a href="#providers">See what each one needs.</a></p></details>
+      <details><summary>What key do I need?</summary><p>A billing key for each provider you connect. Anthropic and OpenAI need admin keys, not regular API keys. Cloudflare needs a token with Billing Read, and Google needs a service account that can read your billing export. Never paste a key into a chat or an AI agent to set Kill Cord up. If you already have, revoke it and create a new one.</p></details>
+      <details><summary>Is my key safe?</summary><p>Each key lives in your login Keychain and goes only to its own provider’s billing API over HTTPS. It never appears in files, preferences, logs, error messages, or exports. If a key ever leaks, revoke it in the provider’s console.</p></details>
+      <details><summary>Why does Google read low?</summary><p>Google’s billing export runs hours behind, typically up to a day, and starts a few hours after you turn it on. Kill Cord shows Google’s own “data current through” time so you know how far behind it is.</p></details>
+      <details><summary>Why does today say “Not reported yet”?</summary><p>The provider hasn’t reported that period, which isn’t the same as $0. Vercel and Cloudflare report by day, so today often reads this way.</p></details>
+      <details><summary>What does it cost?</summary><p>Nothing. Kill Cord is free with no account. The source is on GitHub under the Functional Source License (FSL-1.1-MIT), and each version becomes MIT two years after release.</p></details>
+      <details><summary>How do I uninstall it?</summary><p>In Settings › General, click Remove All… to delete every key and all local data. Then run <code>brew uninstall --cask --zap killcord</code>, or drag Kill Cord to the Trash. Removing keys from Kill Cord doesn’t revoke them, so revoke any you no longer need in each provider’s console.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="bx-section get" id="install" aria-labelledby="install-title">
+  <div class="bx-wrap get-grid">
+    <div>
+      <span class="bx-eyebrow">Get Kill Cord</span>
+      <h2 id="install-title">Plug in your providers. Turn on the caps.</h2>
+      <p class="bx-intro">Free, with no account and no subscription. Click the plug, then Connect a Provider, and paste a billing key. Kill Cord checks it with the provider before it saves it.</p>
+      <div class="bx-cta">
+        <a class="bx-btn" href="{{download_url}}">Download for Mac <span aria-hidden="true">↓</span></a>
+        <a class="bx-btn sec" href="https://github.com/coreyhaines31/killcord">View source <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="brew-label">Or install with Homebrew</p>
+      <pre class="bx-code brew"><code>brew install --cask coreyhaines31/tap/killcord</code></pre>
+      <p class="bx-meta">macOS 14 Sonoma or later · Updates itself</p>
+    </div>
+    <div class="bx-mount get-mount" aria-hidden="true">
+      <span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span>
+      <img src="/family/kill.png" alt="" width="104" height="104">
+      <span class="bx-badge"><i></i>Kill Cord</span>
+    </div>
+  </div>
+</section>
+
+<section class="bx-section" id="apps">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">From the same bench</span>
+    <h2>More free Mac apps</h2>
+    <p class="bx-intro">Small, free menu bar apps that each answer one question about your Mac. Same look, same rules: nothing leaves your Mac, no account, no subscription.</p>
+    <div class="bx-apps">
+      <a href="https://fuelgauge.app"><img src="/family/fuel.png" alt=""><div><b>Fuel Gauge</b><span>Know if you'll make it to reset</span></div></a>
+      <a href="https://spareformac.com"><img src="/family/spare.png" alt=""><div><b>Spare</b><span>See what's using your Mac</span></div></a>
+      <a href="https://diskforecast.com"><img src="/family/disk.png" alt=""><div><b>Disk Forecast</b><span>Know before your Mac runs out of space</span></div></a>
+      <a href="https://midnightoil.app"><img src="/family/oil.png" alt=""><div><b>Midnight Oil</b><span>Keep your Mac awake</span></div></a>
+      <a href="https://wifiorisp.com"><img src="/family/wifi.png" alt=""><div><b>WiFi or ISP</b><span>Is slow internet your Wi-Fi or your ISP?</span></div></a>
+      <a href="https://greenroomformac.com"><img src="/family/green.png" alt=""><div><b>Green Room</b><span>Check your camera, mic, and speakers</span></div></a>
+      <a href="https://onhandformac.com"><img src="/family/hand.png" alt=""><div><b>On Hand</b><span>Copy it once. Find it again.</span></div></a>
+      <a href="https://coatcheckformac.com"><img src="/family/coat.png" alt=""><div><b>Coat Check</b><span>Reach the menu bar icons the notch hides</span></div></a>
+    </div>
+  </div>
+</section>
