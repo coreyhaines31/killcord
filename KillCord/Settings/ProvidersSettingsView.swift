@@ -12,7 +12,7 @@ struct ProvidersSettingsView: View {
         HStack(spacing: 0) {
             List(ProviderID.allCases, selection: $selection) { provider in
                 HStack {
-                    Text(provider.info.name)
+                    Text(provider.info.name).lineLimit(2).fixedSize(horizontal: false, vertical: true)
                     Spacer()
                     statusDot(provider)
                 }
@@ -157,9 +157,13 @@ struct ProviderEditor: View {
             } else if field.isSecret {
                 SecureField("", text: binding, prompt: Text(placeholder))
                     .textFieldStyle(.roundedBorder)
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity)
             } else {
                 TextField("", text: binding, prompt: Text(placeholder))
                     .textFieldStyle(.roundedBorder)
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity)
             }
             if !field.help.isEmpty {
                 Text(field.help).font(.caption).foregroundStyle(.secondary)

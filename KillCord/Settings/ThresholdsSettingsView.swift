@@ -65,8 +65,9 @@ struct ThresholdsSettingsView: View {
     }
 
     private func row(_ title: String, limits: Binding<SpendThresholds.Limits>) -> some View {
-        LabeledContent(title) {
-            HStack {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+            HStack(spacing: 16) {
                 AmountField(label: "Daily", value: limits.daily)
                 AmountField(label: "Monthly", value: limits.monthly)
             }
@@ -83,10 +84,12 @@ struct AmountField: View {
 
     var body: some View {
         HStack(spacing: 4) {
+            Text(label).font(.caption).foregroundStyle(.secondary)
             Text("$").foregroundStyle(.secondary)
             TextField(label, text: $text, prompt: Text(label))
                 .textFieldStyle(.roundedBorder)
-                .frame(width: 80)
+                .labelsHidden()
+                .frame(width: 90)
                 .foregroundStyle(invalid ? Color.red : Color.primary)
                 .onSubmit(commit)
                 .onChange(of: text) { _, _ in commit() }
