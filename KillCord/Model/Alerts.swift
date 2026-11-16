@@ -27,7 +27,8 @@ final class Alerts: NSObject, UNUserNotificationCenterDelegate {
     }
 
     func refreshPermission() {
-        center.getNotificationSettings { settings in
+        // @Sendable: UserNotifications calls this on a background queue, so it mustn't inherit the main actor.
+        center.getNotificationSettings { @Sendable settings in
             let permission: Permission = switch settings.authorizationStatus {
             case .notDetermined: .notAsked
             case .denied: .denied
@@ -40,7 +41,7 @@ final class Alerts: NSObject, UNUserNotificationCenterDelegate {
     /// Asked when the first threshold is set, not at launch.
     func requestPermission() {
         guard permission == .notAsked || permission == .unknown else { return }
-        center.requestAuthorization(options: [.alert, .sound]) { _, _ in
+        center.requestAuthorization(options: [.alert, .sound]) { @Sendable _, _ in
             Task { @MainActor in self.refreshPermission() }
         }
     }
