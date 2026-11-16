@@ -1,0 +1,17 @@
+included:
+  - KillCord
+  - Packages/KillCordCore/Sources
+  - Packages/KillCordCore/Tests
+excluded:
+  - Packages/KillCordCore/.build
+opt_in_rules:
+  - empty_count
+  - first_where
+  - sorted_imports
+identifier_name:
+  excluded: [x, y, id, i, n, at, on, v, f]
+nesting:
+  type_level: 3
+line_length:
+  warning: 125
+  error: 160
