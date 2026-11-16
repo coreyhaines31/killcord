@@ -1,0 +1,10 @@
+{
+  "end": 0, "next_page_uri": null, "previous_page_uri": null, "page": 0, "page_size": 50, "start": 0,
+  "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Usage/Records/ThisMonth.json?Category=totalprice&PageSize=50&Page=0",
+  "usage_records": [{
+    "account_sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "api_version": "2010-04-01", "as_of": "2026-11-15T18:02:11+00:00",
+    "category": "totalprice", "count": "", "count_unit": "", "description": "Total Price",
+    "start_date": "2026-11-01", "end_date": "2026-11-15", "price": 12.34567, "price_unit": "usd",
+    "usage": "12.34567", "usage_unit": "usd", "subresource_uris": {}, "uri": "/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Usage/Records/ThisMonth.json?Category=totalprice"
+  }]
+}

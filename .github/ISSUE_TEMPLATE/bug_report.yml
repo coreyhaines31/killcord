@@ -1,0 +1,59 @@
+name: Bug report
+description: Something isn't working, or a number looks wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. Check [Troubleshooting](https://github.com/coreyhaines31/killcord#troubleshooting) first. **Never paste an API key, token, or service account key into an issue.** If you have, revoke it with the provider now.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead. A screenshot of the panel helps; check it shows no key first.
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: Kill Cord version
+      description: Shown in Settings › General.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: "macOS 26.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Which provider is it about?
+      options:
+        - Anthropic
+        - Google Cloud and Gemini
+        - OpenAI
+        - Vercel
+        - Cloudflare
+        - Twilio
+        - Neon
+        - Supabase
+        - More than one, or none
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options:
+        - Homebrew
+        - DMG from GitHub Releases
+        - Built from source
+  - type: textarea
+    id: numbers
+    attributes:
+      label: For a number that looks wrong
+      description: What Kill Cord showed, what the provider's console showed for the same day or month, and the "Last checked" time. Amounts only, no keys.

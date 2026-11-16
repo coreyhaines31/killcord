@@ -1,0 +1,15 @@
+{
+  "kind": "bigquery#queryResponse",
+  "schema": {"fields": [
+    {"name": "currency", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "month_net", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "today_net", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "last_export", "type": "STRING", "mode": "NULLABLE"}
+  ]},
+  "jobReference": {"projectId": "kc-billing", "jobId": "job_abc123", "location": "US"},
+  "totalRows": "1",
+  "rows": [{"f": [{"v": "USD"}, {"v": "42.137215"}, {"v": "3.000001"}, {"v": "2026-11-15T11:00:00Z"}]}],
+  "totalBytesProcessed": "1048576",
+  "jobComplete": true,
+  "cacheHit": false
+}
