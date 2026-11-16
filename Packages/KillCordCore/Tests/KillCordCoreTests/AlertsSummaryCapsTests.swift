@@ -266,7 +266,11 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
 }
 
 @Suite struct SpendTextTests {
-    let calendar = { var c = Calendar(identifier: .gregorian); c.timeZone = TimeZone(identifier: "UTC")!; return c }()
+    let calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        return calendar
+     }()
 
     @Test func times() {
         #expect(SpendText.time(ISO8601.date("2026-11-15T23:42:00Z")!, now: testNow, calendar: calendar) == "11:42p")

@@ -39,6 +39,8 @@ enum FakeKeys {
             "private_key": googlePrivateKey, "client_email": "kill-cord@kc-billing.iam.gserviceaccount.com",
             "token_uri": "https://evil.example.com/token"
         ]
+        // A fixed string dictionary is always JSON serializable.
+        // swiftlint:disable:next force_try
         let data = try! JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
         return String(data: data, encoding: .utf8)!
     }

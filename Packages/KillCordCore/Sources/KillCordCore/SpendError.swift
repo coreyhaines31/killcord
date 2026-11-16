@@ -81,7 +81,7 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
     }
 
     /// The full sentence, naming the provider.
-    public func message(for provider: ProviderID) -> String {
+    public func message(for provider: ProviderID) -> String { // swiftlint:disable:this cyclomatic_complexity
         let name = provider.info.name
         switch self {
         case .notConfigured:

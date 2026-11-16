@@ -47,7 +47,7 @@ public struct SpendSummary: Equatable, Sendable {
             if state.provider.info.capability.showsMoney {
                 if let todayValue { today.add(todayValue) } else { missingToday.append(state.provider) }
                 if let monthValue { month.add(monthValue) } else { missingMonth.append(state.provider) }
-                if (todayValue != nil || monthValue != nil), !freshness.isLive { stale.append(state.provider) }
+                if todayValue != nil || monthValue != nil, !freshness.isLive { stale.append(state.provider) }
                 if snapshot?.isEstimate == true { hasEstimates = true }
             }
             if state.lastError != nil { failing.append(state.provider) }

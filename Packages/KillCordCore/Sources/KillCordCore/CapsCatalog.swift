@@ -308,7 +308,7 @@ public struct CapAuditState: Sendable, Equatable, Codable {
 
     /// An API reading wins over a mark, since it's what the provider says now. A stale reading (from before
     /// the person's latest mark) doesn't override that mark.
-    public func status(of control: CapControl, now: Date) -> Status {
+    public func status(of control: CapControl, now: Date) -> Status { // swiftlint:disable:this cyclomatic_complexity
         let mark = marks[control.id]
         if control.verification == .api, let reading = verifications[control.id] {
             let markDate: Date? = switch mark {

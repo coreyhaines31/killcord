@@ -72,7 +72,11 @@ import Testing
     }
 
     @Test func textNeverImpliesLiveCoverageWhenStale() {
-        let calendar = { var c = Calendar(identifier: .gregorian); c.timeZone = TimeZone(identifier: "UTC")!; return c }()
+        let calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        return calendar
+     }()
         let at = ISO8601.date("2026-11-15T11:42:00Z")!
         #expect(SpendText.freshness(.stale(checkedAt: at, reason: .slept), now: testNow, calendar: calendar)
             == "Last checked 11:42a, not live")

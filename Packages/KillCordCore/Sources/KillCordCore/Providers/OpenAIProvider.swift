@@ -124,8 +124,8 @@ public struct OpenAIProvider: SpendProvider {
                 guard let amount = result.amount else { continue }
                 let money = Money(amount.value.value, Currency(amount.currency))
                 guard money.currency == .usd else { throw SpendError.unexpectedResponse }
-                month = month + money
-                if bucket.startTime >= todayStart { today = today + money }
+                month += money
+                if bucket.startTime >= todayStart { today += money }
             }
         }
         return SpendSnapshot(provider: id, today: today, month: month, fetchedAt: now)

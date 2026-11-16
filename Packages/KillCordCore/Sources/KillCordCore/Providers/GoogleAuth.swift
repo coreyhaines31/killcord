@@ -129,10 +129,10 @@ struct DERReader {
         var length = Int(bytes[index])
         index += 1
         if length & 0x80 != 0 {
-            let count = length & 0x7F
-            guard count > 0, count <= 4, index + count <= bytes.count else { throw SpendError.invalidKey }
+            let lengthBytes = length & 0x7F
+            guard lengthBytes > 0, lengthBytes <= 4, index + lengthBytes <= bytes.count else { throw SpendError.invalidKey }
             length = 0
-            for _ in 0..<count {
+            for _ in 0..<lengthBytes {
                 length = (length << 8) | Int(bytes[index])
                 index += 1
             }

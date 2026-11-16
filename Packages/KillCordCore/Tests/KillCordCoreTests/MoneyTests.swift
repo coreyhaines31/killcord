@@ -15,7 +15,7 @@ import Testing
 
     @Test func sumsWithoutFloatingPointDrift() {
         var total = Money.zero()
-        for _ in 0..<10 { total = total + usd("0.1") }
+        for _ in 0..<10 { total += usd("0.1") }
         #expect(total.amount == 1)
         #expect(usd("0.1") + usd("0.2") == usd("0.3"))
     }
@@ -56,6 +56,7 @@ import Testing
     }
 
     @Test func decodesJSONNumbersAndStringsWithoutDouble() throws {
+        // swiftlint:disable:next identifier_name
         struct Box: Decodable { let a: FlexibleDecimal; let b: FlexibleDecimal; let c: FlexibleDecimal }
         let box = try JSONDecoder().decode(Box.self, from: Data(#"{"a": 12.4731, "b": "0.1", "c": 0.0001}"#.utf8))
         #expect(box.a.value == decimal("12.4731"))

@@ -24,7 +24,9 @@ public struct NeonProvider: SpendProvider {
     static let pageSize = 100
     public static let thresholdCapID = "neon.spending-threshold"
 
-    /// The metrics Kill Cord shows, with how to turn Neon's raw unit into a readable one.
+    // The metrics Kill Cord shows, with how to turn Neon's raw unit into a readable one.
+    // Named fields describe the provider metric conversion table.
+    // swiftlint:disable:next large_tuple
     static let metrics: [(id: String, name: String, unit: String, divisor: Decimal)] = [
         ("compute_unit_seconds", "Compute", "CU-hours", 3600),
         ("root_branch_bytes_month", "Root branch storage", "GB-months", 1_000_000_000),
@@ -89,11 +91,11 @@ public struct NeonProvider: SpendProvider {
         ["Authorization": "Bearer \(key)", "accept": "application/json"]
     }
 
-    func consumptionURL(orgID: String, from: Date, to: Date, cursor: String?) throws -> URL {
+    func consumptionURL(orgID: String, from: Date, to end: Date, cursor: String?) throws -> URL {
         guard FieldFormat.isIdentifier(orgID) else { throw SpendError.notConfigured }
         var items = [
             URLQueryItem(name: "from", value: ISO8601.string(from)),
-            URLQueryItem(name: "to", value: ISO8601.string(to)),
+            URLQueryItem(name: "to", value: ISO8601.string(end)),
             URLQueryItem(name: "granularity", value: "daily"),
             URLQueryItem(name: "org_id", value: orgID),
             URLQueryItem(name: "metrics", value: Self.metrics.map(\.id).joined(separator: ",")),

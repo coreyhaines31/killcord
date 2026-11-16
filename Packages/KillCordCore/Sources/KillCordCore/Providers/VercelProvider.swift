@@ -92,6 +92,7 @@ public struct VercelProvider: SpendProvider {
 
 /// Totals for FOCUS-style daily charge rows (Vercel, Cloudflare).
 enum FOCUSTotals {
+    // swiftlint:disable:next large_tuple
     static func snapshot(provider: ProviderID, rows: [(Decimal, String?, String)], window: BillingWindow,
                          monthKind: SpendSnapshot.MonthKind, now: Date) throws -> SpendSnapshot {
         var month = Money.zero()
@@ -100,7 +101,7 @@ enum FOCUSTotals {
             guard let start = ISO8601.date(periodStart) else { throw SpendError.unexpectedResponse }
             let money = Money(amount, Currency(currencyCode ?? "USD"))
             guard money.currency == .usd else { throw SpendError.unexpectedResponse }
-            month = month + money
+            month += money
             if start >= window.dayStart { today = (today ?? .zero()) + money }
         }
         return SpendSnapshot(provider: provider, today: today, month: month, monthKind: monthKind, fetchedAt: now)

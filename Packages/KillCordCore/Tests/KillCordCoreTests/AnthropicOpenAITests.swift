@@ -1,4 +1,5 @@
 // swiftlint:disable line_length
+// Inline JSON fixtures preserve the exact provider response shape.
 import Foundation
 @testable import KillCordCore
 import Testing
@@ -149,3 +150,5 @@ import Testing
         #expect(await OpenAIProvider(http: http).verifyCaps(FakeKeys.credentials(.openai), now: testNow).isEmpty)
     }
 }
+
+// swiftlint:enable line_length

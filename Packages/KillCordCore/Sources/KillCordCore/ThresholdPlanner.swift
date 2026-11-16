@@ -54,6 +54,8 @@ public struct ThresholdPlanner: Sendable {
         var adjective: String { self == .day ? "daily" : "monthly" }
     }
 
+    // Keep period checks with the state they accumulate.
+    // swiftlint:disable:next function_body_length
     public func plan(states: [ProviderState], thresholds: SpendThresholds, state: State,
                      now: Date) -> ([Alert], State) {
         var alerts: [Alert] = []
@@ -62,6 +64,7 @@ public struct ThresholdPlanner: Sendable {
         var totalMonth = Decimal(0)
         var estimate = false
 
+        // swiftlint:disable:next function_parameter_count
         func check(_ name: String, idPrefix: String, period: Period, periodKey: String, amount: Decimal,
                    limit: Decimal?, isEstimate: Bool, checkedAt: Date?) {
             guard let limit, limit > 0 else { return }

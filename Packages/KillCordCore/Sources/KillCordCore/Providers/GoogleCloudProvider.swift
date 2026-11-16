@@ -108,6 +108,8 @@ public struct GoogleCloudProvider: SpendProvider {
     struct BudgetList: Decodable {
         struct Budget: Decodable {
             struct Amount: Decodable {
+                // Mirrors the nested Budgets API JSON schema.
+                // swiftlint:disable:next nesting
                 struct Specified: Decodable {
                     let currencyCode: String?
                     let units: String?

@@ -1,4 +1,5 @@
 // swiftlint:disable line_length
+// Inline JSON fixtures preserve the exact provider response shape.
 import Foundation
 @testable import KillCordCore
 import Testing
@@ -245,3 +246,5 @@ import Testing
         }
     }
 }
+
+// swiftlint:enable line_length

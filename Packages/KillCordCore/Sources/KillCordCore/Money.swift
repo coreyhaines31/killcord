@@ -71,6 +71,8 @@ public struct Money: Hashable, Sendable, Codable, Comparable, CustomStringConver
         return Money(lhs.amount + rhs.amount, lhs.currency)
     }
 
+    public static func += (lhs: inout Money, rhs: Money) { lhs = lhs + rhs }
+
     public static func < (lhs: Money, rhs: Money) -> Bool {
         lhs.currency == rhs.currency ? lhs.amount < rhs.amount : lhs.currency < rhs.currency
     }

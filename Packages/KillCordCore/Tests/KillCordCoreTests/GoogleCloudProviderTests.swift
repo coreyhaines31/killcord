@@ -1,4 +1,5 @@
 // swiftlint:disable line_length
+// Inline JSON fixtures preserve the exact provider response shape.
 import Foundation
 @testable import KillCordCore
 import Testing
@@ -64,8 +65,10 @@ import Testing
         #expect(sql.contains("CAST(cost AS NUMERIC)"))
         #expect(sql.contains("UNNEST(credits)"))
         let parameters = try #require(body["queryParameters"] as? [[String: Any]])
-        let values = Dictionary(uniqueKeysWithValues: parameters.map {
-            ($0["name"] as! String, ($0["parameterValue"] as! [String: Any])["value"] as! String)
+        let values = try Dictionary(uniqueKeysWithValues: parameters.map { parameter in
+            let name = try #require(parameter["name"] as? String)
+            let value = try #require(parameter["parameterValue"] as? [String: Any])
+            return (name, try #require(value["value"] as? String))
         })
         // 10:30a Pacific on Nov 15.
         #expect(values == ["today": "2026-11-15", "invoice_month": "202611"])
@@ -207,3 +210,5 @@ import Testing
         #expect(throws: SpendError.invalidKey) { try truncated.read(tag: 0x30) }
     }
 }
+
+// swiftlint:enable line_length
