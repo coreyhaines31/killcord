@@ -105,8 +105,9 @@ public struct RefreshScheduler: Sendable, Equatable {
         isAsleep = false
         for (provider, entry) in entries where !entry.suspended {
             entries[provider]?.inFlight = false
+            // Not before the network is back, and not later than a rate limit's wait requires.
             let soon = now.addingTimeInterval(wakeDelay)
-            entries[provider]?.nextDue = min(entry.nextDue ?? soon, soon)
+            entries[provider]?.nextDue = max(soon, entry.failures > 0 ? (entry.nextDue ?? soon) : soon)
         }
     }
 

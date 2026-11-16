@@ -25,8 +25,8 @@ public enum SpendText {
 
     /// "45m", "3h 7m", "2d 16h".
     public static func duration(_ seconds: TimeInterval) -> String {
-        let minutes = max(0, Int((seconds / 60).rounded()))
-        if minutes < 1 { return "\(max(0, Int(seconds.rounded())))s" }
+        if seconds < 60 { return "\(max(0, Int(seconds.rounded())))s" }
+        let minutes = Int((seconds / 60).rounded())
         if minutes < 60 { return "\(minutes)m" }
         let hours = minutes / 60
         if hours < 24 { return minutes % 60 == 0 ? "\(hours)h" : "\(hours)h \(minutes % 60)m" }

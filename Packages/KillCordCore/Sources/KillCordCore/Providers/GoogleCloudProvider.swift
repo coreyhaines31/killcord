@@ -179,8 +179,12 @@ public struct GoogleCloudProvider: SpendProvider {
                 .appendingPathComponent("queries").appendingPathComponent(jobID).adding(items)
             response = try await api.get(QueryResponse.self, url, headers: ["Authorization": "Bearer \(token)"])
         }
-        guard response.jobComplete != false else { throw SpendError.network }
-        return response
+        switch response.jobComplete {
+        case true?: return response
+        // Still running after the retries: try again next refresh.
+        case false?: throw SpendError.network
+        case nil: throw SpendError.unexpectedResponse
+        }
     }
 
     public func validate(_ credentials: ProviderCredentials, now: Date) async throws {
