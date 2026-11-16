@@ -1,0 +1,45 @@
+<section class="bx-hero page-hero" aria-labelledby="privacy-title">
+  <div class="bx-wrap page-head">
+    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Kill Cord</a></li><li aria-current="page">Privacy</li></ol></nav>
+    <p class="bx-badge"><i aria-hidden="true"></i>No telemetry · No account</p>
+    <h1 id="privacy-title">Privacy</h1>
+    <p class="bx-lede">Kill Cord needs your billing keys to read your spend. Here is exactly where they go, what it saves, and what it never sends.</p>
+  </div>
+</section>
+
+<div class="bx-wrap prose">
+  <section aria-labelledby="keys-title">
+    <h2 id="keys-title">Your keys</h2>
+    <p>Kill Cord stores each provider’s key in your login Keychain under the service <code>app.killcord.KillCord.providers</code>, one item per provider. It sends each key only to that provider’s billing API, over HTTPS. Keys never appear in files, preferences, logs, error messages, or exports.</p>
+    <p>When you connect a provider, Kill Cord checks the key with the provider first, then saves it. Never paste a key into a chat or an AI agent to set Kill Cord up. If you already have, revoke it and create a new one.</p>
+  </section>
+
+  <section aria-labelledby="read-title">
+    <h2 id="read-title">Read only, and plain about key power</h2>
+    <p>Kill Cord only reads billing. It never changes a provider setting, including caps: the caps audit opens the console page and you make the change yourself.</p>
+    <p>Some providers don’t offer a read-only key. Anthropic’s admin key can also manage your organization, and Twilio and Neon have no read-only keys either. OpenAI may offer read-only admin keys; choose that if you see it. Kill Cord says this before you save a key. If a key leaks, revoke it in the provider’s console.</p>
+  </section>
+
+  <section aria-labelledby="saved-title">
+    <h2 id="saved-title">What it saves on your Mac</h2>
+    <ul>
+      <li>The last spend it read (amounts and times, no keys) in <code>~/Library/Application Support/Kill Cord</code>.</li>
+      <li>Your alert thresholds and caps audit checkmarks, in its preferences.</li>
+    </ul>
+    <p>Requests use an ephemeral session, so nothing is cached to disk.</p>
+  </section>
+
+  <section aria-labelledby="network-title">
+    <h2 id="network-title">What goes over the network</h2>
+    <ul>
+      <li>Requests to each connected provider’s billing API, with that provider’s key.</li>
+      <li>The update check against Kill Cord’s releases on GitHub.</li>
+    </ul>
+    <p>That’s all. No telemetry, no analytics, no account, and no server of ours in between.</p>
+  </section>
+
+  <section aria-labelledby="remove-title">
+    <h2 id="remove-title">Removing everything</h2>
+    <p>In Settings › General, click Remove All… to delete every key from the Keychain and all local data. If you deleted the app first, open Keychain Access, search for <code>app.killcord.KillCord.providers</code>, and delete each item. Removing keys from Kill Cord doesn’t revoke them, so revoke any you no longer need in each provider’s console.</p>
+  </section>
+</div>
