@@ -163,4 +163,4 @@ Free to use. The source is available under the [Functional Source License 1.1, M
 
 ## PanelKit design and validation
 
-The menu bar panel uses [PanelKit](https://github.com/coreyhaines31/panelkit) 0.2.0: brushed aluminium in light mode, black anodised in dark mode, and colour for status. See [v1 validation and screenshots](docs/v1-validation.md) for tested builds and remaining release gates.
+The menu bar panel uses [PanelKit](https://github.com/coreyhaines31/panelkit) 0.2.1: brushed aluminium in light mode, black anodised in dark mode, and colour for status. See [v1 validation and screenshots](docs/v1-validation.md) for tested builds and remaining release gates.

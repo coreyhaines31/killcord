@@ -1,10 +1,10 @@
 name: CI
 
-# The repository is private for now, and private macOS runners bill at 10x the Linux rate, so the full
-# macOS build runs only when started by hand. KillCordCore has no AppKit, so its tests run on a cheap
-# Linux runner for every pull request. When the repository goes public, the macOS job can return to
-# push and pull_request like Fuel Gauge's.
+# The repository is public, so macOS runners are free: the full app build runs on every push and pull
+# request, like Fuel Gauge's. KillCordCore has no AppKit, so its tests also run on Linux.
 on:
+  push:
+    branches: [main, development]
   pull_request:
   workflow_dispatch:
 
@@ -26,7 +26,6 @@ jobs:
 
   build:
     name: App build, lint, and tests (macOS)
-    if: github.event_name == 'workflow_dispatch'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4

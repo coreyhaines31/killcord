@@ -20,7 +20,7 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
 
 ## Architecture
 
-- `project.yml`: XcodeGen. Target `KillCord`, product "Kill Cord", bundle id `app.killcord.KillCord`, macOS 14, Swift 6, hardened runtime, Sparkle 2. PanelKit 0.2.0 supplies the Brushed panel. The Sparkle public key is configured; its private key stays in the login Keychain.
+- `project.yml`: XcodeGen. Target `KillCord`, product "Kill Cord", bundle id `app.killcord.KillCord`, macOS 14, Swift 6, hardened runtime, Sparkle 2. PanelKit 0.2.1 supplies the Brushed panel. The Sparkle public key is configured; its private key stays in the login Keychain.
 - `Packages/KillCordCore` (SwiftPM library, plus `killcord-dev`):
   - `Money.swift`: `Money`, `MoneyTotals`, `MoneyText`. Always `Decimal`.
   - `Provider.swift`: `ProviderID`, `ProviderInfo` (capability, credential fields, key-power warning, lag, billing time zone, minimum refresh interval).
@@ -44,4 +44,4 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
 - **Copy:** no em dashes anywhere user-facing. Use commas, colons, or parentheses. No personal information in the repo.
 - **Out of v1:** the paid always-on monitor and auto-stop. At most a quiet "Always-on monitoring (coming later)" line.
 - **Git:** small atomic commits with descriptive messages. Feature branches; don't push or open PRs unless asked.
-- **CI:** Core tests on Linux for every pull request; the macOS job runs on `workflow_dispatch` only while the repo is private.
+- **CI:** Core tests on Linux and the full macOS build on every push and pull request (the repo is public, so macOS runners are free).
