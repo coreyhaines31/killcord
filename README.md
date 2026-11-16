@@ -160,3 +160,7 @@ The provider adapters and all the logic live in `Packages/KillCordCore` (`swift 
 ## License
 
 Free to use. The source is available under the [Functional Source License 1.1, MIT Future License](LICENSE): you can read, modify, and use it for anything except a competing product, and each version becomes MIT two years after release. The name and icon are covered by [TRADEMARK.md](TRADEMARK.md).
+
+## PanelKit design and validation
+
+The menu bar panel uses [PanelKit](https://github.com/coreyhaines31/panelkit) 0.2.0: brushed aluminium in light mode, black anodised in dark mode, and colour for status. See [v1 validation and screenshots](docs/v1-validation.md) for tested builds and remaining release gates.

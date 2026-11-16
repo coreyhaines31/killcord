@@ -20,7 +20,7 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
 
 ## Architecture
 
-- `project.yml`: XcodeGen. Target `KillCord`, product "Kill Cord", bundle id `app.killcord.KillCord`, macOS 14, Swift 6, hardened runtime, Sparkle 2. `SUPublicEDKey` is a placeholder until the first release.
+- `project.yml`: XcodeGen. Target `KillCord`, product "Kill Cord", bundle id `app.killcord.KillCord`, macOS 14, Swift 6, hardened runtime, Sparkle 2. PanelKit 0.2.0 supplies the Brushed panel. The Sparkle public key is configured; its private key stays in the login Keychain.
 - `Packages/KillCordCore` (SwiftPM library, plus `killcord-dev`):
   - `Money.swift`: `Money`, `MoneyTotals`, `MoneyText`. Always `Decimal`.
   - `Provider.swift`: `ProviderID`, `ProviderInfo` (capability, credential fields, key-power warning, lag, billing time zone, minimum refresh interval).

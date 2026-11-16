@@ -7,9 +7,9 @@ git checkout main && git pull
 NOTARY_PROFILE=<your-notary-profile> Scripts/release.sh 0.1.0
 ```
 
-`Scripts/release.sh` is a skeleton modeled on Fuel Gauge's and hasn't been run for Kill Cord yet. It:
+`Scripts/release.sh` has local build validation, but signing, notarization, and publication have not been run for Kill Cord. It:
 
-1. Runs the KillCordCore tests.
+1. Requires a clean `main` worktree, runs strict SwiftLint and the KillCordCore tests.
 2. Archives the app and exports it with Developer ID signing (cloud-managed, so no certificate lives on the machine).
 3. Notarizes and staples the app, builds the DMG, and notarizes and staples that.
 4. Checks the app inside the DMG with Gatekeeper.
@@ -21,10 +21,13 @@ The build number is the commit count, so it always goes up.
 
 ## Before the first release
 
-- **Sparkle key.** `SUPublicEDKey` in `project.yml` (and `KillCord/Info.plist`) is a placeholder, and the script refuses to run until it's replaced. Generate a key pair with Sparkle's `generate_keys --account killcord`, which keeps the private key in the login keychain, and paste the public key into both files. Until then the app doesn't start Sparkle at all.
+- **Sparkle key.** Generated on the release Mac under the `killcord` Keychain account. The public key is in `project.yml` and the generated `KillCord/Info.plist`. Never regenerate or export the private key into the repo. Demo mode disables update checks.
 - **Bundle ID.** `app.killcord.KillCord`. It names the Keychain service (`app.killcord.KillCord.providers`) and the preferences file, so changing it after release orphans people's saved keys.
-- **Architectures.** The project builds Xcode's default (universal on a release archive). Decide whether to ship Apple silicon only.
+- **Architectures.** Universal (`arm64 x86_64`), explicit in `project.yml`; release archives set `ONLY_ACTIVE_ARCH=NO`. Both architectures compile locally. Intel runtime testing is still outstanding.
 - **Cask.** `Scripts/homebrew/killcord.rb` is copied into [coreyhaines31/homebrew-tap](https://github.com/coreyhaines31/homebrew-tap) on the first release.
+
+- **Distribution.** The GitHub appcast and Homebrew cask require public download URLs. While this repo is private, do not publish the cask. Either approve making the repo public or host the appcast and DMG publicly on the purchased domain, then update the feed and cask URLs.
+- **Validation.** See [v1 validation](docs/v1-validation.md) for evidence and remaining real-account checks.
 
 ## One-time setup
 
