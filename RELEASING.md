@@ -26,7 +26,7 @@ The build number is the commit count, so it always goes up.
 - **Architectures.** Universal (`arm64 x86_64`), explicit in `project.yml`; release archives set `ONLY_ACTIVE_ARCH=NO`. Both architectures compile locally. Intel runtime testing is still outstanding.
 - **Cask.** `Scripts/homebrew/killcord.rb` is copied into [coreyhaines31/homebrew-tap](https://github.com/coreyhaines31/homebrew-tap) on the first release.
 
-- **Distribution.** The GitHub appcast and Homebrew cask require public download URLs. While this repo is private, do not publish the cask. Either approve making the repo public or host the appcast and DMG publicly on the purchased domain, then update the feed and cask URLs.
+- **Distribution.** The repo is public, so the GitHub release assets, the appcast, and the Homebrew cask all use public GitHub download URLs.
 - **Validation.** See [v1 validation](docs/v1-validation.md) for evidence and remaining real-account checks.
 
 ## One-time setup
