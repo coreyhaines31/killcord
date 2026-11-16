@@ -1,0 +1,9 @@
+<!-- PLACEHOLDER app icon for Kill Cord: a plug on a cord. Not a final brand. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect x="0" y="0" width="1024" height="1024" rx="230" fill="#2B2F36"/>
+  <path d="M512 640 C512 780 360 800 300 880" stroke="#E8E8E8" stroke-width="56" fill="none" stroke-linecap="round"/>
+  <rect x="352" y="380" width="320" height="260" rx="60" fill="#E8E8E8"/>
+  <rect x="412" y="230" width="56" height="170" rx="20" fill="#E8E8E8"/>
+  <rect x="556" y="230" width="56" height="170" rx="20" fill="#E8E8E8"/>
+  <circle cx="512" cy="510" r="44" fill="#D9534F"/>
+</svg>
