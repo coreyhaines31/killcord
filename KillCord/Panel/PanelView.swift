@@ -1,4 +1,5 @@
 import KillCordCore
+import PanelKit
 import SwiftUI
 
 /// What opens from the menu bar: totals, a card per connected provider, and the caps audit's progress.
@@ -7,89 +8,71 @@ struct PanelView: View {
     let openSettings: (SettingsWindow.Tab?) -> Void
     let checkForUpdates: () -> Void
 
+    @Environment(\.panelTheme) private var theme
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 30)) { context in
             let summary = model.summary(now: context.date)
-            VStack(alignment: .leading, spacing: 10) {
-                header
-                if model.connected.isEmpty {
-                    EmptyStateView(connect: { openSettings(.providers) }, reviewCaps: { openSettings(.caps) })
-                } else {
-                    TotalsView(summary: summary)
-                    ForEach(model.connected) { provider in
-                        ProviderCard(provider: provider, model: model, now: context.date,
-                                     openSettings: openSettings)
+            Panel(accent: theme.stop, fillsHeight: true) {
+                Fascia(nameplate: "Kill Cord", timestamp: status,
+                       detail: model.isDemo ? "Sample data" : "While your Mac is awake",
+                       label: "API spend monitor", isLit: model.isOnline && !model.isAsleep) {
+                    if !model.connected.isEmpty {
+                        TotalsView(summary: summary)
                     }
-                    capsRow
                 }
-                footer
+                .trailingAccessory {
+                    KeyCap("arrow.clockwise", accessibilityLabel: "Refresh spend") { model.refreshNow() }
+                        .disabled(model.isDemo || model.connected.isEmpty || model.isRefreshing)
+                }
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        if model.connected.isEmpty {
+                            EmptyStateView(connect: { openSettings(.providers) }, reviewCaps: { openSettings(.caps) })
+                        } else {
+                            ForEach(model.connected) { provider in
+                                ProviderCard(provider: provider, model: model, now: context.date,
+                                             openSettings: openSettings)
+                            }
+                            capsRow
+                        }
+                    }
+                }
+            } footer: {
+                Footer(appName: Brand.name, openSettings: { openSettings(nil) }, quit: { NSApp.terminate(nil) })
             }
-            .padding(14)
-            .frame(width: 360)
-            .background(Color(nsColor: .windowBackgroundColor))
+            .frame(height: min(640, (NSScreen.main?.visibleFrame.height ?? 800) - 80))
         }
     }
 
-    private var header: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(Brand.name).font(.system(size: 15, weight: .semibold))
-            if model.isDemo {
-                Text("Sample data")
-                    .font(.system(size: 10, weight: .semibold))
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Color.orange.opacity(0.2), in: Capsule())
-            }
-            Spacer()
-            if model.isAsleep || !model.isOnline {
-                Text(model.isOnline ? "Paused while asleep" : "Offline, not live")
-                    .font(.system(size: 11)).foregroundStyle(.secondary)
-            } else if model.isRefreshing {
-                ProgressView().controlSize(.small)
-            }
-        }
+    private var status: String {
+        if model.isAsleep { return "Asleep, not live" }
+        if !model.isOnline { return "Offline, not live" }
+        return model.isRefreshing ? "Checking…" : "Local monitoring"
     }
 
     private var capsRow: some View {
         let attention = model.capsNeedingAttention
-        return Button {
-            openSettings(.caps)
-        } label: {
-            HStack {
-                Image(systemName: attention == 0 ? "checkmark.shield" : "exclamationmark.shield")
-                    .foregroundStyle(attention == 0 ? Color.green : Color.orange)
-                Text(attention == 0 ? "Caps audit: nothing needs attention"
-                     : "Caps audit: \(attention) cap\(attention == 1 ? "" : "s") to review")
-                    .font(.system(size: 12, weight: .medium))
-                Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 10)).foregroundStyle(.secondary)
+        return VStack(alignment: .leading, spacing: 8) {
+            SectionHeader("Native spending caps")
+            Button { openSettings(.caps) } label: {
+                HStack {
+                    StatusLight(attention == 0 ? .go : .caution,
+                                attention == 0 ? "Nothing to review" : "\(attention) to review")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
             }
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
+            .padding(.horizontal, 14)
+            Text("Review provider limits. Kill Cord does not stop spending.")
+                .font(PanelFont.body(11))
+                .foregroundStyle(theme.sub)
+                .padding(.horizontal, 14)
         }
-        .buttonStyle(.plain)
-        .padding(10)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        .padding(.bottom, 14)
     }
 
-    private var footer: some View {
-        HStack {
-            Button("Refresh") { model.refreshNow() }
-                .controlSize(.small)
-                .disabled(model.isDemo || model.connected.isEmpty || model.isRefreshing)
-            Spacer()
-            Menu {
-                Button("Settings…") { openSettings(nil) }
-                Button("Caps Audit…") { openSettings(.caps) }
-                Button("Check for Updates…", action: checkForUpdates)
-                Divider()
-                Button("Quit \(Brand.name)") { NSApp.terminate(nil) }
-            } label: {
-                Image(systemName: "gearshape")
-            }
-            .menuStyle(.borderlessButton)
-            .menuIndicator(.hidden)
-            .fixedSize()
-        }
-    }
 }
 
 /// First run: nothing connected yet. Connect is the primary action.
@@ -101,19 +84,20 @@ struct EmptyStateView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("See today's and this month's API spend").font(.system(size: 13, weight: .semibold))
             Text("Connect Anthropic, Google Cloud, OpenAI, Vercel, Cloudflare, Twilio, or Neon with a billing key. "
-                + "Keys are saved in your Mac's Keychain and never leave your Mac.")
+                + "Keys are stored in Keychain and sent only to their provider for authentication.")
                 .font(.system(size: 12)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             HStack {
                 Button("Connect a Provider…", action: connect)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.panelPrimary)
                 Button("Review Caps…", action: reviewCaps)
+                    .buttonStyle(.panelSecondary)
             }
             .controlSize(.small)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+
     }
 }
 
@@ -136,11 +120,8 @@ struct TotalsView: View {
     }
 
     private func total(_ label: String, _ totals: MoneyTotals) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Text(label).font(.system(size: 11)).foregroundStyle(.secondary)
-            Text(MoneyText.string(totals) + (summary.stale.isEmpty ? "" : "*"))
-                .font(.system(size: 20, weight: .semibold).monospacedDigit())
-        }
+        ReadingTile(label, value: MoneyText.string(totals) + (summary.stale.isEmpty ? "" : "*"))
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var notes: [String] {

@@ -1,5 +1,6 @@
 import AppKit
 import KillCordCore
+import PanelKit
 import SwiftUI
 
 /// One provider: today, this month, when it was last checked, and anything wrong, inline.
@@ -9,6 +10,8 @@ struct ProviderCard: View {
     let now: Date
     let openSettings: (SettingsWindow.Tab?) -> Void
 
+    @Environment(\.panelTheme) private var theme
+
     private var state: ProviderState? { model.states[provider] }
     private var freshness: Freshness { model.freshness(provider, now: now) }
     private var snapshot: SpendSnapshot? { state?.snapshot }
@@ -16,12 +19,13 @@ struct ProviderCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .firstTextBaseline) {
-                Text(provider.info.name).font(.system(size: 13, weight: .semibold))
+                Text(provider.info.name).font(PanelFont.condensed(14, .semibold))
                 Spacer()
-                Text(SpendText.freshness(freshness, now: now))
-                    .font(.system(size: 11))
-                    .foregroundStyle(freshness.isLive ? Color.secondary : Color.orange)
+                StatusLight(freshness.isLive ? .go : .caution, freshness.isLive ? "Checked" : "Not live")
             }
+            Text(SpendText.freshness(freshness, now: now))
+                .font(PanelFont.body(11))
+                .foregroundStyle(theme.sub)
             if provider.info.capability.showsMoney {
                 money
             } else {
@@ -43,12 +47,11 @@ struct ProviderCard: View {
                 errorRow(error)
             }
         }
-        .padding(12)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 12))
-        .overlay {
-            RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Color(nsColor: .separatorColor).opacity(0.4), lineWidth: 0.5)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(theme.line).frame(height: 1)
         }
     }
 
@@ -93,7 +96,7 @@ struct ProviderCard: View {
                 .fixedSize(horizontal: false, vertical: true)
             if !error.isTransient {
                 Button("Fix in Settings…") { openSettings(.providers) }
-                    .controlSize(.small)
+                    .buttonStyle(.panelCompact)
             }
         }
     }
