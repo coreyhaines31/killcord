@@ -1,0 +1,48 @@
+name: CI
+
+# The repository is private for now, and private macOS runners bill at 10x the Linux rate, so the full
+# macOS build runs only when started by hand. KillCordCore has no AppKit, so its tests run on a cheap
+# Linux runner for every pull request. When the repository goes public, the macOS job can return to
+# push and pull_request like Fuel Gauge's.
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  core:
+    name: KillCordCore tests (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
+
+      - name: Test
+        working-directory: Packages/KillCordCore
+        run: swift test
+
+  build:
+    name: App build, lint, and tests (macOS)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: brew install xcodegen swiftlint
+
+      - name: Lint
+        run: swiftlint --strict
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build and test
+        run: |
+          xcodebuild -project KillCord.xcodeproj -scheme KillCord \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            test
