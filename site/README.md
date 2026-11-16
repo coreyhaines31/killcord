@@ -10,7 +10,7 @@ The static site for https://killcord.app, generated from shared layouts. The app
 
 Run `make build` to generate `dist/`, or `make lint` to build and check structure, alt text, title and description lengths, em dashes, internal links, and assets. `make images` re-renders the social card from `scripts/og.html` and the touch icon from the mac-app-kit icon. The build uses Python's standard library only.
 
-The look is the Mac app family's Brushed design: `src/assets/brushed.css`, `popover.css`, and `family/` are copied from `mac-app-kit/site-kit` (edit them there, then copy them in), and `styles.css` maps this site's sections onto them. Kill Cord's lime `#7ea81f` appears only as pilot lights.
+The look is the Mac app family's Brushed design: `src/assets/brushed.css`, `popover.css`, and `family/` are copied from `mac-app-kit/site-kit` (edit them there, then copy them in), and `styles.css` maps this site's sections onto them. Kill Cord's lime `#7ea81f` appears only as pilot lights; the hero panel's nameplate light uses the app's own red stop colour, like the real panel.
 
 Copy follows the repo rule: no em dashes anywhere user-facing (`make lint` checks).
 
