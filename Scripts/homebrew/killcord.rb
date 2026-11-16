@@ -1,5 +1,3 @@
-# DRAFT cask for coreyhaines31/homebrew-tap. Scripts/release.sh copies it into the tap on the first
-# release and bumps version and sha256 after that. Not published anywhere yet.
 cask "killcord" do
   version "0.0.0"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
