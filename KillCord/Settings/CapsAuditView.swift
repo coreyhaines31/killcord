@@ -6,7 +6,7 @@ import SwiftUI
 /// or only alerts, a link to the exact console page, and a checklist. Kill Cord never changes a cap itself.
 struct CapsAuditView: View {
     let model: SpendModel
-    @State private var selection: ProviderID = .anthropic
+    @State private var selection: ProviderID? = .anthropic
 
     var body: some View {
         HStack(spacing: 0) {
@@ -16,12 +16,12 @@ struct CapsAuditView: View {
                     Spacer()
                     progress(provider)
                 }
-                .tag(provider)
+                .tag(Optional(provider))
             }
             .listStyle(.sidebar)
             .frame(width: 190)
             Divider()
-            ProviderCapsView(provider: selection, model: model)
+            ProviderCapsView(provider: selection ?? .anthropic, model: model)
                 .id(selection)
                 .frame(maxWidth: .infinity)
         }

@@ -6,7 +6,7 @@ import SwiftUI
 /// accepts them, and are never shown again.
 struct ProvidersSettingsView: View {
     let model: SpendModel
-    @State private var selection: ProviderID = .anthropic
+    @State private var selection: ProviderID? = .anthropic
 
     var body: some View {
         HStack(spacing: 0) {
@@ -16,12 +16,12 @@ struct ProvidersSettingsView: View {
                     Spacer()
                     statusDot(provider)
                 }
-                .tag(provider)
+                .tag(Optional(provider))
             }
             .listStyle(.sidebar)
             .frame(width: 190)
             Divider()
-            ProviderEditor(provider: selection, model: model)
+            ProviderEditor(provider: selection ?? .anthropic, model: model)
                 .id(selection)
                 .frame(maxWidth: .infinity)
         }
