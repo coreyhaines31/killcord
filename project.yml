@@ -19,7 +19,7 @@ packages:
     path: Packages/KillCordCore
   PanelKit:
     url: https://github.com/coreyhaines31/panelkit
-    exactVersion: "0.2.0"
+    exactVersion: "0.2.1"
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     exactVersion: "2.10.0"
