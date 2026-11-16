@@ -1,0 +1,9 @@
+{
+  "result": [
+    {"BillingCurrency": "USD", "BillingPeriodStart": "2026-11-03T00:00:00Z", "ChargePeriodStart": "2026-11-03T00:00:00Z", "ChargePeriodEnd": "2026-11-04T00:00:00Z", "ServiceName": "Workers Standard", "ServiceFamilyName": "Workers", "ConsumedQuantity": 150000, "ConsumedUnit": "Requests", "BilledCost": 0.75, "ContractedCost": 0.75, "EffectiveCost": 0.75, "ListCost": 0.75, "CumulatedContractedCost": 0.75},
+    {"BillingCurrency": "USD", "BillingPeriodStart": "2026-11-03T00:00:00Z", "ChargePeriodStart": "2026-11-14T00:00:00Z", "ChargePeriodEnd": "2026-11-15T00:00:00Z", "ServiceName": "R2 Storage", "ServiceFamilyName": "R2", "ConsumedQuantity": 12, "ConsumedUnit": "GB-months", "BilledCost": 0.18, "ContractedCost": 0.18, "EffectiveCost": 0.18, "ListCost": 0.18, "CumulatedContractedCost": 0.93}
+  ],
+  "success": true,
+  "errors": [],
+  "messages": []
+}

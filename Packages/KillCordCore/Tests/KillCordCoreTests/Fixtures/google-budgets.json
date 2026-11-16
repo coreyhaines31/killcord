@@ -1,0 +1,21 @@
+{
+  "budgets": [
+    {
+      "name": "billingAccounts/0123AB-4567CD-89EF01/budgets/9f8e7d6c",
+      "displayName": "Gemini API cap",
+      "budgetFilter": {"projects": ["projects/123456789012"], "services": ["services/AEFD-7695-64FA"], "creditTypesTreatment": "EXCLUDE_ALL_CREDITS", "calendarPeriod": "MONTH"},
+      "amount": {"specifiedAmount": {"currencyCode": "USD", "units": "50", "nanos": 500000000}},
+      "thresholdRules": [{"thresholdPercent": 0.5, "spendBasis": "CURRENT_SPEND"}, {"thresholdPercent": 1.0, "spendBasis": "CURRENT_SPEND"}],
+      "etag": "\"abc\"",
+      "ownershipScope": "ALL_USERS",
+      "spendCap": {"inputState": "CONFIGURED", "outputState": "CONFIGURED", "reconciling": false}
+    },
+    {
+      "name": "billingAccounts/0123AB-4567CD-89EF01/budgets/1a2b3c",
+      "displayName": "Whole account",
+      "amount": {"specifiedAmount": {"currencyCode": "USD", "units": "300"}},
+      "thresholdRules": [{"thresholdPercent": 0.9, "spendBasis": "CURRENT_SPEND"}]
+    }
+  ],
+  "nextPageToken": ""
+}

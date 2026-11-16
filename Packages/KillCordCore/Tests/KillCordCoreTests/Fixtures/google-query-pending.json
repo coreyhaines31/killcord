@@ -1,0 +1,1 @@
+{"kind": "bigquery#queryResponse", "jobReference": {"projectId": "kc-billing", "jobId": "job_abc123", "location": "US"}, "jobComplete": false}
