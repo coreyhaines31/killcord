@@ -1,6 +1,8 @@
 // OpenAI Administration API, organization costs and spend limits.
-// Costs: https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/usage/methods/costs/
-// Spend limit: https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit
+// Costs:
+//   https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/usage/methods/costs/
+// Spend limit:
+//   https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit
 // Guide: https://developers.openai.com/api/docs/guides/spend-limits
 //
 // GET https://api.openai.com/v1/organization/costs

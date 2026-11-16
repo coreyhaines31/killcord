@@ -97,8 +97,7 @@ struct CapRow: View {
         Section {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 6) {
-                    badge(control.enforcement.label,
-                          color: control.enforcement == .alertOnly ? .blue : (control.enforcement == .hardStop ? .green : .teal))
+                    badge(control.enforcement.label, color: enforcementColor)
                     badge(control.verification == .api ? "Checked by API" : "Self-reported", color: .secondary)
                 }
                 Text(control.summary).font(.callout).fixedSize(horizontal: false, vertical: true)
@@ -122,6 +121,14 @@ struct CapRow: View {
             }
         } header: {
             Text(control.name)
+        }
+    }
+
+    private var enforcementColor: Color {
+        switch control.enforcement {
+        case .hardStop: .green
+        case .partialStop: .teal
+        case .alertOnly: .blue
         }
     }
 
