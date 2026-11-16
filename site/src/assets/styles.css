@@ -1,0 +1,168 @@
+/* Kill Cord on the Brushed family look. brushed.css carries the tokens and shared components;
+   this file maps the site's own sections onto them. Colour only in lights and readings: --bx-accent is the pilot light. */
+:root {
+  --bx-accent: #7ea81f;
+}
+
+* {box-sizing: border-box}
+html {-webkit-text-size-adjust: 100%}
+body {margin: 0; overflow-x: clip}
+p {margin: 0}
+code {font-family: var(--bx-mono); font-size: .9em}
+img {max-width: 100%}
+.skip {position: fixed; z-index: 20; top: -6rem; left: 1rem; padding: .75rem 1rem; background: var(--bx-btn); color: var(--bx-btn-ink); border-radius: 5px}
+.skip:focus {top: 1rem}
+[id] {scroll-margin-top: 2rem}
+.fine {font-size: 14px; color: var(--bx-muted); line-height: 1.55; margin-top: 16px}
+.bx-btn span {line-height: 1}
+
+/* Header: transparent over the homepage hero, brushed elsewhere */
+.site-header {background: var(--bx-brush); border-bottom: 1px solid rgba(0,0,0,.25)}
+.home .site-header {position: absolute; inset: 0 0 auto; z-index: 5; background: none; border-bottom: 0}
+.site-header .bx-nav {padding-block: 14px}
+.site-header nav {margin-left: auto}
+.site-header .bx-brand {color: var(--bx-ink)}
+.header-cta {padding: 10px 16px; font-size: 14px}
+@media (max-width: 760px) {
+  .site-header nav {order: 3; width: 100%; margin-left: 0; gap: 8px 18px; font-size: 14.5px}
+}
+
+/* Hero */
+.hero .bx-hero-grid {padding-top: 104px}
+@media (max-width: 760px) { .hero .bx-hero-grid {padding-top: 132px} }
+.brew-label {margin-top: 18px; font: 600 12px/1 var(--bx-display); letter-spacing: .2em; text-transform: uppercase; color: var(--bx-muted)}
+.brew {margin: 8px 0 0; width: fit-content}
+.stage {margin: 0; display: grid; gap: 12px; min-width: 0}
+.stage figcaption {font-size: 14px; color: var(--bx-muted); text-align: center}
+.stage-mount {gap: 14px; padding-block: 26px 30px}
+
+/* The menu bar item above the popover */
+.kc-bar {width: 340px; max-width: 100%; display: flex; justify-content: flex-end; align-items: center; gap: 14px; padding: 5px 10px; border-radius: 6px; background: rgba(236,236,235,.9); color: #161616; font: 500 13px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-variant-numeric: tabular-nums}
+.kc-item {display: inline-flex; align-items: center; gap: 5px; padding: 3px 6px; border-radius: 4px; background: rgba(0,0,0,.12); font-weight: 600}
+.kc-item svg {width: 16px; height: 16px}
+
+/* Kill Cord's panel, composed from popover.css parts */
+.pop.kc-pop {--arrow: 78%}
+.pop.kc-pop .kc-status {display: inline-flex; align-items: center; gap: 8px}
+.pop.kc-pop .fas .tiles {padding: 0}
+.pop.kc-pop .tiles b {font: 600 15px/1.1 var(--sys); font-variant-numeric: tabular-nums}
+.pop.kc-pop .fas .ln {padding: 0; font-size: 11.5px; color: var(--ink2)}
+.pop.kc-pop .labs .lo, .pop.kc-pop .labs .ls {text-align: center}
+.pop .kc-prov {padding: 11px 14px 12px; border-bottom: 1px solid var(--line); display: grid; gap: 4px}
+.pop .kc-head {display: flex; justify-content: space-between; align-items: baseline; gap: 10px}
+.pop .kc-head b {font: 600 15px/1.15 var(--cond)}
+.pop .kc-sub {font-size: 11.5px; color: var(--sub)}
+.pop .kc-pair {display: flex; gap: 18px; margin-top: 2px; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums}
+.pop .kc-pair span {display: grid; gap: 1px}
+.pop .kc-pair small {font-weight: 400; font-size: 11px; color: var(--sub)}
+.pop .kc-note {font-size: 11px; color: var(--sub); line-height: 1.35}
+.pop.kc-pop .pf {border-top: 0}
+
+/* Problem */
+.problem-grid {display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px; align-items: start}
+.problem-copy {display: grid; gap: 14px; color: var(--bx-ink2); font-size: 18px}
+
+/* Honest numbers */
+.honest-grid {display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: start}
+.facts {list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 12px; color: var(--bx-ink2)}
+.facts li {padding-left: 16px; border-left: 2px solid var(--bx-rule)}
+.facts b {color: var(--bx-ink); font-weight: 600}
+.readings {margin: 0; background: var(--bx-card); border: 1px solid var(--bx-rule); border-radius: 10px; overflow: hidden}
+.readings div {padding: 14px 18px; border-top: 1px solid var(--bx-rule); display: grid; gap: 6px}
+.readings div:first-child {border-top: 0}
+.readings dt {font-weight: 600}
+.readings dt code {font-size: 14px; background: var(--bx-field); border: 1px solid var(--bx-rule); border-radius: 4px; padding: 3px 7px}
+.readings dt .bx-led {font-size: 12px; letter-spacing: .1em}
+.readings dd {margin: 0; color: var(--bx-ink2); font-size: 15.5px}
+
+/* Caps audit */
+.caps-list {list-style: none; margin: 30px 0 0; padding: 0; border-top: 1px solid var(--bx-rule)}
+.caps-list li {display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr) auto; gap: 6px 20px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--bx-rule)}
+.caps-list b {font: 600 19px/1.2 var(--bx-display)}
+.caps-list span {color: var(--bx-ink2); font-size: 15.5px}
+.kind {font: 600 11px/1 var(--bx-display); font-style: normal; letter-spacing: .16em; text-transform: uppercase; display: inline-flex; gap: 6px; align-items: center; white-space: nowrap}
+.kind::before {content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c); box-shadow: 0 0 5px var(--c)}
+.kind.stop {--c: var(--bx-go)} .kind.part {--c: var(--bx-ca)} .kind.alert {--c: #8c8e90}
+.kind.alert::before {box-shadow: none}
+
+/* Providers table */
+.table-wrap {margin-top: 30px; overflow-x: auto; border: 1px solid var(--bx-rule); border-radius: 10px; background: var(--bx-card)}
+.coverage {width: 100%; border-collapse: collapse; font-size: 15.5px; min-width: 640px}
+.coverage th, .coverage td {text-align: left; vertical-align: top; padding: 12px 16px; border-top: 1px solid var(--bx-rule)}
+.coverage thead th {border-top: 0; font: 600 12px/1.2 var(--bx-display); letter-spacing: .16em; text-transform: uppercase; color: var(--bx-muted); background: var(--bx-bay)}
+.coverage tbody th {font: 600 17px/1.25 var(--bx-display)}
+.coverage td {color: var(--bx-ink2)}
+
+/* Privacy band */
+.bx-band {border-top: 0}
+.bx-band .bx-eyebrow {color: #8f9192}
+.bx-band .bx-card p {color: #a9abad}
+.band-link {margin-top: 24px}
+.band-link a {color: #f0f0f0; font-weight: 600}
+
+/* Get Kill Cord */
+.get-grid {display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 40px; align-items: center}
+.get-mount {gap: 18px; padding-block: 44px}
+.get-mount .bx-badge {background: #c9cbcc; color: #161616}
+
+/* Footer */
+.bx-family ul {align-items: start}
+.bx-family a {align-content: start}
+.bx-family strong {font-weight: 600; color: #e9eaea}
+.bx-family span {font-size: 12px; line-height: 1.35; color: #8f9192}
+.bx-footer .bx-wrap {align-items: center}
+.footer-brand {display: inline-flex; align-items: center; gap: 8px; font: 600 16px/1 var(--bx-display); color: #e9eaea !important}
+.bx-footer p {flex: 1}
+.footer-links {display: flex; flex-wrap: wrap; gap: 8px 20px}
+
+/* Inner pages */
+.page-head {padding-block: 40px 48px}
+.page-head h1 {font-weight: 600; font-size: clamp(40px, 6vw, 64px); line-height: 1; margin-top: 18px}
+.crumbs ol {list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 22px; padding: 0; font-size: 14px; color: var(--bx-muted)}
+.crumbs li + li::before {content: "›"; margin-right: 6px}
+.crumbs a {color: var(--bx-ink2)}
+.prose {display: grid; gap: 40px; padding-block: 56px 80px; color: var(--bx-ink2)}
+.prose > section {max-width: 760px}
+.prose section {display: grid; gap: 14px}
+.prose h2 {font-weight: 700; font-size: clamp(26px, 3vw, 32px); line-height: 1.1; color: var(--bx-ink)}
+.prose ul {margin: 0; padding-left: 20px; display: grid; gap: 6px}
+.prose code {overflow-wrap: anywhere}
+
+@media (max-width: 880px) {
+  .problem-grid, .honest-grid, .get-grid {grid-template-columns: minmax(0, 1fr); gap: 28px}
+  .caps-list li {grid-template-columns: minmax(0, 1fr) auto}
+  .caps-list span {grid-column: 1 / -1; grid-row: 2}
+}
+@media (max-width: 760px) {
+  .bx-family span {display: none}
+  .bx-section {padding-block: 56px}
+}
+@media (max-width: 420px) {
+  .brew {width: 100%}
+  .pop .kc-pair {gap: 14px}
+}
+
+.bx-card .bx-strip, .bx-card .bx-led {justify-self: start}
+.faq-list {margin-top: 26px}
+.stage-mount, .get-mount {grid-template-columns: minmax(0, 1fr)}
+@media (max-width: 420px) { .stage-mount {padding-inline: 12px} }
+@media (max-width: 640px) {
+  .table-wrap {overflow: visible}
+  .coverage {min-width: 0}
+  .coverage thead {position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)}
+  .coverage tr {display: grid; gap: 4px; padding: 14px 16px; border-top: 1px solid var(--bx-rule)}
+  .coverage tbody tr:first-child {border-top: 0}
+  .coverage th, .coverage td {display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 10px; padding: 0; border: 0}
+  .coverage tbody th {display: block; margin-bottom: 4px}
+  .coverage td::before {content: attr(data-label); font: 600 11px/1.6 var(--bx-display); letter-spacing: .14em; text-transform: uppercase; color: var(--bx-muted)}
+}
+
+/* The panel follows the visitor's light or dark setting, like the real app (black anodised in dark mode): the dark values from popover.css */
+@media (prefers-color-scheme: dark) {
+  .bx-mount .pop.light { background: #161617; color: #e6e7e8; --fas: var(--brush-d); --arrow-c: #2b2b2c; --line: #2a2a2c; --sub: #9a9c9e; --field: #0f0f10; --track: #2e2e30; --fill: #d0d1d2; --btn: #d6d7d8; --btn-ink: #161616; --b2: linear-gradient(180deg, #333436, #232425); --b2e: #4a4c4e; --plate: #c9cbcc; --plate-ink: #161616; --ink2: #c6c7c8; --go: #4fd06f; --ca: #f2b23a; --st: #ff5a3c; }
+  .bx-mount .pop.light .fas { box-shadow: inset 0 1px 0 rgba(255,255,255,.08); border-bottom-color: #000; }
+  .bx-mount .pop.light .lo { border-color: #6a6c6e; }
+  .bx-mount .pop.light .fh .tbar .tbi { color: #e6e7e8; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
+  .kc-bar { background: rgba(38,38,40,.92); color: #e6e7e8; }
+  .kc-item { background: rgba(255,255,255,.16); }
+}
