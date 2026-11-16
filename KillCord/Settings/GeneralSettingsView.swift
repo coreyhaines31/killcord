@@ -50,7 +50,8 @@ struct GeneralSettingsView: View {
                 }
             } footer: {
                 Text("Kill Cord goes online only to ask your providers' billing APIs and to check for updates. "
-                    + "No telemetry, no account. Your keys never leave your Mac.")
+                    + "No telemetry, no account. Keys are stored in Keychain and sent only to their provider "
+                    + "for authentication.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             uninstallSection
