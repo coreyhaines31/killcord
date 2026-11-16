@@ -42,7 +42,7 @@ The app checks `https://github.com/coreyhaines31/killcord/releases/latest/downlo
 
 ## CI
 
-`.github/workflows/ci.yml` runs the KillCordCore tests on Linux for every pull request. The macOS lint, build, and test job runs only when started by hand (Actions › CI › Run workflow) while the repository is private, because private macOS runners bill at 10x. Run it before each release.
+`.github/workflows/ci.yml` runs the KillCordCore tests on Linux and the macOS lint, build, and test job on every push to `main` and `development` and on every pull request. Both must be green before a release.
 
 ## When something goes wrong
 

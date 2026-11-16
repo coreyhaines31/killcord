@@ -28,7 +28,7 @@ Screenshots use labeled sample data, not connected billing accounts:
 - Anthropic retains the documented legacy `GET /v1/organizations/cost_report`. [Current docs](https://platform.claude.com/docs/en/api/beta/organization/cost_report) still document it; the newer Analytics API is recommended for new integrations, but a migration is not validated here. Real-account validation remains required.
 - Google uses the existing billing export plus service-account approach. [Official export setup](https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery-setup) remains a manual cloud-account task; nothing was provisioned or queried.
 - Sparkle key generated in the login Keychain under `killcord`; only the public key is committed. Demo mode does not start update checks.
-- Private macOS CI remains manual. Linux is pinned to Ubuntu 24.04 after an existing run failed before tests because setup-swift v2 rejected Ubuntu 26.04.
+- macOS CI runs on every push and pull request now that the repo is public. Linux is pinned to Ubuntu 24.04 after an existing run failed before tests because setup-swift v2 rejected Ubuntu 26.04.
 
 ## Not yet verified or released
 
