@@ -39,7 +39,7 @@ struct ProvidersSettingsView: View {
     }
 }
 
-/// One sidebar row: monogram, name, and a status line with its light.
+/// One sidebar row: mark, name, and a status line with its light.
 struct ProviderRow: View {
     let provider: ProviderID
     let status: ProviderStatus
