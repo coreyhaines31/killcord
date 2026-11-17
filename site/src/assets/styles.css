@@ -57,6 +57,12 @@ img {max-width: 100%}
 .pop .kc-pair small {font-weight: 400; font-size: 11px; color: var(--sub)}
 .pop .kc-note {font-size: 11px; color: var(--sub); line-height: 1.35}
 .pop.kc-pop .pf {border-top: 0}
+/* Provider marks: the app's brushed key, with the vendor's mono logo or a letter in ink. */
+.pmark {display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; margin-right: 9px; vertical-align: -4px; border-radius: 5px; background: linear-gradient(180deg, #f7f7f7, #d9dadb); border: 1px solid #9c9ea0; color: var(--bx-ink); font: 600 13px/1 var(--bx-display)}
+.pmark svg {width: 11px; height: 11px; display: block; fill: currentColor}
+.pop .pmark {width: 16px; height: 16px; margin-right: 6px; vertical-align: -3px; border-radius: 4px; background: var(--b2); border-color: var(--b2e); color: inherit; font: 600 9.5px/1 var(--cond)}
+.pop .pmark svg {width: 8px; height: 8px}
+
 
 /* Problem */
 .problem-grid {display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px; align-items: start}
@@ -165,4 +171,5 @@ img {max-width: 100%}
   .bx-mount .pop.light .fh .tbar .tbi { color: #e6e7e8; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
   .kc-bar { background: rgba(38,38,40,.92); color: #e6e7e8; }
   .kc-item { background: rgba(255,255,255,.16); }
+  .pmark { background: linear-gradient(180deg, #333436, #232425); border-color: #4a4c4e; }
 }
