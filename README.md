@@ -155,7 +155,7 @@ The provider adapters and all the logic live in `Packages/KillCordCore` (`swift 
 
 ## License
 
-Free to use. The source is available under the [Functional Source License 1.1, MIT Future License](LICENSE): you can read, modify, and use it for anything except a competing product, and each version becomes MIT two years after release. The name and icon are covered by [TRADEMARK.md](TRADEMARK.md). Provider names and logos are trademarks of their owners, used to identify the services; Kill Cord is not affiliated with or endorsed by them. Where each logo comes from is in [docs/third-party-marks.md](docs/third-party-marks.md).
+Free to use. The source is available under the [Functional Source License 1.1, MIT Future License](LICENSE): you can read, modify, and use it for anything except a competing product, and each version becomes MIT two years after release. The name and icon are covered by [TRADEMARK.md](TRADEMARK.md). Logos are trademarks of their owners and are used only to identify the services Kill Cord reads. Kill Cord is not affiliated with or endorsed by them. Where each logo comes from is in [docs/third-party-marks.md](docs/third-party-marks.md).
 
 ## PanelKit design and validation
 
