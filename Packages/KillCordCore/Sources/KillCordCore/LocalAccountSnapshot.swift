@@ -1,14 +1,17 @@
 import Foundation
 
 /// Everything a later move (to a Kill Cord Cloud account, or another Mac) would need from this Mac, in one
-/// versioned, plain JSON shape: settings, thresholds, caps audit marks, and each connection. Keys are never
+/// versioned, plain JSON shape: settings, thresholds, caps audit marks, and each connection (several can
+/// share a provider, each with its own id, name and Keychain item). Keys are never
 /// in it. Each connection names its Keychain item and which fields are saved there, so the key can be read
 /// at the moment the person agrees to move it, and not before.
 ///
 /// Nothing in the app sends or writes this today. It exists so a future migration reads one function
 /// instead of every preference, and so tests can prove no secret is in it.
 public struct LocalAccountSnapshot: Sendable, Equatable, Codable {
-    public static let currentSchemaVersion = 1
+    /// 2: connections are per connection, not per provider: each has a name, its Keychain account is its
+    /// id, and thresholds are scoped to a connection, a provider total, or the overall total.
+    public static let currentSchemaVersion = 2
 
     public struct Settings: Sendable, Equatable, Codable {
         public let refreshIntervalSeconds: Double
@@ -19,8 +22,10 @@ public struct LocalAccountSnapshot: Sendable, Equatable, Codable {
 
     /// One alert threshold. Amounts are USD decimal strings ("50", "12.5"), so no reader loses precision.
     public struct Threshold: Sendable, Equatable, Codable {
-        /// A provider id, or "total".
+        /// "connection", "provider" (every connection of it together), or "total".
         public let scope: String
+        /// The connection id for "connection", the provider id for "provider", nil for "total".
+        public let id: String?
         public let daily: String?
         public let monthly: String?
     }
@@ -38,6 +43,8 @@ public struct LocalAccountSnapshot: Sendable, Equatable, Codable {
     public struct Connection: Sendable, Equatable, Codable {
         public let id: UUID
         public let provider: ProviderID
+        /// What the person calls it ("Anthropic 2", "Client work"). Not a secret.
+        public let name: String
         public let createdAt: Date
         public let keychain: KeychainReference
     }
@@ -54,7 +61,7 @@ public struct LocalAccountSnapshot: Sendable, Equatable, Codable {
     public let settings: Settings
     public let connections: [Connection]
     public let capMarks: [CapMark]
-    /// Threshold alerts already sent this period ("anthropic|day|2026-11-15|50"), so a new home for the alerts
+    /// Threshold alerts already sent this period ("<connection id>|day|2026-11-15|50"), so a new home for the alerts
     /// doesn't send them twice.
     public let firedAlerts: [String]
 
@@ -82,11 +89,11 @@ public struct LocalAccountSnapshot: Sendable, Equatable, Codable {
     public static func make(credentials: CredentialStore, registry: ConnectionRegistry, state: LocalState,
                             keychainService: String = Brand.keychainService, now: Date) -> LocalAccountSnapshot {
         let connections = registry.records.compactMap { record -> Connection? in
-            guard let saved = try? credentials.load(record.provider) else { return nil }
+            guard let saved = try? credentials.load(record) else { return nil }
             let fields = record.provider.info.fields.filter { saved[$0.id] != nil }
             return Connection(
-                id: record.id, provider: record.provider, createdAt: record.createdAt,
-                keychain: KeychainReference(service: keychainService, account: record.provider.rawValue,
+                id: record.id, provider: record.provider, name: record.name, createdAt: record.createdAt,
+                keychain: KeychainReference(service: keychainService, account: credentials.account(for: record),
                                             fieldIDs: fields.map(\.id),
                                             secretFieldIDs: fields.filter(\.isSecret).map(\.id)))
         }
@@ -106,11 +113,17 @@ public struct LocalAccountSnapshot: Sendable, Equatable, Codable {
     private static func thresholds(_ thresholds: SpendThresholds) -> [Threshold] {
         // Decimal's description is locale independent: "12.5", never "12,5".
         func text(_ value: Decimal?) -> String? { value.map(\.description) }
-        var rows = thresholds.perProvider.sorted { $0.key < $1.key }.filter { !$0.value.isEmpty }.map {
-            Threshold(scope: $0.key.rawValue, daily: text($0.value.daily), monthly: text($0.value.monthly))
+        var rows = thresholds.perConnection.filter { !$0.value.isEmpty }
+            .sorted { $0.key.uuidString < $1.key.uuidString }.map {
+                Threshold(scope: "connection", id: $0.key.uuidString, daily: text($0.value.daily),
+                          monthly: text($0.value.monthly))
+            }
+        rows += thresholds.providerTotals.filter { !$0.value.isEmpty }.sorted { $0.key < $1.key }.map {
+            Threshold(scope: "provider", id: $0.key.rawValue, daily: text($0.value.daily),
+                      monthly: text($0.value.monthly))
         }
         if !thresholds.total.isEmpty {
-            rows.append(Threshold(scope: "total", daily: text(thresholds.total.daily),
+            rows.append(Threshold(scope: "total", id: nil, daily: text(thresholds.total.daily),
                                   monthly: text(thresholds.total.monthly)))
         }
         return rows

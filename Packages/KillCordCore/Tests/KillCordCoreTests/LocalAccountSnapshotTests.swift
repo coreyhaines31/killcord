@@ -9,13 +9,17 @@ import Testing
     func everything() throws -> (LocalAccountSnapshot, InMemorySecretStore) {
         let secrets = InMemorySecretStore()
         let store = CredentialStore(secrets: secrets)
-        for provider in Self.connectable { try store.save(FakeKeys.credentials(provider)) }
-        var registry = ConnectionRegistry()
-        registry.reconcile(connected: store.connected(), now: testNow)
+        var registry = oneEach(Self.connectable)
+        let second = registry.add(.anthropic, now: testNow.addingTimeInterval(60))
+        registry.rename(second.id, to: "Client work")
+        for record in registry.records {
+            try store.save(FakeKeys.credentials(record.provider), for: record)
+        }
         var audit = CapAuditState()
         audit.mark("openai-project-budget", .done(at: testNow))
         audit.mark("anthropic-workspace-limit", .notApplicable(at: testNow))
-        let thresholds = SpendThresholds(perProvider: [.anthropic: .init(daily: decimal("12.5"))],
+        let thresholds = SpendThresholds(perConnection: [.of(.anthropic): .init(daily: decimal("12.5"))],
+                                         providerTotals: [.anthropic: .init(monthly: decimal("900"))],
                                          total: .init(daily: decimal("50"), monthly: decimal("500")))
         let snapshot = LocalAccountSnapshot.make(
             credentials: store, registry: registry,
@@ -43,9 +47,14 @@ import Testing
 
     @Test func referencesEachKeychainItemWithItsFields() throws {
         let (snapshot, _) = try everything()
-        #expect(snapshot.connections.map(\.provider) == Self.connectable)
+        #expect(snapshot.connections.map(\.provider) == [.anthropic] + Self.connectable)
+        #expect(snapshot.connections.prefix(2).map(\.name) == ["Anthropic", "Client work"])
+        #expect(Set(snapshot.connections.map(\.id)).count == snapshot.connections.count)
+        for connection in snapshot.connections {
+            #expect(connection.keychain.account == connection.id.uuidString)
+        }
         let google = try #require(snapshot.connections.first { $0.provider == .google })
-        #expect(google.keychain == .init(service: Brand.keychainService, account: "google",
+        #expect(google.keychain == .init(service: Brand.keychainService, account: UUID.of(.google).uuidString,
                                          fieldIDs: ["serviceAccountJSON", "exportTable", "billingAccountID"],
                                          secretFieldIDs: ["serviceAccountJSON"]))
         let twilio = try #require(snapshot.connections.first { $0.provider == .twilio })
@@ -58,8 +67,9 @@ import Testing
         #expect(snapshot.settings.refreshIntervalSeconds == 900)
         #expect(snapshot.settings.menuBarPeriod == "month")
         #expect(snapshot.settings.thresholds == [
-            .init(scope: "anthropic", daily: "12.5", monthly: nil),
-            .init(scope: "total", daily: "50", monthly: "500")
+            .init(scope: "connection", id: UUID.of(.anthropic).uuidString, daily: "12.5", monthly: nil),
+            .init(scope: "provider", id: "anthropic", daily: nil, monthly: "900"),
+            .init(scope: "total", id: nil, daily: "50", monthly: "500")
         ])
         #expect(snapshot.capMarks.map(\.state) == ["notApplicable", "done"])
         #expect(snapshot.firedAlerts == ["total|day|2026-11-15|50"])
@@ -75,9 +85,8 @@ import Testing
     @Test func leavesOutRecordsWhoseKeyIsGone() throws {
         let secrets = InMemorySecretStore()
         let store = CredentialStore(secrets: secrets)
-        try store.save(FakeKeys.credentials(.anthropic))
-        var registry = ConnectionRegistry()
-        registry.reconcile(connected: [.anthropic, .neon], now: testNow)
+        let registry = oneEach([.anthropic, .neon])
+        try store.save(FakeKeys.credentials(.anthropic), for: try #require(registry.record(.of(.anthropic))))
         let snapshot = LocalAccountSnapshot.make(
             credentials: store, registry: registry, state: .init(refreshInterval: 300, menuBarPeriod: .today),
             now: testNow)
@@ -88,15 +97,25 @@ import Testing
     @Test func makingItLeavesTheKeychainItemsAsTheyWere() throws {
         let secrets = InMemorySecretStore()
         let store = CredentialStore(secrets: secrets)
-        for provider in Self.connectable { try store.save(FakeKeys.credentials(provider)) }
+        let registry = oneEach(Self.connectable)
+        for record in registry.records { try store.save(FakeKeys.credentials(record.provider), for: record) }
         let before = try secrets.accounts.map { try secrets.read(account: $0) }
-        var registry = ConnectionRegistry()
-        registry.reconcile(connected: store.connected(), now: testNow)
         _ = LocalAccountSnapshot.make(credentials: store, registry: registry,
                                       state: .init(refreshInterval: 300, menuBarPeriod: .today), now: testNow)
         #expect(try secrets.accounts.map { try secrets.read(account: $0) } == before)
-        for provider in Self.connectable {
-            #expect(try store.load(provider) == FakeKeys.credentials(provider))
+        for record in registry.records {
+            #expect(try store.load(record) == FakeKeys.credentials(record.provider))
         }
+    }
+
+    @Test func pointsAtTheOldItemWhileAMoveIsUnfinished() throws {
+        let secrets = InMemorySecretStore()
+        try secrets.write(CredentialStore.encode(FakeKeys.credentials(.neon)), account: "neon")
+        let registry = oneEach([.neon])
+        let store = CredentialStore(secrets: secrets, legacyFallback: [.of(.neon): "neon"])
+        let snapshot = LocalAccountSnapshot.make(
+            credentials: store, registry: registry, state: .init(refreshInterval: 300, menuBarPeriod: .today),
+            now: testNow)
+        #expect(snapshot.connections.map(\.keychain.account) == ["neon"])
     }
 }
