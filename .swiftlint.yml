@@ -2,6 +2,7 @@ included:
   - KillCord
   - Packages/KillCordCore/Sources
   - Packages/KillCordCore/Tests
+  - KillCordSettingsTests
 excluded:
   - Packages/KillCordCore/.build
 opt_in_rules:
