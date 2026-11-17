@@ -2,17 +2,24 @@
 
 Status: design only, November 16, 2026. Kill Cord Cloud (the paid always-on monitor in `docs/product/spec.md`) is not built and stays out of v1. This doc says how someone who set Kill Cord up on their Mac moves that setup into a cloud account later without pasting a key again, and what had to ship now so that works. Tracking issue: #18.
 
+## Decided (November 16, 2026)
+
+- **Hybrid key model.** By default an account syncs readings only: keys stay on the Mac and the app sends spend readings. Moving a key to the cloud for 24/7 monitoring is a separate opt-in for each provider. The review screen shows how much each key can do: read-only billing keys get a calm recommendation, and keys that can manage the organization (Anthropic's admin key, for example) get a clear warning.
+- **Pricing.** Free: readings sync, history, and alerts across Macs. Paid: cloud-held keys with always-on monitoring.
+
 ## In plain language
 
 Someone connects Anthropic, Google, and Twilio in the menu bar app, sets a $50 daily alert, and ticks off half the caps audit. Months later they want alerts while the laptop is closed, so they create a Kill Cord Cloud account.
 
 What they should get:
 
-- **No re-pasting.** The app already has the keys. It offers to hand them over.
-- **Nothing leaves the Mac until they say so, one provider at a time.** Each key has its own switch, and every switch starts off. Moving the Anthropic key says nothing about the Twilio key.
+- **Keys stay put unless they say otherwise.** A new account syncs readings only (free): spend amounts and times go up so every Mac shows the same numbers, history builds up, and alerts reach all of them. No key moves.
+- **No re-pasting when they want more.** For always-on monitoring (paid), the app already has the keys and offers to hand them over.
+- **One provider at a time.** Each key has its own switch, and every switch starts off. Moving the Anthropic key says nothing about the Twilio key.
 - **They see what the cloud will do with each key before it moves.** For example: "Reads your Anthropic cost report every 15 minutes, day and night. Never changes a setting."
 - **Their settings come along on their own.** Thresholds, caps audit checkmarks, and which alerts already went out today aren't secrets, so they move when the account is created, and the review screen lists them.
-- **A way to keep keys on the Mac.** "Keep keys on this Mac" sends only spend readings (amounts and times) to the cloud. It's honest about the trade: with that choice, the cloud only knows what the Mac told it, so there is still no coverage while the Mac sleeps.
+- **Honest about the trade.** With readings only, the cloud knows only what a Mac told it, so there's still no coverage while every Mac sleeps. The review screen says so next to the switches.
+- **They know what each key can do.** A read-only billing key (Cloudflare's Billing Read token, a Google service account limited to the billing export) gets a calm "this key can only read billing". A key that can manage the organization (Anthropic, Twilio, Neon, and Vercel) gets a clear warning before its switch.
 - **A way back.** Stopping cloud monitoring for a provider deletes that key from the cloud right away. Leaving Kill Cord Cloud deletes everything there. The copy on the Mac stays and the app keeps working locally.
 
 What has to stay true: until someone creates an account, every current promise holds word for word ("keys never leave your Mac except to the provider", "no account", "no telemetry"). When they do, the copy changes in the same release, before anyone can sign in.
@@ -22,14 +29,15 @@ What has to stay true: until someone creates an account, every current promise h
 1. **Settings > General.** The "Always-on monitoring (coming later)" line becomes a "Kill Cord Cloud" section with one button: **Create a Kill Cord Cloud account** (and "Sign in" for a second Mac).
 2. **Sign in.** The app opens the sign-in page in a system web sheet (`ASWebAuthenticationSession`). Sign in with Apple or an emailed link. The page returns a device token, which the app saves in the Keychain under its own service (`app.killcord.KillCord.cloud`), apart from provider keys. If the person belongs to more than one workspace, they pick which one this Mac's setup goes to.
 3. **Review.** One screen, one row per connected provider:
-   - the provider, the saved key's hint ("Ending in 0001", or the service account email for Google), and its key power warning, the same text Settings shows today;
+   - the provider and the saved key's hint ("Ending in 0001", or the service account email for Google);
+   - how much the key can do, from `ProviderID.keyPower`: `readOnly` shows a calm recommendation ("This key can only read billing. Good to move."), `readOnlyIfChosen` (OpenAI) asks them to confirm they picked the read-only option, and `canManage` shows a clear warning with the provider's `keyPowerWarning` text, for example that Anthropic's admin key can also manage members and API keys;
    - what the cloud will do with it, in one sentence, from the provider's lag and minimum refresh interval;
-   - a switch, **Move this key to Kill Cord Cloud**, off by default;
+   - a switch, **Move this key to Kill Cord Cloud** (paid, always-on), off by default. On a free account it shows the upgrade;
    - for each switch turned on, a second, smaller choice: **Also keep it on this Mac** (on by default).
 
-   Below the rows, "Coming with you" lists the non-secret settings that will copy over (thresholds, caps audit marks, alerts already sent this period), and a single **Keep all keys on this Mac and send readings only** choice, which turns every switch off and says what that means for overnight coverage.
-4. **Upload.** For each switch that's on, the app reads that Keychain item at that moment, sends it over TLS, and the cloud checks it with the provider (the same `validate` call the app uses) before it stores anything. A rejected key shows the same inline message Settings would, and the other providers still go. The app records a provider as cloud-monitored only after the cloud confirms it.
-5. **After.** The Settings sidebar and the panel show a small "Cloud" mark on cloud-monitored providers and "This Mac" on the rest. The General section shows the account, the workspace, and **Leave Kill Cord Cloud**.
+   Above the rows, a line says what happens with every switch off, the default: "Keys stay on this Mac. Kill Cord sends spend readings so your other Macs, history, and alerts stay in step. Nothing is watched while all your Macs sleep." Below them, "Coming with you" lists the non-secret settings that will copy over (thresholds, caps audit marks, alerts already sent this period).
+4. **Sync and upload.** Settings and readings start syncing as soon as the account exists. For each switch that's on, the app reads that Keychain item at that moment, sends it over TLS, and the cloud checks it with the provider (the same `validate` call the app uses) before it stores anything. A rejected key shows the same inline message Settings would, and the other providers still go. The app records a provider as cloud-monitored only after the cloud confirms it.
+5. **After.** The Settings sidebar and the panel show a small "Always on" mark on cloud-monitored providers and "Synced" on the rest. The General section shows the account, the workspace, and **Leave Kill Cord Cloud**.
 
 ## What moves, and when
 
@@ -40,7 +48,7 @@ What has to stay true: until someone creates an account, every current promise h
 | Caps audit marks (done, doesn't apply, and when) | Preferences, `capAudit` | Automatically | The cloud doesn't re-ask questions the person already answered. |
 | Alerts already sent this period | Preferences, `firedAlerts` | Automatically | Stops a second "you passed $50 today" from the cloud on the day of the move. |
 | Cap verification readings | Preferences, inside `capAudit` | No | The cloud checks again with its own reads. |
-| Last spend reading | `~/Library/Application Support/Kill Cord/spend.json` | No | The cloud reads fresh. Kill Cord keeps no history beyond the last reading, so there's none to carry. |
+| Spend readings | `~/Library/Application Support/Kill Cord/spend.json` (the last one only) | Automatically, as `SpendReading`, from then on | The readings-only sync, free. History starts on the day of the account: Kill Cord keeps no history before that, so there's none to carry. |
 | Refresh interval, menu bar period, launch at login | Preferences | No | Settings for this Mac. The cloud's schedule follows each provider's minimum interval and the plan. |
 | A provider's key and its other fields (account id, team id, export table) | Keychain, one item per provider | **Only when that provider's switch is on** | Non-secret fields go with their key, because together they identify the person's account at the provider. |
 
@@ -48,7 +56,7 @@ What has to stay true: until someone creates an account, every current promise h
 
 ## Security model
 
-- **Two paths, chosen per provider.** "Move this key" gives the cloud a read key so it can poll while the Mac sleeps. "Readings only" keeps keys on the Mac and posts `SpendSnapshot` amounts and times. Only the first gives overnight coverage, and the app says so where the choice is made.
+- **Readings only by default, keys only by consent.** The default sync posts `SpendReading` values: amounts, usage, and times, built from a snapshot that never contains a key. Moving a key is a separate, explicit per-provider action, and it's the only path that gives overnight coverage. The app says so where the choice is made. Free accounts never hold a key.
 - **In transit:** TLS 1.2 or later to one API host, through the app's existing ephemeral `URLSession`. The device token goes in an `Authorization` header and never in a URL.
 - **At rest: envelope encryption.** Each stored credential is encrypted with its own data key (AES-256-GCM). The data key is wrapped by a KMS key for the account, with the account id and connection id as encryption context, so a wrapped key copied to another row or account won't decrypt. Plaintext keys live only in the polling worker's memory for the length of one provider request.
 - **Least privilege.** Only the polling worker can decrypt. The API that receives uploads can only encrypt. Nobody at Kill Cord has a path to decrypt, and support tools see hints ("Ending in 0001"), never values. The cloud never changes a provider setting, the same rule as the app, and uses the same read-only calls.
@@ -123,8 +131,10 @@ All local, no network, no new UI:
 
 - `ConnectionRegistry` and `ConnectionRecord` (KillCordCore): a UUID and created date per connected provider, rebuilt from the Keychain on launch, connect, and disconnect. Existing ids are kept, a replaced key keeps its id, and a disconnect drops the record. Keys saved by 0.1.1 get an id on the next launch, and their Keychain items aren't touched. The records are kept in preferences (`connections`), not as Keychain attributes, so no existing item is ever rewritten, and losing the preferences only means new ids.
 - `localDataVersion` preference, stamped to 1. 0 or missing means saved by 0.1.1 or earlier.
+- `SpendReading` (KillCordCore, follow-up PR): the readings-only payload, built from a `SpendSnapshot` and a connection id, with decimal strings and ISO 8601 dates. It never sees a key.
+- `ProviderID.keyPower` (KillCordCore, follow-up PR): `readOnly` (Cloudflare, Google), `readOnlyIfChosen` (OpenAI), `canManage` (Anthropic, Vercel, Twilio, Neon), `noKey` (Supabase), for the review screen's tone. A test checks that every `canManage` key has warning text.
 - `LocalAccountSnapshot.make(credentials:registry:state:now:)` (KillCordCore): the one function a migration calls, a versioned JSON-ready value with settings, thresholds as decimal strings, cap marks, sent alerts, and per connection its id, created date, and Keychain reference (service, account, saved field ids, which are secret). It reads the credential store only to see which fields are saved.
-- Tests with fake keys only: the snapshot contains no secret and no field value, references every item correctly, round-trips, leaves out records with no item, and leaves the items byte-for-byte unchanged. Registry tests cover adoption, stable ids, drop, and re-connect. A test pins every provider's credential field ids and the Keychain service name.
+- Tests with fake keys only: readings carry amounts as text and the right connection id, and skip providers with no record or no reading. And the snapshot contains no secret and no field value, references every item correctly, round-trips, leaves out records with no item, and leaves the items byte-for-byte unchanged. Registry tests cover adoption, stable ids, drop, and re-connect. A test pins every provider's credential field ids and the Keychain service name.
 - README and privacy page now mention the per-connection id.
 
 ## Technical: what the cloud build will need later
@@ -134,11 +144,17 @@ All local, no network, no new UI:
 - Polling worker: KillCordCore already builds and tests on Linux, so the server can run the same adapters, Redactor, freshness, and threshold logic, rather than a second copy in another language that could drift.
 - Web and account side: Next.js, Prisma Postgres, Better Auth with organizations, Stripe for the plan.
 
-## Decisions for Corey
+## Decisions
 
-1. **Keys to the cloud, readings only, or both.** Recommendation: both. Moving a key is the paid always-on feature, because it's the only path that watches while the Mac sleeps. Readings only is cheaper or free, giving multi-Mac, phone alerts, and shared workspaces without any key leaving the Mac.
-2. **Keep the Mac's copy after moving.** Recommendation: yes by default, and the cloud never sends keys back down.
-3. **Pricing gate.** Is creating an account free, with cloud polling of moved keys paid (with a trial)? Or is the account itself paid? Recommendation: the account and readings only are free, and moved keys are paid.
-4. **KMS key per account or one key with per-account encryption context.** A key per account makes leaving a clean crypto-shred but costs about $1 per account per month on AWS KMS. Recommendation: a key per paid account, and a shared key with context for free accounts, which never hold keys under the recommendation in 1.
+Decided by Corey on November 16, 2026:
+
+1. **Hybrid key model.** Readings only by default; moving a key is a per-provider opt-in, with the key's power shown on the review screen. See "Decided" at the top.
+2. **Pricing.** Free: readings sync, history, and alerts across Macs. Paid: cloud-held keys with always-on monitoring.
+
+Still open (recommendations):
+
+3. **Keep the Mac's copy after moving.** Recommendation: yes by default, and the cloud never sends keys back down.
+4. **KMS key per account or one key with per-account encryption context.** Only paid accounts hold keys, so only they need key encryption at all. Recommendation: one KMS key per paid account (about $1 a month each on AWS KMS), which makes leaving a clean crypto-shred.
 5. **Server language for the worker.** Swift on Linux reusing KillCordCore (recommended) or TypeScript ports of the adapters.
 6. **Sign-in methods.** Sign in with Apple and an emailed link (recommended), or email and password.
+7. **Trial.** Whether paid always-on monitoring starts with a trial, and how long.
