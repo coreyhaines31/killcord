@@ -53,6 +53,7 @@ final class SpendModel {
             return
         }
         connected = credentials.connected()
+        Preferences.reconcileConnections(connected)
         let cached = SpendCache.load()
         for state in cached where connected.contains(state.provider) {
             states[state.provider] = state
@@ -120,6 +121,7 @@ final class SpendModel {
         }
         if !connected.contains(provider) { connected.append(provider) }
         connected.sort()
+        if !isDemo { Preferences.reconcileConnections(connected) }
         states[provider] = ProviderState(provider: provider)
         lastCapCheck[provider] = nil
         scheduler.add(provider, now: Date())
@@ -134,6 +136,7 @@ final class SpendModel {
     func disconnect(_ provider: ProviderID) throws {
         if !isDemo { try credentials.delete(provider) }
         connected.removeAll { $0 == provider }
+        if !isDemo { Preferences.reconcileConnections(connected) }
         states[provider] = nil
         scheduler.remove(provider)
         saveCache()
