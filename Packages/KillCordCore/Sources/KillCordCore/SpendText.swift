@@ -33,6 +33,17 @@ public enum SpendText {
         return hours % 24 == 0 ? "\(hours / 24)d" : "\(hours / 24)d \(hours % 24)h"
     }
 
+    /// "just now", "12m ago", "3h ago", "2d ago": coarse, for a sidebar line.
+    public static func ago(_ date: Date, now: Date = Date()) -> String {
+        let seconds = now.timeIntervalSince(date)
+        if seconds < 60 { return "just now" }
+        let minutes = Int(seconds / 60)
+        if minutes < 60 { return "\(minutes)m ago" }
+        let hours = minutes / 60
+        if hours < 48 { return "\(hours)h ago" }
+        return "\(hours / 24)d ago"
+    }
+
     /// "Checked 11:42p", "Last checked 11:42p, not live", "Not checked yet".
     public static func freshness(_ freshness: Freshness, now: Date = Date(), calendar: Calendar = .current) -> String {
         switch freshness {

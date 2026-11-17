@@ -88,11 +88,17 @@ public struct RefreshScheduler: Sendable, Equatable {
     /// Refresh pressed: everything not in flight is due now, suspended ones included. A provider still
     /// inside a rate limit's wait keeps waiting.
     public mutating func refreshAll(now: Date) {
-        for (provider, entry) in entries where !entry.inFlight {
-            if entry.failures > 0, !entry.suspended, let due = entry.nextDue, due > now { continue }
-            entries[provider]?.suspended = false
-            entries[provider]?.nextDue = now
+        for provider in entries.keys {
+            refresh(provider, now: now)
         }
+    }
+
+    /// Refresh pressed for one provider, with the same rules as `refreshAll`.
+    public mutating func refresh(_ provider: ProviderID, now: Date) {
+        guard let entry = entries[provider], !entry.inFlight else { return }
+        if entry.failures > 0, !entry.suspended, let due = entry.nextDue, due > now { return }
+        entries[provider]?.suspended = false
+        entries[provider]?.nextDue = now
     }
 
     public mutating func sleep() {

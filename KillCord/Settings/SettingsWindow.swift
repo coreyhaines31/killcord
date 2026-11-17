@@ -21,6 +21,8 @@ final class SettingsWindow {
     }
 
     static let paneWidth: CGFloat = 560
+    /// Providers and Caps Audit have a sidebar, so they open wider.
+    static let sidebarPaneWidth: CGFloat = 700
 
     private let updater: Updater
     private let model: SpendModel
@@ -50,9 +52,10 @@ final class SettingsWindow {
         let tabs = SettingsTabController()
         tabs.tabStyle = .toolbar
         tabs.add(.general, view: GeneralSettingsView(updater: updater, model: model))
-        tabs.add(.providers, view: ProvidersSettingsView(model: model))
+        tabs.add(.providers, view: ProvidersSettingsView(model: model) { [weak self] in self?.show(tab: $0) },
+                 width: Self.sidebarPaneWidth)
         tabs.add(.thresholds, view: ThresholdsSettingsView(model: model, alerts: alerts))
-        tabs.add(.caps, view: CapsAuditView(model: model))
+        tabs.add(.caps, view: CapsAuditView(model: model), width: Self.sidebarPaneWidth)
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
         window.toolbarStyle = .preference
@@ -63,8 +66,8 @@ final class SettingsWindow {
 }
 
 private final class SettingsTabController: NSTabViewController {
-    func add(_ tab: SettingsWindow.Tab, view: some View) {
-        let controller = NSHostingController(rootView: view.frame(width: SettingsWindow.paneWidth))
+    func add(_ tab: SettingsWindow.Tab, view: some View, width: CGFloat = SettingsWindow.paneWidth) {
+        let controller = NSHostingController(rootView: view.frame(width: width))
         controller.sizingOptions = .preferredContentSize
         controller.title = tab.rawValue
         let item = NSTabViewItem(viewController: controller)

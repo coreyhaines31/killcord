@@ -25,56 +25,79 @@ struct GeneralSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Launch at login", isOn: $launchesAtLogin)
-                    .onChange(of: launchesAtLogin) { _, enabled in setLaunchAtLogin(enabled) }
-                Picker("Menu bar shows", selection: $menuBarPeriod) {
+                Toggle(isOn: $launchesAtLogin) {
+                    Text("Launch at login")
+                    Text("Kill Cord can only check spend while it's running.")
+                }
+                .onChange(of: launchesAtLogin) { _, enabled in setLaunchAtLogin(enabled) }
+                Picker(selection: $menuBarPeriod) {
                     ForEach(SpendText.MenuBarPeriod.allCases) { Text("Total spend \($0.title.lowercased())").tag($0) }
+                } label: {
+                    Text("Menu bar shows")
+                    Text("An asterisk means a number isn't live.")
                 }
-                Picker("Check spend every", selection: $interval) {
-                    ForEach(RefreshScheduler.intervalChoices, id: \.self) { Text(SpendText.duration($0)).tag($0) }
-                }
-                .onChange(of: interval) { _, value in model.setRefreshInterval(value) }
-            } footer: {
-                Text("Kill Cord checks only while your Mac is awake and Kill Cord is running. After sleep it says "
-                    + "when it last checked instead of showing old numbers as live. Some providers are only asked "
-                    + "hourly, since their data runs hours behind. Always-on monitoring (coming later).")
-                    .font(.caption).foregroundStyle(.secondary)
             }
             Section {
-                Toggle("Check for updates automatically", isOn: $checksForUpdates)
-                    .onChange(of: checksForUpdates) { _, enabled in updater.checksAutomatically = enabled }
-                    .disabled(!Updater.isConfigured)
+                Picker(selection: $interval) {
+                    ForEach(RefreshScheduler.intervalChoices, id: \.self) { Text(SpendText.duration($0)).tag($0) }
+                } label: {
+                    Text("Check spend every")
+                    Text("Slow providers are asked at most hourly, since their data runs hours behind.")
+                }
+                .onChange(of: interval) { _, value in model.setRefreshInterval(value) }
+            } header: {
+                Text("Checking")
+            } footer: {
+                Label("Kill Cord checks only while your Mac is awake and Kill Cord is running. After sleep it shows "
+                    + "when it last checked instead of passing old numbers off as live. Always-on monitoring "
+                    + "(coming later).", systemImage: "moon.zzz")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Section {
+                Toggle(isOn: $checksForUpdates) {
+                    Text("Check for updates automatically")
+                    Text("Kill Cord asks GitHub once a day for a newer version.")
+                }
+                .onChange(of: checksForUpdates) { _, enabled in updater.checksAutomatically = enabled }
+                .disabled(!Updater.isConfigured)
                 LabeledContent("Version \(Self.version)") {
                     Button("Check Now") { updater.checkForUpdates() }
                         .disabled(!Updater.isConfigured)
                 }
+            } header: {
+                Text("Updates")
             } footer: {
-                Text("Kill Cord goes online only to ask your providers' billing APIs and to check for updates. "
-                    + "No telemetry, no account. Keys are stored in Keychain and sent only to their provider "
-                    + "for authentication.")
+                Label("Kill Cord goes online only to read your providers' billing APIs and to check for updates. "
+                    + "No telemetry, no account.", systemImage: "lock.fill")
                     .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             uninstallSection
         }
         .formStyle(.grouped)
-        .frame(height: 520)
+        .frame(height: 560)
     }
 
     private var uninstallSection: some View {
         Section {
-            LabeledContent("Keys and local data") {
+            LabeledContent {
                 Button("Remove All…", role: .destructive) { confirmingRemoval = true }
+            } label: {
+                Text("Remove keys and local data")
+                Text("Deletes every key from your Keychain, the saved spend, and these settings.")
             }
             if let removalError {
-                Label(removalError, systemImage: "exclamationmark.circle").font(.callout)
+                ResultBox(light: .stop, title: "Couldn't remove every key", message: removalError,
+                          fix: "Delete the rest in Keychain Access: search \"\(Brand.keychainService)\".")
             }
         } header: {
             Text("Uninstall")
         } footer: {
-            Text("Removes every provider key from the Keychain, the saved spend in ~/Library/Application Support/"
-                + "\(Brand.name), and these settings. Then drag \(Brand.name) to the Trash. Keys can also be "
-                + "removed in Keychain Access (search \"\(Brand.keychainService)\").")
+            Text("Then drag \(Brand.name) to the Trash. Saved spend lives in ~/Library/Application Support/"
+                + "\(Brand.name). Keys are also in Keychain Access under \"\(Brand.keychainService)\".")
                 .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .confirmationDialog("Remove all keys and local data?", isPresented: $confirmingRemoval) {
             Button("Remove All", role: .destructive) {
@@ -82,12 +105,12 @@ struct GeneralSettingsView: View {
                     try model.removeEverything()
                     removalError = nil
                 } catch {
-                    removalError = "Couldn't remove every key: \(error.localizedDescription)"
+                    removalError = error.localizedDescription
                 }
             }
         } message: {
-            Text("Kill Cord forgets every provider. This doesn't revoke the keys with the providers; do that in "
-                + "their consoles if you no longer need them.")
+            Text("Kill Cord forgets every provider. The keys keep working with each provider until you revoke "
+                + "them in its console.")
         }
     }
 

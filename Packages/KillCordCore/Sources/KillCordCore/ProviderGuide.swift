@@ -1,0 +1,166 @@
+import Foundation
+
+/// One step in connecting a provider, shown before the paste field.
+public struct SetupStep: Sendable, Equatable {
+    public let title: String
+    public let detail: String
+    /// A button that opens the exact console page the step is about. Every URL comes from the provider's docs.
+    public let link: Link?
+
+    public struct Link: Sendable, Equatable {
+        public let title: String
+        public let url: URL
+    }
+
+    init(_ title: String, _ detail: String, link: (String, URL)? = nil) {
+        self.title = title
+        self.detail = detail
+        self.link = link.map { Link(title: $0.0, url: $0.1) }
+    }
+}
+
+/// The words Settings uses to explain a provider before and after connecting. Short on purpose: the long
+/// notes in `ProviderInfo` stay available behind a disclosure.
+extension ProviderInfo {
+    /// What the provider's console is called: "Claude Console".
+    public var consoleName: String {
+        switch id {
+        case .anthropic: "Claude Console"
+        case .google: "Google Cloud console"
+        case .openai: "OpenAI dashboard"
+        case .vercel: "Vercel dashboard"
+        case .cloudflare: "Cloudflare dashboard"
+        case .twilio: "Twilio Console"
+        case .neon: "Neon Console"
+        case .supabase: "Supabase dashboard"
+        }
+    }
+
+    /// A chip next to the name: what kind of number Kill Cord can show.
+    public var capabilityLabel: String {
+        switch capability {
+        case .dollars: "Dollar spend"
+        case .requiresSetup: "Dollar spend, needs setup"
+        case .usageUnitsOnly: "Usage units only"
+        case .noUsageAPI: "Caps only"
+        }
+    }
+
+    /// One line on what Kill Cord shows for this provider, with its reporting delay and any plan limits.
+    public var overview: String {
+        let shows: String = switch capability {
+        case .dollars: "Shows today's and this month's spend."
+        case .requiresSetup: "Shows spend from your Cloud Billing export in BigQuery."
+        case .usageUnitsOnly: "Shows this month's usage. \(name) doesn't report dollars."
+        case .noUsageAPI: "\(name) has no spend API, so there's nothing to connect. Turn on its Spend Cap in Caps Audit."
+        }
+        return [shows, delaySummary, requirement].compactMap { $0 }.joined(separator: " ")
+    }
+
+    /// How far behind the provider's numbers run, in a few words.
+    public var delaySummary: String? {
+        switch id {
+        case .anthropic: "Runs about 5 minutes behind."
+        case .google: "Runs hours behind, up to a day."
+        case .openai: "OpenAI doesn't say how far behind it runs."
+        case .vercel: "Reported by day, so today may be missing."
+        case .cloudflare: "Updated once a day."
+        case .twilio: "Runs a few minutes behind."
+        case .neon: "Runs about 15 minutes behind."
+        case .supabase: nil
+        }
+    }
+
+    /// What the account needs, or what the numbers leave out.
+    public var requirement: String? {
+        switch id {
+        case .anthropic: "Priority Tier costs aren't included."
+        case .cloudflare: "Pay-as-you-go accounts only."
+        case .neon: "Launch, Scale, and Agent plans only."
+        default: nil
+        }
+    }
+
+    /// The key-power warning in one short line. The full `keyPowerWarning` sits behind "Why?".
+    public var keyPowerSummary: String? {
+        switch id {
+        case .anthropic: "Anthropic has no read-only key. This one can also manage your organization."
+        case .google: "Give the account read roles only. Your organization may block service account keys."
+        case .openai: "Admin keys cover your whole organization. Choose read-only if it's offered."
+        case .vercel: "A token acts as you on the teams it covers. Scope it to one team and set an expiry."
+        case .twilio: "Twilio has no read-only key. A Standard API key can also send messages and calls."
+        case .neon: "Neon has no read-only key. This one can manage every project in the organization."
+        case .cloudflare, .supabase: nil
+        }
+    }
+
+    /// `keyKind` mid-sentence, with its article: "an admin API key", "a service account key".
+    public var keyKindInSentence: String {
+        var words = keyKind.split(separator: " ").map(String.init)
+        // Lowercase the first word unless it's an acronym ("API token" stays "API").
+        if let first = words.first, first.count > 1, first.dropFirst().first?.isLowercase == true {
+            words[0] = first.lowercased()
+        }
+        let phrase = words.joined(separator: " ")
+        let article = phrase.first.map { "aeiouAEIOU".contains($0) } == true ? "an" : "a"
+        return "\(article) \(phrase)"
+    }
+
+    /// The steps before the paste field. The paste step itself is drawn by the app from `fields`.
+    public var setupSteps: [SetupStep] {
+        func open(_ title: String) -> (String, URL)? { keyURL.map { (title, $0) } }
+        switch id {
+        case .anthropic:
+            return [
+                SetupStep("Open Admin keys in the Claude Console", "You need to be an admin of the organization.",
+                          link: open("Open Claude Console")),
+                SetupStep("Create an admin key and copy it", "It starts with sk-ant-admin01-. A regular API key "
+                    + "won't work.")
+            ]
+        case .google:
+            return [
+                SetupStep("Turn on the billing export", "In Billing export, send the standard usage cost data to "
+                    + "a BigQuery dataset. Data starts arriving a few hours later.",
+                          link: ("Open Billing Export", URL(string: "https://console.cloud.google.com/billing/export")!)),
+                SetupStep("Create a service account and a JSON key", "Give it BigQuery Data Viewer on the export "
+                    + "dataset and BigQuery Job User on its project. Add Billing Account Viewer if you want Kill "
+                    + "Cord to check your budgets and spend caps.", link: open("Open Service Accounts"))
+            ]
+        case .openai:
+            return [
+                SetupStep("Open Admin keys in the OpenAI dashboard", "Under Settings › Organization.",
+                          link: open("Open OpenAI Dashboard")),
+                SetupStep("Create an admin key and copy it", "It starts with sk-admin-. A project API key won't work.")
+            ]
+        case .vercel:
+            return [
+                SetupStep("Open Tokens in your Vercel account", "Under Account Settings › Tokens.",
+                          link: open("Open Vercel Tokens")),
+                SetupStep("Create a token and copy it", "Scope it to the team you want to watch.")
+            ]
+        case .cloudflare:
+            return [
+                SetupStep("Open API Tokens in the Cloudflare dashboard", "Under My Profile › API Tokens.",
+                          link: open("Open Cloudflare Tokens")),
+                SetupStep("Create a custom token and copy it", "Give it only the Billing Read permission. "
+                    + "It can't change anything.")
+            ]
+        case .twilio:
+            return [
+                SetupStep("Open the Twilio Console", "Go to Account › API keys and tokens.",
+                          link: open("Open Twilio Console")),
+                SetupStep("Create a Standard API key", "Copy its SID and secret. You can use your Auth Token "
+                    + "instead, but it can do more.")
+            ]
+        case .neon:
+            return [
+                SetupStep("Open your organization in the Neon Console", "Go to Organization settings › API keys.",
+                          link: open("Open Neon Console")),
+                SetupStep("Create an organization API key and copy it", "Copy the organization ID from "
+                    + "Organization settings › General too.")
+            ]
+        case .supabase:
+            return []
+        }
+    }
+}

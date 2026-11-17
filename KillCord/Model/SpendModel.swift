@@ -28,7 +28,8 @@ final class SpendModel {
     private let providers: [ProviderID: SpendProvider]
     @ObservationIgnored private var scheduler: RefreshScheduler
     @ObservationIgnored private var timer: Timer?
-    @ObservationIgnored private var inFlight: Set<ProviderID> = []
+    /// Providers being asked right now.
+    private(set) var inFlight: Set<ProviderID> = []
     @ObservationIgnored private var lastCapCheck: [ProviderID: Date] = [:]
     private let pathMonitor = NWPathMonitor()
 
@@ -158,6 +159,13 @@ final class SpendModel {
     func refreshNow() {
         guard !isDemo else { return }
         scheduler.refreshAll(now: Date())
+        tick()
+    }
+
+    /// Refresh pressed for one provider.
+    func refresh(_ provider: ProviderID) {
+        guard !isDemo else { return }
+        scheduler.refresh(provider, now: Date())
         tick()
     }
 
@@ -292,5 +300,24 @@ final class SpendModel {
 
     var capsNeedingAttention: Int {
         auditProviders.reduce(0) { $0 + audit.progress(for: $1, now: Date()).needsAttention }
+    }
+}
+
+// MARK: - What Settings shows
+
+extension SpendModel {
+    /// The light and line Settings shows for a provider.
+    func status(_ provider: ProviderID, isChecking: Bool = false, now: Date = Date()) -> ProviderStatus {
+        ProviderStatus.of(provider, isConnected: connected.contains(provider), state: states[provider],
+                          freshness: freshness(provider, now: now),
+                          isChecking: isChecking || inFlight.contains(provider), now: now)
+    }
+
+    /// What's saved for a provider, with secrets reduced to their last four characters.
+    func keyHints(_ provider: ProviderID) -> [(field: CredentialField, text: String)] {
+        if isDemo {
+            return provider.info.fields.filter { !$0.isOptional }.map { ($0, $0.isSecret ? "Sample key" : "sample") }
+        }
+        return storedCredentials(provider)?.hints ?? []
     }
 }

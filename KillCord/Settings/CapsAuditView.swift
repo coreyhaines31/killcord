@@ -1,45 +1,81 @@
 import AppKit
 import KillCordCore
+import PanelKit
 import SwiftUI
 
-/// The guided native-caps audit: for each provider, the spend controls it offers, whether each stops spend
-/// or only alerts, a link to the exact console page, and a checklist. Kill Cord never changes a cap itself.
+/// The guided native-caps audit: for each provider, a checklist of the spend controls it offers, whether
+/// each stops spend or only alerts, a link to the exact console page, and how to mark it. Kill Cord never
+/// changes a cap itself.
 struct CapsAuditView: View {
     let model: SpendModel
-    @State private var selection: ProviderID? = .anthropic
+    @State private var selection: ProviderID?
+
+    init(model: SpendModel, selection: ProviderID? = nil) {
+        self.model = model
+        _selection = State(initialValue: selection)
+    }
 
     var body: some View {
         HStack(spacing: 0) {
-            List(ProviderID.allCases, selection: $selection) { provider in
-                HStack {
-                    Text(provider.info.name)
-                    Spacer()
-                    progress(provider)
+            List(selection: $selection) {
+                Section("Providers") {
+                    ForEach(ProviderID.allCases) { provider in
+                        let light = Self.light(model.audit.progress(for: provider, now: Date()))
+                        CapsProviderRow(provider: provider, light: light, line: line(provider))
+                            .tag(Optional(provider))
+                    }
                 }
-                .tag(Optional(provider))
             }
             .listStyle(.sidebar)
-            .frame(width: 190)
+            .frame(width: 230)
             Divider()
             ProviderCapsView(provider: selection ?? .anthropic, model: model)
                 .id(selection)
                 .frame(maxWidth: .infinity)
         }
-        .frame(height: 560)
+        .frame(height: 600)
         .onAppear {
-            if let first = model.auditProviders.first(where: {
+            guard selection == nil else { return }
+            selection = model.auditProviders.first {
                 model.audit.progress(for: $0, now: Date()).needsAttention > 0
-            }) {
-                selection = first
-            }
+            } ?? .anthropic
         }
     }
 
-    private func progress(_ provider: ProviderID) -> some View {
+    static func light(_ progress: CapAuditState.Progress) -> SignalLight {
+        if progress.isComplete { return .go }
+        if progress.done == 0 { return .off }
+        return .caution
+    }
+
+    private func line(_ provider: ProviderID) -> String {
         let progress = model.audit.progress(for: provider, now: Date())
-        return Text("\(progress.done)/\(progress.total)")
-            .font(.caption.monospacedDigit())
-            .foregroundStyle(progress.isComplete ? Color.green : Color.secondary)
+        if progress.isComplete { return "All \(progress.total) done" }
+        let attention = progress.needsAttention
+        return "\(progress.done) of \(progress.total) done" + (attention > 0 && progress.done > 0
+            ? ", \(attention) to check" : "")
+    }
+}
+
+struct CapsProviderRow: View {
+    let provider: ProviderID
+    let light: SignalLight
+    let line: String
+
+    var body: some View {
+        HStack(spacing: 9) {
+            ProviderMark(provider: provider)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(provider.info.name).lineLimit(1)
+                HStack(spacing: 5) {
+                    StatusLED(light.panel, size: 6)
+                    Text(line).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                }
+            }
+        }
+        .padding(.vertical, 3)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(provider.info.name), \(line)")
     }
 }
 
@@ -54,112 +90,123 @@ struct ProviderCapsView: View {
     }
 
     var body: some View {
-        Form {
-            Section {
-                Text("Your provider's own caps are what actually stop a runaway bill. Kill Cord can't turn them on "
-                    + "for you: open each setting, set it, and mark it done. Caps can be removed later, so Kill Cord "
-                    + "asks you to look again after 30 days.")
-                    .font(.callout).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+        let progress = model.audit.progress(for: provider, now: Date())
+        VStack(spacing: 0) {
+            ProviderHeader(
+                provider: provider, title: "\(provider.info.name) caps",
+                status: CapsAuditView.light(progress).panel,
+                statusLabel: progress.isComplete ? "All done" : "\(progress.done) of \(progress.total) done",
+                chips: [],
+                message: "Your provider's own caps are what stop a runaway bill. Turn each one on in the "
+                    + "provider's console, then mark it here. Kill Cord asks you to look again after 30 days."
+            )
+            Form {
                 if canCheck {
-                    HStack {
-                        Text("Some of these can be checked with your key.").font(.callout)
-                        Spacer()
-                        if checking { ProgressView().controlSize(.small) }
-                        Button("Check Now") {
-                            checking = true
-                            Task {
-                                await model.checkCaps(provider)
-                                checking = false
+                    Section {
+                        LabeledContent {
+                            HStack(spacing: 8) {
+                                if checking { ProgressView().controlSize(.small) }
+                                Button("Check Now") {
+                                    checking = true
+                                    Task {
+                                        await model.checkCaps(provider)
+                                        checking = false
+                                    }
+                                }
+                                .disabled(checking || model.isDemo)
                             }
+                        } label: {
+                            Text("Check with your key")
+                            Text("\(provider.info.name)'s API can confirm some of these. Kill Cord also checks "
+                                + "every 6 hours.")
                         }
-                        .disabled(checking || model.isDemo)
                     }
                 }
-            } header: {
-                Text("\(provider.info.name) caps")
+                ForEach(CapsCatalog.controls(for: provider)) { control in
+                    CapRow(control: control, model: model)
+                }
             }
-            ForEach(CapsCatalog.controls(for: provider)) { control in
-                CapRow(control: control, model: model, isConnected: model.connected.contains(provider))
-            }
+            .formStyle(.grouped)
         }
-        .formStyle(.grouped)
     }
 }
 
 struct CapRow: View {
     let control: CapControl
     let model: SpendModel
-    let isConnected: Bool
+    @State private var showsSteps: Bool?
 
     var body: some View {
         let status = model.audit.status(of: control, now: Date())
+        let expanded = showsSteps ?? status.needsAttention
         Section {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 6) {
-                    badge(control.enforcement.label, color: enforcementColor)
-                    badge(control.verification == .api ? "Checked by API" : "Self-reported", color: .secondary)
+            Text(control.summary).font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
+            DisclosureGroup(isExpanded: Binding(get: { expanded }, set: { showsSteps = $0 })) {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(Array(control.steps.enumerated()), id: \.offset) { index, step in
+                        HStack(alignment: .firstTextBaseline, spacing: 6) {
+                            Text("\(index + 1).").monospacedDigit().foregroundStyle(.secondary)
+                            Text(step).fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    if let caveat = control.caveat {
+                        Label(caveat, systemImage: "info.circle")
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
-                Text(control.summary).font(.callout).fixedSize(horizontal: false, vertical: true)
-                ForEach(Array(control.steps.enumerated()), id: \.offset) { index, step in
-                    Text("\(index + 1). \(step)").font(.callout).foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                if let caveat = control.caveat {
-                    Text(caveat).font(.caption).foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                statusLine(status)
-                HStack {
-                    Button("Open This Setting") { NSWorkspace.shared.open(control.consoleURL) }
+                .font(.callout)
+                .padding(.top, 4)
+            } label: {
+                Text("How to turn it on").font(.callout)
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                StatusLED(status.light.panel)
+                Text(statusSentence(status)).font(.callout)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+            }
+            .accessibilityElement(children: .combine)
+            HStack(spacing: 8) {
+                if status.isDone {
+                    Button("Open Setting") { NSWorkspace.shared.open(control.consoleURL) }
+                } else {
+                    Button("Open Setting") { NSWorkspace.shared.open(control.consoleURL) }
                         .buttonStyle(.borderedProminent)
-                    Button("Docs") { NSWorkspace.shared.open(control.docURL) }
-                    Spacer()
-                    markButtons(status)
                 }
-                .controlSize(.small)
+                Button("Read Docs") { NSWorkspace.shared.open(control.docURL) }
+                Spacer()
+                markButtons(status)
             }
         } header: {
-            Text(control.name)
+            HStack(spacing: 8) {
+                StatusLED(status.light.panel)
+                Text(control.name)
+                Spacer()
+                Chip(text: control.enforcement.label, tint: enforcementTint)
+                Chip(text: control.verification == .api ? "Kill Cord can check" : "You mark it")
+            }
+            .accessibilityElement(children: .combine)
         }
     }
 
-    private var enforcementColor: Color {
+    private var enforcementTint: Color {
         switch control.enforcement {
         case .hardStop: .green
         case .partialStop: .teal
-        case .alertOnly: .blue
+        case .alertOnly: .secondary
         }
     }
 
-    private func badge(_ text: String, color: Color) -> some View {
-        Text(text)
-            .font(.system(size: 10, weight: .semibold))
-            .padding(.horizontal, 6).padding(.vertical, 2)
-            .background(color.opacity(0.15), in: Capsule())
-    }
-
-    @ViewBuilder
-    private func statusLine(_ status: CapAuditState.Status) -> some View {
+    private func statusSentence(_ status: CapAuditState.Status) -> String {
         switch status {
-        case .notDone:
-            Label("Not done yet", systemImage: "circle").foregroundStyle(.orange)
+        case .notDone: "Not done yet."
         case .markedDone(let at, let recheck):
-            if recheck {
-                Label("You marked this done \(SpendText.time(at)). Worth checking it's still on.",
-                      systemImage: "arrow.clockwise.circle").foregroundStyle(.orange)
-            } else {
-                Label("Done (you marked it \(SpendText.time(at)))", systemImage: "checkmark.circle")
-                    .foregroundStyle(.green)
-            }
-        case .notApplicable:
-            Label("Not needed", systemImage: "minus.circle").foregroundStyle(.secondary)
-        case .verifiedOn(let detail, _):
-            Label(detail, systemImage: "checkmark.seal").foregroundStyle(.green)
-        case .verifiedOff(let detail, _):
-            Label(detail, systemImage: "xmark.seal").foregroundStyle(.orange)
-        case .enforced(let detail, _):
-            Label(detail, systemImage: "stop.circle").foregroundStyle(.red)
+            recheck ? "You marked this done \(SpendText.time(at)). Check it's still on."
+                : "Done. You marked it \(SpendText.time(at))."
+        case .notApplicable: "Marked not needed."
+        case .verifiedOn(let detail, _), .verifiedOff(let detail, _), .enforced(let detail, _): detail
         }
     }
 
