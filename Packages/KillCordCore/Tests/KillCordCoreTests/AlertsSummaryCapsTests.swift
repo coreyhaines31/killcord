@@ -3,23 +3,24 @@ import Foundation
 import Testing
 
 func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = testNow,
-             estimate: Bool = false) -> ProviderState {
-    ProviderState(provider: provider, snapshot: SpendSnapshot(
+             estimate: Bool = false, number: Int = 1) -> ProviderState {
+    ProviderState(provider: provider, connectionID: .of(provider, number), snapshot: SpendSnapshot(
         provider: provider, today: today.map(usd), month: month.map(usd), isEstimate: estimate, fetchedAt: at
     ))
 }
 
 @Suite struct ThresholdPlannerTests {
     let planner = ThresholdPlanner()
+    let anthropic = UUID.of(.anthropic).uuidString
     let thresholds = SpendThresholds(
-        perProvider: [.anthropic: .init(daily: 50, monthly: 500)],
+        perConnection: [.of(.anthropic): .init(daily: 50, monthly: 500)],
         total: .init(daily: 60, monthly: 1000)
     )
 
     @Test func firesOncePerThresholdPerPeriod() {
         let (first, state) = planner.plan(states: [reading(.anthropic, today: "52.10", month: "300")],
                                           thresholds: thresholds, state: .init(), now: testNow)
-        #expect(first.map(\.id) == ["anthropic|day|2026-11-15|50"])
+        #expect(first.map(\.id) == ["\(anthropic)|day|2026-11-15|50"])
         #expect(first.first?.title == "Anthropic spent $52.10 today")
         #expect(first.first?.body.hasPrefix("That's past your $50.00 daily alert. Last checked") == true)
         let (again, state2) = planner.plan(states: [reading(.anthropic, today: "80", month: "320")],
@@ -37,9 +38,9 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let tomorrow = testNow.addingTimeInterval(86400)
         let (alerts, next) = planner.plan(states: [reading(.anthropic, today: "51", month: "103", at: tomorrow)],
                                           thresholds: thresholds, state: state, now: tomorrow)
-        #expect(alerts.map(\.id) == ["anthropic|day|2026-11-16|50"])
+        #expect(alerts.map(\.id) == ["\(anthropic)|day|2026-11-16|50"])
         // Yesterday's key is pruned.
-        #expect(!next.fired.contains("anthropic|day|2026-11-15|50"))
+        #expect(!next.fired.contains("\(anthropic)|day|2026-11-15|50"))
     }
 
     @Test func yesterdaysReadingDoesntCountForToday() {
@@ -53,16 +54,16 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let (_, state) = planner.plan(states: [reading(.anthropic, today: "52", month: "52")],
                                       thresholds: thresholds, state: .init(), now: testNow)
         var lower = thresholds
-        lower.perProvider[.anthropic] = .init(daily: 40)
+        lower.perConnection[.of(.anthropic)] = .init(daily: 40)
         let (alerts, _) = planner.plan(states: [reading(.anthropic, today: "52", month: "52")],
                                        thresholds: lower, state: state, now: testNow)
-        #expect(alerts.map(\.id) == ["anthropic|day|2026-11-15|40"])
+        #expect(alerts.map(\.id) == ["\(anthropic)|day|2026-11-15|40"])
     }
 
     @Test func monthlyAndTotals() {
         let states = [reading(.anthropic, today: "10", month: "600"), reading(.openai, today: "5", month: "450")]
         let (alerts, _) = planner.plan(states: states, thresholds: thresholds, state: .init(), now: testNow)
-        #expect(alerts.map(\.id) == ["anthropic|month|2026-11|500", "total|month|2026-11|1000"])
+        #expect(alerts.map(\.id) == ["\(anthropic)|month|2026-11|500", "total|month|2026-11|1000"])
         #expect(alerts.last?.title == "All providers spent $1,050.00 this month")
     }
 
@@ -71,10 +72,24 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let (alerts, _) = planner.plan(states: [estimate], thresholds: thresholds, state: .init(), now: testNow)
         #expect(alerts.first?.title == "Anthropic spent $55.00 (estimate) today")
 
-        let euros = ProviderState(provider: .anthropic, snapshot: SpendSnapshot(
+        let euros = ProviderState(provider: .anthropic, connectionID: .of(.anthropic), snapshot: SpendSnapshot(
             provider: .anthropic, today: Money(decimal("999"), Currency("EUR")), month: nil, fetchedAt: testNow))
         let (none, _) = planner.plan(states: [euros], thresholds: thresholds, state: .init(), now: testNow)
         #expect(none.isEmpty)
+    }
+
+    @Test func eachConnectionHasItsOwnAlertAndNameAndTheProviderTotalAddsThemUp() {
+        let second = UUID.of(.anthropic, 2)
+        let limits = SpendThresholds(perConnection: [.of(.anthropic): .init(daily: 50), second: .init(daily: 50)],
+                                     providerTotals: [.anthropic: .init(daily: 70)])
+        let states = [reading(.anthropic, today: "40", month: "40"),
+                      reading(.anthropic, today: "55", month: "55", number: 2)]
+        let (alerts, state) = planner.plan(states: states, names: [.of(.anthropic): "Anthropic", second: "Client work"],
+                                           thresholds: limits, state: .init(), now: testNow)
+        #expect(alerts.map(\.id) == ["\(second.uuidString)|day|2026-11-15|50", "anthropic|day|2026-11-15|70"])
+        #expect(alerts.map(\.title) == ["Client work spent $55.00 today", "All Anthropic accounts spent $95.00 today"])
+        let (again, _) = planner.plan(states: states, thresholds: limits, state: state, now: testNow)
+        #expect(again.isEmpty)
     }
 
     @Test func noThresholdsNoAlerts() {
@@ -92,26 +107,27 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
             reading(.anthropic, today: "12.35", month: "34.2052"),
             reading(.openai, today: "1.0601", month: "13.8332"),
             reading(.vercel, today: nil, month: "124.72"),
-            ProviderState(provider: .twilio, lastAttempt: testNow, lastError: .invalidKey),
-            ProviderState(provider: .neon, snapshot: SpendSnapshot(provider: .neon, today: nil, month: nil,
+            ProviderState(provider: .twilio, connectionID: .of(.twilio), lastAttempt: testNow, lastError: .invalidKey),
+            ProviderState(provider: .neon, connectionID: .of(.neon), snapshot: SpendSnapshot(provider: .neon, today: nil, month: nil,
                                                                    fetchedAt: testNow))
         ]
         let summary = SpendSummary(states: states, context: context)
         #expect(summary.today.amount(in: .usd) == usd("13.4101"))
         #expect(summary.month.amount(in: .usd) == usd("172.7584"))
-        #expect(summary.missingToday == [.vercel, .twilio])
-        #expect(summary.missingMonth == [.twilio])
-        #expect(summary.failing == [.twilio])
+        #expect(summary.missingToday == [.of(.vercel), .of(.twilio)])
+        #expect(summary.missingMonth == [.of(.twilio)])
+        #expect(summary.failing == [.of(.twilio)])
+        #expect(summary.names(summary.missingToday) == ["Vercel", "Twilio"])
         #expect(!summary.isComplete)
         // Neon reports usage, so it's never counted as missing money.
-        #expect(!summary.missingToday.contains(.neon))
+        #expect(!summary.missingToday.contains(.of(.neon)))
         #expect(summary.rows.map(\.provider) == [.anthropic, .openai, .vercel, .twilio, .neon])
     }
 
     @Test func staleNumbersAreFlagged() {
         let old = reading(.anthropic, today: "5", month: "50", at: testNow.addingTimeInterval(-2 * 3600))
         let summary = SpendSummary(states: [old], context: context)
-        #expect(summary.stale == [.anthropic])
+        #expect(summary.stale == [.of(.anthropic)])
         #expect(summary.today.amount(in: .usd) == usd("5"))
         #expect(SpendText.menuBar(summary, period: .today) == "$5.00*")
     }
@@ -120,7 +136,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let lastMonth = reading(.anthropic, today: "5", month: "50", at: ISO8601.date("2026-10-31T20:00:00Z")!)
         let summary = SpendSummary(states: [lastMonth], context: context)
         #expect(summary.month.isEmpty)
-        #expect(summary.missingMonth == [.anthropic])
+        #expect(summary.missingMonth == [.of(.anthropic)])
     }
 
     @Test func menuBarText() {
@@ -135,8 +151,25 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let summary = SpendSummary(states: states, context: FreshnessContext(
             now: testNow, launchedAt: testNow.addingTimeInterval(-3600), interval: 15 * 60))
         #expect(summary.rows.count == states.count)
-        #expect(summary.today.amount(in: .usd) == usd("25.47"))
+        #expect(summary.today.amount(in: .usd) == usd("31.57"))
         #expect(!summary.failing.isEmpty)
+        let names = DemoData.registry(now: testNow).names
+        #expect(Set(states.map(\.connectionID)) == Set(names.keys))
+    }
+
+    @Test func groupsConnectionsByProviderWithASubtotal() {
+        let states = [reading(.openai, today: "1", month: "2"),
+                      reading(.anthropic, today: "10", month: "100"),
+                      reading(.anthropic, today: nil, month: "50", number: 2)]
+        let summary = SpendSummary(states: states, names: [.of(.anthropic, 2): "Client work"], context: context)
+        #expect(summary.rows.map(\.name) == ["Anthropic", "Client work", "OpenAI"])
+        #expect(summary.groups.map(\.provider) == [.anthropic, .openai])
+        let anthropic = summary.groups[0]
+        #expect(anthropic.rows.count == 2)
+        #expect(anthropic.today.amount(in: .usd) == usd("10"))
+        #expect(anthropic.month.amount(in: .usd) == usd("150"))
+        #expect(summary.missingToday == [.of(.anthropic, 2)])
+        #expect(summary.today.amount(in: .usd) == usd("11"))
     }
 }
 

@@ -19,7 +19,7 @@ import Testing
         let vercel = reading(.vercel, today: nil, month: "24")
         #expect(status(.vercel, state: vercel, freshness: .live(checkedAt: testNow)).line
             == "Connected · $24.00 this month")
-        let neon = ProviderState(provider: .neon, snapshot: SpendSnapshot(
+        let neon = ProviderState(provider: .neon, connectionID: .of(.neon), snapshot: SpendSnapshot(
             provider: .neon, today: nil, month: nil,
             usage: [UsageMetric(id: "c", name: "Compute", value: decimal("41.7"), unit: "CU-hours")],
             fetchedAt: testNow))
@@ -35,10 +35,10 @@ import Testing
     }
 
     @Test func errorsAPersonMustFixAreStop() {
-        let rejected = ProviderState(provider: .twilio, lastAttempt: testNow, lastError: .invalidKey)
+        let rejected = ProviderState(provider: .twilio, connectionID: .of(.twilio), lastAttempt: testNow, lastError: .invalidKey)
         #expect(status(.twilio, state: rejected, freshness: .neverChecked)
             == ProviderStatus(light: .stop, label: "Key rejected", line: "Key rejected"))
-        let scope = ProviderState(provider: .openai, lastAttempt: testNow, lastError: .missingScope(hint: "x"))
+        let scope = ProviderState(provider: .openai, connectionID: .of(.openai), lastAttempt: testNow, lastError: .missingScope(hint: "x"))
         #expect(status(.openai, state: scope, freshness: .neverChecked).line == "No billing access")
     }
 
@@ -46,9 +46,9 @@ import Testing
         #expect(status(connected: false, state: nil, freshness: .neverChecked)
             == ProviderStatus(light: .off, label: "Not connected", line: "Not connected"))
         #expect(status(.supabase, connected: false, state: nil, freshness: .neverChecked).line == "Caps only")
-        #expect(status(state: ProviderState(provider: .anthropic), freshness: .neverChecked, checking: true).light
+        #expect(status(state: ProviderState(provider: .anthropic, connectionID: .of(.anthropic)), freshness: .neverChecked, checking: true).light
             == .caution)
-        #expect(status(state: ProviderState(provider: .anthropic), freshness: .neverChecked).line
+        #expect(status(state: ProviderState(provider: .anthropic, connectionID: .of(.anthropic)), freshness: .neverChecked).line
             == "Connected, not read yet")
     }
 
