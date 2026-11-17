@@ -9,7 +9,7 @@ opt_in_rules:
   - first_where
   - sorted_imports
 identifier_name:
-  excluded: [x, y, id, i, n, at, on, v, f]
+  excluded: [x, y, id, i, n, at, on, v, f, go]
 nesting:
   type_level: 3
 line_length:
