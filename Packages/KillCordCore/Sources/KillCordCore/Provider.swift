@@ -123,8 +123,7 @@ extension ProviderInfo {
         ProviderInfo(
             id: .anthropic, name: "Anthropic", capability: .dollars,
             fields: [CredentialField(id: "apiKey", label: "Admin API key", placeholder: "sk-ant-admin01-…",
-                                     isSecret: true,
-                                     help: "Create one in the Claude Console under Settings › Admin keys.")],
+                                     isSecret: true)],
             keyKind: "Admin API key",
             keyURL: url("https://platform.claude.com/settings/admin-keys"),
             keyPowerWarning: "Anthropic has no read-only admin key. This key can also manage members, workspaces, "
@@ -142,8 +141,7 @@ extension ProviderInfo {
                 CredentialField(id: "serviceAccountJSON", label: "Service account key (JSON)",
                                 placeholder: "{ \"type\": \"service_account\", … }", isSecret: true,
                                 isMultiline: true,
-                                help: "Paste the whole JSON key file. Give the service account BigQuery Data "
-                                    + "Viewer on the export dataset and BigQuery Job User on the project."),
+                                help: "Paste the whole JSON key file, braces included."),
                 CredentialField(id: "exportTable", label: "Billing export table",
                                 placeholder: "my-project.billing.gcp_billing_export_v1_XXXXXX_XXXXXX_XXXXXX",
                                 isSecret: false,
@@ -165,9 +163,7 @@ extension ProviderInfo {
         ),
         ProviderInfo(
             id: .openai, name: "OpenAI", capability: .dollars,
-            fields: [CredentialField(id: "apiKey", label: "Admin API key", placeholder: "sk-admin-…", isSecret: true,
-                                     help: "Create one under Settings › Organization › Admin keys. Choose read-only "
-                                        + "permissions if offered.")],
+            fields: [CredentialField(id: "apiKey", label: "Admin API key", placeholder: "sk-admin-…", isSecret: true)],
             keyKind: "Admin API key",
             keyURL: url("https://platform.openai.com/settings/organization/admin-keys"),
             keyPowerWarning: "OpenAI admin keys work across your whole organization. If the read-only option is "
@@ -181,8 +177,7 @@ extension ProviderInfo {
         ProviderInfo(
             id: .vercel, name: "Vercel", capability: .dollars,
             fields: [
-                CredentialField(id: "token", label: "Access token", placeholder: "Vercel token", isSecret: true,
-                                help: "Create one under Account Settings › Tokens, scoped to the team."),
+                CredentialField(id: "token", label: "Access token", placeholder: "Vercel token", isSecret: true),
                 CredentialField(id: "teamID", label: "Team ID", placeholder: "team_…", isSecret: false,
                                 isOptional: true,
                                 help: "Optional. Find it under Team Settings › General.")
@@ -199,8 +194,7 @@ extension ProviderInfo {
         ProviderInfo(
             id: .cloudflare, name: "Cloudflare", capability: .dollars,
             fields: [
-                CredentialField(id: "token", label: "API token", placeholder: "Cloudflare API token", isSecret: true,
-                                help: "Create a custom token with only the Billing Read permission."),
+                CredentialField(id: "token", label: "API token", placeholder: "Cloudflare API token", isSecret: true),
                 CredentialField(id: "accountID", label: "Account ID", placeholder: "32-character account ID",
                                 isSecret: false, help: "On the account's home page in the dashboard.")
             ],
@@ -219,8 +213,7 @@ extension ProviderInfo {
                                 help: "On the Twilio Console home page."),
                 CredentialField(id: "apiKeySID", label: "API key SID", placeholder: "SK…", isSecret: false,
                                 isOptional: true,
-                                help: "Recommended: a Standard API key instead of your Auth Token (Account › "
-                                    + "API keys and tokens). Leave empty to use the Auth Token."),
+                                help: "Leave empty to use your Auth Token as the secret below."),
                 CredentialField(id: "secret", label: "API key secret or Auth Token", placeholder: "Secret",
                                 isSecret: true)
             ],
@@ -236,10 +229,8 @@ extension ProviderInfo {
         ProviderInfo(
             id: .neon, name: "Neon", capability: .usageUnitsOnly,
             fields: [
-                CredentialField(id: "apiKey", label: "API key", placeholder: "Neon API key", isSecret: true,
-                                help: "An organization API key, from Organization settings › API keys."),
-                CredentialField(id: "orgID", label: "Organization ID", placeholder: "org-…", isSecret: false,
-                                help: "From Organization settings › General.")
+                CredentialField(id: "apiKey", label: "API key", placeholder: "Neon API key", isSecret: true),
+                CredentialField(id: "orgID", label: "Organization ID", placeholder: "org-…", isSecret: false)
             ],
             keyKind: "Organization API key",
             keyURL: url("https://console.neon.tech/"),
