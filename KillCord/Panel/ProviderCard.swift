@@ -18,8 +18,11 @@ struct ProviderCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(provider.info.name).font(PanelFont.condensed(14, .semibold))
+            HStack(alignment: .center) {
+                HStack(spacing: 6) {
+                    ProviderMark(provider: provider, size: 16)
+                    Text(provider.info.name).font(PanelFont.condensed(14, .semibold))
+                }
                 Spacer()
                 StatusLight(freshness.isLive ? .go : .caution, freshness.isLive ? "Checked" : "Not live")
             }

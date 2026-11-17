@@ -13,7 +13,22 @@ extension SignalLight {
     }
 }
 
-/// A provider's monogram on a small brushed key, the same material as PanelKit's tiles.
+extension ProviderID {
+    /// The asset catalog name of the provider's official mono mark, when its guidelines allow showing it.
+    /// The rest keep a letter monogram; `docs/third-party-marks.md` says why for each.
+    var markAssetName: String? {
+        switch self {
+        case .vercel: "mark-vercel"
+        case .neon: "mark-neon"
+        case .anthropic, .google, .openai, .cloudflare, .twilio, .supabase: nil
+        }
+    }
+}
+
+/// The bundle holding the marks: the app, or the test bundle that compiles these views.
+private final class MarkBundle {}
+
+/// A provider's mark (or monogram) on a small brushed key, the same material as PanelKit's tiles.
 struct ProviderMark: View {
     let provider: ProviderID
     var size: CGFloat = 22
@@ -21,8 +36,7 @@ struct ProviderMark: View {
     @Environment(\.panelTheme) private var theme
 
     var body: some View {
-        Text(String(provider.info.name.prefix(1)))
-            .font(PanelFont.condensed(size * 0.58, .semibold))
+        face
             .foregroundStyle(theme.ink)
             .frame(width: size, height: size)
             .background(
@@ -31,6 +45,19 @@ struct ProviderMark: View {
             )
             .overlay(RoundedRectangle(cornerRadius: size * 0.24).strokeBorder(theme.button2Edge, lineWidth: 1))
             .accessibilityHidden(true)
+    }
+
+    @ViewBuilder private var face: some View {
+        if let name = provider.markAssetName {
+            Image(name, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.5, height: size * 0.5)
+        } else {
+            Text(String(provider.info.name.prefix(1)))
+                .font(PanelFont.condensed(size * 0.58, .semibold))
+        }
     }
 }
 
