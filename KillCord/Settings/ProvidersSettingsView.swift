@@ -9,7 +9,7 @@ import SwiftUI
 struct ProvidersSettingsView: View {
     let model: SpendModel
     var openTab: @MainActor (SettingsWindow.Tab) -> Void = { _ in }
-    @State private var selection: ProviderID?
+    @State private var selection: ProviderID
     private let editorStart: ProviderEditor.Start
 
     init(model: SpendModel, selection: ProviderID = .anthropic, editorStart: ProviderEditor.Start = .init(),
@@ -25,20 +25,13 @@ struct ProvidersSettingsView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            List(selection: $selection) {
-                if !connected.isEmpty {
-                    Section("Connected") {
-                        ForEach(connected) { ProviderRow(provider: $0, status: model.status($0)).tag(Optional($0)) }
-                    }
-                }
-                Section(connected.isEmpty ? "Providers" : "Not connected") {
-                    ForEach(available) { ProviderRow(provider: $0, status: model.status($0)).tag(Optional($0)) }
-                }
-            }
-            .listStyle(.sidebar)
-            .frame(width: 230)
+            SidebarPicker(groups: [
+                .init(title: "Connected", items: connected),
+                .init(title: connected.isEmpty ? "Providers" : "Not connected", items: available)
+            ], selection: $selection) { ProviderRow(provider: $0, status: model.status($0)) }
+                .frame(width: 230)
             Divider()
-            ProviderEditor(provider: selection ?? .anthropic, model: model, start: editorStart, openTab: openTab)
+            ProviderEditor(provider: selection, model: model, start: editorStart, openTab: openTab)
                 .id(selection)
                 .frame(maxWidth: .infinity)
         }
