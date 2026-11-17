@@ -71,7 +71,8 @@ struct GeneralSettingsView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Label("Kill Cord goes online only to read your providers' billing APIs and to check for updates. "
                         + "No telemetry, no account.", systemImage: "lock.fill")
-                    Text("Provider names and logos are trademarks of their owners, used to identify the services.")
+                    Text("Logos are trademarks of their owners and are used only to identify the services "
+                        + "Kill Cord reads.")
                 }
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
