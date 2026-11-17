@@ -67,7 +67,7 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
         switch self {
         case .notConfigured: "Not connected"
         case .invalidKey: "Key rejected"
-        case .missingScope: "Missing permission"
+        case .missingScope: "No billing access"
         case .rateLimited: "Rate limited"
         case .noUsageAPI: "No spend API"
         case .requiresSetup: "Needs setup"
@@ -87,8 +87,8 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
         case .notConfigured:
             return "\(name) isn't connected. Add a key in Settings › Providers."
         case .invalidKey:
-            return "\(name) rejected the key. It may be revoked, expired, or the wrong kind (\(name) needs "
-                + "\(provider.info.keyKind.lowercased()))."
+            return "\(name) rejected the key. It may be revoked, expired, or the wrong kind: Kill Cord needs "
+                + "\(provider.info.keyKindInSentence)."
         case .missingScope(let hint):
             return "The key works, but \(name) won't let it read billing. \(hint)"
         case .rateLimited(let retryAfter):
