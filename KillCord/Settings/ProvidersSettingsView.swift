@@ -1,228 +1,373 @@
 import AppKit
 import KillCordCore
+import PanelKit
 import SwiftUI
 
-/// Connect, replace, or remove each provider's key. Keys go straight to the Keychain after the provider
-/// accepts them, and are never shown again.
+/// Connect, check, replace or remove each provider's key. The sidebar is a status board; the detail walks
+/// through setup, then shows what Kill Cord read. Keys go to the Keychain only after the provider accepts
+/// them, and are never shown again.
 struct ProvidersSettingsView: View {
     let model: SpendModel
-    @State private var selection: ProviderID? = .anthropic
+    var openTab: @MainActor (SettingsWindow.Tab) -> Void = { _ in }
+    @State private var selection: ProviderID?
+    private let editorStart: ProviderEditor.Start
+
+    init(model: SpendModel, selection: ProviderID = .anthropic, editorStart: ProviderEditor.Start = .init(),
+         openTab: @escaping @MainActor (SettingsWindow.Tab) -> Void = { _ in }) {
+        self.model = model
+        self.openTab = openTab
+        self.editorStart = editorStart
+        _selection = State(initialValue: selection)
+    }
+
+    private var connected: [ProviderID] { ProviderID.allCases.filter { model.connected.contains($0) } }
+    private var available: [ProviderID] { ProviderID.allCases.filter { !model.connected.contains($0) } }
 
     var body: some View {
         HStack(spacing: 0) {
-            List(ProviderID.allCases, selection: $selection) { provider in
-                HStack {
-                    Text(provider.info.name).lineLimit(2).fixedSize(horizontal: false, vertical: true)
-                    Spacer()
-                    statusDot(provider)
+            List(selection: $selection) {
+                if !connected.isEmpty {
+                    Section("Connected") {
+                        ForEach(connected) { ProviderRow(provider: $0, status: model.status($0)).tag(Optional($0)) }
+                    }
                 }
-                .tag(Optional(provider))
+                Section(connected.isEmpty ? "Providers" : "Not connected") {
+                    ForEach(available) { ProviderRow(provider: $0, status: model.status($0)).tag(Optional($0)) }
+                }
             }
             .listStyle(.sidebar)
-            .frame(width: 190)
+            .frame(width: 230)
             Divider()
-            ProviderEditor(provider: selection ?? .anthropic, model: model)
+            ProviderEditor(provider: selection ?? .anthropic, model: model, start: editorStart, openTab: openTab)
                 .id(selection)
                 .frame(maxWidth: .infinity)
         }
-        .frame(height: 560)
-    }
-
-    private func statusDot(_ provider: ProviderID) -> some View {
-        let color: Color = if !provider.info.connects {
-            .clear
-        } else if !model.connected.contains(provider) {
-            .secondary.opacity(0.3)
-        } else if model.states[provider]?.lastError?.isTransient == false {
-            .orange
-        } else {
-            .green
-        }
-        return Circle().fill(color).frame(width: 7, height: 7)
+        .frame(height: 600)
     }
 }
 
+/// One sidebar row: monogram, name, and a status line with its light.
+struct ProviderRow: View {
+    let provider: ProviderID
+    let status: ProviderStatus
+
+    var body: some View {
+        HStack(spacing: 9) {
+            ProviderMark(provider: provider)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(provider.info.name).lineLimit(1).truncationMode(.tail)
+                HStack(spacing: 5) {
+                    StatusLED(status.light.panel, size: 6)
+                    Text(status.line).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                }
+            }
+        }
+        .padding(.vertical, 3)
+        .help("\(provider.info.name): \(status.line)")
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(provider.info.name), \(status.line)")
+    }
+}
+
+/// The detail for one provider, in whichever state it's in: setup, checking, failed, connected, or caps only.
 struct ProviderEditor: View {
+    /// Where the editor starts. Settings always starts empty; the render harness starts mid-flow.
+    struct Start {
+        var values: [String: String] = [:]
+        var phase: Phase = .idle
+        var showsWhy = false
+    }
+
+    enum Phase: Equatable {
+        case idle
+        case checking
+        case failed(title: String, message: String?, fix: String?)
+        /// The provider accepted the key just now.
+        case connected
+    }
+
     let provider: ProviderID
     let model: SpendModel
-    @State private var values: [String: String] = [:]
-    @State private var isChecking = false
-    @State private var error: String?
-    @State private var saved = false
+    let openTab: @MainActor (SettingsWindow.Tab) -> Void
+    @State private var values: [String: String]
+    @State private var phase: Phase
+    @State private var showsWhy: Bool
+    @State private var replacing = false
     @State private var confirmingRemoval = false
+    @State private var removalError: String?
+    @State private var hints: [(field: CredentialField, text: String)] = []
+    @Environment(\.panelTheme) private var theme
+
+    init(provider: ProviderID, model: SpendModel, start: Start = .init(),
+         openTab: @escaping @MainActor (SettingsWindow.Tab) -> Void) {
+        self.provider = provider
+        self.model = model
+        self.openTab = openTab
+        _values = State(initialValue: start.values)
+        _phase = State(initialValue: start.phase)
+        _showsWhy = State(initialValue: start.showsWhy)
+    }
 
     private var info: ProviderInfo { provider.info }
     private var isConnected: Bool { model.connected.contains(provider) }
+    private var status: ProviderStatus { model.status(provider, isChecking: phase == .checking) }
 
     var body: some View {
-        Form {
-            Section {
-                Text(info.capability.summary).font(.callout)
+        VStack(spacing: 0) {
+            ProviderHeader(provider: provider, title: info.name, status: status.light.panel,
+                           statusLabel: status.label, chips: [info.capabilityLabel], message: info.overview)
+            Form {
                 if !info.connects {
-                    Text(info.lag.note).font(.callout).foregroundStyle(.secondary)
-                    Link("Open Supabase Billing", destination: info.consoleURL)
-                }
-            } header: {
-                Text(info.name)
-            }
-            if info.connects {
-                if provider == .google { googleSetup }
-                fieldsSection
-                if let warning = info.keyPowerWarning {
+                    CapsSummarySection(provider: provider, model: model, openTab: openTab)
                     Section {
-                        Label(warning, systemImage: "exclamationmark.triangle")
-                            .font(.callout)
-                            .fixedSize(horizontal: false, vertical: true)
-                    } header: {
-                        Text("What this key can do")
+                        LabeledContent {
+                            Button {
+                                NSWorkspace.shared.open(info.consoleURL)
+                            } label: {
+                                Label("Open \(info.name) Billing", systemImage: "arrow.up.forward.app")
+                            }
+                        } label: {
+                            Text("Your spend")
+                            Text("See the Upcoming Invoice on \(info.name)'s Billing page.")
+                        }
                     }
+                } else if isConnected && !replacing {
+                    connectedSections
+                } else {
+                    setupSection
                 }
             }
+            .formStyle(.grouped)
         }
-        .formStyle(.grouped)
         .onAppear(perform: load)
     }
 
-    private var fieldsSection: some View {
-        Section {
-            ForEach(info.fields) { field in
-                fieldRow(field)
-            }
-            HStack {
-                if isConnected {
-                    Button("Remove Key…", role: .destructive) { confirmingRemoval = true }
+    // MARK: - Setup
+
+    private var setupSection: some View {
+        let steps = info.setupSteps
+        return Section {
+            if !replacing {
+                ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
+                    SetupStepRow(number: index + 1, title: step.title, detail: step.detail) {
+                        if let link = step.link {
+                            Button {
+                                NSWorkspace.shared.open(link.url)
+                            } label: {
+                                Label(link.title, systemImage: "arrow.up.forward.app")
+                            }
+                            .help(link.url.absoluteString)
+                        }
+                        if index == steps.count - 1 { keyPowerNote }
+                    }
                 }
-                Spacer()
-                if isChecking { ProgressView().controlSize(.small) }
-                Button(isConnected ? "Replace" : "Connect", action: connect)
-                    .keyboardShortcut(.defaultAction)
-                    .disabled(isChecking)
             }
-            if let error {
-                Label(error, systemImage: "exclamationmark.circle")
-                    .font(.callout)
-                    .fixedSize(horizontal: false, vertical: true)
-            } else if saved {
-                Label("Connected. Saved in your Keychain.", systemImage: "checkmark.circle")
-                    .font(.callout)
+            SetupStepRow(number: replacing ? 1 : steps.count + 1, title: pasteTitle, detail: nil) {
+                CredentialFields(fields: info.fields, values: $values, keepsSavedSecrets: replacing,
+                                 isDisabled: phase == .checking)
+                connectRow
+                outcome
             }
         } header: {
-            Text(isConnected ? "Connected" : "Connect")
+            Text(replacing ? "Replace the key" : "Connect in \(steps.count + 1) steps")
         } footer: {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Your key stays on this Mac, in the macOS Keychain. Kill Cord sends it only to \(info.name), "
-                    + "to read billing, and never writes it to a file or log.")
-                if let url = info.keyURL {
-                    Link("Create a \(info.keyKind.lowercased())", destination: url)
-                }
-                Text("Never paste a key into a chat or an AI agent to set this up. If you have, revoke it and make "
-                    + "a new one.")
-            }
-            .font(.caption).foregroundStyle(.secondary)
+            PrivacyLine(providerName: info.name)
         }
-        .confirmationDialog("Remove the \(info.name) key?", isPresented: $confirmingRemoval) {
-            Button("Remove", role: .destructive) {
-                do {
-                    try model.disconnect(provider)
-                    values = [:]
-                    saved = false
-                    error = nil
-                } catch {
-                    self.error = "The Keychain wouldn't remove the key. Try again, or delete it in Keychain Access."
+    }
+
+    private var pasteTitle: String {
+        if replacing { return "Paste the new key. Leave a secret empty to keep the saved one." }
+        if info.fields.count == 1, let field = info.fields.first {
+            return "Paste the \(field.label.prefix(1).lowercased() + field.label.dropFirst()) here"
+        }
+        return "Fill in these fields"
+    }
+
+    @ViewBuilder
+    private var keyPowerNote: some View {
+        if let summary = info.keyPowerSummary {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(theme.caution)
+                        .accessibilityLabel("Warning")
+                    Text(summary).font(.callout)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button(showsWhy ? "Hide" : "Why?") { withAnimation(.snappy) { showsWhy.toggle() } }
+                        .buttonStyle(.link)
+                        .font(.callout)
+                        .accessibilityHint("Shows what this key can do")
+                }
+                if showsWhy, let warning = info.keyPowerWarning {
+                    Text(warning)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.leading, 20)
                 }
             }
-        } message: {
-            Text("Kill Cord deletes it from the Keychain and stops checking \(info.name). The key still works "
-                + "with \(info.name) until you revoke it there.")
+            .padding(.top, 2)
+        }
+    }
+
+    private var connectRow: some View {
+        HStack(spacing: 8) {
+            if phase == .checking {
+                ProgressView().controlSize(.small)
+                Text("Checking with \(info.name)…").font(.callout).foregroundStyle(.secondary)
+            }
+            Spacer()
+            if replacing {
+                Button("Cancel") {
+                    replacing = false
+                    phase = .idle
+                    load()
+                }
+                .keyboardShortcut(.cancelAction)
+            }
+            Button(replacing ? "Save New Key" : "Connect \(info.name)", action: connect)
+                .keyboardShortcut(.defaultAction)
+                .disabled(phase == .checking)
         }
     }
 
     @ViewBuilder
-    private func fieldRow(_ field: CredentialField) -> some View {
-        let binding = Binding(get: { values[field.id] ?? "" }, set: { values[field.id] = $0 })
-        let placeholder = field.isSecret && isConnected ? "Saved in Keychain. Paste to replace." : field.placeholder
-        VStack(alignment: .leading, spacing: 4) {
-            Text(field.label + (field.isOptional ? " (optional)" : "")).font(.callout)
-            if field.isMultiline {
-                // A JSON key file. Not echoed back once saved.
-                TextEditor(text: binding)
-                    .font(.system(size: 11, design: .monospaced))
-                    .frame(height: 70)
-                    .overlay(alignment: .topLeading) {
-                        if binding.wrappedValue.isEmpty {
-                            Text(placeholder).font(.system(size: 11)).foregroundStyle(.tertiary).padding(4)
-                                .allowsHitTesting(false)
-                        }
-                    }
-            } else if field.isSecret {
-                SecureField("", text: binding, prompt: Text(placeholder))
-                    .textFieldStyle(.roundedBorder)
-                    .labelsHidden()
-                    .frame(maxWidth: .infinity)
-            } else {
-                TextField("", text: binding, prompt: Text(placeholder))
-                    .textFieldStyle(.roundedBorder)
-                    .labelsHidden()
-                    .frame(maxWidth: .infinity)
-            }
-            if !field.help.isEmpty {
-                Text(field.help).font(.caption).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+    private var outcome: some View {
+        if case .failed(let title, let message, let fix) = phase {
+            ResultBox(light: .stop, title: title, message: message, fix: fix)
+        } else if phase == .idle, !replacing {
+            Text("Kill Cord checks the key with \(info.name) before saving it. Today's spend shows up here next.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
-    private var googleSetup: some View {
-        Section {
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Google has no API for current spend, and the Gemini API has none either. Kill Cord reads your "
-                    + "Cloud Billing export in BigQuery instead:")
-                Text("1. Turn on the standard usage cost export to a BigQuery dataset (Billing › Billing export).")
-                Text("2. Create a service account with BigQuery Data Viewer on that dataset and BigQuery Job User "
-                    + "on its project. Add Billing Account Viewer to let Kill Cord check budgets and spend caps.")
-                Text("3. Create a JSON key for it and paste it below, with the export table's full name.")
-                Text("The export runs hours behind, typically up to a day. Data appears a few hours after you "
-                    + "turn it on.").foregroundStyle(.secondary)
-                Link("Open Billing export", destination: URL(string: "https://console.cloud.google.com/billing/export")!)
-            }
-            .font(.callout)
-            .fixedSize(horizontal: false, vertical: true)
-        } header: {
-            Text("One-time setup")
-        }
-    }
+    // MARK: - Actions
 
     private func load() {
-        // Non-secret fields are shown for editing; secrets never are.
+        hints = model.keyHints(provider)
         guard let stored = model.storedCredentials(provider) else { return }
-        for field in info.fields where !field.isSecret {
+        // Non-secret fields come back for editing; secrets never do.
+        for field in info.fields where !field.isSecret && values[field.id] == nil {
             values[field.id] = stored[field.id] ?? ""
         }
     }
 
     private func connect() {
-        error = nil
-        saved = false
         let entered = values
         let missing = ProviderCredentials(provider: provider, values: entered).missingFields
-            .filter { !($0.isSecret && isConnected) }
+            .filter { !($0.isSecret && replacing) }
         if let first = missing.first {
-            error = "Fill in \(first.label)."
+            phase = .failed(title: "Fill in \(first.label)", message: nil, fix: nil)
             return
         }
-        isChecking = true
+        phase = .checking
         Task {
             do {
                 try await model.connect(provider, values: entered)
-                saved = true
                 // Clear secrets from memory and the screen once they're in the Keychain.
                 for field in info.fields where field.isSecret { values[field.id] = "" }
-            } catch let spendError as SpendError {
-                error = spendError.message(for: provider)
+                replacing = false
+                hints = model.keyHints(provider)
+                phase = .connected
+            } catch let error as SpendError {
+                phase = .failed(title: error.shortLabel, message: error.message(for: provider),
+                                fix: error.fix(for: provider))
             } catch {
-                self.error = error.localizedDescription
+                phase = .failed(title: "Couldn't save the key", message: error.localizedDescription, fix: nil)
             }
-            isChecking = false
+        }
+    }
+
+    private func remove() {
+        do {
+            try model.disconnect(provider)
+            values = [:]
+            hints = []
+            phase = .idle
+            removalError = nil
+        } catch {
+            removalError = "Your Keychain wouldn't delete it. Try again, or delete it in Keychain Access."
+        }
+    }
+}
+
+extension ProviderEditor {
+    // MARK: - Connected
+
+    @ViewBuilder
+    private var connectedSections: some View {
+        Section("Spend") {
+            if phase == .connected {
+                ResultBox(light: .go, title: "Connected", message: "\(info.name) accepted the key. It's saved in "
+                    + "your Keychain.", fix: nil)
+            }
+            let state = model.states[provider]
+            // A key that was never accepted has nothing to read out; the problem says it all.
+            if state?.snapshot != nil || state?.lastError?.isTransient != false {
+                SpendReadout(provider: provider, model: model)
+            }
+            problem
+            HStack(spacing: 8) {
+                Button {
+                    model.refresh(provider)
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
+                .disabled(model.inFlight.contains(provider) || model.isDemo)
+                .help(model.isDemo ? "Sample data doesn't refresh" : "Check \(info.name) now")
+                Spacer()
+                Button {
+                    NSWorkspace.shared.open(info.consoleURL)
+                } label: {
+                    Label("Compare in \(info.consoleName)", systemImage: "arrow.up.forward.app")
+                }
+            }
+        }
+        Section {
+            ForEach(hints, id: \.field.id) { hint in
+                LabeledContent(hint.field.label) {
+                    Text(hint.text).textSelection(.enabled).lineLimit(1).truncationMode(.middle)
+                }
+            }
+            HStack(spacing: 8) {
+                Spacer()
+                Button("Replace Key…") {
+                    replacing = true
+                    phase = .idle
+                }
+                Button("Remove Key…", role: .destructive) { confirmingRemoval = true }
+            }
+            if let removalError {
+                ResultBox(light: .stop, title: "Couldn't remove the key", message: removalError, fix: nil)
+            }
+        } header: {
+            Text("Key")
+        } footer: {
+            PrivacyLine(providerName: info.name)
+        }
+        .confirmationDialog("Remove the \(info.name) key?", isPresented: $confirmingRemoval) {
+            Button("Remove Key", role: .destructive, action: remove)
+        } message: {
+            Text("Kill Cord deletes it from your Keychain and stops checking \(info.name). The key keeps working "
+                + "until you revoke it in the \(info.consoleName).")
+        }
+        CapsSummarySection(provider: provider, model: model, openTab: openTab)
+    }
+
+    @ViewBuilder
+    private var problem: some View {
+        if let error = model.states[provider]?.lastError {
+            ResultBox(light: error.isTransient ? .caution : .stop, title: error.shortLabel,
+                      message: error.message(for: provider), fix: error.isTransient ? nil : error.fix(for: provider)) {
+                if !error.isTransient {
+                    Button("Replace Key…") {
+                        replacing = true
+                        phase = .idle
+                    }
+                    .controlSize(.small)
+                }
+            }
         }
     }
 }
