@@ -14,13 +14,16 @@ extension SignalLight {
 }
 
 extension ProviderID {
-    /// The asset catalog name of the provider's official mono mark, when its guidelines allow showing it.
-    /// The rest keep a letter monogram; `docs/third-party-marks.md` says why for each.
-    var markAssetName: String? {
+    /// The asset catalog name of the provider's official mark. `docs/third-party-marks.md` gives each source.
+    var markAssetName: String { "mark-\(rawValue)" }
+
+    /// How much larger than the key's mark area to draw the file. OpenAI's file carries its own clear space;
+    /// Cloudflare's cloud is so wide that fitting its width alone leaves it too short to read.
+    var markScale: CGFloat {
         switch self {
-        case .vercel: "mark-vercel"
-        case .neon: "mark-neon"
-        case .anthropic, .google, .openai, .cloudflare, .twilio, .supabase: nil
+        case .openai: 1.45
+        case .cloudflare: 1.3
+        case .anthropic, .google, .vercel, .twilio, .neon, .supabase: 1
         }
     }
 }
@@ -28,7 +31,7 @@ extension ProviderID {
 /// The bundle holding the marks: the app, or the test bundle that compiles these views.
 private final class MarkBundle {}
 
-/// A provider's mark (or monogram) on a small brushed key, the same material as PanelKit's tiles.
+/// A provider's official mark on a small brushed key, the same material as PanelKit's tiles.
 struct ProviderMark: View {
     let provider: ProviderID
     var size: CGFloat = 22
@@ -47,17 +50,13 @@ struct ProviderMark: View {
             .accessibilityHidden(true)
     }
 
-    @ViewBuilder private var face: some View {
-        if let name = provider.markAssetName {
-            Image(name, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
-                .renderingMode(.template)
-                .resizable()
-                .scaledToFit()
-                .frame(width: size * 0.5, height: size * 0.5)
-        } else {
-            Text(String(provider.info.name.prefix(1)))
-                .font(PanelFont.condensed(size * 0.58, .semibold))
-        }
+    private var face: some View {
+        Image(provider.markAssetName, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
+            .renderingMode(.template)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size * 0.5 * provider.markScale, height: size * 0.5 * provider.markScale)
+            .frame(width: size * 0.5, height: size * 0.5)
     }
 }
 

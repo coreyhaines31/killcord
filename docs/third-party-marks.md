@@ -10,7 +10,7 @@ Rules for a mark:
 - Commit the vendor's file byte for byte where it is just the mark. Where the official file is a lockup (mark plus wordmark), the mark's paths are copied unchanged into a file of their own and the canvas is cropped to them. Both cases are noted below.
 - Every file lives in `KillCord/Assets.xcassets/ProviderMarks/mark-<provider>.imageset` as a template image, so it draws in one colour, the panel's label ink (#161616 light, #E6E7E8 dark). A colour mark becomes the same shape in one colour.
 - The provider's name always sits next to the mark, and the mark never suggests a partnership.
-- The mark fills about half of its key, which leaves clear space. OpenAI's file includes its own clear space, so it draws 1.45 times larger, the same as in Fuel Gauge.
+- The mark fills about half of its key, which leaves clear space. OpenAI's file includes its own clear space, so it draws 1.45 times larger, the same as in Fuel Gauge. Cloudflare's cloud is very wide, so it draws 1.3 times larger to stay legible.
 
 Checked 2026-11-17.
 
