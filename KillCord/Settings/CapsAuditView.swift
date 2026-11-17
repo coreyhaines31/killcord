@@ -8,38 +8,29 @@ import SwiftUI
 /// changes a cap itself.
 struct CapsAuditView: View {
     let model: SpendModel
-    @State private var selection: ProviderID?
+    @State private var selection: ProviderID
 
     init(model: SpendModel, selection: ProviderID? = nil) {
         self.model = model
-        _selection = State(initialValue: selection)
+        // Open on the first provider with something to look at.
+        let first = model.auditProviders.first { model.audit.progress(for: $0, now: Date()).needsAttention > 0 }
+        _selection = State(initialValue: selection ?? first ?? .anthropic)
     }
 
     var body: some View {
         HStack(spacing: 0) {
-            List(selection: $selection) {
-                Section("Providers") {
-                    ForEach(ProviderID.allCases) { provider in
-                        let light = Self.light(model.audit.progress(for: provider, now: Date()))
-                        CapsProviderRow(provider: provider, light: light, line: line(provider))
-                            .tag(Optional(provider))
-                    }
-                }
+            SidebarPicker(groups: [.init(title: "Providers", items: ProviderID.allCases)],
+                          selection: $selection) { provider in
+                CapsProviderRow(provider: provider, light: Self.light(model.audit.progress(for: provider, now: Date())),
+                                line: line(provider))
             }
-            .listStyle(.sidebar)
             .frame(width: 230)
             Divider()
-            ProviderCapsView(provider: selection ?? .anthropic, model: model)
+            ProviderCapsView(provider: selection, model: model)
                 .id(selection)
                 .frame(maxWidth: .infinity)
         }
         .frame(height: 600)
-        .onAppear {
-            guard selection == nil else { return }
-            selection = model.auditProviders.first {
-                model.audit.progress(for: $0, now: Date()).needsAttention > 0
-            } ?? .anthropic
-        }
     }
 
     static func light(_ progress: CapAuditState.Progress) -> SignalLight {
