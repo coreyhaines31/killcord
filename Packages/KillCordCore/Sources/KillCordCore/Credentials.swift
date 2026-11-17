@@ -86,6 +86,22 @@ public struct ProviderCredentials: Sendable, Equatable, Codable, CustomStringCon
 
     public var debugDescription: String { description }
 
+    /// What Settings shows for each saved field: non-secret values as they are; secrets as their last four
+    /// characters only ("ending in 0001"), and a service account key as its account email. A secret shorter
+    /// than 16 characters shows no characters at all.
+    public var hints: [(field: CredentialField, text: String)] {
+        provider.info.fields.compactMap { field in
+            guard let value = values[field.id] else { return nil }
+            guard field.isSecret else { return (field, value) }
+            if field.isMultiline {
+                let object = (try? JSONSerialization.jsonObject(with: Data(value.utf8))) as? [String: Any]
+                let email = object?["client_email"] as? String
+                return (field, email ?? "Saved")
+            }
+            return (field, value.count >= 16 ? "Ending in \(value.suffix(4))" : "Saved")
+        }
+    }
+
     public var customMirror: Mirror {
         Mirror(self, children: ["provider": provider, "fields": description], displayStyle: .struct)
     }
