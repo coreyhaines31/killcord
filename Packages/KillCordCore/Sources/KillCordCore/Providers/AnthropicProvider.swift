@@ -116,7 +116,9 @@ public struct AnthropicProvider: SpendProvider {
                 if start >= window.dayStart { today? += money }
             }
         }
-        return SpendSnapshot(provider: id, today: today, month: month, fetchedAt: now)
+        // Without today's bucket the month runs only through the start of today; say so.
+        return SpendSnapshot(provider: id, today: today, month: month,
+                             dataAsOf: today == nil ? window.dayStart : nil, fetchedAt: now)
     }
 
     func yesterdayStart(_ window: BillingWindow) -> Date {

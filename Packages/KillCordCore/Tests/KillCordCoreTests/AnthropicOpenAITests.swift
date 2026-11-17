@@ -41,6 +41,7 @@ import Testing
         #expect(snapshot.month == usd("34.2052"))
         // Only the Nov 15 bucket: 1234.5 + 0.5 cents.
         #expect(snapshot.today == usd("12.35"))
+        #expect(snapshot.dataAsOf == nil)
         #expect(snapshot.monthKind == .calendarMonth)
         #expect(!snapshot.isEstimate)
     }
@@ -85,6 +86,7 @@ import Testing
         let snapshot = try await AnthropicProvider(http: http).fetchSpend(FakeKeys.credentials(.anthropic), now: testNow)
         #expect(snapshot.month == usd("12.50"))
         #expect(snapshot.today == nil)
+        #expect(snapshot.dataAsOf == ISO8601.date("2026-11-15T00:00:00Z"))
     }
 
     @Test func mapsHTTPFailures() async throws {
