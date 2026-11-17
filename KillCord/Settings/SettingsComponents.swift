@@ -52,7 +52,7 @@ struct ProviderMark: View {
             Image(name, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
                 .renderingMode(.template)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .scaledToFit()
                 .frame(width: size * 0.5, height: size * 0.5)
         } else {
             Text(String(provider.info.name.prefix(1)))
