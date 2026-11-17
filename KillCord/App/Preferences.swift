@@ -9,6 +9,12 @@ enum Preferences {
     static let thresholdsKey = "thresholds"
     static let firedAlertsKey = "firedAlerts"
     static let capAuditKey = "capAudit"
+    static let connectionsKey = "connections"
+    static let localDataVersionKey = "localDataVersion"
+
+    /// Bumped when the shape of anything saved here changes, so a later version (or a move to another Mac
+    /// or an account) knows what it's reading. 0 means saved before versioning (Kill Cord 0.1.1 and earlier).
+    static let currentLocalDataVersion = 1
 
     static func registerDefaults() {
         UserDefaults.standard.register(defaults: [
@@ -46,9 +52,25 @@ enum Preferences {
         set { save(newValue, capAuditKey) }
     }
 
+    static var connections: ConnectionRegistry {
+        get { load(ConnectionRegistry.self, connectionsKey) ?? ConnectionRegistry() }
+        set { save(newValue, connectionsKey) }
+    }
+
+    /// Gives each saved key a stable id (keys saved before ids existed get one now) and stamps the data
+    /// version. Never touches the Keychain items.
+    static func reconcileConnections(_ connected: [ProviderID], now: Date = Date()) {
+        var registry = connections
+        if registry.reconcile(connected: connected, now: now) { connections = registry }
+        let defaults = UserDefaults.standard
+        if defaults.integer(forKey: localDataVersionKey) != currentLocalDataVersion {
+            defaults.set(currentLocalDataVersion, forKey: localDataVersionKey)
+        }
+    }
+
     /// Every key Kill Cord writes to UserDefaults, for "Remove all local data".
     static let allKeys = [appliedLaunchAtLoginDefaultKey, refreshIntervalKey, menuBarPeriodKey, thresholdsKey,
-                          firedAlertsKey, capAuditKey]
+                          firedAlertsKey, capAuditKey, connectionsKey, localDataVersionKey]
 
     private static func load<T: Decodable>(_ type: T.Type, _ key: String) -> T? {
         UserDefaults.standard.data(forKey: key).flatMap { try? JSONDecoder().decode(type, from: $0) }

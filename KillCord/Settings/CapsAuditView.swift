@@ -171,14 +171,33 @@ struct CapRow: View {
                 markButtons(status)
             }
         } header: {
-            HStack(spacing: 8) {
-                StatusLED(status.light.panel)
-                Text(control.name)
-                Spacer()
-                Chip(text: control.enforcement.label, tint: enforcementTint)
-                Chip(text: control.verification == .api ? "Kill Cord can check" : "You mark it")
+            // One line when it fits; otherwise the chips move under the name instead of squeezing it.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    title(status).fixedSize()
+                    Spacer()
+                    chips
+                }
+                VStack(alignment: .leading, spacing: 5) {
+                    title(status)
+                    chips.padding(.leading, 16)
+                }
             }
             .accessibilityElement(children: .combine)
+        }
+    }
+
+    private func title(_ status: CapAuditState.Status) -> some View {
+        HStack(spacing: 8) {
+            StatusLED(status.light.panel)
+            Text(control.name).fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var chips: some View {
+        HStack(spacing: 6) {
+            Chip(text: control.enforcement.label, tint: enforcementTint)
+            Chip(text: control.verification == .api ? "Kill Cord can check" : "You mark it")
         }
     }
 

@@ -68,10 +68,14 @@ struct GeneralSettingsView: View {
             } header: {
                 Text("Updates")
             } footer: {
-                Label("Kill Cord goes online only to read your providers' billing APIs and to check for updates. "
-                    + "No telemetry, no account.", systemImage: "lock.fill")
-                    .font(.caption).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Kill Cord goes online only to read your providers' billing APIs and to check for updates. "
+                        + "No telemetry, no account.", systemImage: "lock.fill")
+                    Text("Logos are trademarks of their owners and are used only to identify the services "
+                        + "Kill Cord reads.")
+                }
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
             uninstallSection
         }
