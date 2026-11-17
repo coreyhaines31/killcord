@@ -46,6 +46,13 @@ final class SettingsWindow {
         alerts.refreshPermission()
         NSApp.activate()
         window?.makeKeyAndOrderFront(nil)
+        // A menu bar app isn't active when its panel opens Settings, and macOS 14's cooperative activate()
+        // can be declined. A window that isn't key spends the first click on becoming key, so insist.
+        DispatchQueue.main.async { [weak self] in
+            guard let window = self?.window, !window.isKeyWindow || !NSApp.isActive else { return }
+            NSApp.activate(ignoringOtherApps: true)
+            window.makeKeyAndOrderFront(nil)
+        }
     }
 
     private func makeWindow() -> NSWindow {
