@@ -24,4 +24,3 @@ import Testing
         #expect(!credentials.hints.contains { $0.text.contains("PRIVATE") })
     }
 }
-

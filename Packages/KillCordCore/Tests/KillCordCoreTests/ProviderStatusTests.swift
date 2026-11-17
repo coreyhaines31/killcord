@@ -24,7 +24,7 @@ import Testing
             usage: [UsageMetric(id: "c", name: "Compute", value: decimal("41.7"), unit: "CU-hours")],
             fetchedAt: testNow))
         #expect(status(.neon, state: neon, freshness: .live(checkedAt: testNow)).line
-            == "Connected · 41.7 CU-hours this month")
+            == "Connected · 41.7 CU-hours")
     }
 
     @Test func staleSaysHowLongAgo() {

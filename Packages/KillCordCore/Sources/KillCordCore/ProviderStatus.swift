@@ -27,14 +27,14 @@ public struct ProviderStatus: Sendable, Equatable {
                           isChecking: Bool = false, now: Date = Date()) -> ProviderStatus {
         let info = provider.info
         guard info.connects else { return ProviderStatus(light: .off, label: "Caps only", line: "Caps only") }
+        if isChecking, state?.snapshot == nil {
+            return ProviderStatus(light: .caution, label: "Checking", line: "Checking…")
+        }
         guard isConnected else {
             return ProviderStatus(light: .off, label: "Not connected", line: "Not connected")
         }
         if let error = state?.lastError, !error.isTransient {
             return ProviderStatus(light: .stop, label: error.shortLabel, line: error.shortLabel)
-        }
-        if isChecking, state?.snapshot == nil {
-            return ProviderStatus(light: .caution, label: "Checking", line: "Checking…")
         }
         switch freshness {
         case .neverChecked:
@@ -60,7 +60,7 @@ public struct ProviderStatus: Sendable, Equatable {
             let period = if case .billingPeriod = snapshot.monthKind { "this period" } else { "this month" }
             return "\(MoneyText.string(month)) \(period)\(estimate)"
         }
-        if let metric = snapshot.usage.first { return "\(SpendText.usage(metric)) this month" }
+        if let metric = snapshot.usage.first { return SpendText.usage(metric) }
         return nil
     }
 }
