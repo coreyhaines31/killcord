@@ -369,17 +369,55 @@ def meta_description(s):
     a, name, n = s['spend_api'], s['name'], s['search_name']
     if a['status'] == 'yes' and a['endpoint']:
         call = a['endpoint'].split(' ')[0] + ' ' + re.sub(r'^https?://[^/]+', '', a['endpoint'].split(' ', 1)[-1]).split('?')[0]
-        text = f'Check your {n} {noun(s)} with {call}: the key it needs, how fresh it is, and the spend caps {name} offers.'
-        if len(text) > 160:
-            text = f'Check your {n} {noun(s)} from the API: the endpoint, the key it needs, and the spend caps {name} offers.'
+        text = f'Check your {n} {noun(s)} with {call}: the key it needs and how fresh it is.'
+        if len(text) > 110:
+            text = f'Check your {n} {noun(s)} from the API: the endpoint and the key it needs.'
     elif a['status'] == 'partial':
-        text = f'What {name}’s API can and can’t tell you about your {noun(s)}, the key it needs, and the spend caps {name} offers.'
+        text = f'What {name}’s API can and can’t tell you about your {noun(s)}, and the key it needs.'
     else:
-        text = f'{name} has no documented usage API. Where to check your {n} {noun(s)} instead, and the spend caps {name} offers.'
-    return text if len(text) <= 160 else text[:157].rsplit(' ', 1)[0] + '…'
+        text = f'{name} has no documented usage API. Here’s where to check your {n} {noun(s)} instead.'
+    return pad(text, description_clauses(s))
 
 
-def table(rows):
+def description_clauses(s):
+    """Short true facts to bring a meta description up to 140 to 160 characters."""
+    a, name, caps = s['spend_api'], s['name'], s['native_caps']
+    kinds = {c['kind'] for c in caps}
+    out = []
+    if 'hard-stop' in kinds:
+        out.append(f' {name} can hard-stop spend.')
+    elif kinds & {'partial-stop', 'auto-recharge-off'}:
+        out.append(' Its caps stop only some spend.')
+    elif caps:
+        out.append(' Its only cap is an alert.')
+    elif s['caps_status'] == 'none-documented':
+        out.append(' It documents no spend cap.')
+    tier = s['killcord']['tier']
+    out.append(' Kill Cord audits its cap.' if s['slug'] in caps_only else
+               ' Kill Cord shows it in your menu bar.' if tier == 'built-in' else
+               ' Not in Kill Cord yet.' if tier == 'planned' else '')
+    if a['endpoint']:
+        out.append({'yes': ' A read-only key works.', 'no': ' No key is read-only.'}.get(a['read_only'], ''))
+    elif a['status'] == 'partial':
+        out.append(' It has no usage endpoint.')
+    out += [' Checked against official docs.', ' From official docs.']
+    return [c for c in out if c]
+
+
+def pad(text, clauses, low=140, high=160):
+    if len(text) > high:
+        return text[:high - 3].rsplit(' ', 1)[0] + '…'
+    for clause in clauses:
+        if len(text) >= low:
+            break
+        if 'official docs' in clause and 'official docs' in text:
+            continue
+        if len(text + clause) <= high:
+            text += clause
+    return text
+
+
+def table(rows, billing=False):
     body = []
     for s in rows:
         a = s['spend_api']
@@ -390,15 +428,92 @@ def table(rows):
         kc = 'Caps audit' if s['slug'] in caps_only else {'built-in': 'Built in', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
         body.append(f'<tr><th scope="row"><a href="{url_for(s)}">{e(s["search_name"])}</a></th>'
                     f'<td data-label="Spend API">{api_cell}</td><td data-label="Native cap">{cap_cell}</td>'
-                    f'<td data-label="Kill Cord">{kc}</td></tr>')
-    return ('<div class="table-wrap"><table class="coverage"><thead><tr><th scope="col">Service</th>'
-            '<th scope="col">Spend API</th><th scope="col">Native cap</th><th scope="col">Kill Cord</th></tr></thead>'
+                    f'<td data-label="Kill Cord">{kc}</td>'
+                    + (f'<td data-label="How it bills">{inline(sentence(s["billing_model"]))}</td>' if billing else '') + '</tr>')
+    return (f'<div class="table-wrap"><table class="coverage{" billing" if billing else ""}"><thead><tr><th scope="col">Service</th>'
+            '<th scope="col">Spend API</th><th scope="col">Native cap</th><th scope="col">Kill Cord</th>'
+            + ('<th scope="col">How it bills</th>' if billing else '') + '</tr></thead>'
             f'<tbody>{"".join(body)}</tbody></table></div>')
 
 
 def order(rows):
     tiers = {'built-in': 0, 'planned': 1, 'none': 2}
     return sorted(rows, key=lambda s: (tiers[s['killcord']['tier']], s['search_name'].lower()))
+
+
+def names(rows, limit=5):
+    items = [f'<a href="{url_for(r)}">{e(r["search_name"])}</a>' for r in rows]
+    if len(items) > limit:
+        return ', '.join(items[:limit]) + f' and {len(items) - limit} more'
+    return items[0] if len(items) == 1 else ', '.join(items[:-1]) + ' and ' + items[-1]
+
+
+def count(rows, one, many):
+    return f'{len(rows)} {one if len(rows) == 1 else many}'
+
+
+def clauses(parts):
+    parts = [p for p in parts if p]
+    if len(parts) < 3:
+        return ' and '.join(parts)
+    return '; '.join(parts[:-1]) + '; and ' + parts[-1]
+
+
+def category_overview(label, rows):
+    """A summary of how this category bills and caps, computed from the records on the page."""
+    by = lambda test: [r for r in rows if test(r)]
+    billing = clauses([
+        (lambda g: g and f'{count(g, "runs", "run")} on a prepaid balance or credits you top up ({names(g)})')(by(lambda r: r['billing_type'] == 'prepaid')),
+        (lambda g: g and f'{count(g, "bills", "bill")} for usage after the fact ({names(g)})')(by(lambda r: r['billing_type'] == 'usage')),
+        (lambda g: g and f'{count(g, "sells", "sell")} a monthly allowance of credits or requests ({names(g)})')(by(lambda r: r['billing_type'] == 'quota')),
+        (lambda g: g and f'{count(g, "mixes", "mix")} models, such as a plan plus usage or credits plus invoicing ({names(g)})')(by(lambda r: r['billing_type'] == 'mixed')),
+    ])
+    status = lambda v: by(lambda r: r['spend_api']['status'] == v)
+    api = ' '.join(x for x in [
+        status('yes') and f'{count(status("yes"), "returns", "return")} a balance, credits or spend from one call ({names(status("yes"))}).',
+        status('partial') and f'{count(status("partial"), "gives", "give")} part of it, such as usage without dollars or spend without a balance ({names(status("partial"))}).',
+        status('no') and f'{count(status("no"), "shows", "show")} it only in the console ({names(status("no"))}).',
+        status('unknown') and f'{count(status("unknown"), "doesn’t", "don’t")} document it either way ({names(status("unknown"))}).',
+    ] if x)
+    kinds = lambda r: {c['kind'] for c in r['native_caps']}
+    hard = by(lambda r: 'hard-stop' in kinds(r))
+    some = by(lambda r: 'hard-stop' not in kinds(r) and kinds(r) & {'partial-stop', 'auto-recharge-off'})
+    alert = by(lambda r: kinds(r) == {'alert-only'})
+    none = by(lambda r: not r['native_caps'])
+    caps = ' '.join(x for x in [
+        hard and f'{count(hard, "can", "can")} hard-stop spend on {"its" if len(hard) == 1 else "their"} own ({names(hard)}).',
+        some and f'{count(some, "stops", "stop")} only some spend or {"caps" if len(some) == 1 else "cap"} top-ups ({names(some)}).',
+        alert and f'{count(alert, "only sends", "only send")} alerts ({names(alert)}).',
+        none and f'{count(none, "documents", "document")} no cap at all ({names(none)}), so a small balance or a close watch is the only limit.',
+    ] if x)
+    power = by(lambda r: r['spend_api']['endpoint'] and r['spend_api']['read_only'] == 'no')
+    readonly = by(lambda r: r['spend_api']['endpoint'] and r['spend_api']['read_only'] == 'yes')
+    keys = ' '.join(x for x in [
+        power and f'{count(power, "has", "have")} no read-only key, so the key that reads billing can do more than read it ({names(power)}).',
+        readonly and f'{count(readonly, "offers", "offer")} a read-only key ({names(readonly)}).',
+    ] if x)
+    fresh = by(lambda r: known(r['spend_api']['lag']))[:4]
+    freshness = ' '.join(f'<a href="{url_for(r)}">{e(r["search_name"])}</a>: {inline(sentence(lower_first(r["spend_api"]["lag"])))}'
+                         for r in fresh)
+    paid = by(lambda r: known(r['spend_api']['cost_to_call']) and r['spend_api']['cost_to_call'] != 'free')
+    free = by(lambda r: r['spend_api']['cost_to_call'] == 'free')
+    checking = ' '.join(x for x in [
+        free and f'Checking is free for {len(free)} ({names(free)}).',
+        ' '.join(f'<a href="{url_for(r)}">{e(r["search_name"])}</a> charges for each check: {inline(sentence(lower_first(r["spend_api"]["cost_to_call"])))}'
+                 for r in paid),
+    ] if x)
+    built = by(lambda r: r['killcord']['tier'] == 'built-in')
+    tracked = (f'Kill Cord covers {len(built)} of these today ({names(built)}).' if built else
+               f'Kill Cord doesn’t track any of these yet. It tracks {builtin_names}.')
+    items = [('How they bill', billing[:1].upper() + billing[1:] + '.' if billing else ''), ('Reading it from an API', api),
+             ('Caps', caps), ('Key power', keys), ('How fresh the numbers are', freshness),
+             ('What a check costs', checking), ('Kill Cord', tracked)]
+    lis = ''.join(f'<li><b>{head}.</b> {body}</li>' for head, body in items if body)
+    return f'''  <section aria-labelledby="overview-title">
+    <h2 id="overview-title">How these services bill and cap spend</h2>
+    <ul class="overview">{lis}</ul>
+  </section>
+'''
 
 
 def hub_pages():
@@ -419,7 +534,7 @@ def hub_pages():
     with_api = sum(s['spend_api']['status'] == 'yes' for s in published)
     hub = {
         'path': 'track/index.html', 'title': 'Check API Usage, Credits and Spend | Kill Cord',
-        'description': f'How to read your balance, credits or spend from {len(published)} API services, the key each needs, and the spend caps each offers.',
+        'description': f'How to read your balance, credits or spend from {len(published)} API services: the endpoint, the key each needs, and the spend caps that stop a runaway bill.',
         'og_title': 'How to check API usage, credits and spend',
         'og_description': 'The endpoint, the key, and the native spend caps for each API service, from official docs.',
         'body_class': 'article-page track-page', 'updated': max(s['last_verified'] for s in published),
@@ -458,6 +573,8 @@ def hub_pages():
         desc = f'How to check usage, credits and spend for {listing}: the endpoint, the key, and the spend caps each offers.'
         if len(desc) > 160:
             desc = f'How to check usage, credits and spend for {len(rows)} {label.lower()}: the endpoint, the key, and the caps each offers.'
+        with_api = sum(r['spend_api']['status'] == 'yes' for r in rows)
+        desc = pad(desc, [f' {with_api} of {len(rows)} answer with one API call.', ' Checked against official docs.', ' From official docs.'])
         pages.append({
             'path': f'track/{slug}/index.html', 'title': title, 'description': desc,
             'og_title': f'{label}: how to check usage and spend', 'og_description': desc,
@@ -473,9 +590,9 @@ def hub_pages():
 </section>
 
 <div class="bx-wrap prose wide">
-  <section aria-labelledby="list-title">
+{category_overview(label, rows)}  <section aria-labelledby="list-title">
     <h2 id="list-title">Services</h2>
-    {table(rows)}
+    {table(rows, billing=True)}
   </section>
   <section aria-labelledby="more-title">
     <h2 id="more-title">More categories</h2>

@@ -10,9 +10,9 @@
   },
   {
     "path": "privacy/index.html",
-    "title": "Privacy: Kill Cord",
+    "title": "Privacy: Where Kill Cord Keeps Your API Keys",
     "crumb": "Privacy",
-    "description": "Kill Cord keeps your provider keys in your Mac's Keychain, sends each only to its own provider, and has no telemetry, analytics, or account.",
+    "description": "Kill Cord keeps your provider keys in your Mac's Keychain, sends each only to its own provider, and has no telemetry, analytics, account or server of its own.",
     "og_title": "Kill Cord privacy",
     "og_description": "Keys stay in your Mac's Keychain and go only to the provider they belong to. No telemetry, no analytics, no account.",
     "body_class": "article-page",

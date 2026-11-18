@@ -171,7 +171,7 @@
     "keyword": "claude api cost",
     "nav": "Cost",
     "title": "How to Check Your Claude API Cost | Kill Cord",
-    "description": "How to see what you've spent on the Claude API: the Console Cost page, the cost endpoints, and the spend limits that stop a runaway bill.",
+    "description": "How to see what you've spent on the Claude API: the Console Cost page, the cost endpoints, and the spend limits that stop a runaway bill before it lands.",
     "h1": "How to check what you’ve spent on the Claude API",
     "lede": "This page is about your bill, not the price list. For per-token prices, see [Anthropic’s pricing page](https://platform.claude.com/docs/en/about-claude/pricing). Here’s how to see what you’ve actually spent and cap it.",
     "sections": [
