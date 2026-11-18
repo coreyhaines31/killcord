@@ -7,13 +7,17 @@ public struct SpendThresholds: Sendable, Equatable, Codable {
     public struct Limits: Sendable, Equatable, Codable {
         public var daily: Decimal?
         public var monthly: Decimal?
+        /// Alert when a connection's balance is at or below this, in the balance's own unit (dollars,
+        /// credits). Per connection only: balances in different units don't add up.
+        public var lowBalance: Decimal?
 
-        public init(daily: Decimal? = nil, monthly: Decimal? = nil) {
+        public init(daily: Decimal? = nil, monthly: Decimal? = nil, lowBalance: Decimal? = nil) {
             self.daily = daily
             self.monthly = monthly
+            self.lowBalance = lowBalance
         }
 
-        public var isEmpty: Bool { daily == nil && monthly == nil }
+        public var isEmpty: Bool { daily == nil && monthly == nil && lowBalance == nil }
     }
 
     /// Keyed by `ConnectionRecord.id`.
@@ -81,7 +85,8 @@ public struct SpendThresholds: Sendable, Equatable, Codable {
 public struct ThresholdPlanner: Sendable {
     public struct State: Sendable, Equatable, Codable {
         /// "<connection uuid>|day|2026-11-15|50" for a connection, "anthropic|day|…" for a provider total,
-        /// "total|month|2026-11|500" for everything.
+        /// "total|month|2026-11|500" for everything, "<connection uuid>|balance|low|10" while a balance stays
+        /// at or below its alert (cleared once it's back above, so the next drop alerts again).
         public var fired: Set<String>
 
         public init(fired: Set<String> = []) {
@@ -190,6 +195,9 @@ public struct ThresholdPlanner: Sendable {
               limit: thresholds.total.daily, isEstimate: estimate, checkedAt: nil)
         check("All providers", idPrefix: "total", period: .month, periodKey: utc.monthKey, amount: totalMonth,
               limit: thresholds.total.monthly, isEstimate: estimate, checkedAt: nil)
+        let (balanceAlerts, balanceKeys) = planBalances(states: states, names: names, thresholds: thresholds,
+                                                        fired: fired, now: now)
+        alerts += balanceAlerts
         // Forget periods that are over, so the saved state stays small. Keep keys for the current periods
         // even when the provider wasn't read this time (an error shouldn't let an alert fire twice).
         let livePeriods = Set(ProviderID.allCases.flatMap { provider -> [String] in
@@ -198,8 +206,41 @@ public struct ThresholdPlanner: Sendable {
         } + [utc.dayKey, utc.monthKey])
         fired = fired.filter { key in
             let parts = key.split(separator: "|")
-            return parts.count == 4 && livePeriods.contains(String(parts[2]))
+            return parts.count == 4 && parts[1] != Self.balanceTag && livePeriods.contains(String(parts[2]))
         }
-        return (alerts, State(fired: fired))
+        return (alerts, State(fired: fired.union(balanceKeys)))
+    }
+
+    static let balanceTag = "balance"
+
+    /// Low-balance alerts: each fires once when a balance first reads at or below its alert, and again only
+    /// after a reading back above it (a top-up, or an allowance reset). A connection that wasn't read keeps
+    /// its key, so a failed check can't make it fire twice. Returns the alerts and the keys to keep.
+    func planBalances(states: [ProviderState], names: [UUID: String], thresholds: SpendThresholds,
+                      fired: Set<String>, now: Date) -> ([Alert], Set<String>) {
+        var alerts: [Alert] = []
+        var keep: Set<String> = []
+        for (id, limits) in thresholds.perConnection {
+            guard let limit = limits.lowBalance, limit > 0 else { continue }
+            let key = "\(id.uuidString)|\(Self.balanceTag)|low|\(limit)"
+            guard let state = states.first(where: { $0.connectionID == id }) else {
+                if fired.contains(key) { keep.insert(key) }
+                continue
+            }
+            guard let snapshot = state.snapshot, let balance = snapshot.balance else {
+                if fired.contains(key) { keep.insert(key) }
+                continue
+            }
+            guard balance.remaining <= limit else { continue }
+            keep.insert(key)
+            guard !fired.contains(key) else { continue }
+            let name = names[id] ?? state.provider.info.name
+            let left = BalanceText.amount(balance.remaining, balance.unit)
+            let alertAt = BalanceText.amount(limit, balance.unit)
+            alerts.append(Alert(id: key, title: "\(name) is down to \(left)",
+                                body: "That's at or below your \(alertAt) low-balance alert. Last checked "
+                                    + "\(SpendText.time(snapshot.fetchedAt, now: now))."))
+        }
+        return (alerts.sorted { $0.id < $1.id }, keep)
     }
 }

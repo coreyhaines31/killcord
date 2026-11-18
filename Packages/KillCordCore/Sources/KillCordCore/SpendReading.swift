@@ -23,6 +23,39 @@ public struct SpendReading: Sendable, Equatable, Codable {
         public let unit: String
     }
 
+    /// What's left of a balance or allowance. Not spend.
+    public struct BalanceValue: Sendable, Equatable, Codable {
+        /// Decimal strings.
+        public let remaining: String
+        public let limit: String?
+        public let used: String?
+        /// ISO 4217 for money ("USD"), else nil.
+        public let currency: String?
+        /// The provider's word for non-money units ("credits"), else nil.
+        public let units: String?
+        /// "prepaid" or "allowance".
+        public let kind: String
+        public let dollarsPerUnit: String?
+        public let resetsAt: Date?
+
+        init(_ balance: Balance) {
+            remaining = balance.remaining.description
+            limit = balance.limit?.description
+            used = balance.used?.description
+            switch balance.unit {
+            case .money(let code):
+                currency = code.code
+                units = nil
+            case .units(let name):
+                currency = nil
+                units = name
+            }
+            kind = balance.kind.rawValue
+            dollarsPerUnit = balance.dollarsPerUnit?.description
+            resetsAt = balance.resetsAt
+        }
+    }
+
     public let schemaVersion: Int
     /// The `ConnectionRecord` id, so readings from two accounts of one provider, or two Macs, stay apart.
     public let connectionID: UUID
@@ -34,6 +67,8 @@ public struct SpendReading: Sendable, Equatable, Codable {
     /// Set when `monthKind` is "billingPeriod".
     public let periodStart: Date?
     public let usage: [Usage]
+    /// Added after version 1 shipped; older readers ignore it.
+    public let balance: BalanceValue?
     public let isEstimate: Bool
     public let dataAsOf: Date?
     public let fetchedAt: Date
@@ -56,6 +91,7 @@ public struct SpendReading: Sendable, Equatable, Codable {
             periodStart = start
         }
         usage = snapshot.usage.map { Usage(id: $0.id, name: $0.name, value: $0.value.description, unit: $0.unit) }
+        balance = snapshot.balance.map(BalanceValue.init)
         isEstimate = snapshot.isEstimate
         dataAsOf = snapshot.dataAsOf
         fetchedAt = snapshot.fetchedAt

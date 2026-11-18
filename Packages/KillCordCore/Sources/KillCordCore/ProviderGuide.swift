@@ -43,6 +43,7 @@ extension ProviderInfo {
         case .requiresSetup: "Dollar spend, needs setup"
         case .usageUnitsOnly: "Usage units only"
         case .noUsageAPI: "Caps only"
+        case .balance: "Balance left"
         }
     }
 
@@ -53,6 +54,10 @@ extension ProviderInfo {
         case .requiresSetup: "Shows spend from your Cloud Billing export in BigQuery."
         case .usageUnitsOnly: "Shows this month's usage. \(name) doesn't report dollars."
         case .noUsageAPI: "\(name) has no spend API, so there's nothing to connect. Turn on its Spend Cap in Caps Audit."
+        case .balance(let spend) where spend == [.today, .month]:
+            "Shows the balance left, and today's and this month's spend."
+        case .balance(let spend) where spend.contains(.today): "Shows the balance left, and today's spend."
+        case .balance: "Shows the balance left. It's not spend, so it isn't in your totals."
         }
         return [shows, delaySummary, requirement].compactMap { $0 }.joined(separator: " ")
     }

@@ -13,14 +13,33 @@ struct SpendReadout: View {
         let now = Date()
         let snapshot = model.states[connectionID]?.snapshot
         let freshness = model.freshness(connectionID, now: now)
+        let capability = provider.info.capability
         VStack(alignment: .leading, spacing: 10) {
-            if provider.info.capability.showsMoney {
+            if let balance = snapshot?.balance {
+                VStack(alignment: .leading, spacing: 4) {
+                    figure(balance.kind == .prepaid ? "Balance" : "Left this period", BalanceText.remaining(balance))
+                    ForEach(BalanceText.details(balance, now: now), id: \.self) { line in
+                        Text(line).font(.caption).foregroundStyle(.secondary)
+                    }
+                    Text("A balance is what's left, not spend, so it isn't in your totals.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            } else if capability.showsBalance {
+                figure("Balance", snapshot == nil ? nil : "Not reported")
+            }
+            if capability.showsMoney {
                 HStack(alignment: .firstTextBaseline, spacing: 32) {
-                    figure("Today", snapshot.map { SpendText.amount($0.today, isEstimate: $0.isEstimate) })
-                    figure(snapshot.map { SpendText.monthLabel($0.monthKind, now: now) } ?? "This month",
-                           snapshot.map { SpendText.amount($0.month, isEstimate: $0.isEstimate) })
+                    if capability.countsToday {
+                        figure("Today", snapshot.map { SpendText.amount($0.today, isEstimate: $0.isEstimate) })
+                    }
+                    if capability.countsMonth {
+                        figure(snapshot.map { SpendText.monthLabel($0.monthKind, now: now) } ?? "This month",
+                               snapshot.map { SpendText.amount($0.month, isEstimate: $0.isEstimate) })
+                    }
                     Spacer()
                 }
+            } else if capability.showsBalance {
+                EmptyView()
             } else if let metrics = snapshot?.usage, !metrics.isEmpty {
                 HStack(alignment: .firstTextBaseline, spacing: 32) {
                     ForEach(metrics) { figure($0.name + " this month", SpendText.usage($0)) }

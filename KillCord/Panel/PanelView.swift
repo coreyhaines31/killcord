@@ -19,7 +19,7 @@ struct PanelView: View {
                        detail: model.isDemo ? "Sample data" : "While your Mac is awake",
                        label: "API spend monitor", isLit: model.isOnline && !model.isAsleep) {
                     if !model.connected.isEmpty {
-                        TotalsView(summary: summary)
+                        TotalsView(summary: summary, hasBalances: model.hasBalances)
                     }
                 }
                 .trailingAccessory {
@@ -110,6 +110,7 @@ struct EmptyStateView: View {
 /// Today and this month across providers, with what the totals leave out said plainly.
 struct TotalsView: View {
     let summary: SpendSummary
+    var hasBalances = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -139,6 +140,7 @@ struct TotalsView: View {
             notes.append("Today leaves out " + names(summary.missingToday) + " (not reported yet or not read).")
         }
         if summary.hasEstimates { notes.append("Includes estimates.") }
+        if hasBalances { notes.append("Balances are what's left, not spend, so they're not in these totals.") }
         notes.append("Each provider's day and month follow its own billing clock.")
         return notes
     }

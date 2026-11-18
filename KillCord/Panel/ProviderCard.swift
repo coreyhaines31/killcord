@@ -17,6 +17,7 @@ struct ProviderCard: View {
     private var state: ProviderState? { model.states[connectionID] }
     private var freshness: Freshness { model.freshness(connectionID, now: now) }
     private var snapshot: SpendSnapshot? { state?.snapshot }
+    private var capability: SpendCapability { provider.info.capability }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -31,9 +32,14 @@ struct ProviderCard: View {
             Text(SpendText.freshness(freshness, now: now))
                 .font(PanelFont.body(11))
                 .foregroundStyle(theme.sub)
-            if provider.info.capability.showsMoney {
+            if let balance = snapshot?.balance {
+                balanceRow(balance)
+            } else if capability.showsBalance {
+                amount("Balance", snapshot == nil ? "Not read yet" : "Not reported")
+            }
+            if capability.showsMoney {
                 money
-            } else {
+            } else if !capability.showsBalance {
                 usage
             }
             if let reason = SpendText.staleReason(freshness) {
@@ -62,10 +68,25 @@ struct ProviderCard: View {
 
     private var money: some View {
         HStack(alignment: .firstTextBaseline, spacing: 18) {
-            amount("Today", snapshot.map { SpendText.amount($0.today, isEstimate: $0.isEstimate) } ?? "Not read yet")
-            amount(snapshot.map { SpendText.monthLabel($0.monthKind, now: now) } ?? "This month",
-                   snapshot.map { SpendText.amount($0.month, isEstimate: $0.isEstimate) } ?? "Not read yet")
+            if capability.countsToday {
+                amount("Today", snapshot.map { SpendText.amount($0.today, isEstimate: $0.isEstimate) } ?? "Not read yet")
+            }
+            if capability.countsMonth {
+                amount(snapshot.map { SpendText.monthLabel($0.monthKind, now: now) } ?? "This month",
+                       snapshot.map { SpendText.amount($0.month, isEstimate: $0.isEstimate) } ?? "Not read yet")
+            }
             Spacer()
+        }
+    }
+
+    /// What's left, with its unit, and anything worth knowing about it. Never mixed into spend.
+    private func balanceRow(_ balance: Balance) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            amount(balance.kind == .prepaid ? "Balance" : "Left this period", BalanceText.remaining(balance))
+            ForEach(BalanceText.details(balance, now: now), id: \.self) { line in
+                Text(line).font(.system(size: 11)).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 

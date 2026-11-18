@@ -17,6 +17,8 @@ public struct SpendSnapshot: Sendable, Equatable, Codable {
     public var monthKind: MonthKind
     /// Usage in the provider's units, for providers that don't report money (Neon).
     public var usage: [UsageMetric]
+    /// What's left of a prepaid balance or plan allowance. Not spend: never added into totals.
+    public var balance: Balance?
     /// True when the numbers are worked out by Kill Cord rather than reported by the provider.
     public var isEstimate: Bool
     /// The provider's own "current through" time, when it says.
@@ -25,12 +27,14 @@ public struct SpendSnapshot: Sendable, Equatable, Codable {
     public var fetchedAt: Date
 
     public init(provider: ProviderID, today: Money?, month: Money?, monthKind: MonthKind = .calendarMonth,
-                usage: [UsageMetric] = [], isEstimate: Bool = false, dataAsOf: Date? = nil, fetchedAt: Date) {
+                usage: [UsageMetric] = [], balance: Balance? = nil, isEstimate: Bool = false, dataAsOf: Date? = nil,
+                fetchedAt: Date) {
         self.provider = provider
         self.today = today
         self.month = month
         self.monthKind = monthKind
         self.usage = usage
+        self.balance = balance
         self.isEstimate = isEstimate
         self.dataAsOf = dataAsOf
         self.fetchedAt = fetchedAt
