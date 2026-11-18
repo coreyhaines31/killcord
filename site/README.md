@@ -22,6 +22,10 @@ The look is the Mac app family's Brushed design: `src/assets/brushed.css`, `popo
 
 Copy follows the repo rule: no em dashes anywhere user-facing (`make lint` checks).
 
+## Caching
+
+The build writes a fingerprinted copy of each stylesheet, image and font to `/_a/` (`styles.<hash>.css`) and points every page at it. `vercel.json` serves `/_a/` with `max-age=31536000, immutable`; everything else, HTML included, keeps Vercel's revalidating default. `og.png` and `favicon.ico` keep fixed URLs because other sites and browsers fetch them by name.
+
 ## Preview
 
 ```sh
