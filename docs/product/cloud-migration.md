@@ -2,6 +2,8 @@
 
 Status: design only, November 16, 2026. Kill Cord Cloud (the paid always-on monitor in `docs/product/spec.md`) is not built and stays out of v1. This doc says how someone who set Kill Cord up on their Mac moves that setup into a cloud account later without pasting a key again, and what had to ship now so that works. Tracking issue: #18.
 
+**Superseded and extended by Kill Cord Teams (November 17, 2026):** [`teams-spec.md`](teams-spec.md) takes this plan from one person to organizations with members, teams and roles. Everything decided below still holds; nothing is reversed. The paid always-on tier for one person becomes the Teams Solo tier (a workspace of one), and the readings-only free sync can follow on the same build.
+
 ## Decided (November 16, 2026)
 
 - **Hybrid key model.** By default an account syncs readings only: keys stay on the Mac and the app sends spend readings. Moving a key to the cloud for 24/7 monitoring is a separate opt-in for each provider. The review screen shows how much each key can do: read-only billing keys get a calm recommendation, and keys that can manage the organization (Anthropic's admin key, for example) get a clear warning.
