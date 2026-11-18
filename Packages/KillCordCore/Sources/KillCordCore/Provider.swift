@@ -1,7 +1,7 @@
 import Foundation
 
 /// The usage-billed providers Kill Cord knows. Order is the order they're listed in: the two most likely to
-/// surprise a bill first, then the rest.
+/// surprise a bill first, then the rest, then services Kill Cord reads a balance from.
 public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Identifiable {
     case anthropic
     case google
@@ -11,6 +11,13 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case twilio
     case neon
     case supabase
+    // Prepaid balances and plan allowances.
+    case openrouter
+    case dataforseo
+    case ahrefs
+    case firecrawl
+    case treg
+    case monid
 
     public var id: String { rawValue }
 
@@ -152,7 +159,7 @@ extension ProviderInfo {
 
     static func url(_ string: String) -> URL { URL(string: string)! }
 
-    public static let all: [ProviderID: ProviderInfo] = Dictionary(uniqueKeysWithValues: [
+    public static let all: [ProviderID: ProviderInfo] = Dictionary(uniqueKeysWithValues: ([
         ProviderInfo(
             id: .anthropic, name: "Anthropic", capability: .dollars,
             fields: [CredentialField(id: "apiKey", label: "API key", placeholder: "sk-ant-…", isSecret: true,
@@ -285,5 +292,5 @@ extension ProviderInfo {
             billingTimeZone: utc, minimumRefreshInterval: 24 * 3600,
             consoleURL: url("https://supabase.com/dashboard/org/_/billing")
         )
-    ].map { ($0.id, $0) })
+    ] + balanceProviders).map { ($0.id, $0) })
 }

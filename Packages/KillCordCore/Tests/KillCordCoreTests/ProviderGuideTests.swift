@@ -57,6 +57,11 @@ import Testing
         // Google and Anthropic have a setup step first; their key page is the last step.
         let keyLast: Set<ProviderID> = [.google, .anthropic]
         for provider in ProviderID.allCases where provider.info.connects && !keyLast.contains(provider) {
+            guard provider.info.keyURL != nil else {
+                // No documented key page (Ahrefs): the step links the provider's API docs instead.
+                #expect(provider.info.setupSteps.first?.link?.url.host == "docs.ahrefs.com", "\(provider)")
+                continue
+            }
             #expect(provider.info.setupSteps.first?.link?.url == provider.info.keyURL, "\(provider)")
         }
         for provider in keyLast {

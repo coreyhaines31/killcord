@@ -175,9 +175,17 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
 }
 
 @Suite struct CapsCatalogTests {
-    @Test(arguments: ProviderID.allCases)
-    func everyProviderHasAtLeastOneCap(_ provider: ProviderID) {
+    @Test(arguments: ProviderID.allCases.filter { !$0.info.capability.showsBalance })
+    func everySpendProviderHasAtLeastOneCap(_ provider: ProviderID) {
         #expect(!CapsCatalog.controls(for: provider).isEmpty)
+    }
+
+    /// A prepaid balance stops at zero on its own. Extra caps are listed only where the provider documents one.
+    @Test func balanceProvidersListOnlyDocumentedCaps() {
+        let withCaps = ProviderID.allCases.filter {
+            $0.info.capability.showsBalance && !CapsCatalog.controls(for: $0).isEmpty
+        }
+        #expect(withCaps == [.openrouter, .monid])
     }
 
     @Test func everyCapHasHTTPSLinksStepsAndAUniqueID() {
@@ -196,7 +204,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
     }
 
     @Test func eachMoneyProviderHasAHardOrPartialStopOrSaysThereIsNone() {
-        for provider in ProviderID.allCases {
+        for provider in ProviderID.allCases where !provider.info.capability.showsBalance {
             let controls = CapsCatalog.controls(for: provider)
             let stops = controls.filter { $0.enforcement != .alertOnly }
             if stops.isEmpty {
