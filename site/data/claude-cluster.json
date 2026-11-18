@@ -1,0 +1,310 @@
+[
+  {
+    "slug": "claude-api-usage",
+    "keyword": "claude api usage",
+    "nav": "Usage",
+    "title": "How to Check Your Claude API Usage | Kill Cord",
+    "description": "Where to see Claude API token usage: the Console Usage page, the usage object in every response, rate-limit headers, and the usage report endpoint.",
+    "h1": "How to check your Claude API usage",
+    "lede": "Usage means tokens: what went in, what came out, and how close you are to your rate limits. Claude shows it in four places, from a single request to the whole month.",
+    "sections": [
+      {
+        "id": "console",
+        "h2": "The Usage page in the Claude Console",
+        "paras": [
+          "Open [Usage](https://platform.claude.com/usage) in the Claude Console. It charts input and output tokens and totals them for the filters you pick."
+        ],
+        "list": [
+          "Filter by model, month, API key and workspace, or pick All Workspaces.",
+          "Click a bar to drill down to hours and minutes.",
+          "Compare tokens per minute against your input and output rate limits.",
+          "Download the view as a CSV with the export button."
+        ],
+        "after": "Members with the Developer, Billing or Admin role can see it. The Console can’t break usage down by individual user."
+      },
+      {
+        "id": "response",
+        "h2": "In every API response",
+        "paras": [
+          "Each Messages API response carries a `usage` object: `input_tokens`, `output_tokens`, `cache_creation_input_tokens` and `cache_read_input_tokens`. Add the three input fields for the request’s total input.",
+          "`input_tokens` counts only tokens after your last cache breakpoint. `output_tokens` is never zero, even for an empty reply. The object holds tokens, not dollars."
+        ]
+      },
+      {
+        "id": "limits",
+        "h2": "Rate-limit headers and your tier",
+        "paras": [
+          "Responses also send `anthropic-ratelimit-requests-remaining`, `anthropic-ratelimit-input-tokens-remaining` and `anthropic-ratelimit-output-tokens-remaining`, each with a limit and a reset time. Token counts are rounded to the nearest thousand.",
+          "Your tier and current limits are on the [Rate limits](https://platform.claude.com/usage/limits) page. Tiers move up with usage history and account standing, and you can ask for an increase there."
+        ]
+      },
+      {
+        "id": "api",
+        "h2": "Usage from the API",
+        "paras": [
+          "`GET /v1/organizations/usage_report/messages` returns token counts in 1-minute, 1-hour or 1-day buckets. Filter or group by API key, workspace, model, service tier and more. Data usually lands within 5 minutes.",
+          "Anthropic now recommends `GET /v1/organizations/analytics/usage` for new work. It adds request counts and grouping by user, but runs 4 to 24 hours behind.",
+          "Both need an Admin API key, or a service account or personal key that isn’t scoped to a workspace. The [Claude billing API page](/track/anthropic/) walks through the key."
+        ]
+      },
+      {
+        "id": "not-dollars",
+        "h2": "Usage isn’t spend",
+        "paras": [
+          "Tokens don’t tell you what you owe. For dollars, see [how to check your Claude API cost](/track/claude-api-cost/). For what’s left to spend, see [Claude API credits](/track/claude-api-credits/)."
+        ]
+      }
+    ],
+    "faq": [
+      {
+        "q": "Where do I see my Claude API usage?",
+        "a": "On the Usage page in the Claude Console, filtered by model, month, API key and workspace. Each API response also includes a usage object with token counts."
+      },
+      {
+        "q": "How current is Claude API usage data?",
+        "a": "The usage report endpoint usually reflects a request within 5 minutes. The newer Usage and Cost Analytics API runs 4 to 24 hours behind."
+      },
+      {
+        "q": "Can I see usage per user?",
+        "a": "Not in the Console. The Usage and Cost Analytics API can group usage by actor, which is the user or service account behind each key."
+      },
+      {
+        "q": "Does the usage object show cost?",
+        "a": "No. It holds token counts only. Read cost from the Cost page or the cost endpoints."
+      }
+    ],
+    "sources": [
+      "https://support.claude.com/en/articles/9534590-cost-and-usage-reporting-in-the-claude-console",
+      "https://platform.claude.com/docs/en/api/messages",
+      "https://platform.claude.com/docs/en/api/rate-limits",
+      "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
+      "https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api"
+    ]
+  },
+  {
+    "slug": "claude-api-credits",
+    "keyword": "claude api credits",
+    "nav": "Credits",
+    "title": "Claude API Credits: Check Your Balance | Kill Cord",
+    "description": "How Claude API credits work: where your balance shows, auto-reload, what happens at zero, expiry, and the monthly credits on Max, Ultra and Team plans.",
+    "h1": "Claude API credits: check your balance before it runs out",
+    "lede": "The Claude API runs on prepaid credits. When they hit zero, your calls stop. Here’s where the balance lives, how to keep it topped up, and which subscriptions include credits.",
+    "sections": [
+      {
+        "id": "how",
+        "h2": "How Claude API credits work",
+        "list": [
+          "You buy credits before you use the API, and they’re available right away.",
+          "Usage draws them down at Anthropic’s current prices.",
+          "Credits expire one year after purchase, and purchases are non-refundable.",
+          "New users get free credits to test the API."
+        ],
+        "after": "Some organizations are invoiced monthly instead, through Anthropic’s sales team. Claude Platform on AWS bills in arrears with no prepaid credits."
+      },
+      {
+        "id": "balance",
+        "h2": "Where to see your credit balance",
+        "paras": [
+          "Your available balance and credit usage are on the [Billing](https://platform.claude.com/settings/billing) page in the Claude Console.",
+          "Anthropic doesn’t document an API that returns the remaining balance. The cost endpoints report what you spent, before credits are applied, so they can’t stand in for it."
+        ]
+      },
+      {
+        "id": "reload",
+        "h2": "Keep it from running out: auto-reload",
+        "paras": [
+          "On the Billing page, auto-reload buys credits when the balance falls below a threshold you set, and refills it to a target. If you’re already below the threshold when you turn it on, you’re charged right away. Turn it off with Manage auto-reload, then Turn off."
+        ]
+      },
+      {
+        "id": "zero",
+        "h2": "What happens at zero",
+        "paras": [
+          "Calls fail until you add credits. The API answers with a `billing_error` saying your credit balance is too low, and the playground stops too."
+        ]
+      },
+      {
+        "id": "subscriptions",
+        "h2": "Credits included with Max, Ultra and Team",
+        "paras": [
+          "Max includes $100 of API credits a month and Ultra $200. Team gives $20 per Standard seat and $100 per Premium seat, pooled and capped at $500. Free, Pro and Enterprise plans aren’t eligible.",
+          "You claim them by linking a Claude Console organization to your plan. They’re spent before purchased credits, expire at the end of each billing cycle, and don’t cover Claude Code."
+        ]
+      },
+      {
+        "id": "killcord",
+        "h2": "Watching credits with Kill Cord",
+        "paras": [
+          "Kill Cord can’t show your balance, because Anthropic has no API for it. It shows today’s and this month’s Claude spend in your menu bar instead, with alerts at amounts you pick, so you notice a fast drain sooner."
+        ]
+      }
+    ],
+    "faq": [
+      {
+        "q": "How do I check my Claude API credit balance?",
+        "a": "On the Billing page in the Claude Console. Anthropic doesn't document an API that returns the remaining balance."
+      },
+      {
+        "q": "Do Claude API credits expire?",
+        "a": "Yes. Purchased API credits expire one year from the purchase date, and the date can't be extended. Monthly credits from Max, Ultra and Team plans expire at the end of each billing cycle."
+      },
+      {
+        "q": "What happens when my Claude API credits run out?",
+        "a": "API calls and the playground stop until you add credits. Auto-reload on the Billing page can top up the balance before that happens."
+      },
+      {
+        "q": "Does Claude Pro include API credits?",
+        "a": "No. Max, Ultra and Team plans include monthly API credits. Free, Pro and Enterprise plans aren't eligible."
+      }
+    ],
+    "sources": [
+      "https://support.claude.com/en/articles/8977456-how-do-i-pay-for-my-claude-api-usage",
+      "https://platform.claude.com/docs/en/about-claude/pricing",
+      "https://platform.claude.com/docs/en/about-claude/api-credits-for-subscribers",
+      "https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans",
+      "https://platform.claude.com/docs/en/api/errors",
+      "https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api"
+    ]
+  },
+  {
+    "slug": "claude-api-cost",
+    "keyword": "claude api cost",
+    "nav": "Cost",
+    "title": "How to Check Your Claude API Cost | Kill Cord",
+    "description": "How to see what you've spent on the Claude API: the Console Cost page, the cost endpoints, and the spend limits that stop a runaway bill.",
+    "h1": "How to check what you’ve spent on the Claude API",
+    "lede": "This page is about your bill, not the price list. For per-token prices, see [Anthropic’s pricing page](https://platform.claude.com/docs/en/about-claude/pricing). Here’s how to see what you’ve actually spent and cap it.",
+    "sections": [
+      {
+        "id": "console",
+        "h2": "The Cost page in the Claude Console",
+        "paras": [
+          "Open [Cost](https://platform.claude.com/cost). It charts spend over time and totals it for the period you pick, including web search and code execution. Filter by workspace and model, and export a CSV."
+        ]
+      },
+      {
+        "id": "api",
+        "h2": "Cost from the API",
+        "paras": [
+          "`GET /v1/organizations/cost_report` returns daily cost in USD, as decimal strings in cents. Group by workspace or by description, which breaks out model and region. It catches up within about 5 minutes.",
+          "The newer `GET /v1/organizations/analytics/cost` adds hourly buckets, grouping by user, and both your discounted and list-price cost. It runs 4 to 24 hours behind, and figures can change until about 7 days after month end.",
+          "Neither includes Priority Tier commitments. The [Claude billing API page](/track/anthropic/) covers the key and the call."
+        ]
+      },
+      {
+        "id": "caps",
+        "h2": "Cap what you can spend",
+        "list": [
+          "Your tier has a monthly cap: $500 on Start, $1,000 on Build, $200,000 on Scale. Past it, the API pauses until the first of next month.",
+          "Set your own lower limit under [Spend limits](https://platform.claude.com/settings/spend-limits). Past it, requests fail.",
+          "Give each workspace its own monthly limit. The Default Workspace can’t have one, so keep production keys elsewhere.",
+          "If Anthropic bills you directly, add email alerts at an amount you choose."
+        ]
+      }
+    ],
+    "faq": [
+      {
+        "q": "Where do I see how much I've spent on the Claude API?",
+        "a": "On the Cost page in the Claude Console, or from the cost_report endpoint with an Admin API key or a service account or personal key not scoped to a workspace."
+      },
+      {
+        "q": "Why doesn't my Claude API cost include everything?",
+        "a": "The cost endpoints leave out Priority Tier commitments, and the newer analytics endpoint can lag up to 24 hours and revise figures until about 7 days after month end."
+      },
+      {
+        "q": "Can I stop Claude API spending at a set amount?",
+        "a": "Yes. Set an organization spend limit or a workspace limit in the Claude Console. Requests fail once you pass it."
+      },
+      {
+        "q": "Where are Claude API prices?",
+        "a": "On Anthropic's pricing page at platform.claude.com/docs/en/about-claude/pricing."
+      }
+    ],
+    "sources": [
+      "https://support.claude.com/en/articles/9534590-cost-and-usage-reporting-in-the-claude-console",
+      "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
+      "https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api",
+      "https://platform.claude.com/docs/en/api/rate-limits",
+      "https://platform.claude.com/docs/en/manage-claude/workspaces",
+      "https://platform.claude.com/docs/en/about-claude/pricing"
+    ]
+  },
+  {
+    "slug": "anthropic-api-usage",
+    "keyword": "anthropic api usage",
+    "nav": "Organization usage",
+    "title": "Anthropic API Usage Across Your Organization | Kill Cord",
+    "description": "Track Anthropic API usage across workspaces, API keys, users and Claude Code: which key reads org usage, how to group it, and how to limit each workspace.",
+    "h1": "Anthropic API usage across your organization",
+    "lede": "One organization, many keys, workspaces and people. This is how an admin sees who used what, and keeps one team from spending everyone’s budget.",
+    "sections": [
+      {
+        "id": "structure",
+        "h2": "Workspaces and keys share one bill",
+        "paras": [
+          "Workspaces separate projects, environments or teams, with billing kept central. Every API key and workspace draws from the same credit balance. Every organization has a Default Workspace that can’t be renamed, archived or deleted.",
+          "Each response names the workspace it used in the `anthropic-workspace-id` header, including the Default Workspace."
+        ]
+      },
+      {
+        "id": "keys",
+        "h2": "Which key can read organization usage",
+        "list": [
+          "An Admin API key (`sk-ant-admin…`). Only admins can create one, and it has full access to the Admin API.",
+          "An OAuth token with the `org:admin` scope.",
+          "A service account or personal key that isn’t scoped to a workspace. It has the same permissions as its linked account."
+        ],
+        "after": "Workspace keys don’t work. The Admin API isn’t available to individual Console accounts or the claude.ai Team plan. Service account keys keep working after the person who made them leaves; personal keys stop."
+      },
+      {
+        "id": "group",
+        "h2": "Break it down by key, workspace or person",
+        "paras": [
+          "`GET /v1/organizations/analytics/usage` and `/cost` group by up to five dimensions, including `api_key_id`, `workspace_id` and `actor`. The actor is the user or service account behind a key, so you can see usage per person.",
+          "Playground requests have no key. Some Managed Agents sessions show under an Anthropic-managed service account (`svac_…`) with no key ID."
+        ]
+      },
+      {
+        "id": "claude-code",
+        "h2": "Claude Code usage per developer",
+        "paras": [
+          "The Claude Code Analytics API (`/v1/organizations/usage_report/claude_code`) returns one day per call, per user or key, with estimated cost by model. It lags up to an hour. For cost per developer, call the cost endpoint with `products[]=claude_code` grouped by actor."
+        ]
+      },
+      {
+        "id": "limits",
+        "h2": "Limit each workspace",
+        "paras": [
+          "Set a monthly spend limit and rate limits per workspace in the Claude Console. The Default Workspace can’t have a spend limit, so put production keys in their own workspace. The Claude Code workspace is the only one with per-user monthly limits."
+        ]
+      }
+    ],
+    "faq": [
+      {
+        "q": "How do I see Anthropic API usage by API key?",
+        "a": "Filter by API key on the Console Usage page, or group by api_key_id with the usage endpoints."
+      },
+      {
+        "q": "Can a workspace API key read usage reports?",
+        "a": "No. Use an Admin API key, an org:admin OAuth token, or a service account or personal key that isn't scoped to a workspace."
+      },
+      {
+        "q": "How do I see Claude Code usage per developer?",
+        "a": "Use the Claude Code Analytics API, or the cost endpoint with products[]=claude_code grouped by actor."
+      },
+      {
+        "q": "Can I cap one workspace's spend?",
+        "a": "Yes. Each workspace except the Default Workspace can have its own monthly spend limit."
+      }
+    ],
+    "sources": [
+      "https://platform.claude.com/docs/en/manage-claude/admin-api",
+      "https://platform.claude.com/docs/en/manage-claude/workspaces",
+      "https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api",
+      "https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api",
+      "https://platform.claude.com/docs/en/managed-agents/session-observability",
+      "https://platform.claude.com/docs/en/api/overview",
+      "https://platform.claude.com/docs/en/manage-claude/admin-api-keys"
+    ]
+  }
+]
