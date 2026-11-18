@@ -27,13 +27,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.teams = teams
         let settingsWindow = SettingsWindow(updater: updater, model: model, alerts: alerts, teams: teams)
         self.settingsWindow = settingsWindow
-        let statusItemController = StatusItemController(
-            model: model,
-            openSettings: { settingsWindow.show(tab: $0) },
-            checkForUpdates: { [updater] in updater.checkForUpdates() }
-        )
+        let statusItemController = makeStatusItem(model: model, settingsWindow: settingsWindow)
         self.statusItemController = statusItemController
-        alerts.openPanel = { statusItemController.show() }
+        alerts.openPanel = { statusItemController?.show() }
         model.onChange = { [weak self] in self?.statusItemController?.update() }
         model.onSpend = { [weak self, weak model] states in
             guard let model, !model.isDemo else { return }
@@ -53,6 +49,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         #endif
+    }
+
+    private func makeStatusItem(model: SpendModel, settingsWindow: SettingsWindow) -> StatusItemController? {
+        #if DEBUG
+        // A snapshot draws offscreen and quits; it never puts an item in the menu bar.
+        if DemoMode.snapshotURL != nil { return nil }
+        #endif
+        return StatusItemController(
+            model: model,
+            openSettings: { settingsWindow.show(tab: $0) },
+            checkForUpdates: { [updater] in updater.checkForUpdates() }
+        )
     }
 
     /// The free app polls only while the Mac is awake. On sleep it stops; on wake it checks again, and until
