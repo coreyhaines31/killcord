@@ -1,10 +1,15 @@
 // Anthropic Admin API, cost report.
 // Docs: https://platform.claude.com/docs/en/manage-claude/usage-cost-api
 // Reference: https://platform.claude.com/docs/en/api/admin-api/usage-cost/get-cost-report
-// Keys: https://platform.claude.com/docs/en/manage-claude/admin-api-keys
+// Keys: https://platform.claude.com/docs/en/manage-claude/admin-api#authentication
+//       https://platform.claude.com/docs/en/manage-claude/authentication#key-types
+// Not available to individual Console accounts (they must set up an organization first) or to claude.ai Team
+// plan organizations. Accepts an Admin API key (sk-ant-admin…), or a personal or service account key that
+// isn't scoped to a workspace, which "has the same permissions as the linked account". Workspace keys don't
+// work. The docs don't say which role can read the cost report.
 //
 // GET https://api.anthropic.com/v1/organizations/cost_report
-//   headers: x-api-key: <Admin API key, sk-ant-admin…>, anthropic-version: 2023-06-01
+//   headers: x-api-key: <key>, anthropic-version: 2023-06-01
 //   query:   starting_at (RFC 3339, required), bucket_width=1d (the only width), limit (max 31),
 //            page (the previous response's next_page). Kill Cord leaves out ending_at, see below.
 //   200:     { data: [{ starting_at, ending_at, results: [{ amount: "123.45", currency: "USD", workspace_id,
@@ -21,7 +26,7 @@
 // always starts at or before yesterday 00:00Z, then sums the buckets itself. Today's partial bucket may or
 // may not be in the response; when it isn't, today is unreported (nil), not $0.
 //
-// Anthropic has no read-only admin key, and Console organizations can't read spend limits over the API, so
+// Anthropic has no read-only key for this, and Console organizations can't read spend limits over the API, so
 // every Anthropic cap in the audit is self-reported.
 import Foundation
 
@@ -33,8 +38,9 @@ public struct AnthropicProvider: SpendProvider {
     private let api: APIRequester
 
     public init(http: HTTPClient) {
-        api = APIRequester(http: http, missingScopeHint: "Use an Admin API key created by an organization admin, "
-            + "not a regular API key.")
+        api = APIRequester(http: http, missingScopeHint: "The account this key is linked to may not have "
+            + "access to the cost report. Link the key to a service account or member whose role can read "
+            + "costs, or use an Admin API key.")
     }
 
     struct Report: Decodable {
