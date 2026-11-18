@@ -9,6 +9,7 @@ import SwiftUI
 ///     --demo                    sample data; no Keychain, no network
 ///     --snapshot <file.png>     draw the panel and each settings pane to PNGs and quit
 ///     --dark                    dark appearance
+///     --panel-height <points>   the room below the menu bar the panel gets, to check it fits
 @MainActor
 enum DemoMode {
     nonisolated static let isOn = CommandLine.arguments.contains("--demo")
@@ -17,6 +18,12 @@ enum DemoMode {
         guard let index = CommandLine.arguments.firstIndex(of: "--snapshot"),
               index + 1 < CommandLine.arguments.count else { return nil }
         return URL(fileURLWithPath: CommandLine.arguments[index + 1])
+    }
+
+    static var panelHeight: CGFloat? {
+        guard let index = CommandLine.arguments.firstIndex(of: "--panel-height"),
+              index + 1 < CommandLine.arguments.count else { return nil }
+        return Double(CommandLine.arguments[index + 1]).map { CGFloat($0) }
     }
 
     static func prepare() {
@@ -36,7 +43,9 @@ enum DemoMode {
             let paneURL = url.deletingPathExtension().appendingPathExtension("\(name).png")
             render(pane.frame(width: SettingsWindow.paneWidth), to: paneURL)
         }
-        render(PanelView(model: model, openSettings: { _ in }, checkForUpdates: {}), to: url) {
+        let panel = PanelView(model: model, space: PanelSpace(availableHeight: panelHeight), openSettings: { _ in },
+                              checkForUpdates: {})
+        render(panel, to: url) {
             NSApp.terminate(nil)
         }
     }
