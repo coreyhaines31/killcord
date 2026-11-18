@@ -19,6 +19,10 @@ public enum AttributionUnitKind: String, Codable, Sendable, CaseIterable {
     case serviceAccount = "service_account"
     /// A cloud identity (AWS, Google Cloud, Azure, OIDC) that Anthropic attributes usage to.
     case federated
+    /// A key and value label on a project or resource (Google Cloud). The external id is "key=value".
+    case label
+    /// A provider account under a parent account (Twilio subaccounts, and the main account itself).
+    case subaccount
 }
 
 /// Identifies a unit within one provider account.
@@ -142,6 +146,12 @@ public enum AttributionDimension: String, Codable, Sendable {
     case project
     /// OpenAI's `user_id`. What it identifies is not verified (see `AttributionReport.meaningVerified`).
     case user
+    /// One label key on the project (Google Cloud `project.labels`).
+    case projectLabel = "project_label"
+    /// One label key on the resource (Google Cloud `labels`).
+    case resourceLabel = "resource_label"
+    /// Twilio subaccounts, with the main account's own usage as one more unit.
+    case subaccount
 }
 
 /// A provider's breakdown for a range, with the provider's own total for the same range.
