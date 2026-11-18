@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var alerts: Alerts?
     private var statusItemController: StatusItemController?
     private var settingsWindow: SettingsWindow?
+    private var teams: TeamsModel?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         PanelFont.register()
@@ -21,7 +22,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.model = model
         let alerts = Alerts()
         self.alerts = alerts
-        let settingsWindow = SettingsWindow(updater: updater, model: model, alerts: alerts)
+        // Teams is off unless `teamsEnabled` is set; then, and only then, its session exists and talks to the cloud.
+        let teams = makeTeams()
+        self.teams = teams
+        let settingsWindow = SettingsWindow(updater: updater, model: model, alerts: alerts, teams: teams)
         self.settingsWindow = settingsWindow
         let statusItemController = StatusItemController(
             model: model,
@@ -61,6 +65,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         center.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { model.wake() }
         }
+    }
+
+    private func makeTeams() -> TeamsModel? {
+        guard let session = TeamsSession.makeIfEnabled(defaults: Preferences.defaults, http: URLSessionHTTPClient(),
+                                                       store: KeychainSecretStore()) else { return nil }
+        let model = TeamsModel(session: session)
+        model.resume()
+        return model
     }
 
     private func makeModel() -> SpendModel {
