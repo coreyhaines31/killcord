@@ -369,14 +369,52 @@ def meta_description(s):
     a, name, n = s['spend_api'], s['name'], s['search_name']
     if a['status'] == 'yes' and a['endpoint']:
         call = a['endpoint'].split(' ')[0] + ' ' + re.sub(r'^https?://[^/]+', '', a['endpoint'].split(' ', 1)[-1]).split('?')[0]
-        text = f'Check your {n} {noun(s)} with {call}: the key it needs, how fresh it is, and the spend caps {name} offers.'
-        if len(text) > 160:
-            text = f'Check your {n} {noun(s)} from the API: the endpoint, the key it needs, and the spend caps {name} offers.'
+        text = f'Check your {n} {noun(s)} with {call}: the key it needs and how fresh it is.'
+        if len(text) > 110:
+            text = f'Check your {n} {noun(s)} from the API: the endpoint and the key it needs.'
     elif a['status'] == 'partial':
-        text = f'What {name}’s API can and can’t tell you about your {noun(s)}, the key it needs, and the spend caps {name} offers.'
+        text = f'What {name}’s API can and can’t tell you about your {noun(s)}, and the key it needs.'
     else:
-        text = f'{name} has no documented usage API. Where to check your {n} {noun(s)} instead, and the spend caps {name} offers.'
-    return text if len(text) <= 160 else text[:157].rsplit(' ', 1)[0] + '…'
+        text = f'{name} has no documented usage API. Here’s where to check your {n} {noun(s)} instead.'
+    return pad(text, description_clauses(s))
+
+
+def description_clauses(s):
+    """Short true facts to bring a meta description up to 140 to 160 characters."""
+    a, name, caps = s['spend_api'], s['name'], s['native_caps']
+    kinds = {c['kind'] for c in caps}
+    out = []
+    if 'hard-stop' in kinds:
+        out.append(f' {name} can hard-stop spend.')
+    elif kinds & {'partial-stop', 'auto-recharge-off'}:
+        out.append(' Its caps stop only some spend.')
+    elif caps:
+        out.append(' Its only cap is an alert.')
+    elif s['caps_status'] == 'none-documented':
+        out.append(' It documents no spend cap.')
+    tier = s['killcord']['tier']
+    out.append(' Kill Cord audits its cap.' if s['slug'] in caps_only else
+               ' Kill Cord shows it in your menu bar.' if tier == 'built-in' else
+               ' Not in Kill Cord yet.' if tier == 'planned' else '')
+    if a['endpoint']:
+        out.append({'yes': ' A read-only key works.', 'no': ' No key is read-only.'}.get(a['read_only'], ''))
+    elif a['status'] == 'partial':
+        out.append(' It has no usage endpoint.')
+    out += [' Checked against official docs.', ' From official docs.']
+    return [c for c in out if c]
+
+
+def pad(text, clauses, low=140, high=160):
+    if len(text) > high:
+        return text[:high - 3].rsplit(' ', 1)[0] + '…'
+    for clause in clauses:
+        if len(text) >= low:
+            break
+        if 'official docs' in clause and 'official docs' in text:
+            continue
+        if len(text + clause) <= high:
+            text += clause
+    return text
 
 
 def table(rows):
@@ -419,7 +457,7 @@ def hub_pages():
     with_api = sum(s['spend_api']['status'] == 'yes' for s in published)
     hub = {
         'path': 'track/index.html', 'title': 'Check API Usage, Credits and Spend | Kill Cord',
-        'description': f'How to read your balance, credits or spend from {len(published)} API services, the key each needs, and the spend caps each offers.',
+        'description': f'How to read your balance, credits or spend from {len(published)} API services: the endpoint, the key each needs, and the spend caps that stop a runaway bill.',
         'og_title': 'How to check API usage, credits and spend',
         'og_description': 'The endpoint, the key, and the native spend caps for each API service, from official docs.',
         'body_class': 'article-page track-page', 'updated': max(s['last_verified'] for s in published),
@@ -458,6 +496,8 @@ def hub_pages():
         desc = f'How to check usage, credits and spend for {listing}: the endpoint, the key, and the spend caps each offers.'
         if len(desc) > 160:
             desc = f'How to check usage, credits and spend for {len(rows)} {label.lower()}: the endpoint, the key, and the caps each offers.'
+        with_api = sum(r['spend_api']['status'] == 'yes' for r in rows)
+        desc = pad(desc, [f' {with_api} of {len(rows)} answer with one API call.', ' Checked against official docs.', ' From official docs.'])
         pages.append({
             'path': f'track/{slug}/index.html', 'title': title, 'description': desc,
             'og_title': f'{label}: how to check usage and spend', 'og_description': desc,
