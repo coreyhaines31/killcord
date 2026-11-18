@@ -222,7 +222,7 @@ public struct ThresholdPlanner: Sendable {
     func planRenewals(states: [ProviderState], names: [UUID: String], fired: Set<String>,
                       now: Date) -> ([Alert], Set<String>) {
         var alerts: [Alert] = []
-        let today = ISO8601.day(now, in: TimeZone(identifier: "UTC")!)
+        let today = ISO8601.day(ManualPlan.localDay(now), in: TimeZone(identifier: "UTC")!)
         var keep = fired.filter { key in
             let parts = key.split(separator: "|")
             return parts.count == 4 && parts[1] == Self.renewalTag && String(parts[2]) >= today

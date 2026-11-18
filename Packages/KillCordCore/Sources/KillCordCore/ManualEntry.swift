@@ -79,7 +79,7 @@ public struct ManualPlan: Sendable, Equatable, Codable {
     /// The renewal on or after today's date, stepping a month or a year at a time from the one entered.
     /// Steps from the entered day each time, so a plan that renews on the 31st stays at month end.
     static func next(_ start: Date, period: Period, onOrAfter now: Date) -> Date {
-        let today = utc.startOfDay(for: now)
+        let today = localDay(now)
         var steps = 0
         var date = start
         while date < today, steps < 1200 {
@@ -90,9 +90,18 @@ public struct ManualPlan: Sendable, Equatable, Codable {
         return date
     }
 
-    /// Whole days from today until the renewal, on the UTC calendar the dates are kept in.
+    /// The person's calendar day for `now`, as the midnight-UTC date the plan's dates are kept in. A renewal
+    /// on Nov 18 is "today" when it's Nov 18 on the Mac's clock, whatever the hour in UTC.
+    static func localDay(_ now: Date, in timeZone: TimeZone = .current) -> Date {
+        var local = Calendar(identifier: .gregorian)
+        local.timeZone = timeZone
+        let parts = local.dateComponents([.year, .month, .day], from: now)
+        return utc.date(from: parts) ?? utc.startOfDay(for: now)
+    }
+
+    /// Whole days from the person's today until the renewal.
     public func daysUntilRenewal(now: Date) -> Int {
-        let today = Self.utc.startOfDay(for: now)
+        let today = Self.localDay(now)
         return Self.utc.dateComponents([.day], from: today, to: renewsOn).day ?? 0
     }
 }

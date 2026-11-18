@@ -119,3 +119,13 @@ func day(_ text: String) -> Date { ManualPlan.day(text)! }
         #expect(ManualText.renewalDay(plan("2026-11-16"), now: testNow) == "Tomorrow")
     }
 }
+
+@Suite struct ManualLocalDayTests {
+    @Test func todayFollowsTheMacsClockNotUTC() {
+        // 01:30 UTC on Nov 18 is still Nov 17 in San Diego.
+        let lateEvening = ISO8601.date("2026-11-18T01:30:00Z")!
+        let pacific = TimeZone(identifier: "America/Los_Angeles")!
+        #expect(ManualPlan.localDay(lateEvening, in: pacific) == day("2026-11-17"))
+        #expect(ManualPlan.localDay(lateEvening, in: TimeZone(identifier: "UTC")!) == day("2026-11-18"))
+    }
+}
