@@ -28,7 +28,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Alerts you.** Notifications at daily and monthly amounts you choose, per provider and in total, once per day or month.
+- **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month.
 - **Keeps keys in the Keychain.** Not in files, preferences, logs, or exports. No account, no telemetry.
 
 ## Provider coverage
