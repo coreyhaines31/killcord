@@ -18,6 +18,8 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case firecrawl
     case treg
     case monid
+    /// A service the person sets up: an https address and where the balance is in its JSON.
+    case custom
 
     public var id: String { rawValue }
 
@@ -103,16 +105,19 @@ public struct CredentialField: Hashable, Sendable, Identifiable {
     /// Multi-line input, for a pasted JSON key file.
     public let isMultiline: Bool
     public let help: String
+    /// A fixed set of values, drawn as a picker. The first is the default when nothing is saved.
+    public let choices: [String]
 
     public init(id: String, label: String, placeholder: String = "", isSecret: Bool, isOptional: Bool = false,
-                isMultiline: Bool = false, help: String = "") {
+                isMultiline: Bool = false, help: String = "", choices: [String] = []) {
         self.id = id
         self.label = label
         self.placeholder = placeholder
         self.isSecret = isSecret
-        self.isOptional = isOptional
+        self.isOptional = isOptional || !choices.isEmpty
         self.isMultiline = isMultiline
         self.help = help
+        self.choices = choices
     }
 }
 
@@ -292,5 +297,5 @@ extension ProviderInfo {
             billingTimeZone: utc, minimumRefreshInterval: 24 * 3600,
             consoleURL: url("https://supabase.com/dashboard/org/_/billing")
         )
-    ] + balanceProviders).map { ($0.id, $0) })
+    ] + balanceProviders + [custom]).map { ($0.id, $0) })
 }

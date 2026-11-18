@@ -18,7 +18,7 @@ extension ProviderID {
     /// Nil for providers whose mark hasn't been sourced yet: they show the first letter of their name.
     var markAssetName: String? {
         switch self {
-        case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid: nil
+        case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .custom: nil
         default: "mark-\(rawValue)"
         }
     }
@@ -64,6 +64,11 @@ struct ProviderMark: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: size * 0.5 * provider.markScale, height: size * 0.5 * provider.markScale)
+                .frame(width: size * 0.5, height: size * 0.5)
+        } else if provider == .custom {
+            Image(systemName: "curlybraces")
+                .resizable()
+                .scaledToFit()
                 .frame(width: size * 0.5, height: size * 0.5)
         } else {
             // No official mark in the app yet: the name's first letter, never a made-up logo.

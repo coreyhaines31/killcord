@@ -39,6 +39,7 @@ extension ProviderInfo {
         case .firecrawl: "Firecrawl dashboard"
         case .treg: "treg dashboard"
         case .monid: "Monid dashboard"
+        case .custom: "service's site"
         }
     }
 
@@ -81,6 +82,7 @@ extension ProviderInfo {
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid: nil
+        case .custom: "Checked every 15 minutes at most."
         }
     }
 
@@ -92,6 +94,7 @@ extension ProviderInfo {
         case .neon: "Launch, Scale, and Agent plans only."
         case .openrouter: "Reads this key only, not the whole account."
         case .ahrefs: "Shows the workspace's API units. Plans without API access can't connect."
+        case .custom: "Kill Cord can't verify a custom service's numbers: they're whatever its reply says."
         default: nil
         }
     }
@@ -111,6 +114,7 @@ extension ProviderInfo {
         case .firecrawl: "No read-only key is documented. This key can run scrapes on your credits."
         case .treg: "Every treg token can call tools on the balance. Use a limited agent token."
         case .monid: "No read-only key is documented. This key can start paid runs."
+        case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .cloudflare, .supabase: nil
         }
     }
@@ -227,6 +231,13 @@ extension ProviderInfo {
             return [
                 SetupStep("Open API Keys in Monid", "In the Monid dashboard.", link: open("Open Monid Keys")),
                 SetupStep("Create a key and copy it", "It starts with monid_.")
+            ]
+        case .custom:
+            return [
+                SetupStep("Find the service's balance call", "In its API docs: an https address that answers with "
+                    + "the balance or credits left in JSON, or as a plain number."),
+                SetupStep("Fill in where the number is", "Kill Cord calls it once to test before saving. It can't "
+                    + "check that the number is right, so compare it with the service's own dashboard.")
             ]
         }
     }

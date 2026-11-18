@@ -149,6 +149,7 @@ public enum SpendProviders {
         case .firecrawl: FirecrawlProvider(http: http)
         case .treg: TregProvider(http: http)
         case .monid: MonidProvider(http: http)
+        case .custom: CustomProvider(http: http)
         }
     }
 }
@@ -195,11 +196,12 @@ struct APIRequester: Sendable {
 enum ProviderErrorDetail {
     static let maxLength = 200
 
-    static func message(in body: Data, sentWith request: HTTPRequest) -> String? {
+    static func message(in body: Data, sentWith request: HTTPRequest, alsoRemoving extra: [String] = []) -> String? {
         guard let object = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
               let raw = text(in: object) else { return nil }
         var message = raw.split(whereSeparator: \.isWhitespace).joined(separator: " ")
-        for value in sensitiveValues(in: request) {
+        let values = (sensitiveValues(in: request) + extra.filter { !$0.isEmpty }).sorted { $0.count > $1.count }
+        for value in values {
             message = message.replacingOccurrences(of: value, with: "[redacted]")
         }
         guard !message.isEmpty else { return nil }

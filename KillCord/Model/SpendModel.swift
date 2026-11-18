@@ -64,7 +64,8 @@ final class SpendModel {
             if states[record.id] == nil {
                 states[record.id] = ProviderState(provider: record.provider, connectionID: record.id)
             }
-            scheduler.add(record.id, provider: record.provider, now: Date())
+            states[record.id]?.refreshFloor = customConfig(record.id)?.interval
+            scheduler.add(record.id, provider: record.provider, now: Date(), floor: states[record.id]?.refreshFloor)
         }
         pathMonitor.pathUpdateHandler = { [weak self] path in
             let online = path.status == .satisfied
@@ -132,7 +133,7 @@ final class SpendModel {
         guard let adapter = providers[provider] else { throw SpendError.noUsageAPI }
         if !isDemo { try await adapter.validate(candidate, now: Date()) }
         var next = registry
-        let record = id.flatMap { next.record($0) } ?? next.add(provider, now: Date())
+        let record = id.flatMap { next.record($0) } ?? next.adding(provider, named: candidate["serviceName"])
         if !isDemo {
             // The record first, so a key is never saved under an id nothing knows about.
             Preferences.connections = next
@@ -144,9 +145,10 @@ final class SpendModel {
             }
         }
         registry = next
-        states[record.id] = ProviderState(provider: provider, connectionID: record.id)
+        let floor = (try? CustomConfig(candidate))?.interval
+        states[record.id] = ProviderState(provider: provider, connectionID: record.id, refreshFloor: floor)
         lastCapCheck[record.id] = nil
-        scheduler.add(record.id, provider: provider, now: Date())
+        scheduler.add(record.id, provider: provider, now: Date(), floor: floor)
         onChange?()
         tick()
         return record.id
@@ -282,7 +284,7 @@ final class SpendModel {
         // Disconnected while the request was out.
         guard registry.record(id) != nil else { return }
         let now = Date()
-        let empty = ProviderState(provider: record.provider, connectionID: id)
+        let empty = ProviderState(provider: record.provider, connectionID: id, refreshFloor: customConfig(id)?.interval)
         switch result {
         case .success(let snapshot):
             states[id, default: empty].record(snapshot)
@@ -378,16 +380,9 @@ extension SpendModel {
     }
 }
 
-// MARK: - Balances and sample data
+// MARK: - Sample data
 
 extension SpendModel {
-    /// Connections that report a balance, or will once read. In registry order.
-    var balanceConnections: [ConnectionRecord] {
-        registry.records.filter { $0.provider.info.capability.showsBalance || states[$0.id]?.snapshot?.balance != nil }
-    }
-
-    var hasBalances: Bool { orderedStates.contains { $0.snapshot?.balance != nil } }
-
     /// Sample connections and readings, for demo mode and the render tests. Demo models only.
     func showSample(registry: ConnectionRegistry, states: [ProviderState]) {
         guard isDemo else { return }

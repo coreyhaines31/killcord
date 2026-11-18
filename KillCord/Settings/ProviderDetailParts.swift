@@ -134,13 +134,26 @@ struct CredentialFields: View {
         .disabled(isDisabled)
     }
 
+    /// A field with fixed choices. Shows the first until one is picked.
+    private func picker(_ field: CredentialField) -> some View {
+        Picker(field.label, selection: Binding(get: { values[field.id] ?? field.choices[0] },
+                                               set: { values[field.id] = $0 })) {
+            ForEach(field.choices, id: \.self) { Text($0).tag($0) }
+        }
+        .labelsHidden()
+        .fixedSize()
+    }
+
     private func row(_ field: CredentialField) -> some View {
         let binding = Binding(get: { values[field.id] ?? "" }, set: { values[field.id] = $0 })
         let placeholder = field.isSecret && keepsSavedSecrets ? "Leave empty to keep the saved one" : field.placeholder
         return VStack(alignment: .leading, spacing: 4) {
-            Text(field.label + (field.isOptional ? " (optional)" : "")).font(.callout.weight(.medium))
+            Text(field.label + (field.isOptional && field.choices.isEmpty ? " (optional)" : ""))
+                .font(.callout.weight(.medium))
             HStack(alignment: .top, spacing: 6) {
-                if field.isMultiline {
+                if !field.choices.isEmpty {
+                    picker(field)
+                } else if field.isMultiline {
                     // A JSON key file. Never shown again once saved.
                     TextEditor(text: binding)
                         .font(.system(size: 11, design: .monospaced))

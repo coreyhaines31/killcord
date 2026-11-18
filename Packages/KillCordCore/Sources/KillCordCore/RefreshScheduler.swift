@@ -12,6 +12,8 @@ import Foundation
 public struct RefreshScheduler: Sendable, Equatable {
     public struct Entry: Sendable, Equatable {
         public var provider: ProviderID
+        /// This connection's own minimum, when it has one (a custom connection's chosen interval).
+        public var floor: TimeInterval?
         /// Nil while suspended or in flight.
         public var nextDue: Date?
         public var failures: Int = 0
@@ -38,13 +40,17 @@ public struct RefreshScheduler: Sendable, Equatable {
         self.wakeDelay = wakeDelay
     }
 
-    public func interval(for provider: ProviderID) -> TimeInterval {
-        max(interval, provider.info.minimumRefreshInterval)
+    public func interval(for provider: ProviderID, floor: TimeInterval? = nil) -> TimeInterval {
+        max(interval, provider.info.minimumRefreshInterval, floor ?? 0)
+    }
+
+    func interval(for entry: Entry) -> TimeInterval {
+        interval(for: entry.provider, floor: entry.floor)
     }
 
     /// Starts tracking a connection, due right away. Also used when its key changes.
-    public mutating func add(_ id: UUID, provider: ProviderID, now: Date) {
-        entries[id] = Entry(provider: provider, nextDue: now)
+    public mutating func add(_ id: UUID, provider: ProviderID, now: Date, floor: TimeInterval? = nil) {
+        entries[id] = Entry(provider: provider, floor: floor, nextDue: now)
     }
 
     public mutating func remove(_ id: UUID) {
@@ -66,7 +72,8 @@ public struct RefreshScheduler: Sendable, Equatable {
 
     public mutating func succeeded(_ id: UUID, now: Date) {
         guard let entry = entries[id] else { return }
-        entries[id] = Entry(provider: entry.provider, nextDue: now.addingTimeInterval(interval(for: entry.provider)))
+        entries[id] = Entry(provider: entry.provider, floor: entry.floor,
+                            nextDue: now.addingTimeInterval(interval(for: entry)))
     }
 
     public mutating func failed(_ id: UUID, error: SpendError, now: Date) {
@@ -121,7 +128,7 @@ public struct RefreshScheduler: Sendable, Equatable {
     public mutating func setInterval(_ newInterval: TimeInterval, now: Date) {
         interval = newInterval
         for (id, entry) in entries where entry.failures == 0 && !entry.inFlight && !entry.suspended {
-            let cap = now.addingTimeInterval(interval(for: entry.provider))
+            let cap = now.addingTimeInterval(interval(for: entry))
             entries[id]?.nextDue = min(entry.nextDue ?? cap, cap)
         }
     }

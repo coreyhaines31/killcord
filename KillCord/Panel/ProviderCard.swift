@@ -46,6 +46,10 @@ struct ProviderCard: View {
                 Text(reason).font(.system(size: 11)).foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            if provider == .custom {
+                Text("From your own setup. Kill Cord can't verify it.")
+                    .font(.system(size: 11)).foregroundStyle(.secondary)
+            }
             if let asOf = snapshot?.dataAsOf {
                 Text("\(provider.info.name) data current through \(SpendText.time(asOf, now: now)).")
                     .font(.system(size: 11)).foregroundStyle(.secondary)
