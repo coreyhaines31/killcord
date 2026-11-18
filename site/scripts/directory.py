@@ -157,7 +157,7 @@ def steps(s):
     key = a['key_type'] if known(a['key_type']) else 'API key'
     where = (f'<a href="{e(a["key_url"])}">{e(name)}’s key settings</a>' if a['key_url']
              else f'your <a href="{e(s["website"])}">{e(name)}</a> dashboard')
-    items = [f'<li><b>Get the key.</b> {inline(cap_first(sentence(key)))[:-1]}, from {where}.</li>']
+    items = [f'<li><b>Get the key.</b> {inline(cap_first(key.rstrip('.')))}, from {where}.</li>']
     if a['auth']:
         items.append(f'<li><b>Send it the way {e(name)} expects.</b> {inline(sentence(a["auth"]) if re.match(r'^[\w-]+:', a['auth']) else cap_first(sentence(a["auth"])))}</li>')
     items.append(f'<li><b>Call the endpoint.</b> <code>{e(a["endpoint"])}</code></li>')
@@ -459,7 +459,24 @@ def hub_pages():
     return pages
 
 
+def validate():
+    allowed = {'billing_type': {'prepaid', 'usage', 'quota', 'mixed'}, 'caps_status': {'found', 'none-documented', 'unknown'}}
+    for s in services:
+        assert s['category'] in categories, f'{s["slug"]}: unknown category {s["category"]}'
+        assert s['killcord']['tier'] in ('built-in', 'planned', 'none'), f'{s["slug"]}: unknown tier'
+        assert s['spend_api']['status'] in ('yes', 'partial', 'no', 'unknown'), f'{s["slug"]}: unknown API status'
+        assert s['spend_api']['read_only'] in ('yes', 'no', 'partial', 'unknown'), f'{s["slug"]}: unknown read_only'
+        for field, values in allowed.items():
+            assert s[field] in values, f'{s["slug"]}: unknown {field}'
+        for c in s['native_caps']:
+            assert c['kind'] in kind_labels, f'{s["slug"]}: unknown cap kind {c["kind"]}'
+        assert s['sources'], f'{s["slug"]}: no sources'
+        if s['publish'] and s['killcord']['tier'] == 'built-in':
+            assert s['slug'] in builtin_shows or s['slug'] in caps_only, f'{s["slug"]}: built-in without app copy'
+
+
 def pages():
+    validate()
     slugs = {categories[k][0] for k in categories}
     clash = slugs & {s['slug'] for s in services}
     assert not clash, f'Service slug clashes with a category: {clash}'
