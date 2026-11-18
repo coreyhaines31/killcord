@@ -12,7 +12,7 @@ Rules for a mark:
 - The provider's name always sits next to the mark, and the mark never suggests a partnership.
 - The mark fills about half of its key, which leaves clear space. OpenAI's file includes its own clear space, so it draws 1.45 times larger, the same as in Fuel Gauge. Cloudflare's cloud is very wide, so it draws 1.3 times larger to stay legible.
 
-Checked 2026-11-17.
+Checked 2026-11-17 (the six balance services added the same day).
 
 | Provider | File | Source | Terms | Asks for permission? |
 |---|---|---|---|---|
@@ -24,5 +24,9 @@ Checked 2026-11-17.
 | Twilio | `twilio-bug.svg`: the six subpaths of the circular "bug" from the official Twilio logo on twilio.com, unchanged, with the canvas cropped to them | https://www.twilio.com/en-us (the site's own "Twilio logo" SVG) | https://www.twilio.com/en-us/legal/logo-use: the corporate logo may not be used "without our express written permission"; only the "Powered by Twilio" badge is open. | Yes |
 | Neon | `neon-logomark-light-mono.svg`, unmodified | https://neon.com/brand | Use mono only when context needs it, and the logomark only where the full logo doesn't fit. Don't edit, distort, recolour, or reconfigure. | No |
 | Supabase | `supabase-icon-green-transparent.svg`, unmodified (colour icon, drawn in one colour) | https://supabase.com/brand-assets | Use the logos only to refer to Supabase, and don't change the files or the logo colours. Supabase publishes no one-colour icon. | No, but one-colour rendering differs from its colours |
-
-OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg and Monid have no mark in the app yet. Until each is sourced under the rules above, Kill Cord shows the first letter of the name on the key instead, never a redrawn logo.
+| OpenRouter | `glyph-ink.svg`, unmodified (the glyph in Ink) | https://openrouter.ai/brand (file at openrouter.ai/brand/logos/transparent/glyph/svg/glyph-ink.svg) | "Please don’t stretch, recolor, or remix the marks." The Ink glyph is near black; dark mode draws it in the light label ink. | No, but asks not to recolour |
+| DataForSEO | `dataforseo-mark.svg`: the ring path from the logo lockup on DataForSEO's docs site, unchanged, with the canvas cropped to it (the lockup's blue-and-yellow fill is dropped, one colour) | https://docs.dataforseo.com/v3/wp-content/themes/dataforseo/assets/img/logo.svg | No brand page or trademark guidelines found (dataforseo.com/brand, /press-kit and /brand-book are 404; /logo redirects home). | Unknown: no published terms |
+| Ahrefs | `favicon.svg`, unmodified (the compact "a" mark, colour, drawn in one colour) | Ahrefs' own asset at https://static.ahrefs.com/favicon.svg, the vector of the "Compact Ahrefs logo" on https://ahrefs.com/logo (that page offers PNGs only) | "Please do not alter the original files with filters or effects." | No, but one-colour rendering differs from its colours |
+| Firecrawl | `firecrawl-logo.svg`, unmodified (the flame symbol, colour, drawn in one colour) | `brand-assets.zip` from https://www.firecrawl.dev/brand | The symbol is for "square or minimal versions of the logo"; avoid stretching, recolouring, or modifying. | No, but one-colour rendering differs from its colours |
+| treg | `treg-mark.svg`: the two quadrant squares of the ▚ mark from treg's `favicon.svg` ("mono cut"), unchanged, without the favicon's black app tile, canvas cropped to them | https://treg.to/favicon.svg | No brand page or trademark guidelines found (treg.to/brand is 404). | Unknown: no published terms |
+| Monid | `Monid_Astrid_NearBlack.svg`, unmodified (the Astrid mark) | Brand kit at https://monid.ai/brand/ (file at monid.ai/brand/brand-kit/SVG/) | "Integrations, docs, talks and press may use the name and the logo as shown here. Ask before co-branding." "Do not alter … Use them as supplied." | No, for referring to Monid |

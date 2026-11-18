@@ -15,10 +15,10 @@ extension SignalLight {
 
 extension ProviderID {
     /// The asset catalog name of the provider's official mark. `docs/third-party-marks.md` gives each source.
-    /// Nil for providers whose mark hasn't been sourced yet: they show the first letter of their name.
+    /// Nil for custom and manual connections, which aren't a vendor and draw a symbol instead.
     var markAssetName: String? {
         switch self {
-        case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .custom, .manual: nil
+        case .custom, .manual: nil
         default: "mark-\(rawValue)"
         }
     }
