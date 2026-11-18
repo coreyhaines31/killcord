@@ -34,6 +34,7 @@ struct ThresholdsSettingsView: View {
                 ForEach(money) { provider in
                     providerSection(provider)
                 }
+                lowBalanceSection
             }
             .formStyle(.grouped)
         }
@@ -122,6 +123,44 @@ struct ThresholdsSettingsView: View {
         }
     }
 
+    /// One alert per connection with a balance, in that balance's own unit. Fires once each time it drops
+    /// to the amount, and again only after it's been topped up or reset.
+    @ViewBuilder
+    private var lowBalanceSection: some View {
+        let records = model.balanceConnections
+        if !records.isEmpty {
+            Section {
+                ForEach(records) { record in
+                    let balance = model.states[record.id]?.snapshot?.balance
+                    HStack(spacing: 10) {
+                        ProviderMark(provider: record.provider)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(record.name)
+                            Text(balance.map(BalanceText.remaining) ?? "Not read yet")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        AmountField(label: "\(record.name) low balance", unit: balance?.unit ?? .money(.usd),
+                                    value: Binding(
+                                        get: { thresholds.perConnection[record.id]?.lowBalance },
+                                        set: { value in
+                                            var limits = thresholds.perConnection[record.id] ?? .init()
+                                            limits.lowBalance = value
+                                            thresholds.perConnection[record.id] = limits.isEmpty ? nil : limits
+                                        }
+                                    ))
+                    }
+                }
+            } header: {
+                Text("Low balance")
+            } footer: {
+                Text("Alerts when a balance is at or below the amount, in its own unit. It alerts again only after "
+                    + "a top-up or reset. Balances aren't spend, so they're not in the totals above.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
     private func spentToday(_ id: UUID) -> String? {
         guard let today = model.states[id]?.snapshot?.today else { return nil }
         return "\(MoneyText.string(today)) so far today"
@@ -155,13 +194,17 @@ struct AmountField: View {
     static let width: CGFloat = 104
 
     let label: String
+    /// Dollars unless a balance is in credits or other units.
+    var unit: Balance.Unit = .money(.usd)
     @Binding var value: Decimal?
     @State private var text = ""
     @State private var invalid = false
 
     var body: some View {
         HStack(spacing: 3) {
-            Text("$").foregroundStyle(.secondary).accessibilityHidden(true)
+            if unit == .money(.usd) {
+                Text("$").foregroundStyle(.secondary).accessibilityHidden(true)
+            }
             TextField(label, text: $text, prompt: Text("None"))
                 .textFieldStyle(.roundedBorder)
                 .labelsHidden()
@@ -170,12 +213,24 @@ struct AmountField: View {
                 .overlay(RoundedRectangle(cornerRadius: 5).strokeBorder(invalid ? Color.red : .clear))
                 .onSubmit(commit)
                 .onChange(of: text) { _, _ in commit() }
-                .accessibilityLabel("\(label) alert, in dollars")
+                .accessibilityLabel("\(label) alert, in \(unitWord)")
+            if case .units(let name) = unit {
+                Text(name).font(.caption).foregroundStyle(.secondary).lineLimit(1).accessibilityHidden(true)
+            } else if case .money(let currency) = unit, currency != .usd {
+                Text(currency.code).font(.caption).foregroundStyle(.secondary).accessibilityHidden(true)
+            }
         }
-        .frame(width: Self.width)
+        .frame(width: unit == .money(.usd) ? Self.width : Self.width + 56)
         .help(invalid ? "Enter an amount like 25 or 12.50" : "Leave empty for no alert")
         .onAppear {
             text = value.map { NSDecimalNumber(decimal: $0).stringValue } ?? ""
+        }
+    }
+
+    private var unitWord: String {
+        switch unit {
+        case .money(let currency): currency == .usd ? "dollars" : currency.code
+        case .units(let name): name
         }
     }
 

@@ -49,9 +49,7 @@ final class SpendModel {
 
     func start() {
         if isDemo {
-            registry = DemoData.registry()
-            states = Dictionary(uniqueKeysWithValues: DemoData.states().map { ($0.connectionID, $0) })
-            onChange?()
+            showSample(registry: DemoData.registry(), states: DemoData.states())
             return
         }
         let fallback = Preferences.migrate(secrets: secrets)
@@ -376,5 +374,24 @@ extension SpendModel {
             return fields.map { ($0, $0.isSecret ? sample : "sample") }
         }
         return storedCredentials(id)?.hints ?? []
+    }
+}
+
+// MARK: - Balances and sample data
+
+extension SpendModel {
+    /// Connections that report a balance, or will once read. In registry order.
+    var balanceConnections: [ConnectionRecord] {
+        registry.records.filter { $0.provider.info.capability.showsBalance || states[$0.id]?.snapshot?.balance != nil }
+    }
+
+    var hasBalances: Bool { orderedStates.contains { $0.snapshot?.balance != nil } }
+
+    /// Sample connections and readings, for demo mode and the render tests. Demo models only.
+    func showSample(registry: ConnectionRegistry, states: [ProviderState]) {
+        guard isDemo else { return }
+        self.registry = registry
+        self.states = Dictionary(uniqueKeysWithValues: states.map { ($0.connectionID, $0) })
+        onChange?()
     }
 }
