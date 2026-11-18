@@ -134,12 +134,16 @@ public final class URLSessionHTTPClient: HTTPClient, @unchecked Sendable {
         // Custom connections are a macOS feature; the Linux build only runs the core tests, on mocks.
         throw SpendError.network
         #else
+        // The request's timeout only covers silence; a reply that trickles in also has a whole-request deadline.
+        let deadline = Date().addingTimeInterval(limits.timeout * 2)
         let (bytes, response) = try await session.bytes(for: request, delegate: SameHostRedirects())
         var data = Data()
         for try await byte in bytes {
             data.append(byte)
             if data.count > limits.maxResponseBytes { throw SpendError.unexpectedResponse }
+            if data.count % 1024 == 0, Date() > deadline { throw SpendError.network }
         }
+        guard Date() <= deadline else { throw SpendError.network }
         return (data, response)
         #endif
     }
