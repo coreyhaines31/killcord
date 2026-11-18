@@ -34,22 +34,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Swift
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.1"
-
       - name: Roles and row-level security
         run: spikes/teams-worker/sql/check-roles.sh
 
-      - name: Build the worker
-        working-directory: spikes/teams-worker
-        run: swift build
-
-      - name: Test (envelope, leases, two-org decrypt)
-        working-directory: spikes/teams-worker
-        run: swift test
-
-      - name: Run the worker binary once
-        working-directory: spikes/teams-worker
-        run: swift run killcord-worker-spike
+      # The dependency graph needs Swift 6.4 tools (swift-collections 1.7.6), newer than setup-swift offers, so build in the official
+      # image, on the host network so it reaches the Postgres service.
+      - name: Build, test, and run the worker (Swift 6.4, Linux)
+        run: |
+          docker run --rm --network host -v "$PWD:/repo" -w /repo/spikes/teams-worker \
+            -e KC_SPIKE_PGHOST -e KC_SPIKE_OWNER -e KC_SPIKE_OWNER_PASSWORD \
+            swift:6.4.2-noble \
+            bash -c "swift --version && swift build && swift test && swift run killcord-worker-spike"
