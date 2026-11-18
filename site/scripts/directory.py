@@ -48,8 +48,9 @@ def known(value):
 
 
 def inline(text):
-    """Escape, then turn `backticks` into code."""
-    return re.sub(r'`([^`]+)`', r'<code>\1</code>', e(text))
+    """Escape, then turn `backticks` into code and [text](url) into links."""
+    html = re.sub(r'`([^`]+)`', r'<code>\1</code>', e(text))
+    return re.sub(r'\[([^\]]+)\]\(([^)\s]+)\)', r'<a href="\2">\1</a>', html)
 
 
 def sentence(text):
@@ -78,6 +79,8 @@ def noun(s):
 
 
 def title_for(s):
+    if s.get('page', {}).get('title'):
+        return s['page']['title']
     n = s['search_name']
     thing = {'balance': 'Balance', 'credits': 'Credits', 'usage': 'Usage', 'spend': 'Usage and Spend'}[noun(s)]
     for title in (f'How to Check Your {n} {thing} | Kill Cord', f'Check Your {n} {thing} | Kill Cord',
@@ -85,6 +88,10 @@ def title_for(s):
         if len(title) <= 60:
             return title
     return f'{n} {thing}'[:60]
+
+
+def h1_for(s):
+    return s.get('page', {}).get('h1') or f'How to check your {s["search_name"]} {noun(s)}'
 
 
 def path_for(s):
@@ -316,8 +323,8 @@ def service_page(s):
   <div class="bx-wrap page-head">
     <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Kill Cord</a></li><li><a href="/track/">Track API spend</a></li><li><a href="{category_url(key)}">{e(categories[key][1])}</a></li><li aria-current="page">{e(s["search_name"])}</li></ol></nav>
     {tier_badge(s)}
-    <h1 id="page-title">How to check your {e(s["search_name"])} {noun(s)}</h1>
-    <p class="bx-lede">{inline(intro(s))}</p>
+    <h1 id="page-title">{e(h1_for(s))}</h1>
+    <p class="bx-lede">{inline(s.get('page', {}).get('lede') or intro(s))}</p>
   </div>
 </section>
 
@@ -336,7 +343,7 @@ def service_page(s):
     <div class="bx-faq faq-list">{faq_html}</div>
   </section>
 
-{related(s)}
+{cluster_nav(s['slug']) if s['slug'] == 'anthropic' else ''}{related(s)}
   <section aria-labelledby="sources-title">
     <h2 id="sources-title">Sources</h2>
     <p>Every fact on this page comes from {e(s["name"])}’s own docs. Anything they don’t say is marked “Not documented”. Last checked {s["last_verified"]}.</p>
@@ -346,7 +353,7 @@ def service_page(s):
     description = meta_description(s)
     return {
         'path': path_for(s), 'title': title_for(s), 'description': description,
-        'og_title': f'How to check your {s["search_name"]} {noun(s)}', 'og_description': description,
+        'og_title': h1_for(s), 'og_description': description,
         'body_class': 'article-page track-page', 'updated': s['last_verified'], 'content': content,
         'crumbs': [('Kill Cord', site), ('Track API spend', site + 'track/'),
                    (categories[key][1], site + category_url(key)[1:]), (s['search_name'], site + url_for(s)[1:])],
@@ -495,9 +502,73 @@ def validate():
             assert s['slug'] in builtin_shows or s['slug'] in caps_only, f'{s["slug"]}: built-in without app copy'
 
 
+cluster = json.loads((root / 'data/claude-cluster.json').read_text())
+
+
+def cluster_nav(current):
+    links = [('anthropic', 'Billing API', '/track/anthropic/')] + [(c['slug'], c['nav'], f'/track/{c["slug"]}/') for c in cluster]
+    items = ''.join(f'<li><a href="{url}"{" aria-current=\"page\"" if slug == current else ""}>{e(label)}</a></li>'
+                    for slug, label, url in links)
+    return f'''  <section aria-labelledby="cluster-title">
+    <h2 id="cluster-title">More on Claude API spend</h2>
+    <ul class="cat-nav">{items}</ul>
+  </section>
+
+'''
+
+
+def cluster_page(c):
+    sections = []
+    for sec in c['sections']:
+        body = ''.join(f'\n    <p>{inline(x)}</p>' for x in sec.get('paras', []))
+        if sec.get('list'):
+            body += '\n    <ul>' + ''.join(f'<li>{inline(x)}</li>' for x in sec['list']) + '</ul>'
+        if sec.get('after'):
+            body += f'\n    <p>{inline(sec["after"])}</p>'
+        sections.append(f'''  <section aria-labelledby="{sec["id"]}-title">
+    <h2 id="{sec["id"]}-title">{inline(sec["h2"])}</h2>{body}
+  </section>
+''')
+    faq = [(f['q'], f['a']) for f in c['faq']]
+    faq_html = ''.join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in faq)
+    sources = ''.join(f'<li><a href="{e(u)}">{e(re.sub(r"^https?://", "", u))}</a></li>' for u in c['sources'])
+    anthropic = by_slug['anthropic']
+    content = f'''<section class="bx-hero page-hero" aria-labelledby="page-title">
+  <div class="bx-wrap page-head">
+    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Kill Cord</a></li><li><a href="/track/">Track API spend</a></li><li><a href="/track/anthropic/">Claude API</a></li><li aria-current="page">{e(c["nav"])}</li></ol></nav>
+    <p class="bx-badge tier-on"><i aria-hidden="true"></i>Claude API · Built into Kill Cord</p>
+    <h1 id="page-title">{e(c["h1"])}</h1>
+    <p class="bx-lede">{inline(c["lede"])}</p>
+  </div>
+</section>
+
+<div class="bx-wrap prose">
+{"".join(sections)}{killcord_section(anthropic)}
+  <section aria-labelledby="faq-title">
+    <h2 id="faq-title">Questions</h2>
+    <div class="bx-faq faq-list">{faq_html}</div>
+  </section>
+
+{cluster_nav(c["slug"])}  <section aria-labelledby="sources-title">
+    <h2 id="sources-title">Sources</h2>
+    <p>Every fact on this page comes from Anthropic’s own docs and help center. Last checked {anthropic["last_verified"]}.</p>
+    <ul class="sources">{sources}</ul>
+  </section>
+</div>'''
+    return {
+        'path': f'track/{c["slug"]}/index.html', 'title': c['title'], 'description': c['description'],
+        'og_title': c['h1'], 'og_description': c['description'], 'body_class': 'article-page track-page',
+        'updated': anthropic['last_verified'], 'content': content, 'faq': faq,
+        'crumbs': [('Kill Cord', site), ('Track API spend', site + 'track/'), ('Claude API', site + 'track/anthropic/'),
+                   (c['nav'], site + f'track/{c["slug"]}/')],
+    }
+
+
 def pages():
     validate()
     slugs = {categories[k][0] for k in categories}
     clash = slugs & {s['slug'] for s in services}
     assert not clash, f'Service slug clashes with a category: {clash}'
-    return hub_pages() + [service_page(s) for s in published]
+    taken = {s['slug'] for s in services} | slugs
+    assert not taken & {c['slug'] for c in cluster}, 'Cluster slug clashes with a service or category'
+    return hub_pages() + [service_page(s) for s in published] + [cluster_page(c) for c in cluster]

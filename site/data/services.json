@@ -129,6 +129,11 @@
         "a": "Not as is. The cost report isn't available to individual Console accounts. Set up an organization in the Claude Console first, then create the key there."
       }
     ],
+    "page": {
+      "title": "Claude Billing API: Read Your Spend in Code | Kill Cord",
+      "h1": "The Claude billing API: read your spend in code",
+      "lede": "Anthropic’s cost report gives you Claude API spend over HTTP. Here’s the call, the key it needs, and the limit that stops spend on its own."
+    },
     "native_caps": [
       {
         "name": "Organization spend limit",
