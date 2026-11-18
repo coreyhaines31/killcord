@@ -1,0 +1,5 @@
+{"accounts":[
+ {"sid":"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","friendly_name":"Acme","status":"active","owner_account_sid":"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","type":"Full","date_created":"Thu, 01 Jan 2026 00:00:00 +0000"},
+ {"sid":"ACbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","friendly_name":"Marketing","status":"active","owner_account_sid":"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","type":"Full","date_created":"Thu, 01 Jan 2026 00:00:00 +0000"},
+ {"sid":"ACcccccccccccccccccccccccccccccccc","friendly_name":"Old pilot","status":"closed","owner_account_sid":"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","type":"Full","date_created":"Thu, 01 Jan 2026 00:00:00 +0000"}
+],"first_page_uri":"/2010-04-01/Accounts.json?PageSize=1000&Page=0","next_page_uri":null,"previous_page_uri":null,"page":0,"page_size":1000,"start":0,"end":2,"uri":"/2010-04-01/Accounts.json?PageSize=1000&Page=0"}
