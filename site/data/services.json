@@ -2160,7 +2160,7 @@
     "billing_type": "mixed",
     "spend_api": {
       "status": "partial",
-      "endpoint": "POST https://backboard.railway.com/graphql/v2 (queries used by the `railway usage` command)",
+      "endpoint": "POST https://backboard.railway.com/graphql/v2",
       "returns": "Usage by project for a billing period (memory, CPU, network egress, disk and backup measurements), estimated usage for the current period, the workspace usage limit (`softLimit`, `hardLimit`, `isOverLimit`), and agent usage in cents (`totalUsedCents`, `hardLimitCents`, `usageRemaining`). Dollar totals for compute are not returned; the CLI works them out from fixed rates.",
       "units": "units",
       "auth": "Authorization: Bearer <account or workspace token>",
@@ -2171,7 +2171,7 @@
       "rate_limit": "Per hour: 100 Free, 1,000 Hobby, 10,000 Pro. Per second: 10 Hobby, 50 Pro. HTTP 429 with Retry-After.",
       "lag": "unknown",
       "cost_to_call": "unknown",
-      "notes": "The Public API docs do not document usage or cost queries. The official CLI source uses them, so they can change without notice. The `railway usage`, `railway usage projects` and `railway usage limit status` commands wrap them. Account and workspace tokens are created at the key URL, project tokens in project settings."
+      "notes": "The official CLI’s `railway usage` command reads these through the GraphQL API. The Public API docs do not document usage or cost queries. The official CLI source uses them, so they can change without notice. The `railway usage`, `railway usage projects` and `railway usage limit status` commands wrap them. Account and workspace tokens are created at the key URL, project tokens in project settings."
     },
     "native_caps": [
       {
