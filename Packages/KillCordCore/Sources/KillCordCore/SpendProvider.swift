@@ -157,7 +157,8 @@ struct APIRequester: Sendable {
         }
         guard (200..<300).contains(response.status) else {
             throw SpendError.from(status: response.status, headers: response.headers,
-                                  missingScopeHint: missingScopeHint)
+                                  missingScopeHint: missingScopeHint,
+                                  detail: ProviderErrorDetail.message(in: response.body, sentWith: request))
         }
         return response
     }
@@ -172,6 +173,54 @@ struct APIRequester: Sendable {
 
     func get<T: Decodable>(_ type: T.Type, _ url: URL, headers: [String: String]) async throws -> T {
         try decode(type, from: try await send(HTTPRequest(url: url, headers: headers)))
+    }
+}
+
+/// The human sentence in a provider's error body, for 4xx failures. Handles the common shapes:
+/// `{error: {message}}` (Anthropic, OpenAI, Vercel), `{errors: [{message}]}` (Cloudflare), and
+/// `{message}` (Neon, Twilio). Every header value the request carried (keys and tokens travel only in
+/// headers) is removed first, so a provider echoing the key back can't put it on screen.
+enum ProviderErrorDetail {
+    static let maxLength = 200
+
+    static func message(in body: Data, sentWith request: HTTPRequest) -> String? {
+        guard let object = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
+              let raw = text(in: object) else { return nil }
+        var message = raw.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        for value in sensitiveValues(in: request) {
+            message = message.replacingOccurrences(of: value, with: "[redacted]")
+        }
+        guard !message.isEmpty else { return nil }
+        return message.count > maxLength ? String(message.prefix(maxLength - 1)) + "…" : message
+    }
+
+    private static func text(in object: [String: Any]) -> String? {
+        if let error = object["error"] as? [String: Any], let message = error["message"] as? String { return message }
+        if let errors = object["errors"] as? [[String: Any]], let message = errors.first?["message"] as? String {
+            return message
+        }
+        if let message = object["message"] as? String { return message }
+        return object["error"] as? String
+    }
+
+    private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent"]
+
+    /// Header values, whole and split on spaces ("Bearer abc" gives "abc"), plus what a Basic auth token
+    /// decodes to ("sid:token" gives both halves). Longest first.
+    private static func sensitiveValues(in request: HTTPRequest) -> [String] {
+        var values: Set<String> = []
+        for (name, value) in request.headers where !plainHeaders.contains(name.lowercased()) {
+            values.insert(value)
+            for word in value.split(separator: " ").map(String.init) {
+                values.insert(word)
+                guard let data = Data(base64Encoded: word), let decoded = String(data: data, encoding: .utf8) else {
+                    continue
+                }
+                values.insert(decoded)
+                for part in decoded.split(separator: ":") { values.insert(String(part)) }
+            }
+        }
+        return values.filter { $0.count >= 8 }.sorted { $0.count > $1.count }
     }
 }
 

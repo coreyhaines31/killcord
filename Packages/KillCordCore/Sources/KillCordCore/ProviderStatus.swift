@@ -76,7 +76,7 @@ extension SpendError {
         case .rateLimited: return "Wait a minute, then connect again."
         case .offline: return "Check your internet connection, then connect again."
         case .network, .server, .unexpectedStatus: return "Try again in a minute."
-        case .unexpectedResponse: return "Check for a Kill Cord update in General."
+        case .unexpectedResponse, .rejected: return "Check for a Kill Cord update in General."
         }
     }
 }
