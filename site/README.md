@@ -12,13 +12,19 @@ The static site for https://killcord.app, generated from shared layouts. The app
 
 `data/services.json` holds one record per API service: its billing model, the balance or usage endpoint (auth, key type, read-only key, rate limit, freshness), its native spend caps, and Kill Cord's support tier. Facts come only from each vendor's official docs or SDK source; anything they don't say stays `"unknown"` and shows as "Not documented". `scripts/directory.py` turns every record with `"publish": true` into `/track/<slug>/`, plus the `/track/` hub and one hub per category, all in the sitemap.
 
-Kill Cord's tier must match the app: `built-in` only for providers in `KillCordCore/Provider.swift`, `planned` only for adapters the balance-API research recommends (no dates promised), `none` otherwise. To add a page, add or fix the record, set `publish`, update `last_verified`, and run `make lint`.
+Kill Cord's tier must match the app: `built-in` only for providers in `KillCordCore/Provider.swift`, `planned` only for adapters the balance-API research recommends (no dates promised), `none` otherwise. `data/claude-cluster.json` holds the Claude API guides (usage, credits, cost, organization usage). Each targets one query; `/track/anthropic/` targets the Claude billing API. A record can override its page title, H1 and lede with `page`, its wording with `noun`, its setup with `setup_steps`, its FAQ with `extra_faq`, and its Kill Cord line with `killcord.note`. Publish only records whose spend API status and caps status are known.
+
+To add a page, add or fix the record, set `publish`, update `last_verified`, and run `make lint`.
 
 Run `make build` to generate `dist/`, or `make lint` to build and check structure, alt text, title and description lengths, em dashes, internal links, and assets. `make images` re-renders the social card from `scripts/og.html` and the touch icon from the mac-app-kit icon. The build uses Python's standard library only.
 
 The look is the Mac app family's Brushed design: `src/assets/brushed.css`, `popover.css`, and `family/` are copied from `mac-app-kit/site-kit` (edit them there, then copy them in), and `styles.css` maps this site's sections onto them. Kill Cord's lime `#7ea81f` appears only as pilot lights; the hero panel's nameplate light uses the app's own red stop colour, like the real panel.
 
 Copy follows the repo rule: no em dashes anywhere user-facing (`make lint` checks).
+
+## Caching
+
+The build writes a fingerprinted copy of each stylesheet, image and font to `/_a/` (`styles.<hash>.css`) and points every page at it. `vercel.json` serves `/_a/` with `max-age=31536000, immutable`; everything else, HTML included, keeps Vercel's revalidating default. `og.png` and `favicon.ico` keep fixed URLs because other sites and browsers fetch them by name.
 
 ## Preview
 
