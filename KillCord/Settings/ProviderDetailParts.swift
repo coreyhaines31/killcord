@@ -158,9 +158,13 @@ struct CredentialFields: View {
 
     private var advanced: [CredentialField] { fields.filter(\.isAdvanced) }
 
-    /// Something typed (or saved) in a field that's tucked away, so it's never hidden from the person.
+    /// Something typed (or saved) in a field that's tucked away, so it's never hidden from the person. A
+    /// picker left on its default doesn't count.
     private var advancedHasValues: Bool {
-        advanced.contains { !(values[$0.id] ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        advanced.contains { field in
+            let value = (values[field.id] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            return !value.isEmpty && value != field.choices.first
+        }
     }
 
     var body: some View {
