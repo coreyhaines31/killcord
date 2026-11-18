@@ -4,6 +4,8 @@ from string import Template
 import json
 import shutil
 
+import directory
+
 root = Path(__file__).resolve().parent.parent
 source = root / 'src'
 output = root / 'dist'
@@ -18,7 +20,7 @@ def fill(text):
 
 
 shared = {name: fill(partials[name]) for name in ('header', 'footer')}
-pages = json.loads((source / 'pages.json').read_text())
+pages = json.loads((source / 'pages.json').read_text()) + directory.pages()
 site = 'https://killcord.app/'
 app = {
     '@context': 'https://schema.org',
@@ -38,9 +40,12 @@ app = {
 def structured_data(page, url):
     if page['path'] == 'index.html':
         return json.dumps(app, ensure_ascii=False).replace('</', '<\\/')
+    crumbs = page.get('crumbs') or [('Kill Cord', site), (page['crumb'], url)]
     graph = [app, {'@type': 'BreadcrumbList', 'itemListElement': [
-        {'@type': 'ListItem', 'position': 1, 'name': 'Kill Cord', 'item': site},
-        {'@type': 'ListItem', 'position': 2, 'name': page['crumb'], 'item': url}]}]
+        {'@type': 'ListItem', 'position': i, 'name': name, 'item': item} for i, (name, item) in enumerate(crumbs, 1)]}]
+    if page.get('faq'):
+        graph.append({'@type': 'FAQPage', 'mainEntity': [
+            {'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in page['faq']]})
     return json.dumps({'@context': 'https://schema.org', '@graph': graph}, ensure_ascii=False).replace('</', '<\\/')
 
 
@@ -63,7 +68,7 @@ for page in pages:
     values['og_image'] = site + 'og.png'
     # Only the homepage mounts the app's popover.
     values['page_css'] = '  <link rel="stylesheet" href="/popover.css">\n' if path == 'index.html' else ''
-    values['content'] = fill((source / 'pages' / path).read_text().strip())
+    values['content'] = fill(page['content'] if 'content' in page else (source / 'pages' / path).read_text().strip())
     target = output / path
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(layout.substitute(values))

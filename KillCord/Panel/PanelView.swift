@@ -2,10 +2,11 @@ import KillCordCore
 import PanelKit
 import SwiftUI
 
-/// What opens from the menu bar: totals, a card per connected provider, and the caps audit's progress.
+/// What opens from the menu bar: totals, a card per connection (with a provider subtotal when a provider
+/// has more than one), and the caps audit's progress.
 struct PanelView: View {
     let model: SpendModel
-    let openSettings: (SettingsWindow.Tab?) -> Void
+    let openSettings: (SettingsTab?) -> Void
     let checkForUpdates: () -> Void
 
     @Environment(\.panelTheme) private var theme
@@ -30,9 +31,14 @@ struct PanelView: View {
                         if model.connected.isEmpty {
                             EmptyStateView(connect: { openSettings(.providers) }, reviewCaps: { openSettings(.caps) })
                         } else {
-                            ForEach(model.connected) { provider in
-                                ProviderCard(provider: provider, model: model, now: context.date,
-                                             openSettings: openSettings)
+                            ForEach(summary.groups) { group in
+                                if group.rows.count > 1 {
+                                    ProviderSubtotal(group: group)
+                                }
+                                ForEach(group.rows) { row in
+                                    ProviderCard(connectionID: row.connectionID, provider: row.provider, name: row.name,
+                                                 model: model, now: context.date, openSettings: openSettings)
+                                }
                             }
                             capsRow
                         }
@@ -137,7 +143,44 @@ struct TotalsView: View {
         return notes
     }
 
-    private func names(_ providers: [ProviderID]) -> String {
-        ListFormatter.localizedString(byJoining: providers.map(\.info.name))
+    private func names(_ ids: [UUID]) -> String {
+        ListFormatter.localizedString(byJoining: summary.names(ids))
+    }
+}
+
+/// Above a provider's cards when it has more than one account: what they add up to.
+struct ProviderSubtotal: View {
+    let group: SpendSummary.Group
+
+    @Environment(\.panelTheme) private var theme
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 18) {
+            HStack(spacing: 6) {
+                ProviderMark(provider: group.provider, size: 16)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(group.provider.info.name).font(PanelFont.condensed(14, .semibold))
+                    Text("\(group.rows.count) accounts").font(PanelFont.body(11)).foregroundStyle(theme.sub)
+                }
+            }
+            Spacer()
+            if group.provider.info.capability.showsMoney {
+                amount("Today", group.today)
+                amount("This month", group.month)
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.top, 12)
+        .padding(.bottom, 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(group.provider.info.name), \(group.rows.count) accounts, today "
+            + "\(MoneyText.string(group.today)), this month \(MoneyText.string(group.month))")
+    }
+
+    private func amount(_ label: String, _ totals: MoneyTotals) -> some View {
+        VStack(alignment: .trailing, spacing: 1) {
+            Text(label).font(.system(size: 11)).foregroundStyle(.secondary)
+            Text(MoneyText.string(totals)).font(.system(size: 13, weight: .semibold).monospacedDigit())
+        }
     }
 }

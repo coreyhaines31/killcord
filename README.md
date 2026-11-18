@@ -28,14 +28,14 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Alerts you.** Notifications at daily and monthly amounts you choose, per provider and in total, once per day or month.
+- **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month.
 - **Keeps keys in the Keychain.** Not in files, preferences, logs, or exports. No account, no telemetry.
 
 ## Provider coverage
 
 | Provider | Spend source | Key you need | Dollars? | Caps Kill Cord can confirm |
 | --- | --- | --- | --- | --- |
-| Anthropic | Admin API cost report | Admin API key (`sk-ant-admin…`) | Yes, within about 5 minutes | None (no API for Console spend limits; your checkmark) |
+| Anthropic | Admin API cost report | Service account or personal key not scoped to a workspace, or an Admin API key (`sk-ant-admin…`). Needs an organization, not an Individual Org | Yes, within about 5 minutes | None (no API for Console spend limits; your checkmark) |
 | Google Cloud and Gemini | Cloud Billing export to BigQuery | Service account key with read access to the export | Yes, after one-time setup; hours behind | Spend cap budgets and budget alerts (Budget API, optional) |
 | OpenAI | Organization costs | Admin API key (`sk-admin…`) | Yes | Organization hard limit |
 | Vercel | Billing charges (FOCUS) | Access token | Yes, daily | None (no API for Spend Management) |
@@ -44,7 +44,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Neon | Consumption history | Organization API key | No: usage only (compute hours, storage, transfer) | Spending threshold |
 | Supabase | None | Nothing to connect | No: no billing API | None (Spend Cap is your checkmark) |
 
-**About key power.** Anthropic has no read-only admin key: the key Kill Cord needs can also manage your organization. Twilio and Neon have no read-only keys either. OpenAI may offer read-only admin keys; choose that if you see it. Kill Cord only reads billing, says this before you save a key, and keeps the key in the Keychain. If a key leaks, revoke it in the provider's console.
+**About key power.** Anthropic has no read-only key for the cost report: a service account or personal key can do whatever its linked account's role allows, and an Admin API key can also manage your organization. A service account key is the one to use, since it isn't tied to you. Twilio and Neon have no read-only keys either. OpenAI may offer read-only admin keys; choose that if you see it. Kill Cord only reads billing, says this before you save a key, and keeps the key in the Keychain. If a key leaks, revoke it in the provider's console.
 
 ## Install
 
@@ -63,7 +63,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 
 | Provider | Where to get the key |
 | --- | --- |
-| Anthropic | Claude Console › Settings › Admin keys. Only organization admins can create one. |
+| Anthropic | First, if the Console shows an Individual Org, set one up under Settings › Organization (the cost report isn't available to individual accounts). Then Settings › API keys: create a key linked to a service account (recommended) or yourself, not scoped to a workspace. An Admin API key from Settings › Admin keys also works. |
 | Google Cloud and Gemini | Turn on the standard usage cost export to BigQuery (Billing › Billing export). Create a service account with BigQuery Data Viewer on the dataset and BigQuery Job User on its project (plus Billing Account Viewer to check budgets), create a JSON key, and paste it with the table's full name. Data appears a few hours after the export starts. Your organization may block service account keys. |
 | OpenAI | Platform settings › Organization › Admin keys. |
 | Vercel | Account Settings › Tokens. Scope it to the team, and add the team ID. |
@@ -110,7 +110,7 @@ Kill Cord stores each provider's key in your login Keychain under the service `a
 
 **"Last checked … not live" after opening the lid.** Expected: Kill Cord doesn't check while your Mac sleeps. It checks again about 10 seconds after wake. Click **Refresh** to check now.
 
-**"Key rejected."** The key was revoked, expired, or is the wrong kind. Anthropic and OpenAI need admin keys, not regular API keys.
+**"Key rejected."** The key was revoked, expired, or is the wrong kind. OpenAI needs an admin key. Anthropic needs a service account, personal, or Admin API key that isn't scoped to a workspace, in an organization (not an Individual Org).
 
 **"Missing permission."** The key works but can't read billing. The message names what to add (for example, Billing Read on a Cloudflare token).
 

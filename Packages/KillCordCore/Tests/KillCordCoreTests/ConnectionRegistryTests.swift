@@ -12,40 +12,63 @@ import Testing
         }
     }
 
-    @Test func adoptsKeysSavedBeforeRecordsExisted() {
+    @Test func secondConnectionOfAProviderGetsANumberedNameAndItsOwnID() {
         var registry = ConnectionRegistry()
         let ids = IDs()
-        let changed = registry.reconcile(connected: [.openai, .anthropic], now: testNow, makeID: ids.make)
+        let first = registry.add(.anthropic, now: testNow, makeID: ids.make)
+        let second = registry.add(.anthropic, now: testNow.addingTimeInterval(1), makeID: ids.make)
+        registry.add(.openai, now: testNow, makeID: ids.make)
+        #expect(first.name == "Anthropic")
+        #expect(second.name == "Anthropic 2")
+        #expect(first.id != second.id)
+        #expect(registry.records(for: .anthropic).map(\.id) == [first.id, second.id])
+        #expect(registry.providers == [.anthropic, .openai])
+        #expect(registry.add(.anthropic, now: testNow, makeID: ids.make).name == "Anthropic 3")
+    }
+
+    @Test func renamesTrimsAndFallsBackToTheDefault() {
+        var registry = ConnectionRegistry()
+        let first = registry.add(.anthropic, now: testNow)
+        let second = registry.add(.anthropic, now: testNow.addingTimeInterval(1))
+        registry.rename(second.id, to: "  Client work \n")
+        #expect(registry.record(second.id)?.name == "Client work")
+        registry.rename(first.id, to: "Personal")
+        // Back to the default: "Anthropic" is free again.
+        registry.rename(second.id, to: "   ")
+        #expect(registry.record(second.id)?.name == "Anthropic")
+        #expect(registry.names == [first.id: "Personal", second.id: "Anthropic"])
+    }
+
+    @Test func reconcileDropsOnlyRecordsWhoseItemIsSurelyGone() {
+        var registry = oneEach([.anthropic, .neon, .openai])
+        struct Locked: Error {}
+        let changed = registry.reconcile { record in
+            switch record.provider {
+            case .neon: return false
+            case .openai: throw Locked()
+            default: return true
+            }
+        }
         #expect(changed)
         #expect(registry.records.map(\.provider) == [.anthropic, .openai])
-        #expect(registry.records.allSatisfy { $0.createdAt == testNow })
-        #expect(Set(registry.records.map(\.id)).count == 2)
     }
 
-    @Test func keepsIDsAcrossLaunchesAndKeyReplacement() {
-        var registry = ConnectionRegistry()
-        registry.reconcile(connected: [.anthropic], now: testNow)
-        let id = registry.record(for: .anthropic)?.id
-        let changed = registry.reconcile(connected: [.anthropic], now: testNow.addingTimeInterval(86400))
-        #expect(!changed)
-        #expect(registry.record(for: .anthropic)?.id == id)
-        #expect(registry.record(for: .anthropic)?.createdAt == testNow)
-    }
-
-    @Test func dropsRecordsWhoseKeyIsGoneAndGivesAReconnectANewID() {
-        var registry = ConnectionRegistry()
-        registry.reconcile(connected: [.anthropic, .neon], now: testNow)
-        let first = registry.record(for: .neon)?.id
-        let dropped = registry.reconcile(connected: [.anthropic], now: testNow)
-        #expect(dropped)
-        #expect(registry.record(for: .neon) == nil)
-        registry.reconcile(connected: [.anthropic, .neon], now: testNow)
-        #expect(registry.record(for: .neon)?.id != first)
+    @Test func readsAVersionOneRegistryKeepingItsIDs() throws {
+        // What Kill Cord 0.1.2 saved: no names, version 1.
+        let versionOne = """
+        {"version":1,"records":[{"id":"\(UUID.of(.openai).uuidString)","provider":"openai","createdAt":0}]}
+        """
+        let decoded = try JSONDecoder().decode(ConnectionRegistry.self, from: Data(versionOne.utf8))
+        #expect(decoded.version == 1)
+        #expect(decoded.records == [ConnectionRecord(id: .of(.openai), provider: .openai,
+                                                     createdAt: Date(timeIntervalSinceReferenceDate: 0))])
+        #expect(decoded.records.first?.name == "OpenAI")
+        #expect(ConnectionRegistry(records: decoded.records).version == 2)
     }
 
     @Test func roundTripsThroughJSON() throws {
-        var registry = ConnectionRegistry()
-        registry.reconcile(connected: [.google, .twilio], now: testNow)
+        var registry = oneEach([.google, .twilio])
+        registry.add(.google, now: testNow)
         let data = try JSONEncoder().encode(registry)
         #expect(try JSONDecoder().decode(ConnectionRegistry.self, from: data) == registry)
         #expect(registry.version == ConnectionRegistry.currentVersion)

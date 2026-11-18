@@ -5,12 +5,12 @@ import Testing
 @Suite struct RefreshOneTests {
     @Test func refreshOneProviderUnsuspendsOnlyIt() {
         var scheduler = RefreshScheduler()
-        scheduler.add(.anthropic, now: testNow)
-        scheduler.add(.openai, now: testNow)
+        scheduler.add(.of(.anthropic), provider: .anthropic, now: testNow)
+        scheduler.add(.of(.openai), provider: .openai, now: testNow)
         _ = scheduler.takeDue(now: testNow)
-        scheduler.failed(.anthropic, error: .invalidKey, now: testNow)
-        scheduler.failed(.openai, error: .invalidKey, now: testNow)
-        scheduler.refresh(.anthropic, now: testNow)
-        #expect(scheduler.takeDue(now: testNow) == [.anthropic])
+        scheduler.failed(.of(.anthropic), error: .invalidKey, now: testNow)
+        scheduler.failed(.of(.openai), error: .invalidKey, now: testNow)
+        scheduler.refresh(.of(.anthropic), now: testNow)
+        #expect(scheduler.takeDue(now: testNow) == [.of(.anthropic)])
     }
 }

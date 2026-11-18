@@ -4,21 +4,7 @@ import SwiftUI
 /// Standard macOS settings window: icon tabs in the toolbar, sized to each pane.
 @MainActor
 final class SettingsWindow {
-    enum Tab: String, CaseIterable {
-        case general = "General"
-        case providers = "Providers"
-        case thresholds = "Alerts"
-        case caps = "Caps Audit"
-
-        var symbol: String {
-            switch self {
-            case .general: "gearshape"
-            case .providers: "key"
-            case .thresholds: "bell"
-            case .caps: "checkmark.shield"
-            }
-        }
-    }
+    typealias Tab = SettingsTab
 
     static let paneWidth: CGFloat = 560
     /// Providers and Caps Audit have a sidebar, so they open wider.

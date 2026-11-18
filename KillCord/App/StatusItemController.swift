@@ -11,7 +11,7 @@ final class StatusItemController {
     private let model: SpendModel
     private var hosting: NSHostingController<PanelView>?
 
-    init(model: SpendModel, openSettings: @escaping (SettingsWindow.Tab?) -> Void,
+    init(model: SpendModel, openSettings: @escaping (SettingsTab?) -> Void,
          checkForUpdates: @escaping () -> Void) {
         self.model = model
         // New status items start at the far left on recent macOS, which is off-screen on a crowded menu bar.

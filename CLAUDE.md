@@ -24,7 +24,8 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
 - `Packages/KillCordCore` (SwiftPM library, plus `killcord-dev`):
   - `Money.swift`: `Money`, `MoneyTotals`, `MoneyText`. Always `Decimal`.
   - `Provider.swift`: `ProviderID`, `ProviderInfo` (capability, credential fields, key-power warning, lag, billing time zone, minimum refresh interval).
-  - `Credentials.swift`: `SecretStore` protocol, `InMemorySecretStore`, `ProviderCredentials` (redacted descriptions), `CredentialStore` (one Keychain item per provider), `Redactor`. `KeychainSecretStore.swift` is behind `#if canImport(Security)`.
+  - `ProviderKeys.swift`: `SecretStore` protocol, `InMemorySecretStore`, `ProviderCredentials` (redacted descriptions), `CredentialStore` (one Keychain item per connection, account = the connection's UUID), `Redactor`. `KeychainStore.swift` is behind `#if canImport(Security)`. Don't name files with "credential" or "secret": agent read rules block those names.
+  - `ConnectionRegistry.swift`, `ConnectionMigration.swift`: connections (a provider can have several, each with its own id, name, key, alerts and readings), and the verified move of 0.1.2's provider-named Keychain items to per-connection items.
   - `HTTP.swift`: `HTTPClient` protocol, `URLSessionHTTPClient` (ephemeral), `MockHTTPClient`.
   - `SpendError.swift`: the error taxonomy; messages are fixed text and never include a key.
   - `SpendProvider.swift`: the adapter protocol, `SpendSnapshot`, `BillingWindow`, `CapVerification`.

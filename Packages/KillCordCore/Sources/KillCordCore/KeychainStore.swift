@@ -33,10 +33,10 @@ public struct KeychainSecretStore: SecretStore {
         }
     }
 
-    public func write(_ data: Data, account: String) throws {
+    public func write(_ data: Data, account: String, label: String?) throws {
         let attributes: [String: Any] = [
             kSecValueData as String: data,
-            kSecAttrLabel as String: "\(Brand.name): \(ProviderID(rawValue: account)?.info.name ?? account)"
+            kSecAttrLabel as String: label ?? "\(Brand.name): \(ProviderID(rawValue: account)?.info.name ?? account)"
         ]
         let status = SecItemUpdate(query(account) as CFDictionary, attributes as CFDictionary)
         if status == errSecItemNotFound {

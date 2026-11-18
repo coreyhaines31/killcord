@@ -94,24 +94,45 @@ import Testing
 }
 
 @Suite struct CredentialStoreTests {
-    @Test func roundTripsThroughTheSecretStore() throws {
+    @Test func roundTripsThroughTheSecretStoreUnderEachConnectionID() throws {
         let secrets = InMemorySecretStore()
         let store = CredentialStore(secrets: secrets)
-        #expect(try store.load(.anthropic) == nil)
-        try store.save(FakeKeys.credentials(.anthropic))
-        try store.save(FakeKeys.credentials(.twilio))
-        #expect(try store.load(.anthropic)?["apiKey"] == FakeKeys.anthropic)
-        #expect(store.connected() == [.anthropic, .twilio])
-        #expect(secrets.accounts == ["anthropic", "twilio"])
-        try store.delete(.anthropic)
-        #expect(try store.load(.anthropic) == nil)
-        #expect(store.connected() == [.twilio])
+        var registry = oneEach([.anthropic, .twilio])
+        let anthropic = try #require(registry.record(.of(.anthropic)))
+        let second = registry.add(.anthropic, now: testNow)
+        #expect(try store.load(anthropic) == nil)
+        try store.save(FakeKeys.credentials(.anthropic), for: anthropic)
+        try store.save(FakeKeys.credentials(.twilio), for: try #require(registry.record(.of(.twilio))))
+        try store.save(ProviderCredentials(provider: .anthropic, values: ["apiKey": FakeKeys.anthropic + "-2"]),
+                       for: second)
+        #expect(try store.load(anthropic)?["apiKey"] == FakeKeys.anthropic)
+        #expect(try store.load(second)?["apiKey"] == FakeKeys.anthropic + "-2")
+        #expect(Set(secrets.accounts) == Set([UUID.of(.anthropic), .of(.twilio), second.id].map(\.uuidString)))
+        try store.delete(anthropic)
+        #expect(try store.load(anthropic) == nil)
+        #expect(try store.load(second) != nil)
+        #expect(try !store.hasItem(anthropic))
+    }
+
+    @Test func readsTheOldItemUntilTheMoveFinishesThenDropsItOnSave() throws {
+        let secrets = InMemorySecretStore()
+        let record = ConnectionRecord(id: .of(.openai), provider: .openai, createdAt: testNow)
+        try secrets.write(CredentialStore.encode(FakeKeys.credentials(.openai)), account: "openai")
+        let store = CredentialStore(secrets: secrets, legacyFallback: [record.id: "openai"])
+        #expect(try store.load(record)?["apiKey"] == FakeKeys.openai)
+        #expect(try store.hasItem(record))
+        #expect(store.account(for: record) == "openai")
+        try store.save(FakeKeys.credentials(.openai), for: record)
+        #expect(secrets.accounts == [record.keychainAccount])
+        #expect(store.account(for: record) == record.keychainAccount)
     }
 
     @Test func keepsOnlyKnownFieldsAndTrimsWhitespace() throws {
         let store = CredentialStore(secrets: InMemorySecretStore())
-        try store.save(ProviderCredentials(provider: .openai, values: ["apiKey": "  \(FakeKeys.openai)\n", "junk": "x"]))
-        let loaded = try #require(try store.load(.openai))
+        let record = ConnectionRecord(id: .of(.openai), provider: .openai, createdAt: testNow)
+        try store.save(ProviderCredentials(provider: .openai, values: ["apiKey": "  \(FakeKeys.openai)\n", "junk": "x"]),
+                       for: record)
+        let loaded = try #require(try store.load(record))
         #expect(loaded["apiKey"] == FakeKeys.openai)
         #expect(loaded["junk"] == nil)
     }

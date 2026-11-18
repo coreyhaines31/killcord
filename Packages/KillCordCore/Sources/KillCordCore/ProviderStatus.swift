@@ -71,6 +71,12 @@ extension SpendError {
         let info = provider.info
         switch self {
         case .notConfigured: return "Fill in every required field, then connect again."
+        case .invalidKey where provider == .anthropic:
+            return "Copy the key again. If the Console shows an Individual Org, set up an organization first, "
+                + "and use a key that isn't scoped to a workspace."
+        case .missingScope where provider == .anthropic:
+            return "If the Console shows an Individual Org, set up an organization first. Workspace keys don't "
+                + "work: create a key that isn't scoped to a workspace."
         case .invalidKey: return "Copy the key again, or create a new one in the \(info.consoleName)."
         case .missingScope, .requiresSetup, .planNotSupported, .noUsageAPI: return nil
         case .rateLimited: return "Wait a minute, then connect again."

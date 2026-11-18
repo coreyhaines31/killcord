@@ -1,6 +1,6 @@
 import Foundation
 
-/// Decides when each provider is asked next. Pure: the app calls it on a timer, on sleep and wake, and when
+/// Decides when each connection is asked next. Pure: the app calls it on a timer, on sleep and wake, and when
 /// keys change, then asks the providers it returns.
 ///
 /// - Polls every `interval`, never faster than a provider's own minimum.
@@ -11,6 +11,7 @@ import Foundation
 /// - Asks nothing while the Mac sleeps, and asks everyone shortly after it wakes.
 public struct RefreshScheduler: Sendable, Equatable {
     public struct Entry: Sendable, Equatable {
+        public var provider: ProviderID
         /// Nil while suspended or in flight.
         public var nextDue: Date?
         public var failures: Int = 0
@@ -26,7 +27,7 @@ public struct RefreshScheduler: Sendable, Equatable {
     public var maxBackoff: TimeInterval
     /// After wake, the network usually needs a few seconds to come back.
     public var wakeDelay: TimeInterval
-    public private(set) var entries: [ProviderID: Entry] = [:]
+    public private(set) var entries: [UUID: Entry] = [:]
     public private(set) var isAsleep = false
 
     public init(interval: TimeInterval = RefreshScheduler.defaultInterval, baseBackoff: TimeInterval = 60,
@@ -41,35 +42,35 @@ public struct RefreshScheduler: Sendable, Equatable {
         max(interval, provider.info.minimumRefreshInterval)
     }
 
-    /// Starts tracking a provider, due right away. Also used when its key changes.
-    public mutating func add(_ provider: ProviderID, now: Date) {
-        entries[provider] = Entry(nextDue: now)
+    /// Starts tracking a connection, due right away. Also used when its key changes.
+    public mutating func add(_ id: UUID, provider: ProviderID, now: Date) {
+        entries[id] = Entry(provider: provider, nextDue: now)
     }
 
-    public mutating func remove(_ provider: ProviderID) {
-        entries[provider] = nil
+    public mutating func remove(_ id: UUID) {
+        entries[id] = nil
     }
 
-    /// Providers to ask now. Marks them in flight. Nothing while asleep.
-    public mutating func takeDue(now: Date) -> [ProviderID] {
+    /// Connections to ask now, in provider order. Marks them in flight. Nothing while asleep.
+    public mutating func takeDue(now: Date) -> [UUID] {
         guard !isAsleep else { return [] }
         let due = entries.filter { entry in
             !entry.value.inFlight && !entry.value.suspended && (entry.value.nextDue.map { $0 <= now } ?? false)
-        }.keys.sorted()
-        for provider in due {
-            entries[provider]?.inFlight = true
-            entries[provider]?.nextDue = nil
+        }.sorted { ($0.value.provider, $0.key.uuidString) < ($1.value.provider, $1.key.uuidString) }.map(\.key)
+        for id in due {
+            entries[id]?.inFlight = true
+            entries[id]?.nextDue = nil
         }
         return due
     }
 
-    public mutating func succeeded(_ provider: ProviderID, now: Date) {
-        guard entries[provider] != nil else { return }
-        entries[provider] = Entry(nextDue: now.addingTimeInterval(interval(for: provider)))
+    public mutating func succeeded(_ id: UUID, now: Date) {
+        guard let entry = entries[id] else { return }
+        entries[id] = Entry(provider: entry.provider, nextDue: now.addingTimeInterval(interval(for: entry.provider)))
     }
 
-    public mutating func failed(_ provider: ProviderID, error: SpendError, now: Date) {
-        guard var entry = entries[provider] else { return }
+    public mutating func failed(_ id: UUID, error: SpendError, now: Date) {
+        guard var entry = entries[id] else { return }
         entry.inFlight = false
         entry.failures += 1
         if error.isTransient {
@@ -82,23 +83,23 @@ public struct RefreshScheduler: Sendable, Equatable {
             entry.suspended = true
             entry.nextDue = nil
         }
-        entries[provider] = entry
+        entries[id] = entry
     }
 
     /// Refresh pressed: everything not in flight is due now, suspended ones included. A provider still
     /// inside a rate limit's wait keeps waiting.
     public mutating func refreshAll(now: Date) {
-        for provider in entries.keys {
-            refresh(provider, now: now)
+        for id in entries.keys {
+            refresh(id, now: now)
         }
     }
 
-    /// Refresh pressed for one provider, with the same rules as `refreshAll`.
-    public mutating func refresh(_ provider: ProviderID, now: Date) {
-        guard let entry = entries[provider], !entry.inFlight else { return }
+    /// Refresh pressed for one connection, with the same rules as `refreshAll`.
+    public mutating func refresh(_ id: UUID, now: Date) {
+        guard let entry = entries[id], !entry.inFlight else { return }
         if entry.failures > 0, !entry.suspended, let due = entry.nextDue, due > now { return }
-        entries[provider]?.suspended = false
-        entries[provider]?.nextDue = now
+        entries[id]?.suspended = false
+        entries[id]?.nextDue = now
     }
 
     public mutating func sleep() {
@@ -109,19 +110,19 @@ public struct RefreshScheduler: Sendable, Equatable {
     /// are treated as lost.
     public mutating func wake(now: Date) {
         isAsleep = false
-        for (provider, entry) in entries where !entry.suspended {
-            entries[provider]?.inFlight = false
+        for (id, entry) in entries where !entry.suspended {
+            entries[id]?.inFlight = false
             // Not before the network is back, and not later than a rate limit's wait requires.
             let soon = now.addingTimeInterval(wakeDelay)
-            entries[provider]?.nextDue = max(soon, entry.failures > 0 ? (entry.nextDue ?? soon) : soon)
+            entries[id]?.nextDue = max(soon, entry.failures > 0 ? (entry.nextDue ?? soon) : soon)
         }
     }
 
     public mutating func setInterval(_ newInterval: TimeInterval, now: Date) {
         interval = newInterval
-        for (provider, entry) in entries where entry.failures == 0 && !entry.inFlight && !entry.suspended {
-            let cap = now.addingTimeInterval(interval(for: provider))
-            entries[provider]?.nextDue = min(entry.nextDue ?? cap, cap)
+        for (id, entry) in entries where entry.failures == 0 && !entry.inFlight && !entry.suspended {
+            let cap = now.addingTimeInterval(interval(for: entry.provider))
+            entries[id]?.nextDue = min(entry.nextDue ?? cap, cap)
         }
     }
 
