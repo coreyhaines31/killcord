@@ -50,8 +50,8 @@ public struct AhrefsProvider: SpendProvider {
                                         headers: ["Authorization": "Bearer \(key)", "Accept": "application/json"])
             .limitsAndUsage
         var balance: Balance?
-        if let limit = details.unitsLimitWorkspace?.value {
-            let used = details.unitsUsageWorkspace?.value ?? 0
+        // Both are needed: an unknown usage isn't zero.
+        if let limit = details.unitsLimitWorkspace?.value, let used = details.unitsUsageWorkspace?.value {
             balance = Balance(remaining: max(0, limit - used), unit: .units("API units"), kind: .allowance,
                               limit: limit, used: used, resetsAt: details.usageResetDate.flatMap(Self.date))
         }

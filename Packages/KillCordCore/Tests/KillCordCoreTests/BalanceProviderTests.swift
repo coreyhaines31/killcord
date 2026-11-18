@@ -181,6 +181,13 @@ import Testing
         #expect(balance.resetsAt == ISO8601.date("2026-12-01T00:00:00Z"))
     }
 
+    @Test func unknownUsageIsNotZero() async throws {
+        let body = #"{"limits_and_usage":{"units_limit_workspace":500000,"units_usage_workspace":null,"usage_reset_date":"2026-12-01"}}"#
+        let http = MockHTTPClient { _ in HTTPResponse(status: 200, json: body) }
+        let snapshot = try await AhrefsProvider(http: http).fetchSpend(FakeKeys.credentials(.ahrefs), now: testNow)
+        #expect(snapshot.balance == nil)
+    }
+
     @Test func anUnlimitedWorkspaceHasNoBalance() async throws {
         let body = #"{"limits_and_usage":{"units_limit_workspace":null,"units_usage_workspace":10,"usage_reset_date":"2026-12-01"}}"#
         let http = MockHTTPClient { _ in HTTPResponse(status: 200, json: body) }
