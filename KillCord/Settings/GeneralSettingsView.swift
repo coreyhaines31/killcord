@@ -12,7 +12,8 @@ struct GeneralSettingsView: View {
     @State private var checksForUpdates: Bool
     @State private var launchesAtLogin = SMAppService.mainApp.status == .enabled
     @State private var interval: TimeInterval = Preferences.refreshInterval
-    @AppStorage(Preferences.menuBarPeriodKey) private var menuBarPeriod = SpendText.MenuBarPeriod.today
+    @AppStorage(Preferences.menuBarPeriodKey, store: Preferences.defaults)
+    private var menuBarPeriod = SpendText.MenuBarPeriod.today
     @State private var confirmingRemoval = false
     @State private var removalError: String?
 
