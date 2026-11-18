@@ -17,6 +17,8 @@ public final class TeamsSession {
     public private(set) var selectedWorkspaceID: String?
     public private(set) var spend: TeamsMySpend?
     public var onChange: (() -> Void)?
+    /// Bumped by every sign-in and cancel, so an older polling loop can't act on a newer attempt's state.
+    private var attempt = 0
 
     public let settings: TeamsSettings
     private let client: TeamsClient
@@ -58,29 +60,36 @@ public final class TeamsSession {
     /// or denies it in the browser, or the code expires.
     public func signIn(deviceName: String) async {
         guard settings.isEnabled else { return set(.failed(.disabled)) }
+        attempt += 1
+        let mine = attempt
         set(.startingSignIn)
         let signIn: DeviceSignIn
         do {
             signIn = try await client.startSignIn(deviceName: deviceName, now: now())
         } catch {
+            guard mine == attempt else { return }
             return set(.failed(error as? TeamsError ?? .network))
         }
+        guard mine == attempt else { return }
         set(.showingCode(signIn))
         while now() < signIn.expiresAt {
             await sleep(signIn.interval)
-            guard case .showingCode = state else { return }
+            guard mine == attempt, case .showingCode = state else { return }
             do {
                 if try await client.pollToken(deviceCode: signIn.deviceCode) == .signedIn {
                     return await loadMe()
                 }
             } catch {
+                guard mine == attempt else { return }
                 return set(.failed(error as? TeamsError ?? .network))
             }
         }
+        guard mine == attempt else { return }
         set(.failed(.expired))
     }
 
     public func cancelSignIn() {
+        attempt += 1
         if case .showingCode = state { set(.signedOut) }
     }
 

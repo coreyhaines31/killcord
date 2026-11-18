@@ -124,7 +124,11 @@ public struct TeamsClient: Sendable {
               // NSNumber, not Double: Linux's JSONSerialization hands back integers as Int.
               let expiresIn = (json["expires_in"] as? NSNumber)?.doubleValue,
               let interval = (json["interval"] as? NSNumber)?.doubleValue,
-              ["https", "http"].contains(complete.scheme?.lowercased() ?? "") else { throw TeamsError.badResponse }
+              // The page the browser opens must be on the same server, so a confused or hostile
+              // response can't send someone to a look-alike sign-in page.
+              complete.scheme?.lowercased() == baseURL.scheme?.lowercased(),
+              complete.host?.lowercased() == baseURL.host?.lowercased(), complete.port == baseURL.port
+        else { throw TeamsError.badResponse }
         return DeviceSignIn(deviceCode: deviceCode, userCode: userCode, verificationURI: uri,
                             verificationURIComplete: complete, expiresAt: now.addingTimeInterval(expiresIn),
                             interval: max(1, interval))

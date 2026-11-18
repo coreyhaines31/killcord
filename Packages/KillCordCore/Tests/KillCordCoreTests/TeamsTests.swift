@@ -196,6 +196,18 @@ private final class TestClock: @unchecked Sendable {
     func advance(_ seconds: TimeInterval) { lock.withLock { current += seconds } }
 }
 
+@Suite @MainActor struct TeamsSignInSafetyTests {
+    @Test func aBrowserLinkToAnotherHostIsRefused() async {
+        let phishing = HTTPResponse(status: 200, json: """
+            {"device_code":"d","user_code":"BCDF-GHJK","verification_uri":"https://evil.example/device",
+             "verification_uri_complete":"https://evil.example/device?code=BCDF-GHJK","expires_in":600,"interval":5}
+            """)
+        let client = TeamsClient(baseURL: URL(string: "http://localhost:3000")!, http: MockHTTPClient { _ in phishing },
+                                 tokens: TeamsTokenStore(store: InMemorySecretStore()))
+        await #expect(throws: TeamsError.badResponse) { _ = try await client.startSignIn(deviceName: "Mac") }
+    }
+}
+
 @Suite @MainActor struct TeamsSpendTests {
     @Test func mySpendIsExactDecimal() async throws {
         let (session, http) = makeSession(FakeCloud(tokenAnswers: [FakeCloud.token]))
