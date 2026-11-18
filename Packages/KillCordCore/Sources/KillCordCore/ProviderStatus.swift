@@ -27,6 +27,11 @@ public struct ProviderStatus: Sendable, Equatable {
                           isChecking: Bool = false, now: Date = Date()) -> ProviderStatus {
         let info = provider.info
         guard info.connects else { return ProviderStatus(light: .off, label: "Caps only", line: "Caps only") }
+        // Never checked with the service, so never "Checking" or live.
+        if provider == .manual, isConnected {
+            let line = state?.snapshot?.manual.map { ManualText.summary($0, now: now) }
+            return ProviderStatus(light: .off, label: "Entered by you", line: line ?? ManualText.notLive)
+        }
         if isChecking, state?.snapshot == nil {
             return ProviderStatus(light: .caution, label: "Checking", line: "Checking…")
         }

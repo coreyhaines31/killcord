@@ -175,7 +175,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
 }
 
 @Suite struct CapsCatalogTests {
-    @Test(arguments: ProviderID.allCases.filter { !$0.info.capability.showsBalance })
+    /// Manual entries have no API and no caps Kill Cord could walk through.
+    @Test(arguments: ProviderID.allCases.filter { !$0.info.capability.showsBalance && $0 != .manual })
     func everySpendProviderHasAtLeastOneCap(_ provider: ProviderID) {
         #expect(!CapsCatalog.controls(for: provider).isEmpty)
     }
@@ -204,7 +205,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
     }
 
     @Test func eachMoneyProviderHasAHardOrPartialStopOrSaysThereIsNone() {
-        for provider in ProviderID.allCases where !provider.info.capability.showsBalance {
+        for provider in ProviderID.allCases where !provider.info.capability.showsBalance && provider != .manual {
             let controls = CapsCatalog.controls(for: provider)
             let stops = controls.filter { $0.enforcement != .alertOnly }
             if stops.isEmpty {

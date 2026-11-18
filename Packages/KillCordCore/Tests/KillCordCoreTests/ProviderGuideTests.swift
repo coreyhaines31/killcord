@@ -43,7 +43,8 @@ import Testing
 
     @Test func everyConnectingProviderHasStepsWithAnOpenButtonFirst() throws {
         // A custom connection is the person's own service: there's no page to open.
-        for provider in ProviderID.allCases where provider.info.connects && provider != .custom {
+        // Custom and manual entries are the person's own services: there's no page to open.
+        for provider in ProviderID.allCases where provider.info.connects && ![.custom, .manual].contains(provider) {
             let steps = provider.info.setupSteps
             #expect(steps.count >= 2, "\(provider)")
             let link = try #require(steps.first?.link, "\(provider)")
@@ -58,7 +59,7 @@ import Testing
         // Google and Anthropic have a setup step first; their key page is the last step.
         let keyLast: Set<ProviderID> = [.google, .anthropic]
         for provider in ProviderID.allCases where provider.info.connects && !keyLast.contains(provider)
-            && provider != .custom {
+            && ![.custom, .manual].contains(provider) {
             guard provider.info.keyURL != nil else {
                 // No documented key page (Ahrefs): the step links the provider's API docs instead.
                 #expect(provider.info.setupSteps.first?.link?.url.host == "docs.ahrefs.com", "\(provider)")

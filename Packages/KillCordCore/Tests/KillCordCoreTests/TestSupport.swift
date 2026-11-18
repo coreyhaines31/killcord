@@ -74,6 +74,9 @@ enum FakeKeys {
         case .monid: ["apiKey": monid]
         case .custom: ["serviceName": "Example", "url": "https://api.example.com/v1/balance", "key": custom,
                        "remainingPath": "data.balance"]
+        // Values long enough not to turn up by chance inside an id or a date.
+        case .manual: ["serviceName": "Truelist", "plan": "Starter", "price": "49.25", "renewsOn": "2026-11-03",
+                       "allowance": "12345"]
         }
         return ProviderCredentials(provider: provider, values: values)
     }

@@ -13,6 +13,6 @@ final class ProviderMarkTests: XCTestCase {
         }
         // The balance services have no sourced mark yet and show a letter instead; custom shows braces.
         XCTAssertEqual(ProviderID.allCases.filter { $0.markAssetName == nil },
-                       [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .custom])
+                       [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .custom, .manual])
     }
 }

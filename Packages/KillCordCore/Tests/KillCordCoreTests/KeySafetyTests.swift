@@ -4,7 +4,8 @@ import Testing
 
 /// Keys must never show up in error text, descriptions, or anything else the app could display or log.
 @Suite struct SecretSafetyTests {
-    static let connectable = ProviderID.allCases.filter(\.info.connects)
+    /// Providers that send a key over the network. A manual entry never does.
+    static let connectable = ProviderID.allCases.filter { $0.info.connects && $0 != .manual }
 
     /// Responses a provider might send, including ones that echo the key back in the body.
     static func hostileResponses(echo secret: String) -> [HTTPResponse] {
