@@ -31,9 +31,18 @@ builtin_shows = {
     'cloudflare': 'this billing period’s spend in dollars, and whether a Spend Management limit is set',
     'twilio': 'today’s and this month’s spend in dollars, and whether a usage trigger is set',
     'neon': 'this month’s usage in compute hours, storage and transfer (Neon doesn’t report dollars)',
+    'openrouter': 'the credit left on your key and that key’s spend today and this month',
+    'dataforseo': 'the dollars left on your prepaid balance',
+    'ahrefs': 'the API units your workspace has left this period, and when they reset',
+    'firecrawl': 'the credits your team has left, and when the billing period ends',
+    'treg': 'your team’s prepaid balance in dollars',
+    'monid': 'your wallet balance',
 }
+# Built-ins with no native cap in Kill Cord's caps audit: a prepaid balance stops at zero on its own.
+no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg'}
 caps_only = {'supabase'}
-builtin_names = 'Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon'
+builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, OpenRouter, '
+                 'DataForSEO, Ahrefs, Firecrawl, treg, and Monid')
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),
                'alert-only': ('alert', 'Alert only'), 'auto-recharge-off': ('part', 'Top-up control')}
@@ -228,6 +237,9 @@ def killcord_text(s):
     if s['slug'] in caps_only:
         return (f'Partly. {name} has no billing API, so Kill Cord can’t show its spend. Kill Cord’s caps audit '
                 f'walks you through turning on {name}’s own cap and reminds you to re-check it.')
+    if tier == 'built-in' and s['slug'] in no_caps_audit:
+        return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, for one account or several, says how fresh each number is, '
+                f'and can alert you once when it runs low. A balance is what’s left, not spend, so it stays out of your spend totals.')
     if tier == 'built-in':
         return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, for one account or several, says how fresh each number is, '
                 f'and walks you through {name}’s own caps in its caps audit.')

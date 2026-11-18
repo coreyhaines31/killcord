@@ -19,6 +19,11 @@ struct ProviderEditor: View {
         case failed(title: String, message: String?, fix: String?)
         /// The provider accepted the key just now.
         case connected
+
+        var isFailure: Bool {
+            if case .failed = self { return true }
+            return false
+        }
     }
 
     let provider: ProviderID
@@ -68,6 +73,7 @@ struct ProviderEditor: View {
 
     private var chips: [String] {
         var chips = [info.capabilityLabel]
+        if provider == .custom { chips.append("Not verified by Kill Cord") }
         if let record, record.name != info.name { chips.insert(info.name, at: 0) }
         return chips
     }
@@ -122,9 +128,9 @@ struct ProviderEditor: View {
                     }
                 }
             }
-            SetupStepRow(number: replacing ? 1 : steps.count + 1, title: pasteTitle, detail: nil) {
+            SetupStepRow(number: replacing ? 1 : steps.count + 1, title: pasteTitle(replacing: replacing), detail: nil) {
                 CredentialFields(fields: info.fields, values: $values, keepsSavedSecrets: replacing,
-                                 isDisabled: phase == .checking)
+                                 isDisabled: phase == .checking, failed: phase.isFailure, provider: provider)
                 connectRow
                 outcome
             }
@@ -134,22 +140,11 @@ struct ProviderEditor: View {
             } else if isAddingAnother {
                 Text("Add another \(info.name) account in \(steps.count + 1) steps")
             } else {
-                Text("Connect in \(steps.count + 1) steps")
+                Text(provider == .manual ? "Add in \(steps.count + 1) steps" : "Connect in \(steps.count + 1) steps")
             }
         } footer: {
-            PrivacyLine(providerName: info.name)
+            PrivacyLine(providerName: privacyName(typed: values["serviceName"]), isManual: provider == .manual)
         }
-    }
-
-    private var pasteTitle: String {
-        if replacing { return "Paste the new key. Leave a secret empty to keep the saved one." }
-        if info.fields.count == 1, let field = info.fields.first {
-            // "Admin API key" reads "admin API key"; "API key" keeps its acronym.
-            let label = field.label.dropFirst().first?.isLowercase == true
-                ? field.label.prefix(1).lowercased() + field.label.dropFirst() : field.label
-            return "Paste the \(label) here"
-        }
-        return "Fill in these fields"
     }
 
     @ViewBuilder
@@ -197,7 +192,7 @@ struct ProviderEditor: View {
                 Button("Cancel") { select(.connection(first.id), false) }
                     .keyboardShortcut(.cancelAction)
             }
-            Button(replacing ? "Save New Key" : "Connect \(info.name)", action: connect)
+            Button(connectTitle, action: connect)
                 .keyboardShortcut(.defaultAction)
                 .disabled(phase == .checking)
         }
@@ -207,6 +202,15 @@ struct ProviderEditor: View {
     private var outcome: some View {
         if case .failed(let title, let message, let fix) = phase {
             ResultBox(light: .stop, title: title, message: message, fix: fix)
+        } else if phase == .idle, !replacing, provider == .manual {
+            Text("Kill Cord never contacts the service. It shows what you entered as not live, and reminds you "
+                + "before the renewal.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        } else if phase == .idle, !replacing, provider == .custom {
+            Text("Kill Cord calls the address once to test it before saving. It can't verify the numbers it reads.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         } else if phase == .idle, !replacing {
             Text(isAddingAnother
                 ? "Use a key from the other \(info.name) account. Kill Cord checks it with \(info.name) before saving it."
@@ -276,7 +280,7 @@ extension ProviderEditor {
 
     @ViewBuilder
     private var connectedSections: some View {
-        Section("Spend") {
+        Section(sectionTitle) {
             if phase == .connected {
                 ResultBox(light: .go, title: "Connected", message: "\(info.name) accepted the key. It's saved in "
                     + "your Keychain.", fix: nil)
@@ -287,20 +291,28 @@ extension ProviderEditor {
                 SpendReadout(connectionID: connectionID, provider: provider, model: model)
             }
             problem
-            HStack(spacing: 8) {
-                Button {
-                    if let connectionID { model.refresh(connectionID) }
-                } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+            if provider != .manual { // Nothing to check.
+                HStack(spacing: 8) {
+                    Button {
+                        if let connectionID { model.refresh(connectionID) }
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                    }
+                    .disabled(connectionID.map(model.inFlight.contains) ?? true || model.isDemo)
+                    .help(model.isDemo ? "Sample data doesn't refresh" : "Check \(info.name) now")
+                    Spacer()
+                    if provider != .custom {
+                        Button {
+                            NSWorkspace.shared.open(info.consoleURL)
+                        } label: {
+                            Label("Compare in \(info.consoleName)", systemImage: "arrow.up.forward.app")
+                        }
+                    }
                 }
-                .disabled(connectionID.map(model.inFlight.contains) ?? true || model.isDemo)
-                .help(model.isDemo ? "Sample data doesn't refresh" : "Check \(info.name) now")
-                Spacer()
-                Button {
-                    NSWorkspace.shared.open(info.consoleURL)
-                } label: {
-                    Label("Compare in \(info.consoleName)", systemImage: "arrow.up.forward.app")
-                }
+            }
+            if let config = connectionID.flatMap(model.customConfig) {
+                Text(customNote(config)).font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         Section {
@@ -320,32 +332,40 @@ extension ProviderEditor {
             }
             HStack(spacing: 8) {
                 Spacer()
-                Button("Replace Key…") {
+                Button(provider == .manual ? "Edit Plan…" : "Replace Key…") {
                     replacing = true
                     phase = .idle
                 }
-                Button("Remove Key…", role: .destructive) { confirmingRemoval = true }
+                Button(provider == .manual ? "Remove…" : "Remove Key…", role: .destructive) { confirmingRemoval = true }
             }
             if let removalError {
                 ResultBox(light: .stop, title: "Couldn't remove the key", message: removalError, fix: nil)
             }
             HStack {
                 Spacer()
-                Button("Add Another \(info.name) Account…") { select(.new(provider), false) }
-                    .help("Track a second \(info.name) organization with its own key")
+                Button(anotherTitle) { select(.new(provider), false) }
+                    .help("Track another one with its own settings")
             }
         } header: {
             Text("Account")
         } footer: {
-            PrivacyLine(providerName: info.name)
+            PrivacyLine(providerName: privacyName(typed: record?.name), isManual: provider == .manual)
         }
-        .confirmationDialog("Remove the \(title) key?", isPresented: $confirmingRemoval) {
-            Button("Remove Key", role: .destructive, action: remove)
+        .confirmationDialog(provider == .manual ? "Remove \(title)?" : "Remove the \(title) key?",
+                            isPresented: $confirmingRemoval) {
+            Button(provider == .manual ? "Remove" : "Remove Key", role: .destructive, action: remove)
         } message: {
-            Text("Kill Cord deletes it from your Keychain and stops checking \(title). The key keeps working "
-                + "until you revoke it in the \(info.consoleName).")
+            Text(provider == .manual ? "Kill Cord deletes what you entered and stops reminding you."
+                : "Kill Cord deletes it from your Keychain and stops checking \(title). The key keeps working "
+                    + "until you revoke it in the \(info.consoleName).")
         }
         CapsSummarySection(provider: provider, model: model, openTab: openTab)
+    }
+
+    private var connectTitle: String {
+        if provider == .manual { return replacing ? "Save Changes" : "Save" }
+        if replacing { return "Save New Key" }
+        return provider == .custom ? "Test and Save" : "Connect \(info.name)"
     }
 
     private func commitName() {

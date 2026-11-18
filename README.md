@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, and Monid.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
@@ -28,7 +28,10 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month.
+- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
+- **Takes any balance endpoint.** A custom connection reads a service Kill Cord doesn't know from an https address you enter and a path into its JSON. Kill Cord can't verify those numbers and says so.
+- **Remembers plans with no API.** For services like Truelist or Gojiberry, enter the plan, price, and renewal date. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
+- **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month. Low-balance alerts fire once when a balance drops to your amount, and again only after a top-up.
 - **Keeps keys in the Keychain.** Not in files, preferences, logs, or exports. No account, no telemetry.
 
 ## Provider coverage
@@ -43,8 +46,16 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Twilio | Usage records (total price) | API key or Auth Token | Yes | Usage triggers on total price |
 | Neon | Consumption history | Organization API key | No: usage only (compute hours, storage, transfer) | Spending threshold |
 | Supabase | None | Nothing to connect | No: no billing API | None (Spend Cap is your checkmark) |
+| OpenRouter | Key limits and usage | API key (reads that key only) | Balance left on the key, plus the key's spend today and this month | None (per-key credit limit is your checkmark) |
+| DataForSEO | Account data (free call) | API login and password | Balance left, in dollars | None |
+| Ahrefs | Limits and usage (free call) | API key | Workspace API units left | None |
+| Firecrawl | Team credit usage | API key | Credits left | None |
+| treg | Team balance | Team or agent token | Balance left, in dollars | None |
+| Monid | Wallet balance | API key | Balance left, in dollars | None (budgets are your checkmark) |
+| Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
+| Manual entry | You | Nothing | No: not live, never in totals | None |
 
-**About key power.** Anthropic has no read-only key for the cost report: a service account or personal key can do whatever its linked account's role allows, and an Admin API key can also manage your organization. A service account key is the one to use, since it isn't tied to you. Twilio and Neon have no read-only keys either. OpenAI may offer read-only admin keys; choose that if you see it. Kill Cord only reads billing, says this before you save a key, and keeps the key in the Keychain. If a key leaks, revoke it in the provider's console.
+**About key power.** Anthropic has no read-only key for the cost report: a service account or personal key can do whatever its linked account's role allows, and an Admin API key can also manage your organization. A service account key is the one to use, since it isn't tied to you. Twilio and Neon have no read-only keys either, and none of the balance services offers one: their keys can make paid calls, so give each its own small limit where the service allows. Kill Cord can't know what a custom service's key can do. OpenAI may offer read-only admin keys; choose that if you see it. Kill Cord only reads billing, says this before you save a key, and keeps the key in the Keychain. If a key leaks, revoke it in the provider's console.
 
 ## Install
 
@@ -71,6 +82,14 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Twilio | Your Account SID, and a Standard API key and secret (or the Auth Token). |
 | Neon | An organization API key and the organization ID. Consumption data needs a Launch, Scale, Agent, or Enterprise plan. |
 | Supabase | Nothing to connect. Use the caps audit. |
+| OpenRouter | Settings › API Keys. Create a key just for Kill Cord with a small credit limit. |
+| DataForSEO | The API login and API password from the API Access page (not your dashboard sign-in). |
+| Ahrefs | An API key from your Ahrefs account. Your plan needs API access. |
+| Firecrawl | An API key from the dashboard's API Keys page. |
+| treg | An agent token (`treg org agent-new`, run by an admin), or a personal token plus your team's slug. |
+| Monid | An API key from app.monid.ai › Access › API keys. |
+| Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
+| Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
 Never paste a key into a chat or an AI agent to set Kill Cord up. If you already have, revoke it and create a new one.
 

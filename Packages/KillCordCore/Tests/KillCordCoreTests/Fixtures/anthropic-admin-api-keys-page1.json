@@ -1,0 +1,27 @@
+{
+  "data": [
+    {
+      "id": "apikey_01TESTaaaaaaaaaaaaaaaaaa",
+      "created_at": "2026-03-01T00:00:00.427722Z",
+      "created_by": {
+        "id": "user_01TESTava",
+        "type": "user"
+      },
+      "expires_at": "2027-03-01T00:00:00Z",
+      "name": "Ava laptop",
+      "partial_key_hint": "sk-ant-api03-R2D...igAA",
+      "principal": {
+        "type": "user_actor",
+        "user_id": "user_01TESTava"
+      },
+      "scope": {
+        "type": "organization"
+      },
+      "status": "active",
+      "type": "api_key"
+    }
+  ],
+  "first_id": "apikey_01TESTaaaaaaaaaaaaaaaaaa",
+  "has_more": true,
+  "last_id": "apikey_01TESTaaaaaaaaaaaaaaaaaa"
+}

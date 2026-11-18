@@ -33,7 +33,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -701,7 +701,7 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -1004,7 +1004,7 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -1224,7 +1224,8 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "none"
+      "tier": "none",
+      "note": "Not read live: Gojiberry doesn’t document a usage or credit API. You can add it to Kill Cord as a manual entry with its plan, price and renewal date. Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": false,
     "sources": [
@@ -1727,7 +1728,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -1973,7 +1974,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -2899,7 +2900,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -2935,7 +2936,8 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "none"
+      "tier": "none",
+      "note": "Not read live: Truelist doesn’t document a usage or credit API. You can add it to Kill Cord as a manual entry with its plan, price and renewal date. Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": false,
     "sources": [

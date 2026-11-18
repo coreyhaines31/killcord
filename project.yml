@@ -62,10 +62,14 @@ targets:
       - KillCord/Settings/SidebarPicker.swift
       - KillCord/Settings/SettingsComponents.swift
       - KillCord/Settings/SettingsTab.swift
+      - KillCord/Settings/TeamsSettingsView.swift
+      - KillCord/Model/TeamsModel.swift
       - KillCord/Settings/ProvidersSettingsView.swift
       - KillCord/Settings/ProviderEditor.swift
+      - KillCord/Settings/ProviderEditor+Labels.swift
       - KillCord/Settings/ProviderDetailParts.swift
       - KillCord/Model/SpendModel.swift
+      - KillCord/Model/SpendModel+Connections.swift
       - KillCord/App/Preferences.swift
       - KillCord/Panel/PanelView.swift
       - KillCord/Panel/ProviderCard.swift

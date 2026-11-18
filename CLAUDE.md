@@ -29,7 +29,10 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
   - `HTTP.swift`: `HTTPClient` protocol, `URLSessionHTTPClient` (ephemeral), `MockHTTPClient`.
   - `SpendError.swift`: the error taxonomy; messages are fixed text and never include a key.
   - `SpendProvider.swift`: the adapter protocol, `SpendSnapshot`, `BillingWindow`, `CapVerification`.
-  - `Providers/`: one adapter per provider, doc URLs at the top of each file. Google adds `GoogleAuth.swift` (service account JWT, pluggable `RS256Signer`).
+  - `Providers/`: one adapter per provider, doc URLs at the top of each file. Google adds `GoogleAuth.swift` (service account JWT, pluggable `RS256Signer`). `ProviderBalanceInfo.swift` holds the balance services' facts (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid).
+  - `Balance.swift`: what's left of a prepaid balance or allowance, on `SpendSnapshot.balance`, never in totals. `SpendCapability.balance(spend:)` says which spend periods such a provider also reports.
+  - `CustomConnection.swift`, `JSONPath.swift`, `HostSafety.swift`: the custom connection (every field in the Keychain), its JSON paths, and the public-host check. `HTTPRequest.Limits` adds no cross-host redirects, a size cap, and deadlines.
+  - `ManualEntry.swift`: plans the person types in for services with no API (`ManualPlan`), never live, with renewal reminders in `ThresholdPlanner`.
   - `Freshness.swift`, `RefreshScheduler.swift`, `ThresholdPlanner.swift`, `SpendSummary.swift`: freshness and stale-after-sleep, polling with backoff, once-per-period alerts, totals.
   - `CapsCatalog.swift`: every provider's native caps (one data file) and `CapAuditState`.
   - `SpendText.swift`, `DemoData.swift`.
@@ -39,8 +42,8 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
 
 - **Keys only in the Keychain.** Never in files, UserDefaults, logs, error messages, exports, or test fixtures. Use fake keys in tests (`sk-ant-admin01-TEST-…`). Don't read real credential files.
 - **Read only, least privilege.** Kill Cord never changes provider settings. Say plainly when a provider has no read-only key.
-- **Network:** only provider billing APIs and Sparkle. No telemetry, analytics, or accounts.
-- **Honesty:** money is `Decimal`. Model providers without a dollar API with `SpendCapability` (`.usageUnitsOnly`, `.noUsageAPI`, `.requiresSetup`). Never show an estimate without labeling it. Show last-checked time and provider lag; after sleep or offline, say "not live". Never imply overnight coverage.
+- **Network:** only provider billing APIs, Sparkle, and the https address a person types into a custom connection (public hosts only, checked before each request, no cross-host redirects, capped size and time). No telemetry or analytics. No accounts in the free app: Kill Cord Teams (sign-in, workspaces, My spend) exists only when the `teamsEnabled` defaults flag is on, which no UI sets; only then is the Teams host contacted (`docs/product/teams-mac-flag.md`). `TeamsFlagOffTests` and `TeamsTabTests` prove the flag-off app is unchanged.
+- **Honesty:** money is `Decimal`. Model providers without a dollar API with `SpendCapability` (`.usageUnitsOnly`, `.noUsageAPI`, `.requiresSetup`). Never show an estimate without labeling it. A balance is what's left, not spend: never in totals. Custom connections say Kill Cord can't verify them; manual entries say "Not live: entered by you". Show last-checked time and provider lag; after sleep or offline, say "not live". Never imply overnight coverage.
 - **Verify provider APIs** against official docs before changing an adapter, and keep the doc links current. Console links in the caps catalog come from the providers' docs; a wrong link is worse than none.
 - **Copy:** no em dashes anywhere user-facing. Use commas, colons, or parentheses. No personal information in the repo.
 - **Out of v1:** the paid always-on monitor and auto-stop. At most a quiet "Always-on monitoring (coming later)" line.

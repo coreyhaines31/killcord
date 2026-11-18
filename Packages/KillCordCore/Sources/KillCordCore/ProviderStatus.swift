@@ -27,6 +27,11 @@ public struct ProviderStatus: Sendable, Equatable {
                           isChecking: Bool = false, now: Date = Date()) -> ProviderStatus {
         let info = provider.info
         guard info.connects else { return ProviderStatus(light: .off, label: "Caps only", line: "Caps only") }
+        // Never checked with the service, so never "Checking" or live.
+        if provider == .manual, isConnected {
+            let line = state?.snapshot?.manual.map { ManualText.summary($0, now: now) }
+            return ProviderStatus(light: .off, label: "Entered by you", line: line ?? ManualText.notLive)
+        }
         if isChecking, state?.snapshot == nil {
             return ProviderStatus(light: .caution, label: "Checking", line: "Checking…")
         }
@@ -52,8 +57,10 @@ public struct ProviderStatus: Sendable, Equatable {
         }
     }
 
-    /// The single most useful number: today's spend, else this month's, else the first usage figure.
+    /// The single most useful number: the balance left, else today's spend, else this month's, else the
+    /// first usage figure.
     static func headline(_ snapshot: SpendSnapshot) -> String? {
+        if let balance = snapshot.balance { return BalanceText.amount(balance.remaining, balance.unit) + " left" }
         let estimate = snapshot.isEstimate ? " (estimate)" : ""
         if let today = snapshot.today { return "\(MoneyText.string(today)) today\(estimate)" }
         if let month = snapshot.month {

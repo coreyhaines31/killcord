@@ -8,18 +8,35 @@ public struct HTTPRequest: Sendable, Equatable {
     public enum Method: String, Sendable {
         case get = "GET"
         case post = "POST"
+        /// Only Kill Cord's own cloud uses this (signing a Mac out). Provider adapters never write.
+        case delete = "DELETE"
     }
 
     public var method: Method
     public var url: URL
     public var headers: [String: String]
     public var body: Data?
+    /// Stricter limits for requests to an address the person typed in (custom connections): no redirect to
+    /// another host or scheme, a smaller response, and a shorter wait. Nil for the built-in providers.
+    public var limits: Limits?
 
-    public init(method: Method = .get, url: URL, headers: [String: String] = [:], body: Data? = nil) {
+    public struct Limits: Sendable, Equatable {
+        public var maxResponseBytes: Int
+        public var timeout: TimeInterval
+
+        public init(maxResponseBytes: Int, timeout: TimeInterval) {
+            self.maxResponseBytes = maxResponseBytes
+            self.timeout = timeout
+        }
+    }
+
+    public init(method: Method = .get, url: URL, headers: [String: String] = [:], body: Data? = nil,
+                limits: Limits? = nil) {
         self.method = method
         self.url = url
         self.headers = headers
         self.body = body
+        self.limits = limits
     }
 
     /// A query parameter's values, in order. For tests.
@@ -54,6 +71,15 @@ public struct HTTPResponse: Sendable, Equatable {
 /// The one way adapters reach the network. Injected so every adapter can be tested with `MockHTTPClient`.
 public protocol HTTPClient: Sendable {
     func send(_ request: HTTPRequest) async throws -> HTTPResponse
+    /// The IP addresses a host name resolves to, or nil when it doesn't resolve. Custom connections check
+    /// them before sending anything.
+    func addresses(for host: String) async -> [String]?
+}
+
+extension HTTPClient {
+    public func addresses(for host: String) async -> [String]? {
+        HostSafety.resolve(host)
+    }
 }
 
 /// The real client: an ephemeral session, so nothing (cookies, cached responses with spend in them) is
@@ -82,7 +108,14 @@ public final class URLSessionHTTPClient: HTTPClient, @unchecked Sendable {
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await session.data(for: urlRequest)
+            if let limits = request.limits {
+                urlRequest.timeoutInterval = limits.timeout
+                (data, response) = try await limited(urlRequest, limits)
+            } else {
+                (data, response) = try await session.data(for: urlRequest)
+            }
+        } catch let error as SpendError {
+            throw error
         } catch let error as URLError {
             throw SpendError(urlError: error)
         } catch {
@@ -95,7 +128,44 @@ public final class URLSessionHTTPClient: HTTPClient, @unchecked Sendable {
         }
         return HTTPResponse(status: http.statusCode, headers: headers, body: data)
     }
+
+    /// Reads at most `maxResponseBytes`, and refuses a redirect to another host or scheme before it's followed,
+    /// so a key is never sent somewhere the person didn't type.
+    private func limited(_ request: URLRequest, _ limits: HTTPRequest.Limits) async throws -> (Data, URLResponse) {
+        #if canImport(FoundationNetworking)
+        // Custom connections are a macOS feature; the Linux build only runs the core tests, on mocks.
+        throw SpendError.network
+        #else
+        // The request's timeout only covers silence; a reply that trickles in also has a whole-request deadline.
+        let deadline = Date().addingTimeInterval(limits.timeout * 2)
+        let (bytes, response) = try await session.bytes(for: request, delegate: SameHostRedirects())
+        var data = Data()
+        for try await byte in bytes {
+            data.append(byte)
+            if data.count > limits.maxResponseBytes { throw SpendError.unexpectedResponse }
+            if Date() > deadline { throw SpendError.network }
+        }
+        guard Date() <= deadline else { throw SpendError.network }
+        return (data, response)
+        #endif
+    }
 }
+
+#if !canImport(FoundationNetworking)
+/// Follows a redirect only when it stays on the same scheme, host and port.
+final class SameHostRedirects: NSObject, URLSessionTaskDelegate, Sendable {
+    func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse,
+                    newRequest request: URLRequest) async -> URLRequest? {
+        guard let origin = task.originalRequest?.url, let target = request.url else { return nil }
+        return Self.allows(from: origin, to: target) ? request : nil
+    }
+
+    static func allows(from origin: URL, to target: URL) -> Bool {
+        origin.scheme?.lowercased() == target.scheme?.lowercased()
+            && origin.host?.lowercased() == target.host?.lowercased() && origin.port == target.port
+    }
+}
+#endif
 
 /// A scripted client for tests and demo mode. Records every request; answers with a handler.
 public final class MockHTTPClient: HTTPClient, @unchecked Sendable {
@@ -131,6 +201,14 @@ public final class MockHTTPClient: HTTPClient, @unchecked Sendable {
             return self.handler
         }
         return try handler(request)
+    }
+
+    /// Host to addresses, for custom connections. Every host resolves to one public address unless a test
+    /// says otherwise; nothing is looked up.
+    public var resolver: @Sendable (String) -> [String]? = { _ in ["93.184.215.14"] }
+
+    public func addresses(for host: String) async -> [String]? {
+        resolver(host)
     }
 }
 

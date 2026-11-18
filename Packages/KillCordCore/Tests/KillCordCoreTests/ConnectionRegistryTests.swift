@@ -86,7 +86,17 @@ import Testing
             .cloudflare: ["token", "accountID"],
             .twilio: ["accountSID", "apiKeySID", "secret"],
             .neon: ["apiKey", "orgID"],
-            .supabase: []
+            .supabase: [],
+            .openrouter: ["apiKey"],
+            .dataforseo: ["login", "password"],
+            .ahrefs: ["apiKey"],
+            .firecrawl: ["apiKey"],
+            .treg: ["token", "org"],
+            .monid: ["apiKey"],
+            .custom: ["serviceName", "url", "method", "authStyle", "authName", "authValue", "key", "key2", "body",
+                      "remainingPath", "usedPath", "limitPath", "resetPath", "currencyPath", "unit", "scale",
+                      "dollarsPerUnit", "kind", "pollMinutes", "costsMoney"],
+            .manual: ["serviceName", "plan", "price", "period", "renewsOn", "allowance", "allowanceUnit", "remindDays"]
         ])
         #expect(Brand.keychainService == "app.killcord.KillCord.providers")
     }

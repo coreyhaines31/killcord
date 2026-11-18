@@ -49,9 +49,7 @@ final class SpendModel {
 
     func start() {
         if isDemo {
-            registry = DemoData.registry()
-            states = Dictionary(uniqueKeysWithValues: DemoData.states().map { ($0.connectionID, $0) })
-            onChange?()
+            showSample(registry: DemoData.registry(), states: DemoData.states())
             return
         }
         let fallback = Preferences.migrate(secrets: secrets)
@@ -66,7 +64,8 @@ final class SpendModel {
             if states[record.id] == nil {
                 states[record.id] = ProviderState(provider: record.provider, connectionID: record.id)
             }
-            scheduler.add(record.id, provider: record.provider, now: Date())
+            states[record.id]?.refreshFloor = customConfig(record.id)?.interval
+            scheduler.add(record.id, provider: record.provider, now: Date(), floor: states[record.id]?.refreshFloor)
         }
         pathMonitor.pathUpdateHandler = { [weak self] path in
             let online = path.status == .satisfied
@@ -134,7 +133,7 @@ final class SpendModel {
         guard let adapter = providers[provider] else { throw SpendError.noUsageAPI }
         if !isDemo { try await adapter.validate(candidate, now: Date()) }
         var next = registry
-        let record = id.flatMap { next.record($0) } ?? next.add(provider, now: Date())
+        let record = id.flatMap { next.record($0) } ?? next.adding(provider, named: candidate["serviceName"])
         if !isDemo {
             // The record first, so a key is never saved under an id nothing knows about.
             Preferences.connections = next
@@ -146,9 +145,10 @@ final class SpendModel {
             }
         }
         registry = next
-        states[record.id] = ProviderState(provider: provider, connectionID: record.id)
+        let floor = (try? CustomConfig(candidate))?.interval
+        states[record.id] = ProviderState(provider: provider, connectionID: record.id, refreshFloor: floor)
         lastCapCheck[record.id] = nil
-        scheduler.add(record.id, provider: provider, now: Date())
+        scheduler.add(record.id, provider: provider, now: Date(), floor: floor)
         onChange?()
         tick()
         return record.id
@@ -284,7 +284,7 @@ final class SpendModel {
         // Disconnected while the request was out.
         guard registry.record(id) != nil else { return }
         let now = Date()
-        let empty = ProviderState(provider: record.provider, connectionID: id)
+        let empty = ProviderState(provider: record.provider, connectionID: id, refreshFloor: customConfig(id)?.interval)
         switch result {
         case .success(let snapshot):
             states[id, default: empty].record(snapshot)
@@ -340,7 +340,8 @@ extension SpendModel {
     /// connect, so marking its cap is how it joins the audit).
     var auditProviders: [ProviderID] {
         ProviderID.allCases.filter { provider in
-            connected.contains(provider)
+            guard !CapsCatalog.controls(for: provider).isEmpty else { return false }
+            return connected.contains(provider)
                 || CapsCatalog.controls(for: provider).contains { audit.marks[$0.id] != nil }
         }
     }
@@ -376,5 +377,17 @@ extension SpendModel {
             return fields.map { ($0, $0.isSecret ? sample : "sample") }
         }
         return storedCredentials(id)?.hints ?? []
+    }
+}
+
+// MARK: - Sample data
+
+extension SpendModel {
+    /// Sample connections and readings, for demo mode and the render tests. Demo models only.
+    func showSample(registry: ConnectionRegistry, states: [ProviderState]) {
+        guard isDemo else { return }
+        self.registry = registry
+        self.states = Dictionary(uniqueKeysWithValues: states.map { ($0.connectionID, $0) })
+        onChange?()
     }
 }

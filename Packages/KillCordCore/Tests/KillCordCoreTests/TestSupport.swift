@@ -32,6 +32,13 @@ enum FakeKeys {
     static let neon = "neon-TEST-key-secret-0006"
     static let googlePrivateKey = "-----BEGIN PRIVATE KEY-----\nTESTPRIVATEKEYgooglesecret0007\n-----END PRIVATE KEY-----\n"
     static let twilioSID = "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    static let openrouter = "sk-or-v1-TEST-openrouter-secret-0008"
+    static let dataforseo = "dfs-TEST-password-secret-0009"
+    static let ahrefs = "ahrefs-TEST-key-secret-0010"
+    static let firecrawl = "fc-TEST-firecrawl-secret-0011"
+    static let treg = "treg-TEST-token-secret-0012"
+    static let monid = "monid_test_TEST-secret-0013"
+    static let custom = "custom-TEST-key-secret-0014"
 
     static var googleJSON: String {
         let object: [String: String] = [
@@ -45,6 +52,8 @@ enum FakeKeys {
         return String(data: data, encoding: .utf8)!
     }
 
+    // One case per provider.
+    // swiftlint:disable:next cyclomatic_complexity
     static func credentials(_ provider: ProviderID) -> ProviderCredentials {
         let values: [String: String] = switch provider {
         case .anthropic: ["apiKey": anthropic]
@@ -57,13 +66,24 @@ enum FakeKeys {
                        "exportTable": "kc-billing.billing_export.gcp_billing_export_v1_0123AB_4567CD_89EF01",
                        "billingAccountID": "0123AB-4567CD-89EF01"]
         case .supabase: [:]
+        case .openrouter: ["apiKey": openrouter]
+        case .dataforseo: ["login": "kc-test@example.com", "password": dataforseo]
+        case .ahrefs: ["apiKey": ahrefs]
+        case .firecrawl: ["apiKey": firecrawl]
+        case .treg: ["token": treg]
+        case .monid: ["apiKey": monid]
+        case .custom: ["serviceName": "Example", "url": "https://api.example.com/v1/balance", "key": custom,
+                       "remainingPath": "data.balance"]
+        // Values long enough not to turn up by chance inside an id or a date.
+        case .manual: ["serviceName": "Truelist", "plan": "Starter", "price": "49.25", "renewsOn": "2026-11-03",
+                       "allowance": "12345"]
         }
         return ProviderCredentials(provider: provider, values: values)
     }
 
     /// Every fake secret, for leak checks.
     static let all = [anthropic, openai, vercel, cloudflare, twilio, neon, "TESTPRIVATEKEYgooglesecret0007",
-                      "ya29.TEST-ACCESS-TOKEN"]
+                      "ya29.TEST-ACCESS-TOKEN", openrouter, dataforseo, ahrefs, firecrawl, treg, monid, custom]
 }
 
 /// Stands in for RSA signing, which needs the Security framework. Records what it was asked to sign.

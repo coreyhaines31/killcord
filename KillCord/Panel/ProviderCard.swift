@@ -17,6 +17,7 @@ struct ProviderCard: View {
     private var state: ProviderState? { model.states[connectionID] }
     private var freshness: Freshness { model.freshness(connectionID, now: now) }
     private var snapshot: SpendSnapshot? { state?.snapshot }
+    private var capability: SpendCapability { provider.info.capability }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -26,30 +27,16 @@ struct ProviderCard: View {
                     Text(name).font(PanelFont.condensed(14, .semibold))
                 }
                 Spacer()
-                StatusLight(freshness.isLive ? .go : .caution, freshness.isLive ? "Checked" : "Not live")
+                if provider == .manual {
+                    StatusLight(.off, "Not live")
+                } else {
+                    StatusLight(freshness.isLive ? .go : .caution, freshness.isLive ? "Checked" : "Not live")
+                }
             }
-            Text(SpendText.freshness(freshness, now: now))
-                .font(PanelFont.body(11))
-                .foregroundStyle(theme.sub)
-            if provider.info.capability.showsMoney {
-                money
+            if provider == .manual {
+                manualRows
             } else {
-                usage
-            }
-            if let reason = SpendText.staleReason(freshness) {
-                Text(reason).font(.system(size: 11)).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            if let asOf = snapshot?.dataAsOf {
-                Text("\(provider.info.name) data current through \(SpendText.time(asOf, now: now)).")
-                    .font(.system(size: 11)).foregroundStyle(.secondary)
-            }
-            if provider.info.lag.typical >= 3600 {
-                Text(provider.info.lag.note).font(.system(size: 11)).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            if let error = state?.lastError {
-                errorRow(error)
+                readingRows
             }
         }
         .padding(.horizontal, 14)
@@ -60,12 +47,76 @@ struct ProviderCard: View {
         }
     }
 
+    /// A plan the person typed in: never read, never live, never in the totals.
+    @ViewBuilder
+    private var manualRows: some View {
+        Text(ManualText.notLive).font(PanelFont.body(11)).foregroundStyle(theme.sub)
+        if let plan = snapshot?.manual {
+            amount([plan.plan, ManualText.price(plan)].compactMap { $0 }.joined(separator: ", ").nonEmpty ?? "Plan",
+                   ManualText.renewal(plan, now: now))
+            if let allowance = ManualText.allowance(plan) {
+                Text(allowance).font(.system(size: 11)).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var readingRows: some View {
+        Text(SpendText.freshness(freshness, now: now))
+            .font(PanelFont.body(11))
+            .foregroundStyle(theme.sub)
+        if let balance = snapshot?.balance {
+            balanceRow(balance)
+        } else if capability.showsBalance {
+            amount("Balance", snapshot == nil ? "Not read yet" : "Not reported")
+        }
+        if capability.showsMoney {
+            money
+        } else if !capability.showsBalance {
+            usage
+        }
+        if let reason = SpendText.staleReason(freshness) {
+            Text(reason).font(.system(size: 11)).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        if provider == .custom {
+            Text("From your own setup. Kill Cord can't verify it.")
+                .font(.system(size: 11)).foregroundStyle(.secondary)
+        }
+        if let asOf = snapshot?.dataAsOf {
+            Text("\(provider.info.name) data current through \(SpendText.time(asOf, now: now)).")
+                .font(.system(size: 11)).foregroundStyle(.secondary)
+        }
+        if provider.info.lag.typical >= 3600 {
+            Text(provider.info.lag.note).font(.system(size: 11)).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        if let error = state?.lastError {
+            errorRow(error)
+        }
+    }
+
     private var money: some View {
         HStack(alignment: .firstTextBaseline, spacing: 18) {
-            amount("Today", snapshot.map { SpendText.amount($0.today, isEstimate: $0.isEstimate) } ?? "Not read yet")
-            amount(snapshot.map { SpendText.monthLabel($0.monthKind, now: now) } ?? "This month",
-                   snapshot.map { SpendText.amount($0.month, isEstimate: $0.isEstimate) } ?? "Not read yet")
+            if capability.countsToday {
+                amount("Today", snapshot.map { SpendText.amount($0.today, isEstimate: $0.isEstimate) } ?? "Not read yet")
+            }
+            if capability.countsMonth {
+                amount(snapshot.map { SpendText.monthLabel($0.monthKind, now: now) } ?? "This month",
+                       snapshot.map { SpendText.amount($0.month, isEstimate: $0.isEstimate) } ?? "Not read yet")
+            }
             Spacer()
+        }
+    }
+
+    /// What's left, with its unit, and anything worth knowing about it. Never mixed into spend.
+    private func balanceRow(_ balance: Balance) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            amount(balance.kind == .prepaid ? "Balance" : "Left this period", BalanceText.remaining(balance))
+            ForEach(BalanceText.details(balance, now: now), id: \.self) { line in
+                Text(line).font(.system(size: 11)).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 
@@ -105,4 +156,9 @@ struct ProviderCard: View {
             }
         }
     }
+}
+
+extension String {
+    /// Nil for an empty string.
+    var nonEmpty: String? { isEmpty ? nil : self }
 }

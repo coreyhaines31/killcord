@@ -1,7 +1,7 @@
 import Foundation
 
 /// The usage-billed providers Kill Cord knows. Order is the order they're listed in: the two most likely to
-/// surprise a bill first, then the rest.
+/// surprise a bill first, then the rest, then services Kill Cord reads a balance from.
 public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Identifiable {
     case anthropic
     case google
@@ -11,6 +11,17 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case twilio
     case neon
     case supabase
+    // Prepaid balances and plan allowances.
+    case openrouter
+    case dataforseo
+    case ahrefs
+    case firecrawl
+    case treg
+    case monid
+    /// A service the person sets up: an https address and where the balance is in its JSON.
+    case custom
+    /// A paid service with no API: a plan, price and renewal date the person types in.
+    case manual
 
     public var id: String { rawValue }
 
@@ -33,6 +44,10 @@ public enum SpendCapability: Hashable, Sendable {
     case noUsageAPI
     /// Spend is available only after one-time setup outside Kill Cord (Google's BigQuery billing export).
     case requiresSetup(String)
+    /// The API reports what's left of a prepaid balance or plan allowance, plus spend for `spend`'s periods.
+    case balance(spend: SpendPeriods)
+    /// No API: the person types in the plan, and Kill Cord reminds before it renews.
+    case enteredByHand
 
     public var summary: String {
         switch self {
@@ -40,15 +55,47 @@ public enum SpendCapability: Hashable, Sendable {
         case .usageUnitsOnly: "Shows usage, not dollars: the API doesn't report money."
         case .noUsageAPI: "No spend API. Kill Cord can't show spend here, but the caps audit still works."
         case .requiresSetup(let what): "Shows spend after one-time setup: \(what)."
+        case .balance(let spend) where spend.isEmpty: "Shows the balance left, not spend."
+        case .balance: "Shows the balance left, and spend where the API reports it."
+        case .enteredByHand: "Shows the plan you entered and reminds before it renews. Not live."
         }
     }
 
-    public var showsMoney: Bool {
+    /// Whether today's spend is reported, so a missing number is worth saying.
+    public var countsToday: Bool {
         switch self {
         case .dollars, .requiresSetup: true
-        case .usageUnitsOnly, .noUsageAPI: false
+        case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
+        case .balance(let spend): spend.contains(.today)
         }
     }
+
+    /// Whether this month's spend is reported.
+    public var countsMonth: Bool {
+        switch self {
+        case .dollars, .requiresSetup: true
+        case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
+        case .balance(let spend): spend.contains(.month)
+        }
+    }
+
+    /// Whether any spend in money is reported.
+    public var showsMoney: Bool { countsToday || countsMonth }
+
+    /// Whether a balance is the headline.
+    public var showsBalance: Bool {
+        if case .balance = self { return true }
+        return false
+    }
+}
+
+/// Which spend periods a balance provider also reports.
+public struct SpendPeriods: OptionSet, Hashable, Sendable {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
+
+    public static let today = SpendPeriods(rawValue: 1)
+    public static let month = SpendPeriods(rawValue: 2)
 }
 
 /// One thing a person pastes in to connect a provider.
@@ -63,16 +110,22 @@ public struct CredentialField: Hashable, Sendable, Identifiable {
     /// Multi-line input, for a pasted JSON key file.
     public let isMultiline: Bool
     public let help: String
+    /// A fixed set of values, drawn as a picker. The first is the default when nothing is saved.
+    public let choices: [String]
+    /// Rarely needed: drawn under a collapsed "Advanced" disclosure.
+    public let isAdvanced: Bool
 
     public init(id: String, label: String, placeholder: String = "", isSecret: Bool, isOptional: Bool = false,
-                isMultiline: Bool = false, help: String = "") {
+                isMultiline: Bool = false, help: String = "", choices: [String] = [], isAdvanced: Bool = false) {
         self.id = id
         self.label = label
         self.placeholder = placeholder
         self.isSecret = isSecret
-        self.isOptional = isOptional
+        self.isOptional = isOptional || !choices.isEmpty
         self.isMultiline = isMultiline
         self.help = help
+        self.choices = choices
+        self.isAdvanced = isAdvanced
     }
 }
 
@@ -119,7 +172,7 @@ extension ProviderInfo {
 
     static func url(_ string: String) -> URL { URL(string: string)! }
 
-    public static let all: [ProviderID: ProviderInfo] = Dictionary(uniqueKeysWithValues: [
+    public static let all: [ProviderID: ProviderInfo] = Dictionary(uniqueKeysWithValues: ([
         ProviderInfo(
             id: .anthropic, name: "Anthropic", capability: .dollars,
             fields: [CredentialField(id: "apiKey", label: "API key", placeholder: "sk-ant-…", isSecret: true,
@@ -252,5 +305,5 @@ extension ProviderInfo {
             billingTimeZone: utc, minimumRefreshInterval: 24 * 3600,
             consoleURL: url("https://supabase.com/dashboard/org/_/billing")
         )
-    ].map { ($0.id, $0) })
+    ] + balanceProviders + [custom, manual]).map { ($0.id, $0) })
 }

@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "starting_at": "2026-11-13T00:00:00Z",
+      "ending_at": "2026-11-14T00:00:00Z",
+      "group": {},
+      "cost": { "amount": "20000.500000", "currency": "USD", "list_amount": "20000.500000", "requests": 1 }
+    }
+  ],
+  "has_more": false,
+  "next_page": null,
+  "data_refreshed_at": null
+}

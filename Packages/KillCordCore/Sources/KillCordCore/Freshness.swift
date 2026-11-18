@@ -9,14 +9,18 @@ public struct ProviderState: Sendable, Equatable, Codable {
     public var snapshot: SpendSnapshot?
     public var lastAttempt: Date?
     public var lastError: SpendError?
+    /// The connection's own minimum check interval, when it has one, so a custom service checked hourly
+    /// isn't called overdue after half an hour.
+    public var refreshFloor: TimeInterval?
 
     public init(provider: ProviderID, connectionID: UUID, snapshot: SpendSnapshot? = nil, lastAttempt: Date? = nil,
-                lastError: SpendError? = nil) {
+                lastError: SpendError? = nil, refreshFloor: TimeInterval? = nil) {
         self.provider = provider
         self.connectionID = connectionID
         self.snapshot = snapshot
         self.lastAttempt = lastAttempt
         self.lastError = lastError
+        self.refreshFloor = refreshFloor
     }
 
     public var lastSuccess: Date? { snapshot?.fetchedAt }
@@ -77,7 +81,7 @@ public enum Freshness: Equatable, Sendable {
 
     public static func of(_ state: ProviderState, context: FreshnessContext) -> Freshness {
         guard let checked = state.lastSuccess else { return .neverChecked }
-        let refreshInterval = max(context.interval, state.provider.info.minimumRefreshInterval)
+        let refreshInterval = max(context.interval, state.provider.info.minimumRefreshInterval, state.refreshFloor ?? 0)
         if context.isAsleep { return .stale(checkedAt: checked, reason: .slept) }
         if let wake = context.lastWake, checked < wake { return .stale(checkedAt: checked, reason: .slept) }
         if checked < context.launchedAt { return .stale(checkedAt: checked, reason: .notRunning) }

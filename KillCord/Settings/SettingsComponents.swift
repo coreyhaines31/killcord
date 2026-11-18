@@ -15,7 +15,13 @@ extension SignalLight {
 
 extension ProviderID {
     /// The asset catalog name of the provider's official mark. `docs/third-party-marks.md` gives each source.
-    var markAssetName: String { "mark-\(rawValue)" }
+    /// Nil for custom and manual connections, which aren't a vendor and draw a symbol instead.
+    var markAssetName: String? {
+        switch self {
+        case .custom, .manual: nil
+        default: "mark-\(rawValue)"
+        }
+    }
 
     /// How much larger than the key's mark area to draw the file. OpenAI's file carries its own clear space;
     /// Cloudflare's cloud is so wide that fitting its width alone leaves it too short to read.
@@ -23,7 +29,7 @@ extension ProviderID {
         switch self {
         case .openai: 1.45
         case .cloudflare: 1.3
-        case .anthropic, .google, .vercel, .twilio, .neon, .supabase: 1
+        default: 1
         }
     }
 }
@@ -50,13 +56,27 @@ struct ProviderMark: View {
             .accessibilityHidden(true)
     }
 
+    @ViewBuilder
     private var face: some View {
-        Image(provider.markAssetName, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
-            .renderingMode(.template)
-            .resizable()
-            .scaledToFit()
-            .frame(width: size * 0.5 * provider.markScale, height: size * 0.5 * provider.markScale)
-            .frame(width: size * 0.5, height: size * 0.5)
+        if let asset = provider.markAssetName {
+            Image(asset, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.5 * provider.markScale, height: size * 0.5 * provider.markScale)
+                .frame(width: size * 0.5, height: size * 0.5)
+        } else if provider == .custom || provider == .manual {
+            Image(systemName: provider == .custom ? "curlybraces" : "pencil.line")
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.5, height: size * 0.5)
+        } else {
+            // No official mark in the app yet: the name's first letter, never a made-up logo.
+            Text(provider.info.name.prefix(1).uppercased())
+                .font(.system(size: size * 0.5, weight: .bold, design: .rounded))
+                .minimumScaleFactor(0.5)
+                .frame(width: size * 0.62, height: size * 0.62)
+        }
     }
 }
 
@@ -116,11 +136,14 @@ struct ProviderHeader: View {
 /// The one privacy line under anything that takes a key.
 struct PrivacyLine: View {
     let providerName: String
+    /// For a manual entry, which has no key and goes nowhere.
+    var isManual = false
 
     var body: some View {
         Label {
-            Text("Stored in your Keychain and sent only to \(providerName). Never paste a key into a chat or "
-                + "AI agent.")
+            Text(isManual ? "Stored in your Keychain. Kill Cord never sends it anywhere."
+                : "Stored in your Keychain and sent only to \(providerName). Never paste a key into a chat or "
+                    + "AI agent.")
         } icon: {
             Image(systemName: "lock.fill")
         }

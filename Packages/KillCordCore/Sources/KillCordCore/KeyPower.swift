@@ -8,6 +8,9 @@ public enum KeyPower: String, Sendable, Equatable, Codable {
     case readOnly
     /// A read-only key exists but isn't guaranteed: it depends on what the person chose when creating it.
     case readOnlyIfChosen
+    /// No read-only key, but this one can't change the account either: it can make paid calls (an
+    /// OpenRouter or Firecrawl key).
+    case canSpend
     /// The provider has no read-only key. This one can also change the account or organization.
     case canManage
     /// Nothing is saved for this provider.
@@ -27,7 +30,14 @@ extension ProviderID {
         // permissions, and the docs don't name a role limited to the cost report. Vercel tokens can be
         // scoped to a team, but not to billing.
         case .anthropic, .vercel, .twilio, .neon: .canManage
-        case .supabase: .noKey
+        // Nothing secret: a manual entry is a plan and a date.
+        case .supabase, .manual: .noKey
+        // Keys that can make paid calls but, as far as each provider documents, not manage the account.
+        // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
+        // keys have no read-only form. OpenRouter's account settings need a separate management key.
+        case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid: .canSpend
+        // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
+        case .custom: .canManage
         }
     }
 }

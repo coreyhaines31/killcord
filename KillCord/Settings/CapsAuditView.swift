@@ -19,7 +19,7 @@ struct CapsAuditView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            SidebarPicker(groups: [.init(title: "Providers", items: ProviderID.allCases)],
+            SidebarPicker(groups: [.init(title: "Providers", items: Self.providers)],
                           selection: $selection) { provider in
                 CapsProviderRow(provider: provider, light: Self.light(model.audit.progress(for: provider, now: Date())),
                                 line: line(provider))
@@ -32,6 +32,9 @@ struct CapsAuditView: View {
         }
         .frame(height: 600)
     }
+
+    /// Providers with at least one native cap Kill Cord knows about.
+    static var providers: [ProviderID] { ProviderID.allCases.filter { !CapsCatalog.controls(for: $0).isEmpty } }
 
     static func light(_ progress: CapAuditState.Progress) -> SignalLight {
         if progress.isComplete { return .go }

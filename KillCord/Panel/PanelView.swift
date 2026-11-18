@@ -19,7 +19,8 @@ struct PanelView: View {
                        detail: model.isDemo ? "Sample data" : "While your Mac is awake",
                        label: "API spend monitor", isLit: model.isOnline && !model.isAsleep) {
                     if !model.connected.isEmpty {
-                        TotalsView(summary: summary)
+                        TotalsView(summary: summary, hasBalances: model.hasBalances,
+                                   hasManualPlans: !model.connections(for: .manual).isEmpty)
                     }
                 }
                 .trailingAccessory {
@@ -89,8 +90,9 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("See today's and this month's API spend").font(.system(size: 13, weight: .semibold))
-            Text("Connect Anthropic, Google Cloud, OpenAI, Vercel, Cloudflare, Twilio, or Neon with a billing key. "
-                + "Keys are stored in Keychain and sent only to their provider for authentication.")
+            Text("Connect Anthropic, Google Cloud, OpenAI, Vercel, Cloudflare, Twilio, or Neon with a billing key, "
+                + "or watch a prepaid balance on OpenRouter, DataForSEO, and more. Keys are stored in Keychain and "
+                + "sent only to their provider for authentication.")
                 .font(.system(size: 12)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             HStack {
@@ -110,6 +112,8 @@ struct EmptyStateView: View {
 /// Today and this month across providers, with what the totals leave out said plainly.
 struct TotalsView: View {
     let summary: SpendSummary
+    var hasBalances = false
+    var hasManualPlans = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -139,6 +143,8 @@ struct TotalsView: View {
             notes.append("Today leaves out " + names(summary.missingToday) + " (not reported yet or not read).")
         }
         if summary.hasEstimates { notes.append("Includes estimates.") }
+        if hasBalances { notes.append("Balances are what's left, not spend, so they're not in these totals.") }
+        if hasManualPlans { notes.append("Plans you entered by hand aren't live and aren't in these totals.") }
         notes.append("Each provider's day and month follow its own billing clock.")
         return notes
     }
