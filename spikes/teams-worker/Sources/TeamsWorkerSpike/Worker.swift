@@ -78,6 +78,8 @@ public struct Worker: Sendable {
             return try await release(connection, error: "cannot decrypt (\(error))")
         } catch let error as SpendError {
             return try await release(connection, error: "provider error (\(error))")
+        } catch is DecodingError {
+            return try await release(connection, error: "unreadable stored key")
         }
         let month = snapshot.month?.amount
         let today = snapshot.today?.amount
