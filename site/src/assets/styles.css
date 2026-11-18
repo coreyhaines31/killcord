@@ -209,3 +209,5 @@ img {max-width: 100%}
 .track-page .coverage thead th:first-child {width: 34%}
 .prose ul.cat-nav {display: flex; gap: 8px}
 .prose ul.related {gap: 10px}
+.coverage.billing thead th:first-child {width: 18%}
+.coverage.billing td:last-child {font-size: 14.5px}
