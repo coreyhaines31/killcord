@@ -1,0 +1,6 @@
+parent_config: ../../.swiftlint.yml
+included:
+  - Sources
+  - Tests
+excluded:
+  - .build
