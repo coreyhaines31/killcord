@@ -92,7 +92,10 @@ import Testing
             .ahrefs: ["apiKey"],
             .firecrawl: ["apiKey"],
             .treg: ["token", "org"],
-            .monid: ["apiKey"]
+            .monid: ["apiKey"],
+            .custom: ["serviceName", "url", "method", "authStyle", "authName", "authValue", "key", "key2", "body",
+                      "remainingPath", "usedPath", "limitPath", "resetPath", "currencyPath", "unit", "scale",
+                      "dollarsPerUnit", "kind", "pollMinutes", "costsMoney"]
         ])
         #expect(Brand.keychainService == "app.killcord.KillCord.providers")
     }

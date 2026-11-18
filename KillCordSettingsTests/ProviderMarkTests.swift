@@ -11,8 +11,8 @@ final class ProviderMarkTests: XCTestCase {
             let image = try XCTUnwrap(bundle.image(forResource: name), name)
             XCTAssertTrue(image.isTemplate, "\(name) must be a template image")
         }
-        // The balance services have no sourced mark yet and show a letter instead.
+        // The balance services have no sourced mark yet and show a letter instead; custom shows braces.
         XCTAssertEqual(ProviderID.allCases.filter { $0.markAssetName == nil },
-                       [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid])
+                       [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .custom])
     }
 }

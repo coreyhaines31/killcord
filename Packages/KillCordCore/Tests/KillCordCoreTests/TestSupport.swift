@@ -38,6 +38,7 @@ enum FakeKeys {
     static let firecrawl = "fc-TEST-firecrawl-secret-0011"
     static let treg = "treg-TEST-token-secret-0012"
     static let monid = "monid_test_TEST-secret-0013"
+    static let custom = "custom-TEST-key-secret-0014"
 
     static var googleJSON: String {
         let object: [String: String] = [
@@ -71,13 +72,15 @@ enum FakeKeys {
         case .firecrawl: ["apiKey": firecrawl]
         case .treg: ["token": treg]
         case .monid: ["apiKey": monid]
+        case .custom: ["serviceName": "Example", "url": "https://api.example.com/v1/balance", "key": custom,
+                       "remainingPath": "data.balance"]
         }
         return ProviderCredentials(provider: provider, values: values)
     }
 
     /// Every fake secret, for leak checks.
     static let all = [anthropic, openai, vercel, cloudflare, twilio, neon, "TESTPRIVATEKEYgooglesecret0007",
-                      "ya29.TEST-ACCESS-TOKEN", openrouter, dataforseo, ahrefs, firecrawl, treg, monid]
+                      "ya29.TEST-ACCESS-TOKEN", openrouter, dataforseo, ahrefs, firecrawl, treg, monid, custom]
 }
 
 /// Stands in for RSA signing, which needs the Security framework. Records what it was asked to sign.
