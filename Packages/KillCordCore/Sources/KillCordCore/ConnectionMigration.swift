@@ -96,13 +96,15 @@ public enum ConnectionMigration {
         case copy(Data, into: ConnectionRecord?)
 
         init(legacy: Item, records: [ConnectionRecord], secrets: SecretStore) {
+            guard legacy != .empty else {
+                self = .nothing
+                return
+            }
             let items = records.map { Item(secrets, account: $0.keychainAccount) }
             let ownerIndex = items.firstIndex(of: .empty) ?? items.firstIndex(of: .unknown)
             let owner = ownerIndex.map { records[$0].id }
             switch legacy {
-            case .empty:
-                self = .nothing
-            case .unknown:
+            case .empty, .unknown:
                 // Can't tell whether there's an old item. Keep reading it for the connection that would own it.
                 self = .wait(owner: owner)
             case .holds(let data) where items.contains(.holds(data)):
