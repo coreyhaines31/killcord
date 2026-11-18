@@ -151,14 +151,53 @@ struct CredentialFields: View {
     @Binding var values: [String: String]
     let keepsSavedSecrets: Bool
     let isDisabled: Bool
+    /// True after a connect attempt failed. A custom setup whose problem is in an advanced field opens them.
+    var failed = false
+    var provider: ProviderID?
+    @State private var showsAdvanced = false
+
+    private var advanced: [CredentialField] { fields.filter(\.isAdvanced) }
+
+    /// Something typed (or saved) in a field that's tucked away, so it's never hidden from the person. A
+    /// picker left on its default doesn't count.
+    private var advancedHasValues: Bool {
+        advanced.contains { field in
+            let value = (values[field.id] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            return !value.isEmpty && value != field.choices.first
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            ForEach(fields) { field in
+            ForEach(fields.filter { !$0.isAdvanced }) { field in
                 row(field)
+            }
+            if !advanced.isEmpty {
+                DisclosureGroup("Advanced", isExpanded: $showsAdvanced) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(advanced) { field in
+                            row(field)
+                        }
+                    }
+                    .padding(.top, 6)
+                }
+                .font(.callout.weight(.medium))
             }
         }
         .disabled(isDisabled)
+        .onAppear {
+            if advancedHasValues { showsAdvanced = true }
+            openForProblem()
+        }
+        .onChange(of: advancedHasValues) { _, filled in if filled { showsAdvanced = true } }
+        .onChange(of: failed) { _, _ in openForProblem() }
+    }
+
+    /// After a failed test, opens Advanced when the field at fault is in it.
+    private func openForProblem() {
+        guard failed, provider == .custom else { return }
+        let field = CustomConfig.fieldWithProblem(ProviderCredentials(provider: .custom, values: values))
+        if advanced.contains(where: { $0.id == field }) { showsAdvanced = true }
     }
 
     /// A field with fixed choices. Shows the first until one is picked.

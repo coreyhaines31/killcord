@@ -141,6 +141,34 @@ final class BalanceRenderTests: XCTestCase {
         }
     }
 
+    /// The custom setup: essentials only at first; Advanced opens by itself once something in it is filled
+    /// or a test fails because of it. The privacy line names the service as typed.
+    func testRendersTheCustomSetupCollapsedAndOpened() throws {
+        let empty = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) })
+        empty.start()
+        let typed = ["serviceName": "ScrapeCreators", "url": "https://api.example.com/v1/credit-balance",
+                     "remainingPath": "credits", "unit": "credits"]
+        let failing = ["serviceName": "ScrapeCreators", "url": "https://api.example.com/v1/credit-balance",
+                       "remainingPath": "", "usedPath": "data.used"]
+        let folder = renderFolder()
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            let starts: [(String, ProviderEditor.Start)] = [
+                ("collapsed", .init()),
+                ("advanced-filled", .init(values: typed)),
+                ("advanced-failed", .init(values: failing, phase: .failed(
+                    title: "Needs setup", message: "to work out what's left, fill in both the used and limit paths.",
+                    fix: nil)))
+            ]
+            for (name, start) in starts {
+                let editor = ProviderEditor(provider: .custom, connectionID: nil, model: empty, start: start,
+                                            openTab: { _ in })
+                    .frame(width: 470, height: name == "collapsed" ? 1200 : 2300)
+                try render(editor, dark: dark, to: folder.appendingPathComponent("custom-setup-\(name)-\(suffix).png"))
+            }
+        }
+    }
+
     /// Every provider's mark on its key, at the sidebar and header sizes, to compare the new ones with the rest.
     func testRendersEveryMark() throws {
         let sheet = VStack(alignment: .leading, spacing: 10) {

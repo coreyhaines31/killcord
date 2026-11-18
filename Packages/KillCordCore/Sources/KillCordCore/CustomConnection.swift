@@ -151,6 +151,28 @@ public struct CustomConfig: Sendable, Equatable {
 extension CustomConfig {
     static func fix(_ what: String) -> SpendError { .requiresSetup(what) }
 
+    /// The id of the first field the setup can't use, or nil when it's all readable. Settings opens the
+    /// Advanced fields when the problem is in one of them.
+    public static func fieldWithProblem(_ credentials: ProviderCredentials) -> String? {
+        let checks: [(String, () throws -> Void)] = [
+            ("url", { _ = try address(credentials) }),
+            (authField(credentials), { _ = try auth(credentials) }),
+            ("body", { _ = try body(credentials, method: credentials["method"] == "POST" ? .post : .get) }),
+            ("remainingPath", { _ = try path(credentials, "remainingPath") }),
+            ("usedPath", { _ = try path(credentials, "usedPath") }),
+            ("limitPath", { _ = try path(credentials, "limitPath") }),
+            ("resetPath", { _ = try path(credentials, "resetPath") }),
+            ("currencyPath", { _ = try path(credentials, "currencyPath") }),
+            ("unit", { _ = try unit(credentials) }),
+            ("dollarsPerUnit", { _ = try rate(credentials) })
+        ]
+        for (field, check) in checks where (try? check()) == nil { return field }
+        if credentials["remainingPath"] == nil, (credentials["usedPath"] == nil) != (credentials["limitPath"] == nil) {
+            return credentials["usedPath"] == nil ? "usedPath" : "limitPath"
+        }
+        return nil
+    }
+
     static func address(_ credentials: ProviderCredentials) throws -> URL {
         guard let text = credentials["url"], let url = URL(string: text), url.scheme?.lowercased() == "https",
               let host = url.host, !host.isEmpty else {
@@ -185,6 +207,13 @@ extension CustomConfig {
         case .none:
             return AuthSetting(style: style, name: "", value: "")
         }
+    }
+
+    /// Which auth field a refusal is about: a bad name, a header value over two lines, or else the key.
+    static func authField(_ credentials: ProviderCredentials) -> String {
+        if let name = credentials["authName"], !isToken(name) { return "authName" }
+        if credentials["authValue"]?.contains(where: \.isNewline) == true { return "authValue" }
+        return "key"
     }
 
     static func headerAuth(_ credentials: ProviderCredentials) throws -> AuthSetting {
@@ -231,44 +260,58 @@ extension ProviderInfo {
         CredentialField(id: "url", label: "Balance address", placeholder: "https://api.example.com/v1/balance",
                         isSecret: false, help: "https only. Kill Cord won't follow a redirect to another host, and "
                             + "won't call an address on your own network."),
-        CredentialField(id: "method", label: "Method", isSecret: false, choices: ["GET", "POST"]),
+        CredentialField(id: "method", label: "Method", isSecret: false, choices: ["GET", "POST"],
+                        isAdvanced: true),
         CredentialField(id: "authStyle", label: "Send the key as", isSecret: false,
                         choices: CustomConfig.AuthStyle.allCases.map(\.rawValue)),
         CredentialField(id: "authName", label: "Header or parameter name", placeholder: "Authorization",
                         isSecret: false, isOptional: true,
-                        help: "For a header: Authorization, x-api-key. For a query parameter: api_key."),
+                        help: "For a header: Authorization, x-api-key. For a query parameter: api_key.",
+                        isAdvanced: true),
         CredentialField(id: "authValue", label: "Header value", placeholder: "Bearer {key}", isSecret: false,
-                        isOptional: true, help: "{key} becomes the key below. Empty means Bearer {key}."),
+                        isOptional: true, help: "{key} becomes the key above. Empty means Bearer {key}.",
+                        isAdvanced: true),
         CredentialField(id: "key", label: "Key", placeholder: "API key", isSecret: true, isOptional: true,
                         help: "For Basic, the user name or key."),
         CredentialField(id: "key2", label: "Second secret", placeholder: "Basic password", isSecret: true,
-                        isOptional: true, help: "Only for Basic: the password. Usable as {key2}."),
+                        isOptional: true, help: "Only for Basic: the password. Usable as {key2}.",
+                        isAdvanced: true),
         CredentialField(id: "body", label: "JSON body", placeholder: "{ }", isSecret: false, isOptional: true,
-                        isMultiline: true, help: "Only for POST. Sent as application/json."),
+                        isMultiline: true, help: "Only for POST. Sent as application/json.",
+                        isAdvanced: true),
         CredentialField(id: "remainingPath", label: "Path to what's left", placeholder: "data.balance",
                         isSecret: false, isOptional: true,
                         help: "Keys and numbers with dots: data.items.0.credits. Leave empty if the whole reply "
-                            + "is a number, or to work it out from the two paths below."),
+                            + "is a number, or to work it out from used and limit under Advanced."),
         CredentialField(id: "usedPath", label: "Path to used", placeholder: "data.used", isSecret: false,
-                        isOptional: true),
+                        isOptional: true,
+                        isAdvanced: true),
         CredentialField(id: "limitPath", label: "Path to limit", placeholder: "data.limit", isSecret: false,
-                        isOptional: true),
+                        isOptional: true,
+                        isAdvanced: true),
         CredentialField(id: "resetPath", label: "Path to reset date", placeholder: "data.resets_at", isSecret: false,
-                        isOptional: true, help: "An ISO date, 2026-12-01, or Unix seconds."),
+                        isOptional: true, help: "An ISO date, 2026-12-01, or Unix seconds.",
+                        isAdvanced: true),
         CredentialField(id: "currencyPath", label: "Path to currency code", placeholder: "data.currency",
-                        isSecret: false, isOptional: true),
+                        isSecret: false, isOptional: true,
+                        isAdvanced: true),
         CredentialField(id: "unit", label: "Unit", placeholder: "USD", isSecret: false, isOptional: true,
-                        help: "A currency code like USD for money, or the word for what it counts, like credits."),
+                        help: "A currency code like USD for money, or the word for what it counts, like credits.",
+                        isAdvanced: true),
         CredentialField(id: "scale", label: "Amounts are in", isSecret: false,
                         help: "Cents divides by 100. Millionths divides by 1,000,000 (micro-dollars).",
-                        choices: CustomConfig.Scale.allCases.map(\.rawValue)),
+                        choices: CustomConfig.Scale.allCases.map(\.rawValue),
+                        isAdvanced: true),
         CredentialField(id: "dollarsPerUnit", label: "Dollars per unit", placeholder: "0.01", isSecret: false,
-                        isOptional: true, help: "For units that aren't money. Shown only as a labeled estimate."),
+                        isOptional: true, help: "For units that aren't money. Shown only as a labeled estimate.",
+                        isAdvanced: true),
         CredentialField(id: "kind", label: "Kind", isSecret: false, choices: CustomConfig.kinds),
         CredentialField(id: "pollMinutes", label: "Check at most every (minutes)", isSecret: false,
-                        choices: CustomConfig.pollChoices),
+                        choices: CustomConfig.pollChoices,
+                        isAdvanced: true),
         CredentialField(id: "costsMoney", label: "Each check costs money", isSecret: false,
-                        help: "If yes, Kill Cord checks at most once an hour.", choices: ["No", "Yes"])
+                        help: "If yes, Kill Cord checks at most once an hour.", choices: ["No", "Yes"],
+                        isAdvanced: true)
     ]
 
     static let custom = ProviderInfo(

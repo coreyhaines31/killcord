@@ -273,3 +273,26 @@ extension ProviderCredentials {
     }
 }
 #endif
+
+@Suite struct CustomSetupLayoutTests {
+    @Test func onlyTheEssentialsShowFirst() {
+        let visible = ProviderID.custom.info.fields.filter { !$0.isAdvanced }.map(\.id)
+        #expect(visible == ["serviceName", "url", "authStyle", "key", "remainingPath", "kind"])
+        #expect(ProviderID.allCases.filter { $0 != .custom }.allSatisfy { $0.info.fields.allSatisfy { !$0.isAdvanced } })
+    }
+
+    @Test func namesTheFieldAtFault() {
+        func problem(_ extra: [String: String]) -> String? {
+            CustomConfig.fieldWithProblem(customCredentials(extra))
+        }
+        #expect(problem([:]) == nil)
+        #expect(problem(["url": "http://api.example.com"]) == "url")
+        #expect(problem(["authName": "Bad Header"]) == "authName")
+        #expect(problem(["authStyle": "Query parameter", "key": ""]) == "key")
+        #expect(problem(["authValue": "Bearer {key}\nX: 1"]) == "authValue")
+        #expect(problem(["method": "POST", "body": "{nope"]) == "body")
+        #expect(problem(["usedPath": "a..b"]) == "usedPath")
+        #expect(problem(["remainingPath": "", "usedPath": "data.used"]) == "limitPath")
+        #expect(problem(["dollarsPerUnit": "lots"]) == "dollarsPerUnit")
+    }
+}
