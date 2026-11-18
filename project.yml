@@ -66,6 +66,7 @@ targets:
       - KillCord/Settings/ProviderEditor.swift
       - KillCord/Settings/ProviderDetailParts.swift
       - KillCord/Model/SpendModel.swift
+      - KillCord/Model/SpendModel+Connections.swift
       - KillCord/App/Preferences.swift
       - KillCord/Panel/PanelView.swift
       - KillCord/Panel/ProviderCard.swift

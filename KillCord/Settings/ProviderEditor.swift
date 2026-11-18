@@ -68,6 +68,7 @@ struct ProviderEditor: View {
 
     private var chips: [String] {
         var chips = [info.capabilityLabel]
+        if provider == .custom { chips.append("Not verified by Kill Cord") }
         if let record, record.name != info.name { chips.insert(info.name, at: 0) }
         return chips
     }
@@ -137,7 +138,7 @@ struct ProviderEditor: View {
                 Text("Connect in \(steps.count + 1) steps")
             }
         } footer: {
-            PrivacyLine(providerName: info.name)
+            PrivacyLine(providerName: provider == .custom ? "the address you enter" : info.name)
         }
     }
 
@@ -197,7 +198,8 @@ struct ProviderEditor: View {
                 Button("Cancel") { select(.connection(first.id), false) }
                     .keyboardShortcut(.cancelAction)
             }
-            Button(replacing ? "Save New Key" : "Connect \(info.name)", action: connect)
+            Button(replacing ? "Save New Key" : provider == .custom ? "Test and Save" : "Connect \(info.name)",
+                   action: connect)
                 .keyboardShortcut(.defaultAction)
                 .disabled(phase == .checking)
         }
@@ -207,6 +209,10 @@ struct ProviderEditor: View {
     private var outcome: some View {
         if case .failed(let title, let message, let fix) = phase {
             ResultBox(light: .stop, title: title, message: message, fix: fix)
+        } else if phase == .idle, !replacing, provider == .custom {
+            Text("Kill Cord calls the address once to test it before saving. It can't verify the numbers it reads.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         } else if phase == .idle, !replacing {
             Text(isAddingAnother
                 ? "Use a key from the other \(info.name) account. Kill Cord checks it with \(info.name) before saving it."
@@ -296,11 +302,17 @@ extension ProviderEditor {
                 .disabled(connectionID.map(model.inFlight.contains) ?? true || model.isDemo)
                 .help(model.isDemo ? "Sample data doesn't refresh" : "Check \(info.name) now")
                 Spacer()
-                Button {
-                    NSWorkspace.shared.open(info.consoleURL)
-                } label: {
-                    Label("Compare in \(info.consoleName)", systemImage: "arrow.up.forward.app")
+                if provider != .custom {
+                    Button {
+                        NSWorkspace.shared.open(info.consoleURL)
+                    } label: {
+                        Label("Compare in \(info.consoleName)", systemImage: "arrow.up.forward.app")
+                    }
                 }
+            }
+            if let config = connectionID.flatMap(model.customConfig) {
+                Text(customNote(config)).font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         Section {
@@ -331,13 +343,15 @@ extension ProviderEditor {
             }
             HStack {
                 Spacer()
-                Button("Add Another \(info.name) Account…") { select(.new(provider), false) }
+                Button(provider == .custom ? "Add Another Custom Service…" : "Add Another \(info.name) Account…") {
+                    select(.new(provider), false)
+                }
                     .help("Track a second \(info.name) organization with its own key")
             }
         } header: {
             Text("Account")
         } footer: {
-            PrivacyLine(providerName: info.name)
+            PrivacyLine(providerName: provider == .custom ? "the address you enter" : info.name)
         }
         .confirmationDialog("Remove the \(title) key?", isPresented: $confirmingRemoval) {
             Button("Remove Key", role: .destructive, action: remove)
@@ -346,6 +360,15 @@ extension ProviderEditor {
                 + "until you revoke it in the \(info.consoleName).")
         }
         CapsSummarySection(provider: provider, model: model, openTab: openTab)
+    }
+
+    /// Where a custom connection's numbers come from and how often it's asked.
+    private func customNote(_ config: CustomConfig) -> String {
+        let minutes = Int(config.interval / 60)
+        var note = "Read from \(config.url.host ?? "your address"), at most every \(minutes) minutes. Kill Cord "
+            + "can't verify these numbers, so compare them with the service's own dashboard."
+        if config.checksCostMoney { note += " Each check costs money on this service." }
+        return note
     }
 
     private func commitName() {

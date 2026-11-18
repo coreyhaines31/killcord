@@ -91,6 +91,34 @@ final class BalanceRenderTests: XCTestCase {
         }
     }
 
+    func testRendersACustomConnectionSetupAndReading() throws {
+        let empty = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) })
+        empty.start()
+        let model = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) },
+                               isDemo: true)
+        model.start()
+        let id = UUID(uuidString: "C0000000-0000-0000-0000-000000000001")!
+        var registry = DemoData.registry()
+        registry.insert(ConnectionRecord(id: id, provider: .custom, createdAt: Date(), name: "ScrapeCreators"))
+        let state = ProviderState(provider: .custom, connectionID: id, snapshot: SpendSnapshot(
+            provider: .custom, today: nil, month: nil,
+            balance: Balance(remaining: 18_250, unit: .units("credits")), fetchedAt: Date().addingTimeInterval(-300)))
+        model.showSample(registry: registry, states: DemoData.states() + [state])
+        let folder = renderFolder()
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            // The editor alone and tall, so the whole form shows; in Settings it scrolls.
+            let setup = ProviderEditor(provider: .custom, connectionID: nil, model: empty, openTab: { _ in })
+                .frame(width: 470, height: 2300)
+            try render(setup, dark: dark, to: folder.appendingPathComponent("custom-setup-\(suffix).png"))
+            let card = ProviderCard(connectionID: id, provider: .custom, name: "ScrapeCreators", model: model,
+                                    now: Date(), openSettings: { _ in }).frame(width: 340)
+            try render(card, dark: dark, to: folder.appendingPathComponent("custom-card-\(suffix).png"))
+            let pane = ProvidersSettingsView(model: model, selection: .connection(id)).frame(width: 700)
+            try render(pane, dark: dark, to: folder.appendingPathComponent("custom-settings-\(suffix).png"))
+        }
+    }
+
     // MARK: - Rendering (as in AccountsTests)
 
     private func renderFolder() -> URL {
