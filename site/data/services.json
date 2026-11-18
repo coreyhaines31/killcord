@@ -52,18 +52,48 @@
     "spend_api": {
       "status": "yes",
       "endpoint": "GET https://api.anthropic.com/v1/organizations/cost_report",
-      "returns": "daily cost buckets in USD for the organization, grouped by workspace and description if you ask",
+      "returns": "daily cost buckets in USD (decimal strings in cents) for the organization, grouped by workspace and description if you ask",
       "units": "USD",
-      "auth": "x-api-key: <Admin API key>, plus an anthropic-version header",
-      "key_type": "Admin API key",
-      "key_url": "https://platform.claude.com/settings/admin-keys",
+      "auth": "x-api-key: <key>, plus an anthropic-version header",
+      "key_type": "Admin API key, or a service account or personal key that isn't scoped to a workspace",
+      "key_url": "https://platform.claude.com/settings/keys",
       "read_only": "no",
-      "read_only_note": "Anthropic has no read-only admin key. The same key can manage members, workspaces and API keys.",
-      "rate_limit": "unknown",
-      "lag": "Usually catches up within about 5 minutes. Priority Tier costs are not included.",
+      "read_only_note": "Anthropic has no read-only key for the cost report. A service account or personal key can do whatever its linked account's role allows. An Admin API key can also manage members, workspaces and API keys.",
+      "rate_limit": "Anthropic supports polling once a minute for sustained use.",
+      "lag": "Usually within 5 minutes of a request, though sometimes longer. Priority Tier costs are not included.",
       "cost_to_call": "free",
-      "notes": "The cost report covers Console organizations. Individual accounts cannot create admin keys."
+      "notes": "Workspace-scoped keys don't work. The cost report needs a Claude Console organization: an individual Console account must set up an organization first, and it isn't available on the claude.ai Team plan. Anthropic now recommends its Usage and Cost Analytics API for new integrations; this endpoint remains supported."
     },
+    "setup_steps": [
+      {
+        "title": "Use an organization, not an Individual Org",
+        "detail": "The cost report isn't available to individual Console accounts. If the Console shows an Individual Org, set up an organization first.",
+        "url": "https://platform.claude.com/settings/organization",
+        "link": "Organization settings"
+      },
+      {
+        "title": "Create a service account (recommended)",
+        "detail": "An organization admin creates it on the Service accounts page. Its key acts only as that service account, with its permissions, and isn't tied to you.",
+        "url": "https://platform.claude.com/settings/service-accounts",
+        "link": "Service accounts"
+      },
+      {
+        "title": "Create a key that isn't scoped to a workspace",
+        "detail": "On API keys, set Linked account to the service account (or yourself) and leave the workspace unset. Workspace keys won't work. An Admin API key (sk-ant-admin…) from Admin keys also works.",
+        "url": "https://platform.claude.com/settings/keys",
+        "link": "API keys"
+      }
+    ],
+    "extra_faq": [
+      {
+        "q": "Can I use a regular Claude API key?",
+        "a": "Only if it isn't scoped to a workspace. A service account or personal key with no workspace works, and so does an Admin API key. Workspace keys don't."
+      },
+      {
+        "q": "Does it work with an individual Console account?",
+        "a": "Not as is. The cost report isn't available to individual Console accounts. Set up an organization in the Claude Console first, then create the key there."
+      }
+    ],
     "native_caps": [
       {
         "name": "Organization spend limit",
@@ -86,6 +116,7 @@
     },
     "publish": true,
     "sources": [
+      "https://platform.claude.com/docs/en/manage-claude/admin-api",
       "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
       "https://platform.claude.com/docs/en/api/admin-api/usage-cost/get-cost-report",
       "https://platform.claude.com/docs/en/manage-claude/admin-api-keys",

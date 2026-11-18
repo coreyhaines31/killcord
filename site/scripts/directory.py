@@ -157,7 +157,11 @@ def steps(s):
     key = a['key_type'] if known(a['key_type']) else 'API key'
     where = (f'<a href="{e(a["key_url"])}">{e(name)}’s key settings</a>' if a['key_url']
              else f'your <a href="{e(s["website"])}">{e(name)}</a> dashboard')
-    items = [f'<li><b>Get the key.</b> {inline(cap_first(key.rstrip('.')))}, from {where}.</li>']
+    if s.get('setup_steps'):
+        items = [f'<li><b>{inline(step["title"].rstrip(".") + ".")}</b> {inline(sentence(step["detail"]))} '
+                 f'<a href="{e(step["url"])}">Open {e(step["link"])}</a>.</li>' for step in s['setup_steps']]
+    else:
+        items = [f'<li><b>Get the key.</b> {inline(cap_first(key.rstrip('.')))}, from {where}.</li>']
     if a['auth']:
         items.append(f'<li><b>Send it the way {e(name)} expects.</b> {inline(sentence(a["auth"]) if re.match(r'^[\w-]+:', a['auth']) else cap_first(sentence(a["auth"])))}</li>')
     items.append(f'<li><b>Call the endpoint.</b> <code>{e(a["endpoint"])}</code></li>')
@@ -225,8 +229,9 @@ def killcord_section(s):
     tier = s['killcord']['tier']
     heading = {'built-in': f'Track {e(s["name"])} in your menu bar' if s['slug'] not in caps_only else f'Kill Cord and {e(s["name"])}', 'planned': 'Kill Cord and ' + e(s['name']),
                'none': 'Kill Cord and ' + e(s['name'])}[tier]
-    extra = ('<p>Kill Cord is free, with no account. Your key stays in your Mac’s Keychain and goes only to '
-             f'{e(s["name"])}’s billing API.</p>' if tier == 'built-in' and s['slug'] not in caps_only else
+    extra = ('<p>To connect it, click the plug in your menu bar, choose Connect a Provider, and paste the key. Kill Cord '
+             f'checks it with {e(s["name"])} before it saves it. The key stays in your Mac’s Keychain and goes only to '
+             f'{e(s["name"])}’s billing API. Kill Cord is free, with no account.</p>' if tier == 'built-in' and s['slug'] not in caps_only else
              '<p>Kill Cord is free, with no account, and it reads spend for ' + builtin_names + '.</p>' if tier == 'built-in' else
              '<p>If you also use any of those, Kill Cord puts their spend in one glance and gets their caps turned on.</p>')
     return f'''  <section aria-labelledby="kc-title" class="kc-box">
@@ -258,6 +263,7 @@ def faqs(s):
         out.append((f'Does {name} have a spending limit?', f'Not one that stops spend. It offers {plain(caps[0]["name"]).lower()}, which only warns you.'))
     else:
         out.append((f'Does {name} have a spending limit?', 'Not one we could find in its docs.'))
+    out += [(f['q'], f['a']) for f in s.get('extra_faq', [])]
     out.append((f'Does Kill Cord track {name}?', killcord_text(s)))
     return out
 
@@ -471,6 +477,10 @@ def validate():
         for c in s['native_caps']:
             assert c['kind'] in kind_labels, f'{s["slug"]}: unknown cap kind {c["kind"]}'
         assert s['sources'], f'{s["slug"]}: no sources'
+        for f in s.get('extra_faq', []):
+            assert set(f) == {'q', 'a'}, f'{s["slug"]}: extra_faq fields'
+        for step in s.get('setup_steps', []):
+            assert set(step) == {'title', 'detail', 'url', 'link'}, f'{s["slug"]}: setup step fields'
         if s['publish'] and s['killcord']['tier'] == 'built-in':
             assert s['slug'] in builtin_shows or s['slug'] in caps_only, f'{s["slug"]}: built-in without app copy'
 
