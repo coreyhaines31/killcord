@@ -1,0 +1,2563 @@
+[
+  {
+    "slug": "ahrefs",
+    "name": "Ahrefs",
+    "search_name": "Ahrefs",
+    "category": "seo-data",
+    "website": "https://ahrefs.com",
+    "billing_model": "Subscription with a monthly pool of API units.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.ahrefs.com/v3/subscription-info/limits-and-usage",
+      "returns": "`units_limit_workspace`, `units_usage_workspace`, `units_limit_api_key`, `units_usage_api_key`, `usage_reset_date` and `subscription`",
+      "units": "units",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": "Per-key unit caps exist. A read-only key is not documented.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Per-key unit limit",
+        "kind": "hard-stop",
+        "where": "Account › API keys",
+        "url": null,
+        "note": "The API reports `units_limit_api_key`, so a key can carry its own unit cap."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.ahrefs.com/docs/api/subscription-info/operations/get-limits-and-usage"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "anthropic",
+    "name": "Anthropic",
+    "search_name": "Claude API",
+    "category": "llm",
+    "website": "https://www.anthropic.com",
+    "billing_model": "Pay as you go per token, with prepaid credits or invoicing by tier.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.anthropic.com/v1/organizations/cost_report",
+      "returns": "daily cost buckets in USD for the organization, grouped by workspace and description if you ask",
+      "units": "USD",
+      "auth": "x-api-key: <Admin API key>, plus an anthropic-version header",
+      "key_type": "Admin API key",
+      "key_url": "https://platform.claude.com/settings/admin-keys",
+      "read_only": "no",
+      "read_only_note": "Anthropic has no read-only admin key. The same key can manage members, workspaces and API keys.",
+      "rate_limit": "unknown",
+      "lag": "Usually catches up within about 5 minutes. Priority Tier costs are not included.",
+      "cost_to_call": "free",
+      "notes": "The cost report covers Console organizations. Individual accounts cannot create admin keys."
+    },
+    "native_caps": [
+      {
+        "name": "Organization spend limit",
+        "kind": "hard-stop",
+        "where": "Claude Console › Settings › Spend limits",
+        "url": "https://platform.claude.com/settings/spend-limits",
+        "note": "Past it, API requests fail until next month or until you raise it. The API cannot read this setting."
+      },
+      {
+        "name": "Workspace spend limit",
+        "kind": "hard-stop",
+        "where": "Claude Console › Settings › Workspaces, then Spend limits",
+        "url": "https://platform.claude.com/settings/workspaces",
+        "note": "The Default Workspace cannot have a limit, so put production keys in their own workspace."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
+      "https://platform.claude.com/docs/en/api/admin-api/usage-cost/get-cost-report",
+      "https://platform.claude.com/docs/en/manage-claude/admin-api-keys",
+      "https://platform.claude.com/docs/en/api/rate-limits"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "apify",
+    "name": "Apify",
+    "search_name": "Apify",
+    "category": "scraping",
+    "website": "https://apify.com",
+    "billing_model": "Monthly subscription with prepaid usage credits, then pay as you go for overage, billed in USD.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.apify.com/v2/users/me/limits",
+      "returns": "`monthlyUsageCycle` (startAt, endAt), `limits` (including `maxMonthlyUsageUsd`) and `current` usage (including `monthlyUsageUsd`, compute units, proxy and data transfer).",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API token> (query parameter `token` also works but header is recommended)",
+      "key_type": "Personal or organization API token, optionally scoped with Limit token permissions",
+      "key_url": "https://console.apify.com/settings/integrations",
+      "read_only": "unknown",
+      "read_only_note": "Scoped tokens can be limited to chosen resources. The docs fetched do not say which permission, if any, lets a token read limits and usage only.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "A second endpoint, GET /v2/users/me/usage/monthly, returns daily usage and `totalUsageCreditsUsdAfterVolumeDiscount` for a cycle. PUT /v2/users/me/limits updates `maxMonthlyUsageUsd`. Plan price figures on Apify pages conflict between docs and the pricing page, so check live."
+    },
+    "native_caps": [
+      {
+        "name": "Custom monthly usage limit",
+        "kind": "hard-stop",
+        "where": "Console › Billing › Limits › Custom usage limit (Edit)",
+        "url": "https://docs.apify.com/platform/console/billing",
+        "note": "When usage passes the limit, platform services are suspended. Each plan has a ceiling on how high you can set it. Overage can be switched on or off on paid plans."
+      },
+      {
+        "name": "Usage limit notifications",
+        "kind": "alert-only",
+        "where": "Console › Billing › Limits",
+        "url": "https://docs.apify.com/platform/console/billing",
+        "note": "Apify notifies you as you approach limits. Thresholds are not documented."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.apify.com/api/v2/users-me-limits-get",
+      "https://docs.apify.com/api/v2/users-me-usage-monthly-get",
+      "https://docs.apify.com/platform/integrations/api",
+      "https://docs.apify.com/platform/console/billing",
+      "https://docs.apify.com/api/v2/users-me-limits-put"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "apollo",
+    "name": "Apollo",
+    "search_name": "Apollo",
+    "category": "sales-data",
+    "website": "https://www.apollo.io",
+    "billing_model": "Credits per billing cycle, by credit type.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.apollo.io/api/v1/usage_stats/credit_usage_stats",
+      "returns": "`limit`, `consumed` and `left_over` for each credit type",
+      "units": "credits",
+      "auth": "x-api-key: <master API key>",
+      "key_type": "Master API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "It needs the master key, which can do everything else too.",
+      "rate_limit": "About 200 requests a minute per team on Basic and Pro, with 429 and retry-after.",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": "On unified-credit plans, do not add the per-type balances together."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.apollo.io/reference/view-credit-usage-stats",
+      "https://docs.apollo.io/reference/rate-limits"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "assemblyai",
+    "name": "AssemblyAI",
+    "search_name": "AssemblyAI",
+    "category": "ai-media",
+    "website": "https://www.assemblyai.com",
+    "billing_model": "Prepaid balance on pay-as-you-go accounts, topped up by auto-pay, or contracted billing.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "Project-scoped API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "Dashboard usage and spend update every 2 minutes. A streaming session must close before its usage appears.",
+      "cost_to_call": "unknown",
+      "notes": "Account management docs list balance, cost and usage only in the dashboard (Workspace › Manage › Cost and Usage). They mention no API for it. That is absence in the docs, not an explicit statement."
+    },
+    "native_caps": [
+      {
+        "name": "Auto-pay top-up",
+        "kind": "auto-recharge-off",
+        "where": "Workspace › Settings › Billing",
+        "url": "https://www.assemblyai.com/docs/account-management.md",
+        "note": "Without auto-pay, a zero or negative balance restricts API access."
+      },
+      {
+        "name": "Usage and balance alerts",
+        "kind": "alert-only",
+        "where": "Workspace › Settings › Alerts",
+        "url": "https://www.assemblyai.com/docs/account-management.md",
+        "note": "Owners and Admins can create them."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://www.assemblyai.com/docs/account-management.md"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "aws",
+    "name": "AWS",
+    "search_name": "AWS",
+    "category": "infra",
+    "website": "https://aws.amazon.com",
+    "billing_model": "Pay as you go per service, billed monthly.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "Cost Explorer GetCostAndUsage (POST https://ce.us-east-1.amazonaws.com)",
+      "returns": "cost and usage grouped by service, account or tag, for a date range",
+      "units": "USD",
+      "auth": "AWS Signature Version 4",
+      "key_type": "IAM user or role with ce:GetCostAndUsage",
+      "key_url": "https://console.aws.amazon.com/iam/",
+      "read_only": "yes",
+      "read_only_note": "An IAM policy can allow only ce:Get* actions.",
+      "rate_limit": "unknown",
+      "lag": "Data refreshes at least once every 24 hours.",
+      "cost_to_call": "$0.01 per request, and each page of results counts as a request",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "AWS Budgets",
+        "kind": "alert-only",
+        "where": "Billing and Cost Management › Budgets",
+        "url": "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html",
+        "note": "Alerts by default. Budget actions can apply IAM or SCP policies or stop some instances."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://aws.amazon.com/aws-cost-management/aws-cost-explorer/pricing/",
+      "https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetCostAndUsage.html",
+      "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "brevo",
+    "name": "Brevo",
+    "search_name": "Brevo",
+    "category": "email",
+    "website": "https://www.brevo.com",
+    "billing_model": "Monthly plan with a send allowance, plus optional prepaid pay-as-you-go email credits that do not expire.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.brevo.com/v3/account",
+      "returns": "A `plan` array with remaining `credits`, `creditsType` (sendLimit), plan `type` (payAsYouGo, free, subscription, sms), `startDate` and `endDate`.",
+      "units": "credits",
+      "auth": "Header: api-key: <API key> (OAuth 2.0 bearer token also listed)",
+      "key_type": "Brevo v3 API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "Not listed for this endpoint. The general table gives 100 requests per hour for endpoints not named, 200 on Professional, 600 on Enterprise.",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The key page URL is the common dashboard path and was not confirmed in the docs fetched."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://developers.brevo.com/reference/getaccount",
+      "https://developers.brevo.com/docs/api-limits",
+      "https://help.brevo.com/hc/en-us/articles/4409354969746-About-add-ons-or-Pay-as-you-go-WhatsApp-SMS-and-email-credits-and-Dedicated-IP"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "bright-data",
+    "name": "Bright Data",
+    "search_name": "Bright Data",
+    "category": "scraping",
+    "website": "https://brightdata.com",
+    "billing_model": "Prepaid account balance or monthly commitment, with usage billed per GB, request, or record by product.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.brightdata.com/customer/balance",
+      "returns": "`balance` (available funds), `credit`, `prepayment`, and `pending_costs` (usage expected on next invoice).",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Account API key tied to a user with a permission level",
+      "key_url": "https://brightdata.com/cp/setting/users",
+      "read_only": "partial",
+      "read_only_note": "Permission levels are Admin, Finance (billing and financial pages only), Ops, Limit, and User. Finance looks closest to billing-only, but the docs do not say which level may call this endpoint.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Free tier credits are not in this response (use GET /trials/free_tier). No API reports auto-recharge status, check Billing settings. Only admins can create API keys, and each user gets one key."
+    },
+    "native_caps": [
+      {
+        "name": "Zone usage limit",
+        "kind": "partial-stop",
+        "where": "Proxies and Scraping Infrastructure › zone › Configuration › Advanced settings › Usage limit",
+        "url": "https://docs.brightdata.com/products/residential/configure-your-proxy",
+        "note": "Per-zone cap in dollars or bytes, per day or per month. Action can be suspend, alert, or both. Checked every 15 minutes, so it may overshoot. Older FAQ pages describe only a daily limit."
+      },
+      {
+        "name": "Balance alerts",
+        "kind": "alert-only",
+        "where": "Control Panel › Billing",
+        "url": "https://docs.brightdata.com/general/account/billing-and-pricing/faqs",
+        "note": "Usage docs say an email goes out at 85% of the monthly balance used."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.brightdata.com/api-reference/account-management-api/Get_total_balance_through_API",
+      "https://docs.brightdata.com/api-reference/authentication",
+      "https://docs.brightdata.com/products/residential/configure-your-proxy",
+      "https://docs.brightdata.com/general/account/billing-and-pricing/faqs",
+      "https://docs.brightdata.com/general/usage-monitoring/Usage"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "browserbase",
+    "name": "Browserbase",
+    "search_name": "Browserbase",
+    "category": "scraping",
+    "website": "https://www.browserbase.com",
+    "billing_model": "Monthly plan with included browser hours and proxy bandwidth, then pay as you go overage.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://api.browserbase.com/v1/projects/{id}/usage",
+      "returns": "`browserMinutes` and `proxyBytes` as integers. No dollar spend, plan allowance, or remaining balance.",
+      "units": "unknown",
+      "auth": "X-BB-API-Key: <API key>",
+      "key_type": "Project API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Docs suggest building your own alerts on this endpoint. The dashboard usage view updates in real time. Concurrency is a separate org-level limit (429 when reached). The reference page says the key is on the settings page."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.browserbase.com/reference/api/get-project-usage",
+      "https://docs.browserbase.com/reference/api/overview",
+      "https://docs.browserbase.com/optimizations/cost/measuring-usage",
+      "https://docs.browserbase.com/account/billing/plans"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "cerebras",
+    "name": "Cerebras",
+    "search_name": "Cerebras",
+    "category": "llm",
+    "website": "https://www.cerebras.ai",
+    "billing_model": "Prepaid credits bought in the Cloud Console, optional auto-recharge, or per-model monthly subscriptions.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "Cost view may be delayed by up to 10 minutes.",
+      "cost_to_call": "unknown",
+      "notes": "Docs show balance on Billing › Overview and cost under Analytics › Cost, with CSV export, and mention no API. That is absence in the docs, not an explicit statement."
+    },
+    "native_caps": [
+      {
+        "name": "Auto-recharge",
+        "kind": "auto-recharge-off",
+        "where": "Cloud Console › Billing › Pay as you go",
+        "url": "https://inference-docs.cerebras.ai/console/account-billing.md",
+        "note": "Off by default. You set a threshold and a top-off amount."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://inference-docs.cerebras.ai/console/account-billing.md",
+      "https://inference-docs.cerebras.ai/console/usage-monitoring.md"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "cloudflare",
+    "name": "Cloudflare",
+    "search_name": "Cloudflare",
+    "category": "infra",
+    "website": "https://www.cloudflare.com",
+    "billing_model": "Plan fees plus pay-as-you-go usage for Workers, R2 and other products.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.cloudflare.com/client/v4/accounts/{account_id}/billable-usage",
+      "returns": "billable usage and cost for the billing period; spend policies at /billing/spend-policies",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API token>",
+      "key_type": "API token with Billing Read",
+      "key_url": "https://dash.cloudflare.com/profile/api-tokens",
+      "read_only": "yes",
+      "read_only_note": "A token with only Billing Read cannot change anything.",
+      "rate_limit": "unknown",
+      "lag": "Billable usage updates once a day, so today is usually missing.",
+      "cost_to_call": "free",
+      "notes": "Pay-as-you-go accounts only."
+    },
+    "native_caps": [
+      {
+        "name": "Spend Management limit",
+        "kind": "hard-stop",
+        "where": "Billing › Spend Management",
+        "url": "https://developers.cloudflare.com/billing/manage/spend-management/",
+        "note": "Covers Workers and Durable Objects only. Metering delays can let spend pass it."
+      },
+      {
+        "name": "Budget alerts",
+        "kind": "alert-only",
+        "where": "Billing › Billable Usage",
+        "url": "https://developers.cloudflare.com/billing/manage/budget-alerts/",
+        "note": "Recalculated daily."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://developers.cloudflare.com/api/resources/billing/subresources/usage/methods/get_account_usage_v1/",
+      "https://developers.cloudflare.com/api/resources/billing/subresources/spend_policies/methods/list",
+      "https://developers.cloudflare.com/billing/understand/billing-permissions/",
+      "https://developers.cloudflare.com/billing/manage/spend-management/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "cohere",
+    "name": "Cohere",
+    "search_name": "Cohere",
+    "category": "llm",
+    "website": "https://cohere.com",
+    "billing_model": "Free rate-limited trial keys, then production keys billed per token, per search for rerank.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Official docs checked (pricing and going-live pages) do not mention a usage or balance API. Each chat response returns billed_units, which can be summed client-side."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.cohere.com/docs/how-does-cohere-pricing-work",
+      "https://docs.cohere.com/docs/going-live"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "dataforseo",
+    "name": "DataForSEO",
+    "search_name": "DataForSEO",
+    "category": "seo-data",
+    "website": "https://dataforseo.com",
+    "billing_model": "Prepaid USD deposit, charged per API call.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.dataforseo.com/v3/appendix/user_data",
+      "returns": "`money.balance` (USD left), `money.total` (deposited), `money.statistics` (spend per function by day and minute), `money.limits` and `rates`",
+      "units": "USD",
+      "auth": "HTTP Basic with your API login and API password",
+      "key_type": "API login and password",
+      "key_url": "https://app.dataforseo.com/api-access",
+      "read_only": "no",
+      "read_only_note": "The API password is the full-power credential.",
+      "rate_limit": "Platform default 2,000 calls a minute and 30 concurrent",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": "The response also lists per-function spending limits in `money.limits`; the docs do not say whether they stop calls."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.dataforseo.com/v3/appendix/user_data/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "deepgram",
+    "name": "Deepgram",
+    "search_name": "Deepgram",
+    "category": "ai-media",
+    "website": "https://deepgram.com",
+    "billing_model": "Pay as you go with prepaid credits and optional auto-load, or contracted credits.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.deepgram.com/v1/projects/{project_id}/balances",
+      "returns": "A `balances` list, each with `amount`, `units` (for example USD), `balance_id` and `purchase_order_id`. GET .../balances/{balance_id} returns one balance.",
+      "units": "USD",
+      "auth": "Authorization: Token <API key>",
+      "key_type": "Project API key (keys carry a role)",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": "Docs say keys have roles, but the role permissions and which can read balances are not stated on the pages checked.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Balance is per project. The API overview also lists project usage, usage breakdown and billing breakdown endpoints. A community answer lists a different path (/v1/balances), ignore it. key_url is the console, exact keys page not confirmed."
+    },
+    "native_caps": [
+      {
+        "name": "Auto-load (auto-reload) of credits",
+        "kind": "auto-recharge-off",
+        "where": "Console › Billing",
+        "url": "https://deepgram.com/promotions/2026-09/flux-tts-promo-terms-and-conditions",
+        "note": "Terms say threshold and amount are configurable and it can be disabled in Billing. Turn it off so spend cannot exceed the balance."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://developers.deepgram.com/reference/get-all-balances",
+      "https://developers.deepgram.com/guides/deep-dives/managing-projects",
+      "https://deepgram.com/promotions/2026-09/flux-tts-promo-terms-and-conditions"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "deepseek",
+    "name": "DeepSeek",
+    "search_name": "DeepSeek API",
+    "category": "llm",
+    "website": "https://www.deepseek.com",
+    "billing_model": "Per-token charges deducted from a topped-up balance or a granted balance, granted balance first.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.deepseek.com/user/balance",
+      "returns": "`is_available` (balance is enough for calls) and `balance_infos` with, per currency, `currency`, `total_balance`, `granted_balance` and `topped_up_balance` (strings).",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>, as for the rest of the API",
+      "key_type": "Standard API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "No read-only key is documented. The same key runs requests.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Each balance entry is in CNY or USD. The endpoint page does not show the auth header; the rest of the API uses Bearer."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://api-docs.deepseek.com/api/get-user-balance",
+      "https://api-docs.deepseek.com/quick_start/pricing"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "digitalocean",
+    "name": "DigitalOcean",
+    "search_name": "DigitalOcean",
+    "category": "infra",
+    "website": "https://www.digitalocean.com",
+    "billing_model": "Pay as you go, billed monthly in arrears per resource, with optional prepayment.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.digitalocean.com/v2/customers/my/balance",
+      "returns": "`account_balance` (last billing activity, excludes month to date), `month_to_date_usage`, `month_to_date_balance`, and `generated_at`.",
+      "units": "USD",
+      "auth": "Authorization: Bearer <personal access token>",
+      "key_type": "Personal access token with custom scopes",
+      "key_url": "https://cloud.digitalocean.com/account/api/tokens",
+      "read_only": "yes",
+      "read_only_note": "A custom scope `billing:read` (View and receive billing and invoice information) lets a token read billing data only.",
+      "rate_limit": "5,000 requests per hour and 250 per minute (default API limit), with ratelimit-* headers",
+      "lag": "`generated_at` shows when the balances were last generated. The docs give no refresh interval.",
+      "cost_to_call": "unknown",
+      "notes": "Related billing endpoints: /v2/customers/my/billing_history, /v2/customers/my/invoices, /v2/customers/my/prepayment_status, and /v2/billing/{account_urn}/insights/{start}/{end}. Scope was confirmed only for the balance endpoint."
+    },
+    "native_caps": [
+      {
+        "name": "Spend alerts",
+        "kind": "alert-only",
+        "where": "Control panel › Billing (see Spend Alerts doc)",
+        "url": "https://docs.digitalocean.com/products/billing/",
+        "note": "Emails you when monthly spend crosses percentage thresholds of a budget you set. Does not stop spend."
+      },
+      {
+        "name": "Serverless Inference key budget (public preview)",
+        "kind": "partial-stop",
+        "where": "Spend alert with the pause option enabled",
+        "url": "https://docs.digitalocean.com/products/billing/",
+        "note": "Can pause one model access key at 100% of its budget. Applies to that key only, not the account."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.digitalocean.com/reference/api/reference/billing/",
+      "https://docs.digitalocean.com/reference/api/scopes/",
+      "https://docs.digitalocean.com/products/billing/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "elevenlabs",
+    "name": "ElevenLabs",
+    "search_name": "ElevenLabs",
+    "category": "ai-media",
+    "website": "https://elevenlabs.io",
+    "billing_model": "Subscription credits each month, with usage-based overage on some plans.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.elevenlabs.io/v1/user/subscription",
+      "returns": "`tier`, `character_count`, `character_limit` and `next_character_count_reset_unix`",
+      "units": "credits",
+      "auth": "xi-api-key: <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "yes",
+      "read_only_note": "Keys can be limited to specific endpoints and given a credit quota.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Per-key credit quota",
+        "kind": "hard-stop",
+        "where": "Settings › API Keys",
+        "url": "https://elevenlabs.io/docs/api-reference/authentication",
+        "note": null
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://elevenlabs.io/docs/api-reference/user/subscription/get",
+      "https://elevenlabs.io/docs/api-reference/authentication"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "exa",
+    "name": "Exa",
+    "search_name": "Exa",
+    "category": "llm",
+    "website": "https://exa.ai",
+    "billing_model": "Prepaid USD credits.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://admin-api.exa.ai/team-management/api-keys/{id}/usage",
+      "returns": "`total_cost_usd` and `cost_breakdown` for one key; no remaining-balance endpoint",
+      "units": "USD",
+      "auth": "x-api-key: <service key>",
+      "key_type": "Service key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "Service keys are an admin surface.",
+      "rate_limit": "unknown",
+      "lag": "180-day lookback",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.exa.ai/reference/team-management/get-api-key-usage"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "fal",
+    "name": "fal",
+    "search_name": "fal",
+    "category": "ai-media",
+    "website": "https://fal.ai",
+    "billing_model": "Prepaid credits in USD.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.fal.ai/v1/account/billing?expand=credits",
+      "returns": "`credits.current_balance` and `currency`",
+      "units": "USD",
+      "auth": "Authorization: Key <API key>",
+      "key_type": "API key with the billing:usage:read permission",
+      "key_url": null,
+      "read_only": "partial",
+      "read_only_note": "The overview page says a READONLY or BILLING preset works; the endpoint page says an Admin key. The docs conflict.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://fal.ai/docs/platform-apis/v1/account/billing",
+      "https://fal.ai/docs/api-reference/platform-apis/for-accounts"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "firecrawl",
+    "name": "Firecrawl",
+    "search_name": "Firecrawl",
+    "category": "scraping",
+    "website": "https://www.firecrawl.dev",
+    "billing_model": "Plan credits each month plus pay-as-you-go credits.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.firecrawl.dev/v2/team/credit-usage",
+      "returns": "`remainingCredits`, `planCredits` (plan credits only, not coupon or pay-as-you-go), `billingPeriodStart` and `billingPeriodEnd`",
+      "units": "credits",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.firecrawl.dev/api-reference/endpoint/credit-usage"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "fireworks-ai",
+    "name": "Fireworks AI",
+    "search_name": "Fireworks AI",
+    "category": "llm",
+    "website": "https://fireworks.ai",
+    "billing_model": "Prepaid credits, with a monthly spend limit on total usage value.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://api.fireworks.ai/v1/accounts/{account_id}/billing/summary",
+      "returns": "Line items by billing category (serverless, dedicated, training) with `series` and `totalCost`. Also POST /v1/accounts/{account_id}/usageCosts:query for rated serverless cost, and GET /v1/accounts/{account_id}/billingUsage for token usage. No credit balance is documented.",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Standard API key (any key on the account)",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "Account-scope cost queries need an account administrator. No billing-only key is documented.",
+      "rate_limit": "unknown",
+      "lag": "Usage is bucketed daily and cached for several minutes. Rated costs can lag a day or more.",
+      "cost_to_call": "unknown",
+      "notes": "Max 31-day window per request. Embeddings and image generation are not yet in billingUsage. Docs say credit grants and purchases are reported separately but do not say where. Host api.fireworks.ai is assumed, the docs list paths only."
+    },
+    "native_caps": [
+      {
+        "name": "Monthly spend limit",
+        "kind": "hard-stop",
+        "where": "Set with `firectl quota update monthly-spend-usd --value <AMOUNT>`, check with `firectl quota list`",
+        "url": "https://docs.fireworks.ai/guides/quotas_usage/account-quotas",
+        "note": "Counts usage paid by credits too. Adding credits does not raise it. Requests pause at 100% across serverless, deployments and training."
+      },
+      {
+        "name": "Spend notifications",
+        "kind": "alert-only",
+        "where": "Billing page (default email at 80% of the limit)",
+        "url": "https://docs.fireworks.ai/guides/quotas_usage/account-quotas",
+        "note": "Enterprise spend alerts do not pause service."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.fireworks.ai/accounts/exporting-usage-and-costs",
+      "https://docs.fireworks.ai/guides/quotas_usage/account-quotas"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "fly-io",
+    "name": "Fly.io",
+    "search_name": "Fly.io",
+    "category": "infra",
+    "website": "https://fly.io",
+    "billing_model": "Pay as you go per organization, billed monthly, with optional prepaid credits drawn down at period end.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": null,
+      "returns": null,
+      "units": "USD",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Official docs only point to the dashboard item 'current month to date bill'. No billing or usage API was found in the docs fetched."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.fly.io/about/cost-management",
+      "https://docs.fly.io/about/billing"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "github",
+    "name": "GitHub",
+    "search_name": "GitHub",
+    "category": "devtools",
+    "website": "https://github.com",
+    "billing_model": "Metered Actions minutes, Copilot, Codespaces and storage.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.github.com/organizations/{org}/settings/billing/usage",
+      "returns": "`usageItems` with `grossAmount`, `netAmount`, `quantity` and `unitType` (users: /users/{username}/settings/billing/usage)",
+      "units": "USD",
+      "auth": "Authorization: Bearer <token>, X-GitHub-Api-Version header",
+      "key_type": "Personal access token",
+      "key_url": "https://github.com/settings/tokens",
+      "read_only": "unknown",
+      "read_only_note": "The exact fine-grained permission is not stated on the endpoint page.",
+      "rate_limit": "Standard REST API limits",
+      "lag": "Not documented",
+      "cost_to_call": "free",
+      "notes": "Needs the enhanced billing platform."
+    },
+    "native_caps": [
+      {
+        "name": "Budget with Stop usage when budget limit is reached",
+        "kind": "hard-stop",
+        "where": "Billing and licensing › Budgets and alerts › New budget",
+        "url": "https://docs.github.com/en/billing/managing-your-billing/preventing-overspending",
+        "note": "For metered products. Without that option, a budget only sends email."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.github.com/en/rest/billing/usage",
+      "https://docs.github.com/en/billing/managing-your-billing/preventing-overspending"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "gojiberry",
+    "name": "Gojiberry",
+    "search_name": "Gojiberry",
+    "category": "sales-data",
+    "website": "https://gojiberry.ai",
+    "billing_model": "Subscription with seats; directory reveals cost credits.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "credits",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "100 a minute and 100,000 a day per account",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The organization and user endpoints carry no credits, plan or usage."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://dev.gojiberry.ai/quickstart",
+      "https://dev.gojiberry.ai/llms.txt"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "google-cloud",
+    "name": "Google Cloud and Gemini",
+    "search_name": "Gemini API",
+    "category": "infra",
+    "website": "https://cloud.google.com",
+    "billing_model": "Pay as you go, billed to a Cloud Billing account. The Gemini API bills the same way once billing is on.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "Cloud Billing export to BigQuery, read with POST https://bigquery.googleapis.com/bigquery/v2/projects/{projectId}/queries",
+      "returns": "cost rows from the standard usage cost export table, which you sum by day or month",
+      "units": "USD",
+      "auth": "OAuth access token from a service account (scopes bigquery.readonly and cloud-billing)",
+      "key_type": "Service account key with BigQuery Data Viewer and BigQuery Job User",
+      "key_url": "https://console.cloud.google.com/iam-admin/serviceaccounts",
+      "read_only": "yes",
+      "read_only_note": "Grant only read roles on the export dataset. Nothing that can change resources.",
+      "rate_limit": "unknown",
+      "lag": "Hours behind, typically up to a day, with no guarantee.",
+      "cost_to_call": "BigQuery query pricing applies to the scan",
+      "notes": "There is no direct \"current spend\" endpoint. You turn on the billing export once, then query it."
+    },
+    "native_caps": [
+      {
+        "name": "Spend cap budget",
+        "kind": "hard-stop",
+        "where": "Billing › Budgets & alerts, scoped to one project and one service",
+        "url": "https://docs.cloud.google.com/billing/docs/how-to/budgets-spend-caps",
+        "note": "Google says enforcement is not instant and overages are billed."
+      },
+      {
+        "name": "AI Studio project spend cap",
+        "kind": "hard-stop",
+        "where": "Google AI Studio › Spend",
+        "url": "https://aistudio.google.com/spend",
+        "note": "Google calls it experimental. It can lag about 10 minutes."
+      },
+      {
+        "name": "Budget alerts",
+        "kind": "alert-only",
+        "where": "Billing › Budgets & alerts",
+        "url": "https://docs.cloud.google.com/billing/docs/how-to/budgets",
+        "note": "An alerts-only budget does not cap spending."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.cloud.google.com/billing/docs/how-to/export-data-bigquery",
+      "https://docs.cloud.google.com/billing/docs/how-to/bq-examples",
+      "https://docs.cloud.google.com/billing/docs/how-to/budgets-spend-caps",
+      "https://docs.cloud.google.com/billing/docs/reference/budget/rest/v1/billingAccounts.budgets/list"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "groq",
+    "name": "Groq",
+    "search_name": "Groq API",
+    "category": "llm",
+    "website": "https://groq.com",
+    "billing_model": "Postpaid pay as you go, invoiced monthly in arrears, with early bills at usage thresholds.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "Spend is tracked with a 10 to 15 minute delay.",
+      "cost_to_call": "unknown",
+      "notes": "Groq documents usage and spend only in the console (Dashboard › Usage, Settings › Billing). No usage or billing API is documented."
+    },
+    "native_caps": [
+      {
+        "name": "Monthly spend limit",
+        "kind": "hard-stop",
+        "where": "Console › Settings › Billing › Limits",
+        "url": "https://console.groq.com/docs/spend-limits",
+        "note": "Blocks new calls from all keys in the org (400 blocked_api_access). Resets on the 1st. Needs paid tier and org owner."
+      },
+      {
+        "name": "Spend alerts",
+        "kind": "alert-only",
+        "where": "Console › Settings › Billing › Limits",
+        "url": "https://console.groq.com/docs/spend-limits",
+        "note": "USD thresholds (docs suggest 50, 75 and 90 percent), emailed to billing addresses set under Settings › Billing › Manage."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://console.groq.com/docs/spend-limits",
+      "https://console.groq.com/docs/billing-faqs"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "hugging-face",
+    "name": "Hugging Face",
+    "search_name": "Hugging Face",
+    "category": "llm",
+    "website": "https://huggingface.co",
+    "billing_model": "Purchased credits plus monthly included credits (PRO, Team, Enterprise), passed through at provider rates with no markup.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://huggingface.co/api/organizations/{org}/billing/usage/inference",
+      "returns": "Daily usage time series by member, model and provider: request counts, cost in cents, and input, output and cached input token counts.",
+      "units": "USD",
+      "auth": "Authorization: Bearer <HF token with permission to read the organization's billing>",
+      "key_type": "User access token with organization billing read permission",
+      "key_url": "https://huggingface.co/settings/tokens",
+      "read_only": "yes",
+      "read_only_note": "Docs say to use a token with permission to read the organization's billing. Exact fine-grained permission name is not given.",
+      "rate_limit": "unknown",
+      "lag": "Requests appear up to 2 hours after they are made.",
+      "cost_to_call": "unknown",
+      "notes": "Enterprise plan and above only, organizations only. No documented API for a personal account or for credit balance. Costs are rounded to the nearest cent per row. Limit of 31 days per page, 12 months back. Personal spend is shown on the billing page in settings."
+    },
+    "native_caps": [
+      {
+        "name": "Organization spending limit",
+        "kind": "partial-stop",
+        "where": "Organization settings (Team and Enterprise admins)",
+        "url": "https://huggingface.co/docs/inference-providers/pricing",
+        "note": "Docs say admins can set a spending limit but do not describe what happens at the limit."
+      },
+      {
+        "name": "Automatic recharge",
+        "kind": "auto-recharge-off",
+        "where": "Billing settings (user or organization)",
+        "url": "https://huggingface.co/docs/hub/billing",
+        "note": "Docs recommend enabling it to avoid disruption. Turn it off so spend cannot exceed purchased credits."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://huggingface.co/docs/inference-providers/pricing",
+      "https://huggingface.co/docs/hub/billing"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "hunter",
+    "name": "Hunter",
+    "search_name": "Hunter",
+    "category": "sales-data",
+    "website": "https://hunter.io",
+    "billing_model": "Monthly credits: a search costs 1, a verification 0.5.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.hunter.io/v2/account",
+      "returns": "`plan_name`, `reset_date`, and `requests.credits` with `used` and `available` (or separate searches and verifications)",
+      "units": "credits",
+      "auth": "api_key query parameter, X-API-KEY header, or Bearer",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "When `credits` is present, searches and verifications are views of the same pool. Do not add them up."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://hunter.io/api-documentation/v2",
+      "https://hunter.io/openapi.json"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "mailgun",
+    "name": "Mailgun",
+    "search_name": "Mailgun",
+    "category": "email",
+    "website": "https://www.mailgun.com",
+    "billing_model": "Monthly plan with an included message volume, then per-message overage.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "POST https://api.mailgun.net/v1/analytics/usage/metrics",
+      "returns": "Filtered usage metrics for the account (the docs page does not list the response fields). GET /v5/accounts/limit/custom/monthly returns the custom monthly sending limit you set. No plan balance or spend endpoint is documented.",
+      "units": "unknown",
+      "auth": "HTTP Basic, username `api`, password is the API key",
+      "key_type": "Account API key, optionally with an RBAC role (Admin, Developer, Support, Analyst)",
+      "key_url": "https://documentation.mailgun.com/docs/mailgun/user-manual/api-key-mgmt/rbac-mgmt",
+      "read_only": "yes",
+      "read_only_note": "The Analyst role is read only for data and metrics. There is no billing-specific role.",
+      "rate_limit": "Metrics API: 500 requests every 10 seconds",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "EU accounts use https://api.eu.mailgun.net. The older GET /v3/stats/total is deprecated in favor of the Metrics API. Response fields for the usage endpoint were not confirmed."
+    },
+    "native_caps": [
+      {
+        "name": "Custom message limit (monthly)",
+        "kind": "hard-stop",
+        "where": "Profile › Manage Account › Custom Message Limit (Edit)",
+        "url": "https://help.mailgun.com/hc/en-us/articles/4402611589915-Configuring-the-account-custom-message-limit",
+        "note": "Disables sending when the count is reached, resets monthly. Owner gets alerts at 50% and 75%, admins when disabled. Also settable via PUT /v5/accounts/limit/custom/monthly."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://documentation.mailgun.com/docs/mailgun/api-reference/send/mailgun/accounts",
+      "https://documentation.mailgun.com/docs/mailgun/user-manual/api-key-mgmt/rbac-mgmt",
+      "https://help.mailgun.com/hc/en-us/articles/4402611589915-Configuring-the-account-custom-message-limit"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "mistral",
+    "name": "Mistral AI",
+    "search_name": "Mistral API",
+    "category": "llm",
+    "website": "https://mistral.ai",
+    "billing_model": "Prepaid credits with pay-as-you-go use after the included monthly usage, with optional auto recharge.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.mistral.ai/v1/admin/usage",
+      "returns": "Usage by category (chat, completion, ocr, audio and others) with `prices`, `currency` and the month's `start_date` and `end_date`. GET /v1/admin/spend-limit returns the monthly `limits` and currency. POST /v1/admin/usage/query returns grouped usage rows.",
+      "units": "unknown",
+      "auth": "Admin API key in the x-api-key header (the endpoint reference shows Bearer)",
+      "key_type": "Admin API key (Enterprise plans only, a standard API key does not work)",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": "Docs do not describe read-only admin keys. The same admin key can also change spend limits, users and workspaces.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The Admin API is in preview and limited to Enterprise plans. No prepaid balance endpoint is documented, and the docs disagree on the auth header."
+    },
+    "native_caps": [
+      {
+        "name": "Organization monthly spending limit",
+        "kind": "hard-stop",
+        "where": "Admin Panel › Subscriptions › Billing",
+        "url": "https://docs.mistral.ai/admin/billing-usage/usage-limits",
+        "note": "Docs say API access can be suspended until next month or an admin raises the limit."
+      },
+      {
+        "name": "Workspace monthly spending limit",
+        "kind": "partial-stop",
+        "where": "Admin Panel › Administration › Workspaces › select workspace › Settings › Monthly spending limit",
+        "url": "https://docs.mistral.ai/admin/billing-usage/usage-limits",
+        "note": "Cannot exceed the organization limit. Docs do not say what happens when it is reached."
+      },
+      {
+        "name": "Auto Recharge",
+        "kind": "auto-recharge-off",
+        "where": "Admin Panel › Subscriptions › Billing › Credits › Auto Recharge",
+        "url": "https://docs.mistral.ai/admin/billing-usage/billing",
+        "note": null
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.mistral.ai/admin/admin-api/overview",
+      "https://docs.mistral.ai/admin/admin-api/usage-metrics",
+      "https://docs.mistral.ai/api/endpoint/beta/admin/billing",
+      "https://docs.mistral.ai/admin/billing-usage/usage-limits",
+      "https://docs.mistral.ai/admin/billing-usage/billing"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "monid",
+    "name": "Monid",
+    "search_name": "Monid",
+    "category": "llm",
+    "website": "https://monid.ai",
+    "billing_model": "Prepaid USD wallet.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.monid.ai/v1/wallet/balance",
+      "returns": "`balance.value` (USD) and `balance.currency`; /v1/runs gives cost per run",
+      "units": "USD",
+      "auth": "Authorization: Bearer <monid key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": "Keys carry permissions, but a read-only preset is not documented.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The endpoint comes from the official CLI source, not a docs page, so it may change."
+    },
+    "native_caps": [
+      {
+        "name": "Workspace budget and run caps",
+        "kind": "hard-stop",
+        "where": "Workspace settings",
+        "url": "https://monid.ai/SKILL.md",
+        "note": null
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://monid.ai/SKILL.md",
+      "https://www.npmjs.com/package/@monid-ai/cli"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "neon",
+    "name": "Neon",
+    "search_name": "Neon",
+    "category": "infra",
+    "website": "https://neon.com",
+    "billing_model": "Plan fee plus usage for compute, storage and transfer.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://console.neon.tech/api/v2/consumption_history/v2/projects",
+      "returns": "consumption in usage units (compute hours, storage, transfer), not dollars; the spending limit is at /organizations/{org_id}/billing/spending_limit",
+      "units": "units",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Organization API key",
+      "key_url": "https://console.neon.tech/",
+      "read_only": "no",
+      "read_only_note": "Neon has no read-only API key. An organization key can manage every project.",
+      "rate_limit": "unknown",
+      "lag": "Consumption updates about every 15 minutes.",
+      "cost_to_call": "free",
+      "notes": "Launch, Scale and Agent plans only."
+    },
+    "native_caps": [
+      {
+        "name": "Spending threshold",
+        "kind": "alert-only",
+        "where": "Organization › Billing › Spending limit",
+        "url": "https://neon.com/docs/introduction/spending-limit",
+        "note": "Sends email at 80% and 100%. Projects keep running."
+      },
+      {
+        "name": "Project consumption quotas",
+        "kind": "hard-stop",
+        "where": "Neon API, PATCH /projects/{id} settings.quota",
+        "url": "https://neon.com/docs/guides/consumption-limits",
+        "note": "Quotas are in usage units, not dollars. Past them, computes suspend until the next period."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://neon.com/docs/guides/consumption-metrics",
+      "https://neon.com/docs/introduction/spending-limit",
+      "https://neon.com/docs/manage/api-keys"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "netlify",
+    "name": "Netlify",
+    "search_name": "Netlify",
+    "category": "infra",
+    "website": "https://www.netlify.com",
+    "billing_model": "Credit-based plans: a monthly credit allowance, with optional auto recharge when credits run out.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": null,
+      "returns": null,
+      "units": "credits",
+      "auth": "Authorization: Bearer <personal access token>",
+      "key_type": "Personal access token or OAuth2 token",
+      "key_url": "https://app.netlify.com/user/applications",
+      "read_only": "unknown",
+      "read_only_note": "OAuth scopes are not documented on the API guide page.",
+      "rate_limit": "500 requests per minute for most calls (general API limit)",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "No endpoint for credit balance or usage was found in the docs or the visible part of the OpenAPI reference. GET /accounts/{account_id} returns `capabilities` with included and used counts for sites and collaborators, which is not spend. The credit usage view is in the dashboard (see Monitor credit usage doc)."
+    },
+    "native_caps": [
+      {
+        "name": "Auto recharge toggle",
+        "kind": "auto-recharge-off",
+        "where": "Team settings › Billing (Team Owner only), see Configure auto-recharge",
+        "url": "https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/how-credits-work/",
+        "note": "Off by default. Applies to the whole team. With it off, projects pause at zero credits. Not available on Free. Personal: 500 credits for $5. Pro: 1,500 credits for $10."
+      },
+      {
+        "name": "AI credit usage limit",
+        "kind": "partial-stop",
+        "where": "Team settings › AI features, see Managing AI features",
+        "url": "https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/how-credits-work/",
+        "note": "Stops new agent runs and active runs when reached. Covers AI inference only."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/how-credits-work/",
+      "https://docs.netlify.com/api-and-cli-guides/api-guides/get-started-with-api/",
+      "https://open-api.netlify.com/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "openai",
+    "name": "OpenAI",
+    "search_name": "OpenAI API",
+    "category": "llm",
+    "website": "https://openai.com/api",
+    "billing_model": "Prepaid credits or monthly invoicing, charged per token and per tool call.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.openai.com/v1/organization/costs",
+      "returns": "daily cost buckets in USD, groupable by project and line item; the spend limit is at /v1/organization/spend_limit",
+      "units": "USD",
+      "auth": "Authorization: Bearer <Admin API key>",
+      "key_type": "Admin API key",
+      "key_url": "https://platform.openai.com/settings/organization/admin-keys",
+      "read_only": "partial",
+      "read_only_note": "Admin keys work across the organization. Choose read-only if it is offered when you create one.",
+      "rate_limit": "unknown",
+      "lag": "Not documented. Expect today to trail what you have used.",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Organization hard limit",
+        "kind": "hard-stop",
+        "where": "Settings › Organization › Limits, with Enforce a hard limit checked",
+        "url": "https://platform.openai.com/settings/organization/limits",
+        "note": "OpenAI says enforcement is not instantaneous, so spend can slightly exceed it."
+      },
+      {
+        "name": "Project spend limits",
+        "kind": "hard-stop",
+        "where": "Project Limits › Spend",
+        "url": "https://platform.openai.com/settings/organization/limits",
+        "note": null
+      },
+      {
+        "name": "Spend alerts",
+        "kind": "alert-only",
+        "where": "Settings › Organization › Limits",
+        "url": "https://platform.openai.com/settings/organization/limits",
+        "note": null
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/usage/methods/costs/",
+      "https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit",
+      "https://developers.openai.com/api/docs/guides/spend-limits"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "openrouter",
+    "name": "OpenRouter",
+    "search_name": "OpenRouter",
+    "category": "llm",
+    "website": "https://openrouter.ai",
+    "billing_model": "Prepaid credits in USD, spent per request.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://openrouter.ai/api/v1/key",
+      "returns": "`limit`, `limit_remaining`, `usage`, and daily, weekly and monthly usage for the key. The account total is at /api/v1/credits (`total_credits`, `total_usage`) with a management key.",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Inference API key (per key) or management key (account total)",
+      "key_url": "https://openrouter.ai/settings/keys",
+      "read_only": "no",
+      "read_only_note": "A normal key reads its own limits but can also spend.",
+      "rate_limit": "Per-IP burst limit with no rate-limit headers. Back off on errors.",
+      "lag": "A short settlement window for recent requests. Usage windows reset at UTC midnight.",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Per-key credit limit",
+        "kind": "hard-stop",
+        "where": "Settings › API Keys, edit a key",
+        "url": "https://openrouter.ai/docs/api-reference/limits",
+        "note": "The `limit` on a key caps what that key can spend."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://openrouter.ai/docs/api-reference/limits",
+      "https://openrouter.ai/docs/api-reference/get-credits"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "perplexity",
+    "name": "Perplexity API",
+    "search_name": "Perplexity API",
+    "category": "llm",
+    "website": "https://www.perplexity.ai",
+    "billing_model": "Prepaid API credits spent per token, per request, or per search depending on the API; keys are blocked when credits run out.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": null,
+      "returns": null,
+      "units": "USD",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": "https://console.perplexity.ai",
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "No balance or usage API is documented. The console Billing page shows balance, a usage chart and spend by key."
+    },
+    "native_caps": [
+      {
+        "name": "Automatic Top Up (toggle)",
+        "kind": "auto-recharge-off",
+        "where": "API Console › Buy more credits › Automatic Top Up",
+        "url": "https://www.perplexity.ai/help-center/en/articles/10354847-api-payment-and-billing",
+        "note": "Help center says it tops up when the balance falls below $2. Developer docs do not state a fixed figure. With it off, spend cannot exceed the loaded balance and keys are blocked at zero."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.perplexity.ai/guides/usage-tiers",
+      "https://docs.perplexity.ai/docs/getting-started/pricing",
+      "https://docs.perplexity.ai/docs/getting-started/api-groups",
+      "https://www.perplexity.ai/help-center/en/articles/10354847-api-payment-and-billing"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "posthog",
+    "name": "PostHog",
+    "search_name": "PostHog",
+    "category": "devtools",
+    "website": "https://posthog.com",
+    "billing_model": "Usage-based, with a free monthly allowance per product.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://us.posthog.com/api/billing/",
+      "returns": "a billing overview; /api/billing/usage/ gives a time series",
+      "units": "USD",
+      "auth": "Authorization: Bearer <personal API key>",
+      "key_type": "Personal API key with the billing:read scope",
+      "key_url": null,
+      "read_only": "yes",
+      "read_only_note": "The billing:read scope can read billing only.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": "The organization billing API is in beta behind a feature flag (403 without it), so shapes may change."
+    },
+    "native_caps": [
+      {
+        "name": "Billing limits per product",
+        "kind": "hard-stop",
+        "where": "Organization › Billing",
+        "url": "https://posthog.com/docs/billing/limits-alerts",
+        "note": "Past a limit, PostHog stops ingesting that product, and data past the limit is lost."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://posthog.com/docs/api/billing-3",
+      "https://posthog.com/docs/api/scopes",
+      "https://posthog.com/docs/billing/limits-alerts"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "postmark",
+    "name": "Postmark",
+    "search_name": "Postmark",
+    "category": "email",
+    "website": "https://postmarkapp.com",
+    "billing_model": "Monthly plan with overage billed in arrears.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://api.postmarkapp.com/stats/outbound/sends",
+      "returns": "a count of sent emails; remaining has to be worked out from your plan size",
+      "units": "requests",
+      "auth": "X-Postmark-Server-Token: <server token>",
+      "key_type": "Server token",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "There is no billing endpoint."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://postmarkapp.com/developer/api/stats-api"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "railway",
+    "name": "Railway",
+    "search_name": "Railway",
+    "category": "infra",
+    "website": "https://railway.com",
+    "billing_model": "Subscription plan plus usage-based compute and other resources, billed per cycle.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": null,
+      "returns": null,
+      "units": "USD",
+      "auth": "Authorization: Bearer <account or workspace token> against https://backboard.railway.com/graphql/v2",
+      "key_type": "Account, workspace, project, or OAuth token",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "Per hour: 100 Free, 1,000 Hobby, 10,000 Pro. Per second: 10 Hobby, 50 Pro. HTTP 429 with Retry-After.",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The Public API docs do not document usage or cost queries. The CLI has `railway usage` and `railway usage limit status`, which implies the data exists, but the CLI page does not say what the API returns. The key_url is the common dashboard path and was not confirmed in the docs fetched."
+    },
+    "native_caps": [
+      {
+        "name": "Hard usage limit",
+        "kind": "hard-stop",
+        "where": "Workspace Usage page (railway.com/workspace/usage) › Set Usage Limits › Hard limit",
+        "url": "https://docs.railway.com/pricing/cost-control",
+        "note": "Max spend per billing cycle, set separately for Compute and Agent usage. Minimum $10. Workloads go offline at the limit. Reminders at 75%, 90%, 100%. Also settable with `railway usage limit set`. Agent limit cannot be removed."
+      },
+      {
+        "name": "Custom email alert",
+        "kind": "alert-only",
+        "where": "Workspace Usage page › Set Usage Limits › Custom email alert",
+        "url": "https://docs.railway.com/pricing/cost-control",
+        "note": "Soft limit that emails you. Resources keep running."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.railway.com/reference/public-api",
+      "https://docs.railway.com/reference/usage-limits",
+      "https://docs.railway.com/pricing/cost-control",
+      "https://docs.railway.com/reference/cli-api"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "render",
+    "name": "Render",
+    "search_name": "Render",
+    "category": "infra",
+    "website": "https://render.com",
+    "billing_model": "Workspace plan plus per-instance monthly charges, with usage-based bandwidth and build pipeline minutes.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": null,
+      "returns": null,
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Render API key (scoped keys rolling out)",
+      "key_url": null,
+      "read_only": "partial",
+      "read_only_note": "Scoped keys offer an Enable read-only option for Read access on all applicable resources. The docs do not list a billing permission.",
+      "rate_limit": "Most GET endpoints: 400 requests per minute, per user",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The API docs index lists no billing, invoice, or spend pages. Accrued charges are shown on the dashboard Billing page. The key_url is the common dashboard path and was not confirmed in the docs fetched."
+    },
+    "native_caps": [
+      {
+        "name": "Build pipeline spend limit",
+        "kind": "partial-stop",
+        "where": "Workspace Settings › Build Pipeline › Set spend limit",
+        "url": "https://render.com/docs/build-pipeline",
+        "note": "Stops auto-buying extra pipeline minutes once reached. Covers pipeline minutes only, not the whole bill."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://render.com/docs/api",
+      "https://render.com/docs/api-keys",
+      "https://api-docs.render.com/reference/rate-limiting.md",
+      "https://api-docs.render.com/llms.txt",
+      "https://render.com/docs/build-pipeline"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "replicate",
+    "name": "Replicate",
+    "search_name": "Replicate",
+    "category": "ai-media",
+    "website": "https://replicate.com",
+    "billing_model": "Pay as you go for compute time, either prepaid credit or postpaid billed monthly in arrears.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The billing docs point only to the account billing page. No billing API is documented."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://replicate.com/docs/topics/billing",
+      "https://replicate.com/changelog/2025-07-01-set-a-monthly-spend-limit"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "resend",
+    "name": "Resend",
+    "search_name": "Resend",
+    "category": "email",
+    "website": "https://resend.com",
+    "billing_model": "Subscription with a monthly email quota, plus pay-as-you-go.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": null,
+      "returns": "no usage endpoint; API responses carry `x-resend-monthly-quota` and `x-resend-daily-quota` headers",
+      "units": "requests",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": "https://resend.com/api-keys",
+      "read_only": "partial",
+      "read_only_note": "Keys can be sending-only or full access.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://resend.com/docs/api-reference/rate-limit"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "scrapecreators",
+    "name": "ScrapeCreators",
+    "search_name": "ScrapeCreators",
+    "category": "scraping",
+    "website": "https://scrapecreators.com",
+    "billing_model": "Prepaid credits that never expire.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://api.scrapecreators.com/v1/account/credit-balance",
+      "returns": "your credit balance; the response fields are not documented",
+      "units": "credits",
+      "auth": "x-api-key: <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://scrapecreators.com/scrape-creators/endpoints/get-credit-balance"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "scraperapi",
+    "name": "ScraperAPI",
+    "search_name": "ScraperAPI",
+    "category": "scraping",
+    "website": "https://www.scraperapi.com",
+    "billing_model": "Monthly subscription with a pool of API credits, where premium and rendering options cost more credits.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://api.scraperapi.com/account?api_key=<key>",
+      "returns": "Request usage counts, named in the docs as `requestCount`, `failedRequestCount`, and `concurrentRequests`. The docs page does not list a plan limit or credits remaining field.",
+      "units": "requests",
+      "auth": "api_key query parameter",
+      "key_type": "Account API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "The same key runs scrape requests. No separate read-only key is documented.",
+      "rate_limit": "unknown",
+      "lag": "`requestCount` and `failedRequestCount` refresh about every 15 seconds. `concurrentRequests` is real time.",
+      "cost_to_call": "unknown",
+      "notes": "Full response fields are not documented on the page fetched. A separate GET /account/urlcost returns the credit cost of a URL. Keys can be regenerated once every 24 hours."
+    },
+    "native_caps": [
+      {
+        "name": "max_cost parameter",
+        "kind": "partial-stop",
+        "where": "Request parameter, not a console setting",
+        "url": "https://docs.scraperapi.com/control-and-optimization/cost-control.md",
+        "note": "Caps credits per request. A request that would exceed it returns 403. Not an account-wide cap."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.scraperapi.com/account-management/credit-usage.md",
+      "https://docs.scraperapi.com/control-and-optimization/cost-control.md",
+      "https://docs.scraperapi.com/account-management/api-key.md",
+      "https://docs.scraperapi.com/llms-full.txt"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "scrapingbee",
+    "name": "ScrapingBee",
+    "search_name": "ScrapingBee",
+    "category": "scraping",
+    "website": "https://www.scrapingbee.com",
+    "billing_model": "Monthly subscription with a pool of API credits, where features cost different credits per request.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://app.scrapingbee.com/api/v1/usage",
+      "returns": "`max_api_credit`, `used_api_credit`, `max_concurrency`, `current_concurrency`, and `renewal_subscription_date`.",
+      "units": "credits",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Account API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "The same key runs scrape requests. No separate read-only key is documented.",
+      "rate_limit": "6 calls per minute",
+      "lag": "Real time",
+      "cost_to_call": "unknown",
+      "notes": "Calls do not count toward concurrency. The docs do not say whether the call uses credits. The key_url is the common dashboard path and was not confirmed in the docs fetched."
+    },
+    "native_caps": [
+      {
+        "name": "max_cost parameter (Auto-Mode)",
+        "kind": "partial-stop",
+        "where": "Request parameter, not a console setting",
+        "url": "https://www.scrapingbee.com/documentation/",
+        "note": "Caps the credits a single Auto-Mode request may spend. It is per request only, not an account cap."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://www.scrapingbee.com/documentation/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "screenshotone",
+    "name": "ScreenshotOne",
+    "search_name": "ScreenshotOne",
+    "category": "scraping",
+    "website": "https://screenshotone.com",
+    "billing_model": "Monthly request quota.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.screenshotone.com/usage?access_key=<key>",
+      "returns": "`total`, `available`, `used`, and `concurrency` with `limit`, `remaining` and `reset`",
+      "units": "requests",
+      "auth": "access_key query parameter",
+      "key_type": "Access key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://screenshotone.com/docs/get-usage/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "semrush",
+    "name": "Semrush",
+    "search_name": "Semrush",
+    "category": "seo-data",
+    "website": "https://www.semrush.com",
+    "billing_model": "Subscription plus a pool of API units.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://www.semrush.com/users/countapiunits.html?key=<API key>",
+      "returns": "a plain number: your remaining API units",
+      "units": "units",
+      "auth": "key query parameter",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": true,
+    "sources": [
+      "https://developer.semrush.com/api/basics/api-units-balance/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "sendgrid",
+    "name": "Twilio SendGrid",
+    "search_name": "Twilio SendGrid",
+    "category": "email",
+    "website": "https://sendgrid.com",
+    "billing_model": "Monthly plan with a base email allowance, then per-email overage charges.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.sendgrid.com/v3/user/credits",
+      "returns": "Credits as `remain`, `total`, `used`, `overage`, plus `last_reset`, `next_reset`, and `reset_frequency`.",
+      "units": "credits",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "SendGrid API key (Full Access, Custom Access, or Billing Access)",
+      "key_url": "https://app.sendgrid.com/settings/api_keys",
+      "read_only": "partial",
+      "read_only_note": "A Billing Access key type exists for the billing endpoints. The docs do not say whether it covers /v3/user/credits.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "EU regional subusers use https://api.eu.sendgrid.com. A parent account can read a subuser with the on-behalf-of header."
+    },
+    "native_caps": [
+      {
+        "name": "Usage limit alert",
+        "kind": "alert-only",
+        "where": "Settings › Alerts",
+        "url": "https://www.twilio.com/docs/sendgrid/ui/account-and-settings/alerts",
+        "note": "Emails you when a set share of your plan's emails is used. New accounts get a 90% alert by default. It does not stop sending."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://www.twilio.com/docs/sendgrid/api-reference/users-api/retrieve-your-credit-balance",
+      "https://www.twilio.com/docs/sendgrid/ui/account-and-settings/api-keys",
+      "https://www.twilio.com/docs/sendgrid/ui/account-and-settings/alerts",
+      "https://www.twilio.com/docs/sendgrid/ui/account-and-settings/billing"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "serpapi",
+    "name": "SerpApi",
+    "search_name": "SerpApi",
+    "category": "seo-data",
+    "website": "https://serpapi.com",
+    "billing_model": "Monthly plan with a set number of searches per month, plus optional extra credits.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://serpapi.com/account.json?api_key=<key>",
+      "returns": "`plan_searches_left`, `total_searches_left`, `extra_credits`, `searches_per_month`, `this_month_usage`, `this_hour_searches`, `last_hour_searches`, `account_rate_limit_per_hour`, `plan_name`, `plan_monthly_price`, and `plan_renewal_date`.",
+      "units": "requests",
+      "auth": "api_key query parameter",
+      "key_type": "Private API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "The same private key runs searches. No separate read-only key is documented.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": "Docs say the Account API is free and does not count toward the monthly quota. The response also echoes the API key. The docs page shows both /account and /account.json forms. The key_url is the common dashboard path and was not confirmed in the docs fetched."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://serpapi.com/account-api"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "snov",
+    "name": "Snov.io",
+    "search_name": "Snov.io",
+    "category": "sales-data",
+    "website": "https://snov.io",
+    "billing_model": "Monthly credits.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.snov.io/v1/get-balance",
+      "returns": "`balance` (credits), `teamwork`, `unique_recipients_used` and `limit_resets_in`",
+      "units": "credits",
+      "auth": "Bearer token from POST /v1/oauth/access_token with your User ID and Secret (expires after 1 hour)",
+      "key_type": "API User ID and Secret",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": null,
+      "rate_limit": "60 requests a minute",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://snov.io/api#CheckUserBalance"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "stability-ai",
+    "name": "Stability AI",
+    "search_name": "Stability AI",
+    "category": "ai-media",
+    "website": "https://stability.ai",
+    "billing_model": "Prepaid credits, each successful request consumes credits (1 credit is $0.01).",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.stability.ai/v1/user/balance",
+      "returns": "`credits`, the balance of the account or organization tied to the key.",
+      "units": "credits",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Standard API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "No read-only key is documented. The same key generates images.",
+      "rate_limit": "150 requests every 10 seconds, then 429.",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Optional Organization header scopes the call to another organization. Pricing page says 1 credit equals $0.01. key_url is the usual keys page, not confirmed in the fetched docs."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.stability.ai/api-reference/user/account-balance.md",
+      "https://docs.stability.ai/llms.txt"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "supabase",
+    "name": "Supabase",
+    "search_name": "Supabase",
+    "category": "infra",
+    "website": "https://supabase.com",
+    "billing_model": "Plan fee plus usage-based charges past each plan quota.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "The Management API has no billing or usage endpoint. The Upcoming Invoice is on the Billing page."
+    },
+    "native_caps": [
+      {
+        "name": "Spend Cap",
+        "kind": "partial-stop",
+        "where": "Organization › Billing › Cost Control",
+        "url": "https://supabase.com/docs/guides/platform/cost-control",
+        "note": "Compute, custom domains, IPv4, PITR and some other items bill even with the cap on."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://supabase.com/docs/guides/platform/cost-control",
+      "https://supabase.com/docs/reference/api"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "together-ai",
+    "name": "Together AI",
+    "search_name": "Together AI",
+    "category": "llm",
+    "website": "https://www.together.ai",
+    "billing_model": "Prepaid credits that must stay above zero, with optional auto-recharge.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "partial",
+      "endpoint": "GET https://api.together.xyz/v1/billing/usage",
+      "returns": "Cost-annotated usage line items for a month, with `cost`, `unit_price`, `quantity` and `applied_credit`, all in USD. No credit balance field is documented.",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Standard API key (any project key reads the whole organization)",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "Any project key in the organization can read it, and the same key runs requests. No billing-only key is documented.",
+      "rate_limit": "unknown",
+      "lag": "Current month up to 1 hour behind, prior months up to 24 hours.",
+      "cost_to_call": "unknown",
+      "notes": "Beta and enabled per organization (404 without access, request through Together support). Response shape may change. Base host not confirmed on the fetched page, only the path. organization_id is optional in beta and required at GA. Docs elsewhere mention a credit balance only in the console."
+    },
+    "native_caps": [
+      {
+        "name": "Balance cut-off at zero",
+        "kind": "hard-stop",
+        "where": "Prepaid balance, no setting",
+        "url": "https://docs.together.ai/docs/billing-spend-controls",
+        "note": "Metering has a short delay, so it is not an exact cap."
+      },
+      {
+        "name": "Auto-recharge",
+        "kind": "auto-recharge-off",
+        "where": "Billing settings (card payment methods only)",
+        "url": "https://docs.together.ai/docs/billing-spend-controls",
+        "note": "Docs state auto-recharge does not cap spend. Turn it off so spend cannot exceed the balance."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://docs.together.ai/docs/billing-spend-controls",
+      "https://docs.together.ai/reference/billing-usage.md"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "treg",
+    "name": "treg",
+    "search_name": "treg",
+    "category": "devtools",
+    "website": "https://treg.to",
+    "billing_model": "Prepaid USD balance, held in micro-USD.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://treg.to/orgs/{org_id}/balance",
+      "returns": "`balance_micro`, `balance_usd`, and `holds` (in-flight reservations); /usage/me gives `spent_today_micro` and `daily_spend_cap_micro`",
+      "units": "USD",
+      "auth": "X-Treg-Token: <token> (a personal token also needs X-Treg-Org)",
+      "key_type": "Team or agent token",
+      "key_url": null,
+      "read_only": "partial",
+      "read_only_note": "Any member, including the viewer role, can read the balance. A key that can never spend is not documented.",
+      "rate_limit": "No per-token limit",
+      "lag": "Real time",
+      "cost_to_call": "unknown",
+      "notes": "The route comes from the official tools-registry package source; the public docs document the CLI and MCP balance tool."
+    },
+    "native_caps": [
+      {
+        "name": "Daily spend cap",
+        "kind": "hard-stop",
+        "where": "Agent token options (--cap)",
+        "url": "https://treg.to/skill.md",
+        "note": null
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "planned"
+    },
+    "publish": false,
+    "sources": [
+      "https://treg.to/skill.md",
+      "https://treg.to/llms.txt",
+      "https://pypi.org/project/tools-registry/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "truelist",
+    "name": "Truelist",
+    "search_name": "Truelist",
+    "category": "email",
+    "website": "https://truelist.io",
+    "billing_model": "Credits, 100 to start. A credit is used only when an address has not been verified in the last 30 days.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": "GET https://api.truelist.io/me",
+      "returns": "account name, plan and settings; no credit count is documented",
+      "units": "credits",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "10 requests a second per endpoint",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://truelist.io/docs/api",
+      "https://truelist.io/docs/usage/how-credits-work"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "twilio",
+    "name": "Twilio",
+    "search_name": "Twilio",
+    "category": "email",
+    "website": "https://www.twilio.com",
+    "billing_model": "Prepaid balance or invoicing, charged per message, call minute and verification.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.twilio.com/2010-04-01/Accounts/{AccountSid}/Usage/Records/ThisMonth.json?Category=totalprice",
+      "returns": "usage records with price in your account currency; Today.json gives today",
+      "units": "USD",
+      "auth": "HTTP Basic with an API key SID and secret (or Account SID and Auth Token)",
+      "key_type": "Standard API key",
+      "key_url": "https://console.twilio.com/",
+      "read_only": "no",
+      "read_only_note": "Twilio has no read-only key. A Standard API key can also send messages and make calls.",
+      "rate_limit": "unknown",
+      "lag": "Usage records trail real usage a little.",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Usage trigger on total spend",
+        "kind": "alert-only",
+        "where": "Console › Billing and Usage › Usage and Spend › Usage Triggers",
+        "url": "https://www.twilio.com/docs/usage/api/usage-trigger",
+        "note": "Twilio has no native hard spend cap. A trigger calls a webhook; it stops nothing on its own."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://www.twilio.com/docs/usage/api/usage-record",
+      "https://www.twilio.com/docs/usage/api/usage-trigger"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "upstash",
+    "name": "Upstash",
+    "search_name": "Upstash",
+    "category": "infra",
+    "website": "https://upstash.com",
+    "billing_model": "Pay per request or fixed plans.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "unknown",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "No billing API found in the docs."
+    },
+    "native_caps": [],
+    "caps_status": "unknown",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://upstash.com/docs/redis/overall/billing"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "vercel",
+    "name": "Vercel",
+    "search_name": "Vercel",
+    "category": "infra",
+    "website": "https://vercel.com",
+    "billing_model": "Plan fee plus usage-based charges on Pro and Enterprise.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.vercel.com/v1/billing/charges",
+      "returns": "billing charges in the FOCUS format, by day and service, in USD",
+      "units": "USD",
+      "auth": "Authorization: Bearer <access token>, with teamId for a team",
+      "key_type": "Access token",
+      "key_url": "https://vercel.com/account/tokens",
+      "read_only": "no",
+      "read_only_note": "Tokens have the same access as your account on the teams they are scoped to.",
+      "rate_limit": "unknown",
+      "lag": "Reported by day. Today may be missing until tomorrow.",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Spend Management: pause production",
+        "kind": "partial-stop",
+        "where": "Team Settings › Billing › Spend Management",
+        "url": "https://vercel.com/docs/spend-management",
+        "note": "Pauses production deployments. It does not stop AI Gateway, v0, or storage charges."
+      },
+      {
+        "name": "Spend Management notifications",
+        "kind": "alert-only",
+        "where": "Team Settings › Billing › Spend Management",
+        "url": "https://vercel.com/docs/spend-management",
+        "note": "At 50%, 75% and 100% of the budget."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://vercel.com/docs/rest-api/billing/list-focus-billing-charges",
+      "https://vercel.com/changelog/access-billing-usage-cost-data-api",
+      "https://vercel.com/docs/spend-management"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "voyage-ai",
+    "name": "Voyage AI",
+    "search_name": "Voyage AI",
+    "category": "llm",
+    "website": "https://www.voyageai.com",
+    "billing_model": "Pay as you go per token (per pixel for multimodal) after free tokens, billed through a MongoDB Atlas organization.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "Model API key created in MongoDB Atlas",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": "Viewing billing needs the Organization Billing Viewer role or higher in Atlas, which is a user role, not an API key.",
+      "rate_limit": "unknown",
+      "lag": "Cost Explorer updates every 24 hours. The Usage page tracks tokens in real time.",
+      "cost_to_call": "unknown",
+      "notes": "Docs show usage and billing in the Atlas UI with CSV export and mention no API. That is absence in the docs, not an explicit statement. Atlas has its own billing tooling, not checked here."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": false,
+    "sources": [
+      "https://www.mongodb.com/docs/voyageai/management/billing/",
+      "https://www.mongodb.com/docs/voyageai/management/monitor-usage/"
+    ],
+    "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "xai",
+    "name": "xAI (Grok API)",
+    "search_name": "Grok API",
+    "category": "llm",
+    "website": "https://x.ai/api",
+    "billing_model": "Prepaid credits first, with optional monthly invoiced billing up to an invoiced limit (default $0).",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://management-api.x.ai/v1/billing/teams/{team_id}/prepaid/balance",
+      "returns": "`total.val` (prepaid balance) and a `changes` list with `changeOrigin` (PURCHASE, SPEND, REFUND, MANUAL, AUTO_PURCHASE), `amount.val` and `createTime`. POST .../usage returns historical spend, tokens and units. GET .../postpaid/invoice/preview and .../postpaid/spending-limits also exist.",
+      "units": "USD",
+      "auth": "Authorization: Bearer <management key>",
+      "key_type": "Management key (separate from inference API keys)",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": "Docs say creating a management key needs the Management Keys Read + Write permission. They do not say whether a key can be limited to read.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Amounts come back as USD cents in strings. Management keys are separate from the keys that run requests."
+    },
+    "native_caps": [
+      {
+        "name": "Invoiced billing limit (default $0)",
+        "kind": "hard-stop",
+        "where": "Console › Billing › API Credits",
+        "url": "https://docs.x.ai/docs/key-information/billing",
+        "note": "At $0, requests are rejected once prepaid credits run out. Raising it needs sales."
+      },
+      {
+        "name": "Auto top-up with monthly maximum",
+        "kind": "auto-recharge-off",
+        "where": "Console › Billing › API spend management",
+        "url": "https://docs.x.ai/docs/key-information/billing",
+        "note": "Set a balance threshold, top-up amount (min $5) and a monthly maximum for top-ups. A warning appears at 80% of the monthly limit."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "none"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.x.ai/developers/rest-api-reference/management/billing",
+      "https://docs.x.ai/docs/management-api",
+      "https://docs.x.ai/docs/key-information/billing"
+    ],
+    "last_verified": "2026-11-17"
+  }
+]
