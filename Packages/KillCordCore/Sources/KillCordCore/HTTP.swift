@@ -8,6 +8,8 @@ public struct HTTPRequest: Sendable, Equatable {
     public enum Method: String, Sendable {
         case get = "GET"
         case post = "POST"
+        /// Only Kill Cord's own cloud uses this (signing a Mac out). Provider adapters never write.
+        case delete = "DELETE"
     }
 
     public var method: Method
