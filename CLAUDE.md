@@ -39,7 +39,7 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
 
 - **Keys only in the Keychain.** Never in files, UserDefaults, logs, error messages, exports, or test fixtures. Use fake keys in tests (`sk-ant-admin01-TEST-…`). Don't read real credential files.
 - **Read only, least privilege.** Kill Cord never changes provider settings. Say plainly when a provider has no read-only key.
-- **Network:** only provider billing APIs and Sparkle. No telemetry, analytics, or accounts.
+- **Network:** only provider billing APIs, Sparkle, and the https address a person types into a custom connection (public hosts only, checked before each request, no cross-host redirects, capped size and time). No telemetry, analytics, or accounts.
 - **Honesty:** money is `Decimal`. Model providers without a dollar API with `SpendCapability` (`.usageUnitsOnly`, `.noUsageAPI`, `.requiresSetup`). Never show an estimate without labeling it. Show last-checked time and provider lag; after sleep or offline, say "not live". Never imply overnight coverage.
 - **Verify provider APIs** against official docs before changing an adapter, and keep the doc links current. Console links in the caps catalog come from the providers' docs; a wrong link is worse than none.
 - **Copy:** no em dashes anywhere user-facing. Use commas, colons, or parentheses. No personal information in the repo.
