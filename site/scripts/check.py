@@ -44,7 +44,8 @@ for file in root.rglob('*.html'):
     description = unescape(re.search(r'<meta name="description" content="(.*?)"', text).group(1))
     # Longer titles and descriptions get cut off in search results.
     assert len(title) <= 60, f'Title over 60 characters ({len(title)}): {file}'
-    assert 50 <= len(description) <= 160, f'Description should be 50 to 160 characters ({len(description)}): {file}'
+    # Search engines show about 155 characters; much shorter wastes the snippet.
+    assert 120 <= len(description) <= 160, f'Description should be 120 to 160 characters ({len(description)}): {file}'
     # Kill Cord's copy rule: no em dashes anywhere user-facing.
     assert '—' not in text and '&mdash;' not in text, f'Em dash in copy: {file}'
 
@@ -67,6 +68,7 @@ for file in root.rglob('*'):
     if file.suffix in ('.html', '.css', '.svg', '.xml', '.txt'):
         text = file.read_text()
         assert not re.search(r'[ \t]+$', text, re.M), f'Trailing whitespace: {file}'
-        assert text.endswith('\n'), f'Missing final newline: {file}'
+        # The IndexNow key file must hold exactly the key.
+        assert text.endswith('\n') or re.fullmatch(r'[0-9a-f]{32}', text), f'Missing final newline: {file}'
         assert '&amp;amp;' not in text, f'Double-escaped ampersand: {file}'
 print(f'Passed: {len(pages)} pages; structure, alt text, title and description lengths, no em dashes, unique IDs, internal links, local assets, and whitespace.')
