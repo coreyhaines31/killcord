@@ -1,0 +1,18 @@
+{
+  "kind": "bigquery#queryResponse",
+  "schema": {"fields": [
+    {"name": "currency", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "unit_id", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "unit_name", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "net", "type": "STRING", "mode": "NULLABLE"}
+  ]},
+  "jobReference": {"projectId": "kc-billing", "jobId": "job_def456", "location": "US"},
+  "totalRows": "3",
+  "rows": [
+    {"f": [{"v": "USD"}, {"v": "kc-web-test"}, {"v": "Web (test)"}, {"v": "30.137214"}]},
+    {"f": [{"v": "USD"}, {"v": "kc-data-test"}, {"v": "Data (test)"}, {"v": "12"}]},
+    {"f": [{"v": "USD"}, {"v": null}, {"v": null}, {"v": "0.000001"}]}
+  ],
+  "jobComplete": true,
+  "cacheHit": false
+}
