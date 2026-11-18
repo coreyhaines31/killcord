@@ -3,6 +3,8 @@ import Foundation
 import Testing
 
 func day(_ text: String) -> Date { ManualPlan.day(text)! }
+/// Noon UTC on a day: the same calendar day on any Mac's clock from UTC-11 to UTC+11.
+func noon(_ text: String) -> Date { day(text).addingTimeInterval(12 * 3600) }
 
 @Suite struct ManualPlanTests {
     @Test func readsWhatWasTypedAndRollsTheRenewalForward() throws {
@@ -18,11 +20,11 @@ func day(_ text: String) -> Date { ManualPlan.day(text)! }
     }
 
     @Test func monthEndsAndYearsStayOnTheirDay() {
-        #expect(ManualPlan.next(day("2026-01-31"), period: .monthly, onOrAfter: day("2026-02-15")) == day("2026-02-28"))
-        #expect(ManualPlan.next(day("2026-01-31"), period: .monthly, onOrAfter: day("2026-03-02")) == day("2026-03-31"))
-        #expect(ManualPlan.next(day("2025-06-01"), period: .yearly, onOrAfter: day("2026-07-01")) == day("2027-06-01"))
+        #expect(ManualPlan.next(day("2026-01-31"), period: .monthly, onOrAfter: noon("2026-02-15")) == day("2026-02-28"))
+        #expect(ManualPlan.next(day("2026-01-31"), period: .monthly, onOrAfter: noon("2026-03-02")) == day("2026-03-31"))
+        #expect(ManualPlan.next(day("2025-06-01"), period: .yearly, onOrAfter: noon("2026-07-01")) == day("2027-06-01"))
         // Today counts as on or after.
-        #expect(ManualPlan.next(day("2026-11-15"), period: .monthly, onOrAfter: testNow) == day("2026-11-15"))
+        #expect(ManualPlan.next(day("2026-11-15"), period: .monthly, onOrAfter: noon("2026-11-15")) == day("2026-11-15"))
     }
 
     @Test func refusesWhatItCantRead() {
@@ -79,24 +81,24 @@ func day(_ text: String) -> Date { ManualPlan.day(text)! }
     @Test func remindsOncePerRenewalInsideTheWindow() {
         let key = "\(UUID.of(.manual).uuidString)|renewal|2026-11-18|3"
         // Nov 14: four days out, too early.
-        let early = day("2026-11-14")
+        let early = noon("2026-11-14")
         let (none, state0) = planner.plan(states: [state(renewal: "2026-11-18", at: early)],
                                           names: [.of(.manual): "Truelist"], thresholds: .init(), state: .init(), now: early)
         #expect(none.isEmpty)
         // Nov 15: three days out. One reminder, kept after the day ends.
-        let (first, state1) = planner.plan(states: [state(renewal: "2026-11-18", at: testNow)],
+        let (first, state1) = planner.plan(states: [state(renewal: "2026-11-18", at: noon("2026-11-15"))],
                                            names: [.of(.manual): "Truelist"], thresholds: .init(), state: state0,
-                                           now: testNow)
+                                           now: noon("2026-11-15"))
         #expect(first.map(\.id) == [key])
         #expect(first.first?.title == "Truelist renews Nov 18")
         #expect(first.first?.body == "Starter, $49.00 a month. From the plan you entered in Kill Cord.")
-        let nextDay = day("2026-11-16")
+        let nextDay = noon("2026-11-16")
         let (quiet, state2) = planner.plan(states: [state(renewal: "2026-11-18", at: nextDay)], thresholds: .init(),
                                            state: state1, now: nextDay)
         #expect(quiet.isEmpty)
         #expect(state2.fired.contains(key))
         // After the renewal the key is dropped, and next month's renewal reminds again.
-        let december = day("2026-12-15")
+        let december = noon("2026-12-15")
         let (again, state3) = planner.plan(states: [state(renewal: "2026-12-18", at: december)], thresholds: .init(),
                                            state: state2, now: december)
         #expect(again.map(\.id) == ["\(UUID.of(.manual).uuidString)|renewal|2026-12-18|3"])
@@ -104,8 +106,8 @@ func day(_ text: String) -> Date { ManualPlan.day(text)! }
     }
 
     @Test func noReminderWhenTurnedOff() {
-        let (alerts, _) = planner.plan(states: [state(renewal: "2026-11-16", remind: nil, at: testNow)],
-                                       thresholds: .init(), state: .init(), now: testNow)
+        let (alerts, _) = planner.plan(states: [state(renewal: "2026-11-16", remind: nil, at: noon("2026-11-15"))],
+                                       thresholds: .init(), state: .init(), now: noon("2026-11-15"))
         #expect(alerts.isEmpty)
     }
 }
@@ -113,10 +115,10 @@ func day(_ text: String) -> Date { ManualPlan.day(text)! }
 @Suite struct ManualTextTests {
     @Test func renewalWords() {
         func plan(_ text: String) -> ManualPlan { ManualPlan(renewsOn: day(text)) }
-        #expect(ManualText.renewal(plan("2026-11-15"), now: testNow) == "Renews today")
-        #expect(ManualText.renewal(plan("2026-11-16"), now: testNow) == "Renews tomorrow")
-        #expect(ManualText.renewal(plan("2026-12-03"), now: testNow) == "Renews Dec 3")
-        #expect(ManualText.renewalDay(plan("2026-11-16"), now: testNow) == "Tomorrow")
+        #expect(ManualText.renewal(plan("2026-11-15"), now: noon("2026-11-15")) == "Renews today")
+        #expect(ManualText.renewal(plan("2026-11-16"), now: noon("2026-11-15")) == "Renews tomorrow")
+        #expect(ManualText.renewal(plan("2026-12-03"), now: noon("2026-11-15")) == "Renews Dec 3")
+        #expect(ManualText.renewalDay(plan("2026-11-16"), now: noon("2026-11-15")) == "Tomorrow")
     }
 }
 
