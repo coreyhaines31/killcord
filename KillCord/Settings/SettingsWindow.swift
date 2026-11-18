@@ -13,12 +13,15 @@ final class SettingsWindow {
     private let updater: Updater
     private let model: SpendModel
     private let alerts: Alerts
+    /// Nil unless the Teams flag is on; then the Teams tab appears.
+    private let teams: TeamsModel?
     private var window: NSWindow?
 
-    init(updater: Updater, model: SpendModel, alerts: Alerts) {
+    init(updater: Updater, model: SpendModel, alerts: Alerts, teams: TeamsModel? = nil) {
         self.updater = updater
         self.model = model
         self.alerts = alerts
+        self.teams = teams
     }
 
     func show(tab: Tab? = nil) {
@@ -44,11 +47,21 @@ final class SettingsWindow {
     private func makeWindow() -> NSWindow {
         let tabs = SettingsTabController()
         tabs.tabStyle = .toolbar
-        tabs.add(.general, view: GeneralSettingsView(updater: updater, model: model))
-        tabs.add(.providers, view: ProvidersSettingsView(model: model) { [weak self] in self?.show(tab: $0) },
-                 width: Self.sidebarPaneWidth)
-        tabs.add(.thresholds, view: ThresholdsSettingsView(model: model, alerts: alerts))
-        tabs.add(.caps, view: CapsAuditView(model: model), width: Self.sidebarPaneWidth)
+        for tab in SettingsTab.visible(teamsEnabled: teams != nil) {
+            switch tab {
+            case .general:
+                tabs.add(.general, view: GeneralSettingsView(updater: updater, model: model))
+            case .providers:
+                tabs.add(.providers, view: ProvidersSettingsView(model: model) { [weak self] in self?.show(tab: $0) },
+                         width: Self.sidebarPaneWidth)
+            case .thresholds:
+                tabs.add(.thresholds, view: ThresholdsSettingsView(model: model, alerts: alerts))
+            case .caps:
+                tabs.add(.caps, view: CapsAuditView(model: model), width: Self.sidebarPaneWidth)
+            case .teams:
+                if let teams { tabs.add(.teams, view: TeamsSettingsView(model: teams)) }
+            }
+        }
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
         window.toolbarStyle = .preference
