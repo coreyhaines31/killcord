@@ -463,7 +463,7 @@ def category_overview(label, rows):
     """A summary of how this category bills and caps, computed from the records on the page."""
     by = lambda test: [r for r in rows if test(r)]
     billing = clauses([
-        (lambda g: g and f'{count(g, "is", "are")} prepaid, so calls stop when the balance hits zero ({names(g)})')(by(lambda r: r['billing_type'] == 'prepaid')),
+        (lambda g: g and f'{count(g, "runs", "run")} on a prepaid balance or credits you top up ({names(g)})')(by(lambda r: r['billing_type'] == 'prepaid')),
         (lambda g: g and f'{count(g, "bills", "bill")} for usage after the fact ({names(g)})')(by(lambda r: r['billing_type'] == 'usage')),
         (lambda g: g and f'{count(g, "sells", "sell")} a monthly allowance of credits or requests ({names(g)})')(by(lambda r: r['billing_type'] == 'quota')),
         (lambda g: g and f'{count(g, "mixes", "mix")} models, such as a plan plus usage or credits plus invoicing ({names(g)})')(by(lambda r: r['billing_type'] == 'mixed')),
@@ -489,7 +489,7 @@ def category_overview(label, rows):
     power = by(lambda r: r['spend_api']['endpoint'] and r['spend_api']['read_only'] == 'no')
     readonly = by(lambda r: r['spend_api']['endpoint'] and r['spend_api']['read_only'] == 'yes')
     keys = ' '.join(x for x in [
-        power and f'For {len(power)}, the key that reads billing can also spend or change things ({names(power)}).',
+        power and f'{count(power, "has", "have")} no read-only key, so the key that reads billing can do more than read it ({names(power)}).',
         readonly and f'{count(readonly, "offers", "offer")} a read-only key ({names(readonly)}).',
     ] if x)
     fresh = by(lambda r: known(r['spend_api']['lag']))[:4]
