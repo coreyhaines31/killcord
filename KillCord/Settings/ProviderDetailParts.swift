@@ -25,7 +25,7 @@ struct SpendReadout: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
             } else if capability.showsBalance {
-                figure("Balance", nil)
+                figure("Balance", snapshot == nil ? nil : "Not reported")
             }
             if capability.showsMoney {
                 HStack(alignment: .firstTextBaseline, spacing: 32) {

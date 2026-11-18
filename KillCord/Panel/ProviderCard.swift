@@ -35,7 +35,7 @@ struct ProviderCard: View {
             if let balance = snapshot?.balance {
                 balanceRow(balance)
             } else if capability.showsBalance {
-                amount("Balance", "Not read yet")
+                amount("Balance", snapshot == nil ? "Not read yet" : "Not reported")
             }
             if capability.showsMoney {
                 money
