@@ -6,9 +6,12 @@ import SwiftUI
 /// has more than one), and the caps audit's progress.
 struct PanelView: View {
     let model: SpendModel
+    var space = PanelSpace()
     let openSettings: (SettingsTab?) -> Void
     let checkForUpdates: () -> Void
 
+    /// The heights of the parts outside the cards' scroll area, measured as drawn.
+    @State private var chrome: [ChromePart: CGFloat] = [:]
     @Environment(\.panelTheme) private var theme
 
     var body: some View {
@@ -27,6 +30,7 @@ struct PanelView: View {
                     KeyCap("arrow.clockwise", accessibilityLabel: "Refresh spend") { model.refreshNow() }
                         .disabled(model.isDemo || model.connected.isEmpty || model.isRefreshing)
                 }
+                .onHeightChange { chrome[.fascia] = $0 }
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         if model.connected.isEmpty {
@@ -47,10 +51,14 @@ struct PanelView: View {
                 }
             } footer: {
                 Footer(appName: Brand.name, openSettings: { openSettings(nil) }, quit: { NSApp.terminate(nil) })
+                    .onHeightChange { chrome[.footer] = $0 }
             }
-            .frame(height: min(640, (NSScreen.main?.visibleFrame.height ?? 800) - 80))
+            .frame(height: PanelLayout.panelHeight(available: space.availableHeight,
+                                                   chrome: Double(chrome.values.reduce(0, +))))
         }
     }
+
+    private enum ChromePart { case fascia, footer }
 
     private var status: String {
         if model.isAsleep { return "Asleep, not live" }
@@ -188,5 +196,11 @@ struct ProviderSubtotal: View {
             Text(label).font(.system(size: 11)).foregroundStyle(.secondary)
             Text(MoneyText.string(totals)).font(.system(size: 13, weight: .semibold).monospacedDigit())
         }
+    }
+}
+
+private extension View {
+    func onHeightChange(_ action: @escaping (CGFloat) -> Void) -> some View {
+        onGeometryChange(for: CGFloat.self, of: { $0.size.height }, action: action)
     }
 }
