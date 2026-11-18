@@ -248,7 +248,9 @@ def killcord_section(s):
              f'checks it with {e(s["name"])} before it saves it. The key stays in your Mac’s Keychain and goes only to '
              f'{e(s["name"])}’s billing API. Kill Cord is free, with no account.</p>' if tier == 'built-in' and s['slug'] not in caps_only else
              '<p>Kill Cord is free, with no account, and it reads spend for ' + builtin_names + '.</p>' if tier == 'built-in' else
-             '<p>If you also use any of those, Kill Cord puts their spend in one glance and gets their caps turned on.</p>')
+             (f'<p>Today Kill Cord tracks {builtin_names}. If you use any of those, it puts their spend in one glance and gets their caps turned on.</p>'
+              if s['killcord'].get('note') else
+              '<p>If you also use any of those, Kill Cord puts their spend in one glance and gets their caps turned on.</p>'))
     return f'''  <section aria-labelledby="kc-title" class="kc-box">
     <h2 id="kc-title">{heading}</h2>
     <p>{e(killcord_text(s))}</p>
@@ -399,6 +401,8 @@ def order(rows):
 
 def hub_pages():
     used = [k for k in categories if any(s['category'] == k for s in published)]
+    claude_line = ('\n    <p>Claude API guides: ' + ' · '.join(f'<a href="/track/{c["slug"]}/">{e(c["nav"])}</a>' for c in cluster)
+                   + '.</p>')
     sections = []
     for k in used:
         slug, label, blurb = categories[k]
@@ -406,7 +410,7 @@ def hub_pages():
         sections.append(f'''  <section aria-labelledby="{slug}-title">
     <h2 id="{slug}-title"><a href="{category_url(k)}">{e(label)}</a></h2>
     <p>{e(blurb)}</p>
-    {table(rows)}
+    {table(rows)}{claude_line if k == 'llm' else ''}
   </section>
 ''')
     nav = ''.join(f'<li><a href="{category_url(k)}">{e(categories[k][1])}</a></li>' for k in used)
