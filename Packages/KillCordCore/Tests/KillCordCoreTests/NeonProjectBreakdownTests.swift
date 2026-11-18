@@ -58,7 +58,7 @@ import Testing
     @Test func carriesNoMoneyAtAll() async throws {
         let usage = try await NeonProjectBreakdown(http: try client()).projectUsage(
             FakeKeys.credentials(.neon), from: start, to: testNow)
-        let encoded = String(decoding: try JSONEncoder().encode(usage), as: UTF8.self)
+        let encoded = try #require(String(bytes: try JSONEncoder().encode(usage), encoding: .utf8))
         #expect(!encoded.contains("currency"))
         #expect(!encoded.contains("amount"))
         #expect(!Mirror(reflecting: usage.rows[0]).children.contains { $0.value is Money })
