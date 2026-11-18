@@ -5,13 +5,14 @@ import SwiftUI
 
 /// Today and this month (or usage), when it was read, and how far behind the provider runs.
 struct SpendReadout: View {
+    let connectionID: UUID
     let provider: ProviderID
     let model: SpendModel
 
     var body: some View {
         let now = Date()
-        let snapshot = model.states[provider]?.snapshot
-        let freshness = model.freshness(provider, now: now)
+        let snapshot = model.states[connectionID]?.snapshot
+        let freshness = model.freshness(connectionID, now: now)
         VStack(alignment: .leading, spacing: 10) {
             if provider.info.capability.showsMoney {
                 HStack(alignment: .firstTextBaseline, spacing: 32) {
@@ -44,7 +45,7 @@ struct SpendReadout: View {
     }
 
     private func freshnessLine(_ freshness: Freshness, snapshot: SpendSnapshot?, now: Date) -> String {
-        if model.inFlight.contains(provider), snapshot == nil { return "Reading spend now…" }
+        if model.inFlight.contains(connectionID), snapshot == nil { return "Reading spend now…" }
         let line = SpendText.freshness(freshness, now: now)
         guard let asOf = snapshot?.dataAsOf else { return line }
         return "\(line). Data current through \(SpendText.time(asOf, now: now))."
@@ -65,7 +66,7 @@ struct SpendReadout: View {
 struct CapsSummarySection: View {
     let provider: ProviderID
     let model: SpendModel
-    let openTab: @MainActor (SettingsWindow.Tab) -> Void
+    let openTab: @MainActor (SettingsTab) -> Void
 
     var body: some View {
         let now = Date()
