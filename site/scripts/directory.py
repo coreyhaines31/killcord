@@ -176,7 +176,9 @@ def steps(s):
     else:
         items = [f'<li><b>Get the key.</b> {inline(cap_first(key.rstrip('.')))}, from {where}.</li>']
     if a['auth']:
-        items.append(f'<li><b>Send it the way {e(name)} expects.</b> {inline(sentence(a["auth"]) if re.match(r'^[\w-]+:', a['auth']) else cap_first(sentence(a["auth"])))}</li>')
+        header_style = re.match(r'^[\w-]+:', a['auth'])
+        auth = sentence(a['auth']) if header_style else cap_first(sentence(a['auth']))
+        items.append(f'<li><b>Send it the way {e(name)} expects.</b> {inline(auth)}</li>')
     items.append(f'<li><b>Call the endpoint.</b> <code>{e(a["endpoint"])}</code></li>')
     if a['returns']:
         items.append(f'<li><b>Read the numbers.</b> It returns {inline(sentence(lower_first(a["returns"])))}</li>')
@@ -511,7 +513,8 @@ cluster = json.loads((root / 'data/claude-cluster.json').read_text())
 
 def cluster_nav(current):
     links = [('anthropic', 'Billing API', '/track/anthropic/')] + [(c['slug'], c['nav'], f'/track/{c["slug"]}/') for c in cluster]
-    items = ''.join(f'<li><a href="{url}"{" aria-current=\"page\"" if slug == current else ""}>{e(label)}</a></li>'
+    current_attr = ' aria-current="page"'
+    items = ''.join(f'<li><a href="{url}"{current_attr if slug == current else ""}>{e(label)}</a></li>'
                     for slug, label, url in links)
     return f'''  <section aria-labelledby="cluster-title">
     <h2 id="cluster-title">More on Claude API spend</h2>
