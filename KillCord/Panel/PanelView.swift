@@ -89,8 +89,9 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("See today's and this month's API spend").font(.system(size: 13, weight: .semibold))
-            Text("Connect Anthropic, Google Cloud, OpenAI, Vercel, Cloudflare, Twilio, or Neon with a billing key. "
-                + "Keys are stored in Keychain and sent only to their provider for authentication.")
+            Text("Connect Anthropic, Google Cloud, OpenAI, Vercel, Cloudflare, Twilio, or Neon with a billing key, "
+                + "or watch a prepaid balance on OpenRouter, DataForSEO, and more. Keys are stored in Keychain and "
+                + "sent only to their provider for authentication.")
                 .font(.system(size: 12)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             HStack {
