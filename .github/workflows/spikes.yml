@@ -37,8 +37,8 @@ jobs:
       - name: Roles and row-level security
         run: spikes/teams-worker/sql/check-roles.sh
 
-      # The dependency graph needs Swift 6.4 tools (swift-collections 1.7.6), newer than setup-swift offers, so build in the official
-      # image, on the host network so it reaches the Postgres service.
+      # The resolved dependencies need Swift 6.4 tools (swift-collections 1.7.6), newer than setup-swift
+      # offers, so build in the official image, on the host network so it reaches the Postgres service.
       - name: Build, test, and run the worker (Swift 6.4, Linux)
         run: |
           docker run --rm --network host -v "$PWD:/repo" -w /repo/spikes/teams-worker \
