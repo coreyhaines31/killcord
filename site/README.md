@@ -32,6 +32,10 @@ The build writes a fingerprinted copy of each stylesheet, image and font to `/_a
 make build && python3 -m http.server 4719 -d dist
 ```
 
+## IndexNow
+
+`src/assets/<key>.txt` is the IndexNow key file. After a production deploy from `main` (never a preview), run `make indexnow` from the deployed commit to tell Bing and other IndexNow engines which URLs are new or have a newer `lastmod`; `make indexnow ALL=1` sends every URL. The script refuses to run until production serves the key file and the same sitemap as `dist/`.
+
 ## Hosting
 
 Vercel (team `coreys-apps`, project `killcord`, root directory `site`) runs `make lint` and serves `dist/`. Deploy production from `main` only, once v1 ships.
