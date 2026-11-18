@@ -19,6 +19,11 @@ struct ProviderEditor: View {
         case failed(title: String, message: String?, fix: String?)
         /// The provider accepted the key just now.
         case connected
+
+        var isFailure: Bool {
+            if case .failed = self { return true }
+            return false
+        }
     }
 
     let provider: ProviderID
@@ -123,9 +128,9 @@ struct ProviderEditor: View {
                     }
                 }
             }
-            SetupStepRow(number: replacing ? 1 : steps.count + 1, title: pasteTitle, detail: nil) {
+            SetupStepRow(number: replacing ? 1 : steps.count + 1, title: pasteTitle(replacing: replacing), detail: nil) {
                 CredentialFields(fields: info.fields, values: $values, keepsSavedSecrets: replacing,
-                                 isDisabled: phase == .checking)
+                                 isDisabled: phase == .checking, failed: phase.isFailure, provider: provider)
                 connectRow
                 outcome
             }
@@ -138,20 +143,8 @@ struct ProviderEditor: View {
                 Text(provider == .manual ? "Add in \(steps.count + 1) steps" : "Connect in \(steps.count + 1) steps")
             }
         } footer: {
-            PrivacyLine(providerName: provider == .custom ? "the address you enter" : info.name,
-                        isManual: provider == .manual)
+            PrivacyLine(providerName: privacyName(typed: values["serviceName"]), isManual: provider == .manual)
         }
-    }
-
-    private var pasteTitle: String {
-        if replacing { return "Paste the new key. Leave a secret empty to keep the saved one." }
-        if info.fields.count == 1, let field = info.fields.first {
-            // "Admin API key" reads "admin API key"; "API key" keeps its acronym.
-            let label = field.label.dropFirst().first?.isLowercase == true
-                ? field.label.prefix(1).lowercased() + field.label.dropFirst() : field.label
-            return "Paste the \(label) here"
-        }
-        return "Fill in these fields"
     }
 
     @ViewBuilder
@@ -356,8 +349,7 @@ extension ProviderEditor {
         } header: {
             Text("Account")
         } footer: {
-            PrivacyLine(providerName: provider == .custom ? "the address you enter" : info.name,
-                        isManual: provider == .manual)
+            PrivacyLine(providerName: privacyName(typed: record?.name), isManual: provider == .manual)
         }
         .confirmationDialog(provider == .manual ? "Remove \(title)?" : "Remove the \(title) key?",
                             isPresented: $confirmingRemoval) {
