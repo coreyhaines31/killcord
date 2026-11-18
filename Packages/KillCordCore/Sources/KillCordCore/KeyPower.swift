@@ -23,7 +23,9 @@ extension ProviderID {
         case .google: .readOnly
         // A read-only admin key may be offered when it's created.
         case .openai: .readOnlyIfChosen
-        // No read-only key. Vercel tokens can be scoped to a team, but not to billing.
+        // No read-only key. An Anthropic service account or personal key has its linked account's
+        // permissions, and the docs don't name a role limited to the cost report. Vercel tokens can be
+        // scoped to a team, but not to billing.
         case .anthropic, .vercel, .twilio, .neon: .canManage
         case .supabase: .noKey
         }

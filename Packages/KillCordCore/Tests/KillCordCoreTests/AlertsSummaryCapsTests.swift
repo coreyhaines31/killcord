@@ -226,7 +226,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
             #expect(!info.lag.note.contains("—"))
             #expect(info.connects == (provider != .supabase))
         }
-        #expect(ProviderID.anthropic.info.keyPowerWarning?.contains("no read-only admin key") == true)
+        #expect(ProviderID.anthropic.info.keyPowerWarning?.contains("no read-only key") == true)
         #expect(ProviderID.openai.info.keyPowerWarning != nil)
         #expect(ProviderID.neon.info.capability == .usageUnitsOnly)
         guard case .requiresSetup = ProviderID.google.info.capability else {
