@@ -1,0 +1,55 @@
+name: Spikes
+
+# Kill Cord Teams unit 0 (docs/product/spikes/2026-11-unit-0.md): builds the spike worker on Linux and runs
+# it against a throwaway Postgres. Nothing here ships. Fake keys and throwaway passwords only.
+on:
+  pull_request:
+    paths:
+      - "spikes/**"
+      - "Packages/KillCordCore/**"
+      - ".github/workflows/spikes.yml"
+  workflow_dispatch:
+
+jobs:
+  teams-worker:
+    name: Teams worker spike (Linux + Postgres)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: spike-only-not-real
+          POSTGRES_DB: kc_spike
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: spike-only-not-real
+      PGDATABASE: kc_spike
+      KC_SPIKE_PGHOST: localhost
+      KC_SPIKE_OWNER: postgres
+      KC_SPIKE_OWNER_PASSWORD: spike-only-not-real
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
+
+      - name: Roles and row-level security
+        run: spikes/teams-worker/sql/check-roles.sh
+
+      - name: Build the worker
+        working-directory: spikes/teams-worker
+        run: swift build
+
+      - name: Test (envelope, leases, two-org decrypt)
+        working-directory: spikes/teams-worker
+        run: swift test
+
+      - name: Run the worker binary once
+        working-directory: spikes/teams-worker
+        run: swift run killcord-worker-spike
