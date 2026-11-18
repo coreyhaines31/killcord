@@ -68,6 +68,7 @@ for file in root.rglob('*'):
     if file.suffix in ('.html', '.css', '.svg', '.xml', '.txt'):
         text = file.read_text()
         assert not re.search(r'[ \t]+$', text, re.M), f'Trailing whitespace: {file}'
-        assert text.endswith('\n'), f'Missing final newline: {file}'
+        # The IndexNow key file must hold exactly the key.
+        assert text.endswith('\n') or re.fullmatch(r'[0-9a-f]{32}', text), f'Missing final newline: {file}'
         assert '&amp;amp;' not in text, f'Double-escaped ampersand: {file}'
 print(f'Passed: {len(pages)} pages; structure, alt text, title and description lengths, no em dashes, unique IDs, internal links, local assets, and whitespace.')
