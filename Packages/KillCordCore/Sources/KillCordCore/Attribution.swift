@@ -161,9 +161,13 @@ public struct AttributionReport: Codable, Sendable {
     /// documented only as "the user ID of the grouped costs result"; until it's checked against a real
     /// organization it must not be shown as a person.
     public var meaningVerified: Bool
+    /// Units the rows themselves describe (Anthropic's actor carries a person's name and email), merged with
+    /// the admin lists by the caller.
+    public var units: [AttributionUnit]
 
     public init(provider: ProviderID, dimension: AttributionDimension, rangeStart: Date, rangeEnd: Date,
-                rows: [AttributedSpend], providerTotal: MoneyTotals, dataRefreshedAt: Date?, meaningVerified: Bool) {
+                rows: [AttributedSpend], providerTotal: MoneyTotals, dataRefreshedAt: Date?, meaningVerified: Bool,
+                units: [AttributionUnit] = []) {
         self.provider = provider
         self.dimension = dimension
         self.rangeStart = rangeStart
@@ -172,6 +176,7 @@ public struct AttributionReport: Codable, Sendable {
         self.providerTotal = providerTotal
         self.dataRefreshedAt = dataRefreshedAt
         self.meaningVerified = meaningVerified
+        self.units = units
     }
 
     public var assigned: MoneyTotals { MoneyTotals(rows.filter { $0.unit != nil }.map(\.amount)) }
