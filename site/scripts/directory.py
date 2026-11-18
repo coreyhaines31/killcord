@@ -61,8 +61,14 @@ def cap_first(text):
     return text[:1].upper() + text[1:]
 
 
+def lower_first(text):
+    return text[:1].lower() + text[1:] if text[1:2].islower() else text
+
+
 def noun(s):
     """What people check for this service: a balance, credits, or spend."""
+    if s.get('noun'):
+        return s['noun']
     t, units = s['billing_type'], s['spend_api']['units']
     if t == 'prepaid':
         return 'balance'
@@ -110,11 +116,11 @@ def answer(s):
     status = a['status']
     if status == 'yes':
         lead = 'Yes.'
-        call = a['endpoint'] or 'its API'
-        body = f'{name} returns your {noun(s)} from `{call}`'
+        body = (f'`{a["endpoint"]}` returns {lower_first(a["returns"])}' if a['endpoint'] and a['returns']
+                else f'{name} returns your {noun(s)} from its API')
     elif status == 'partial':
         lead = 'Partly.'
-        body = f'{name}’s API returns {a["returns"]}' if a['returns'] else f'{name} reports some of it'
+        body = f'{name}’s API returns {lower_first(a["returns"])}' if a['returns'] else f'{name} reports some of it'
     elif status == 'no':
         lead = 'No.'
         body = a['notes'] or f'{name} doesn’t document a billing or usage API'
@@ -166,7 +172,7 @@ def steps(s):
         items.append(f'<li><b>Send it the way {e(name)} expects.</b> {inline(sentence(a["auth"]) if re.match(r'^[\w-]+:', a['auth']) else cap_first(sentence(a["auth"])))}</li>')
     items.append(f'<li><b>Call the endpoint.</b> <code>{e(a["endpoint"])}</code></li>')
     if a['returns']:
-        items.append(f'<li><b>Read the numbers.</b> It returns {inline(sentence(a["returns"]))}</li>')
+        items.append(f'<li><b>Read the numbers.</b> It returns {inline(sentence(lower_first(a["returns"])))}</li>')
     warn = ''
     if a['read_only'] in ('no', 'partial'):
         warn = ('\n    <p class="callout"><b>About key power.</b> '
@@ -214,8 +220,10 @@ def killcord_text(s):
         return (f'Partly. {name} has no billing API, so Kill Cord can’t show its spend. Kill Cord’s caps audit '
                 f'walks you through turning on {name}’s own cap and reminds you to re-check it.')
     if tier == 'built-in':
-        return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, says how fresh each number is, '
+        return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, for one account or several, says how fresh each number is, '
                 f'and walks you through {name}’s own caps in its caps audit.')
+    if s['killcord'].get('note'):
+        return s['killcord']['note']
     if tier == 'planned':
         return (f'Not yet. {name}’s API makes it a candidate for a future Kill Cord adapter, but there’s no date. '
                 f'Today Kill Cord tracks {builtin_names}.')
@@ -470,6 +478,8 @@ def validate():
     for s in services:
         assert s['category'] in categories, f'{s["slug"]}: unknown category {s["category"]}'
         assert s['killcord']['tier'] in ('built-in', 'planned', 'none'), f'{s["slug"]}: unknown tier'
+        assert set(s['killcord']) <= {'tier', 'note'}, f'{s["slug"]}: unknown killcord field'
+        assert s.get('noun', 'spend') in ('balance', 'credits', 'usage', 'spend'), f'{s["slug"]}: unknown noun'
         assert s['spend_api']['status'] in ('yes', 'partial', 'no', 'unknown'), f'{s["slug"]}: unknown API status'
         assert s['spend_api']['read_only'] in ('yes', 'no', 'partial', 'unknown'), f'{s["slug"]}: unknown read_only'
         for field, values in allowed.items():
