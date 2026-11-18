@@ -8,7 +8,8 @@ public enum DemoData {
         "google": "D0000000-0000-0000-0000-000000000003", "openai": "D0000000-0000-0000-0000-000000000004",
         "vercel": "D0000000-0000-0000-0000-000000000005", "cloudflare": "D0000000-0000-0000-0000-000000000006",
         "twilio": "D0000000-0000-0000-0000-000000000007", "neon": "D0000000-0000-0000-0000-000000000008",
-        "dataforseo": "D0000000-0000-0000-0000-000000000009", "firecrawl": "D0000000-0000-0000-0000-00000000000A"
+        "dataforseo": "D0000000-0000-0000-0000-000000000009", "firecrawl": "D0000000-0000-0000-0000-00000000000A",
+        "manual": "D0000000-0000-0000-0000-00000000000B"
     ].mapValues { UUID(uuidString: $0)! }
 
     public static func registry(now: Date = Date()) -> ConnectionRegistry {
@@ -22,7 +23,8 @@ public enum DemoData {
             record("anthropic", .anthropic), record("anthropic-2", .anthropic, name: "Client work", offset: 60),
             record("google", .google), record("openai", .openai), record("vercel", .vercel),
             record("cloudflare", .cloudflare), record("twilio", .twilio), record("neon", .neon),
-            record("dataforseo", .dataforseo), record("firecrawl", .firecrawl)
+            record("dataforseo", .dataforseo), record("firecrawl", .firecrawl),
+            record("manual", .manual, name: "Truelist")
         ])
     }
 
@@ -70,7 +72,12 @@ public enum DemoData {
                 provider: .firecrawl, today: nil, month: nil,
                 balance: Balance(remaining: 2140, unit: .units("credits"), kind: .allowance,
                                  resetsAt: now.addingTimeInterval(13 * 86400)),
-                fetchedAt: now.addingTimeInterval(-6 * 60)))
+                fetchedAt: now.addingTimeInterval(-6 * 60))),
+            ProviderState(provider: .manual, connectionID: ids["manual"]!, snapshot: SpendSnapshot(
+                provider: .manual, today: nil, month: nil,
+                manual: ManualPlan(plan: "Starter", price: Money(49), renewsOn: now.addingTimeInterval(9 * 86400),
+                                   allowance: 10000, allowanceUnit: "credits"),
+                fetchedAt: now))
         ]
     }
 
