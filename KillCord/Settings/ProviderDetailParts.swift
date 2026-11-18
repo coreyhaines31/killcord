@@ -90,28 +90,30 @@ struct CapsSummarySection: View {
     var body: some View {
         let now = Date()
         let progress = model.audit.progress(for: provider, now: now)
-        Section {
-            ForEach(CapsCatalog.controls(for: provider)) { control in
-                let status = model.audit.status(of: control, now: now)
-                HStack(spacing: 8) {
-                    StatusLED(status.light.panel)
-                    Text(control.name)
-                    Spacer()
-                    Text(status.label).font(.callout).foregroundStyle(.secondary)
+        if !CapsCatalog.controls(for: provider).isEmpty {
+            Section {
+                ForEach(CapsCatalog.controls(for: provider)) { control in
+                    let status = model.audit.status(of: control, now: now)
+                    HStack(spacing: 8) {
+                        StatusLED(status.light.panel)
+                        Text(control.name)
+                        Spacer()
+                        Text(status.label).font(.callout).foregroundStyle(.secondary)
+                    }
+                    .accessibilityElement(children: .combine)
                 }
-                .accessibilityElement(children: .combine)
+            } header: {
+                HStack {
+                    Text("Spend caps")
+                    Spacer()
+                    Button("Open Caps Audit") { openTab(.caps) }
+                        .buttonStyle(.link)
+                        .font(.callout)
+                }
+            } footer: {
+                Text("\(progress.done) of \(progress.total) done. The provider's own caps are what stop a runaway bill.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
-        } header: {
-            HStack {
-                Text("Spend caps")
-                Spacer()
-                Button("Open Caps Audit") { openTab(.caps) }
-                    .buttonStyle(.link)
-                    .font(.callout)
-            }
-        } footer: {
-            Text("\(progress.done) of \(progress.total) done. The provider's own caps are what stop a runaway bill.")
-                .font(.caption).foregroundStyle(.secondary)
         }
     }
 }
