@@ -20,6 +20,8 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case monid
     /// A service the person sets up: an https address and where the balance is in its JSON.
     case custom
+    /// A paid service with no API: a plan, price and renewal date the person types in.
+    case manual
 
     public var id: String { rawValue }
 
@@ -44,6 +46,8 @@ public enum SpendCapability: Hashable, Sendable {
     case requiresSetup(String)
     /// The API reports what's left of a prepaid balance or plan allowance, plus spend for `spend`'s periods.
     case balance(spend: SpendPeriods)
+    /// No API: the person types in the plan, and Kill Cord reminds before it renews.
+    case enteredByHand
 
     public var summary: String {
         switch self {
@@ -53,6 +57,7 @@ public enum SpendCapability: Hashable, Sendable {
         case .requiresSetup(let what): "Shows spend after one-time setup: \(what)."
         case .balance(let spend) where spend.isEmpty: "Shows the balance left, not spend."
         case .balance: "Shows the balance left, and spend where the API reports it."
+        case .enteredByHand: "Shows the plan you entered and reminds before it renews. Not live."
         }
     }
 
@@ -60,7 +65,7 @@ public enum SpendCapability: Hashable, Sendable {
     public var countsToday: Bool {
         switch self {
         case .dollars, .requiresSetup: true
-        case .usageUnitsOnly, .noUsageAPI: false
+        case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
         case .balance(let spend): spend.contains(.today)
         }
     }
@@ -69,7 +74,7 @@ public enum SpendCapability: Hashable, Sendable {
     public var countsMonth: Bool {
         switch self {
         case .dollars, .requiresSetup: true
-        case .usageUnitsOnly, .noUsageAPI: false
+        case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
         case .balance(let spend): spend.contains(.month)
         }
     }
@@ -297,5 +302,5 @@ extension ProviderInfo {
             billingTimeZone: utc, minimumRefreshInterval: 24 * 3600,
             consoleURL: url("https://supabase.com/dashboard/org/_/billing")
         )
-    ] + balanceProviders + [custom]).map { ($0.id, $0) })
+    ] + balanceProviders + [custom, manual]).map { ($0.id, $0) })
 }

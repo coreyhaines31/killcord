@@ -119,6 +119,28 @@ final class BalanceRenderTests: XCTestCase {
         }
     }
 
+    func testRendersAManualEntry() throws {
+        let model = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) },
+                               isDemo: true)
+        model.start()
+        let manual = try XCTUnwrap(model.connections(for: .manual).first)
+        XCTAssertEqual(model.status(manual.id).label, "Entered by you")
+        let empty = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) })
+        empty.start()
+        let folder = renderFolder()
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            let card = ProviderCard(connectionID: manual.id, provider: .manual, name: manual.name, model: model,
+                                    now: Date(), openSettings: { _ in }).frame(width: 340)
+            try render(card, dark: dark, to: folder.appendingPathComponent("manual-card-\(suffix).png"))
+            let pane = ProvidersSettingsView(model: model, selection: .connection(manual.id)).frame(width: 700)
+            try render(pane, dark: dark, to: folder.appendingPathComponent("manual-settings-\(suffix).png"))
+            let setup = ProviderEditor(provider: .manual, connectionID: nil, model: empty, openTab: { _ in })
+                .frame(width: 470, height: 1500)
+            try render(setup, dark: dark, to: folder.appendingPathComponent("manual-setup-\(suffix).png"))
+        }
+    }
+
     // MARK: - Rendering (as in AccountsTests)
 
     private func renderFolder() -> URL {

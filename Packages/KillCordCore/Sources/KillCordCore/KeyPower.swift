@@ -30,7 +30,8 @@ extension ProviderID {
         // permissions, and the docs don't name a role limited to the cost report. Vercel tokens can be
         // scoped to a team, but not to billing.
         case .anthropic, .vercel, .twilio, .neon: .canManage
-        case .supabase: .noKey
+        // Nothing secret: a manual entry is a plan and a date.
+        case .supabase, .manual: .noKey
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

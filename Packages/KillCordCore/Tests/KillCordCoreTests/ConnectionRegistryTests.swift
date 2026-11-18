@@ -95,7 +95,8 @@ import Testing
             .monid: ["apiKey"],
             .custom: ["serviceName", "url", "method", "authStyle", "authName", "authValue", "key", "key2", "body",
                       "remainingPath", "usedPath", "limitPath", "resetPath", "currencyPath", "unit", "scale",
-                      "dollarsPerUnit", "kind", "pollMinutes", "costsMoney"]
+                      "dollarsPerUnit", "kind", "pollMinutes", "costsMoney"],
+            .manual: ["serviceName", "plan", "price", "period", "renewsOn", "allowance", "allowanceUnit", "remindDays"]
         ])
         #expect(Brand.keychainService == "app.killcord.KillCord.providers")
     }

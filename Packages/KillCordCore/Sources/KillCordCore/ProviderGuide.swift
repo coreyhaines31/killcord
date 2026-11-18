@@ -40,6 +40,7 @@ extension ProviderInfo {
         case .treg: "treg dashboard"
         case .monid: "Monid dashboard"
         case .custom: "service's site"
+        case .manual: "service's site"
         }
     }
 
@@ -51,6 +52,7 @@ extension ProviderInfo {
         case .usageUnitsOnly: "Usage units only"
         case .noUsageAPI: "Caps only"
         case .balance: "Balance left"
+        case .enteredByHand: "Entered by you"
         }
     }
 
@@ -65,6 +67,8 @@ extension ProviderInfo {
             "Shows the balance left, and today's and this month's spend."
         case .balance(let spend) where spend.contains(.today): "Shows the balance left, and today's spend."
         case .balance: "Shows the balance left. It's not spend, so it isn't in your totals."
+        case .enteredByHand: "For a service with no API: the plan, price and renewal date you enter, with a "
+            + "reminder before it renews. It isn't live and isn't in your totals."
         }
         return [shows, delaySummary, requirement].compactMap { $0 }.joined(separator: " ")
     }
@@ -83,6 +87,7 @@ extension ProviderInfo {
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid: nil
         case .custom: "Checked every 15 minutes at most."
+        case .manual: nil
         }
     }
 
@@ -115,6 +120,7 @@ extension ProviderInfo {
         case .treg: "Every treg token can call tools on the balance. Use a limited agent token."
         case .monid: "No read-only key is documented. This key can start paid runs."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
+        case .manual: nil
         case .cloudflare, .supabase: nil
         }
     }
@@ -231,6 +237,12 @@ extension ProviderInfo {
             return [
                 SetupStep("Open API Keys in Monid", "In the Monid dashboard.", link: open("Open Monid Keys")),
                 SetupStep("Create a key and copy it", "It starts with monid_.")
+            ]
+        case .manual:
+            return [
+                SetupStep("Open the service's billing page", "Find your plan, its price, and the next renewal date."),
+                SetupStep("Fill them in here", "Kill Cord never contacts the service. It reminds you before the "
+                    + "renewal and moves the date forward each period.")
             ]
         case .custom:
             return [

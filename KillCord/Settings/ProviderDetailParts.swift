@@ -14,6 +14,33 @@ struct SpendReadout: View {
         let snapshot = model.states[connectionID]?.snapshot
         let freshness = model.freshness(connectionID, now: now)
         let capability = provider.info.capability
+        if provider == .manual {
+            manual(snapshot?.manual, now: now)
+        } else {
+            reading(snapshot: snapshot, freshness: freshness, capability: capability, now: now)
+        }
+    }
+
+    /// A plan the person typed in. Says plainly it isn't live.
+    private func manual(_ plan: ManualPlan?, now: Date) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline, spacing: 32) {
+                figure(plan?.plan ?? "Plan", plan.flatMap(ManualText.price) ?? "No price entered")
+                figure("Next renewal", plan.map { ManualText.renewalDay($0, now: now) })
+                Spacer()
+            }
+            if let allowance = plan.flatMap(ManualText.allowance) {
+                Text(allowance + ".").font(.callout)
+            }
+            Text(ManualText.notLive + ". Kill Cord never contacts the service, and this isn't in your totals.")
+                .font(.callout).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func reading(snapshot: SpendSnapshot?, freshness: Freshness, capability: SpendCapability,
+                         now: Date) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             if let balance = snapshot?.balance {
                 VStack(alignment: .leading, spacing: 4) {

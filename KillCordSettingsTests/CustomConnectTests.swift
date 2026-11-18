@@ -63,4 +63,19 @@ final class CustomConnectTests: XCTestCase {
         XCTAssertTrue(secrets.accounts.isEmpty)
         XCTAssertTrue(model.connections.isEmpty)
     }
+
+    func testSavesAManualEntryWithoutAnyRequest() async throws {
+        let http = MockHTTPClient { _ in HTTPResponse(status: 500) }
+        let secrets = InMemorySecretStore()
+        let model = SpendModel(secrets: secrets, http: http)
+        model.start()
+        let id = try await model.connect(.manual, values: [
+            "serviceName": "Gojiberry", "plan": "Growth", "price": "99", "renewsOn": "2026-12-03"
+        ])
+        XCTAssertEqual(model.connection(id)?.name, "Gojiberry")
+        XCTAssertEqual(model.status(id).label, "Entered by you")
+        XCTAssertTrue(http.requests.isEmpty)
+        XCTAssertEqual(secrets.accounts, [id.uuidString])
+        XCTAssertTrue(model.summary().today.isEmpty)
+    }
 }

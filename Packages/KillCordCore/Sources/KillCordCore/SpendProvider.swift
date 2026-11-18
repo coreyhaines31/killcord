@@ -19,6 +19,8 @@ public struct SpendSnapshot: Sendable, Equatable, Codable {
     public var usage: [UsageMetric]
     /// What's left of a prepaid balance or plan allowance. Not spend: never added into totals.
     public var balance: Balance?
+    /// A plan the person typed in, for services with no API. Not live, and never added into totals.
+    public var manual: ManualPlan?
     /// True when the numbers are worked out by Kill Cord rather than reported by the provider.
     public var isEstimate: Bool
     /// The provider's own "current through" time, when it says.
@@ -27,14 +29,15 @@ public struct SpendSnapshot: Sendable, Equatable, Codable {
     public var fetchedAt: Date
 
     public init(provider: ProviderID, today: Money?, month: Money?, monthKind: MonthKind = .calendarMonth,
-                usage: [UsageMetric] = [], balance: Balance? = nil, isEstimate: Bool = false, dataAsOf: Date? = nil,
-                fetchedAt: Date) {
+                usage: [UsageMetric] = [], balance: Balance? = nil, manual: ManualPlan? = nil, isEstimate: Bool = false,
+                dataAsOf: Date? = nil, fetchedAt: Date) {
         self.provider = provider
         self.today = today
         self.month = month
         self.monthKind = monthKind
         self.usage = usage
         self.balance = balance
+        self.manual = manual
         self.isEstimate = isEstimate
         self.dataAsOf = dataAsOf
         self.fetchedAt = fetchedAt
@@ -150,6 +153,7 @@ public enum SpendProviders {
         case .treg: TregProvider(http: http)
         case .monid: MonidProvider(http: http)
         case .custom: CustomProvider(http: http)
+        case .manual: ManualProvider()
         }
     }
 }

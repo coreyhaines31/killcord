@@ -18,7 +18,7 @@ extension ProviderID {
     /// Nil for providers whose mark hasn't been sourced yet: they show the first letter of their name.
     var markAssetName: String? {
         switch self {
-        case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .custom: nil
+        case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .custom, .manual: nil
         default: "mark-\(rawValue)"
         }
     }
@@ -65,8 +65,8 @@ struct ProviderMark: View {
                 .scaledToFit()
                 .frame(width: size * 0.5 * provider.markScale, height: size * 0.5 * provider.markScale)
                 .frame(width: size * 0.5, height: size * 0.5)
-        } else if provider == .custom {
-            Image(systemName: "curlybraces")
+        } else if provider == .custom || provider == .manual {
+            Image(systemName: provider == .custom ? "curlybraces" : "pencil.line")
                 .resizable()
                 .scaledToFit()
                 .frame(width: size * 0.5, height: size * 0.5)
@@ -136,11 +136,14 @@ struct ProviderHeader: View {
 /// The one privacy line under anything that takes a key.
 struct PrivacyLine: View {
     let providerName: String
+    /// For a manual entry, which has no key and goes nowhere.
+    var isManual = false
 
     var body: some View {
         Label {
-            Text("Stored in your Keychain and sent only to \(providerName). Never paste a key into a chat or "
-                + "AI agent.")
+            Text(isManual ? "Stored in your Keychain. Kill Cord never sends it anywhere."
+                : "Stored in your Keychain and sent only to \(providerName). Never paste a key into a chat or "
+                    + "AI agent.")
         } icon: {
             Image(systemName: "lock.fill")
         }
