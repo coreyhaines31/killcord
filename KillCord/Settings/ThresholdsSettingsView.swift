@@ -2,8 +2,8 @@ import KillCordCore
 import PanelKit
 import SwiftUI
 
-/// Spend amounts that send a notification: daily and monthly, per provider and in total. Each fires once a
-/// day or month.
+/// Spend amounts that send a notification: daily and monthly, per account, per provider across its
+/// accounts, and in total. Each fires once a day or month.
 struct ThresholdsSettingsView: View {
     let model: SpendModel
     let alerts: Alerts
@@ -24,23 +24,15 @@ struct ThresholdsSettingsView: View {
                         + "it passes the total for the period it shows.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                Section {
-                    let money = model.connected.filter { $0.info.capability.showsMoney }
-                    if money.isEmpty {
+                let money = model.connected.filter { $0.info.capability.showsMoney }
+                if money.isEmpty {
+                    Section("Per account") {
                         Text("Connect a provider that reports dollars to give it its own alert.")
                             .foregroundStyle(.secondary)
-                    } else {
-                        columnTitles
                     }
-                    ForEach(money) { provider in
-                        row(title: provider.info.name, subtitle: spentToday(provider), mark: provider,
-                            limits: Binding(
-                                get: { thresholds.perProvider[provider] ?? .init() },
-                                set: { thresholds.perProvider[provider] = $0.isEmpty ? nil : $0 }
-                            ))
-                    }
-                } header: {
-                    Text("Per provider")
+                }
+                ForEach(money) { provider in
+                    providerSection(provider)
                 }
             }
             .formStyle(.grouped)
@@ -48,8 +40,7 @@ struct ThresholdsSettingsView: View {
         .frame(height: 560)
         .onChange(of: thresholds) { _, value in
             Preferences.thresholds = value
-            let hasAny = !value.total.isEmpty || value.perProvider.values.contains { !$0.isEmpty }
-            if hasAny { alerts.requestPermission() }
+            if !value.isEmpty { alerts.requestPermission() }
         }
     }
 
@@ -103,8 +94,40 @@ struct ThresholdsSettingsView: View {
         return "\(MoneyText.string(today)) so far today"
     }
 
-    private func spentToday(_ provider: ProviderID) -> String? {
-        guard let today = model.states[provider]?.snapshot?.today else { return nil }
+    /// One provider's accounts, each with its own alert, and with more than one, an alert for all of them.
+    private func providerSection(_ provider: ProviderID) -> some View {
+        let records = model.connections(for: provider)
+        let showsTotal = records.count > 1 || !(thresholds.providerTotals[provider]?.isEmpty ?? true)
+        return Section {
+            columnTitles
+            if showsTotal {
+                row(title: "All \(provider.info.name) accounts", subtitle: providerToday(provider), mark: provider,
+                    limits: Binding(
+                        get: { thresholds.providerTotals[provider] ?? .init() },
+                        set: { thresholds.providerTotals[provider] = $0.isEmpty ? nil : $0 }
+                    ))
+            }
+            ForEach(records) { record in
+                row(title: record.name, subtitle: spentToday(record.id), mark: showsTotal ? nil : provider,
+                    limits: Binding(
+                        get: { thresholds.perConnection[record.id] ?? .init() },
+                        set: { thresholds.perConnection[record.id] = $0.isEmpty ? nil : $0 }
+                    ))
+                    .padding(.leading, showsTotal ? 26 : 0)
+            }
+        } header: {
+            Text(records.count > 1 ? "\(provider.info.name) accounts" : provider.info.name)
+        }
+    }
+
+    private func spentToday(_ id: UUID) -> String? {
+        guard let today = model.states[id]?.snapshot?.today else { return nil }
+        return "\(MoneyText.string(today)) so far today"
+    }
+
+    private func providerToday(_ provider: ProviderID) -> String? {
+        guard let group = model.summary().groups.first(where: { $0.provider == provider }),
+              let today = group.today.amount(in: .usd) else { return nil }
         return "\(MoneyText.string(today)) so far today"
     }
 
