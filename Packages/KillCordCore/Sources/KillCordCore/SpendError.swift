@@ -29,6 +29,9 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
     case server(status: Int)
     /// The provider answered with a status Kill Cord didn't expect.
     case unexpectedStatus(Int)
+    /// The provider refused the request with a 4xx and said why. The detail is the provider's own message,
+    /// trimmed and with the request's key material removed.
+    case rejected(status: Int, detail: String)
     /// The response wasn't in the documented shape. The API may have changed.
     case unexpectedResponse
 
@@ -41,8 +44,10 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
         }
     }
 
-    /// Maps an HTTP failure. Adapters pass a hint for 403s naming the permission their key needs.
-    public static func from(status: Int, headers: [String: String] = [:], missingScopeHint: String) -> SpendError {
+    /// Maps an HTTP failure. Adapters pass a hint for 403s naming the permission their key needs, and the
+    /// provider's own (already redacted) message when the body had one.
+    public static func from(status: Int, headers: [String: String] = [:], missingScopeHint: String,
+                            detail: String? = nil) -> SpendError {
         switch status {
         case 401: return .invalidKey
         case 403: return .missingScope(hint: missingScopeHint)
@@ -50,6 +55,9 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
             let retryAfter = headers["retry-after"].flatMap { TimeInterval($0.trimmingCharacters(in: .whitespaces)) }
             return .rateLimited(retryAfter: retryAfter)
         case 500...599: return .server(status: status)
+        case 400...499:
+            if let detail { return .rejected(status: status, detail: detail) }
+            return .unexpectedStatus(status)
         default: return .unexpectedStatus(status)
         }
     }
@@ -57,7 +65,7 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
     /// Worth retrying on its own, with backoff. The rest wait for the person to change something.
     public var isTransient: Bool {
         switch self {
-        case .rateLimited, .offline, .network, .server, .unexpectedStatus, .unexpectedResponse: true
+        case .rateLimited, .offline, .network, .server, .unexpectedStatus, .rejected, .unexpectedResponse: true
         case .notConfigured, .invalidKey, .missingScope, .noUsageAPI, .requiresSetup, .planNotSupported: false
         }
     }
@@ -76,6 +84,7 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
         case .network: "Can't connect"
         case .server: "Provider error"
         case .unexpectedStatus: "Request failed"
+        case .rejected: "Request refused"
         case .unexpectedResponse: "Unexpected response"
         }
     }
@@ -108,6 +117,8 @@ public enum SpendError: Error, Equatable, Sendable, Codable {
             return "\(name) had a server error (HTTP \(status)). Kill Cord will try again."
         case .unexpectedStatus(let status):
             return "\(name) answered with HTTP \(status). Kill Cord will try again."
+        case .rejected(let status, let detail):
+            return "\(name) refused the request (HTTP \(status)): \(detail)"
         case .unexpectedResponse:
             return "\(name) answered in a shape Kill Cord doesn't recognize. Its API may have changed; check "
                 + "for a Kill Cord update."
