@@ -112,9 +112,11 @@ public struct CredentialField: Hashable, Sendable, Identifiable {
     public let help: String
     /// A fixed set of values, drawn as a picker. The first is the default when nothing is saved.
     public let choices: [String]
+    /// Rarely needed: drawn under a collapsed "Advanced" disclosure.
+    public let isAdvanced: Bool
 
     public init(id: String, label: String, placeholder: String = "", isSecret: Bool, isOptional: Bool = false,
-                isMultiline: Bool = false, help: String = "", choices: [String] = []) {
+                isMultiline: Bool = false, help: String = "", choices: [String] = [], isAdvanced: Bool = false) {
         self.id = id
         self.label = label
         self.placeholder = placeholder
@@ -123,6 +125,7 @@ public struct CredentialField: Hashable, Sendable, Identifiable {
         self.isMultiline = isMultiline
         self.help = help
         self.choices = choices
+        self.isAdvanced = isAdvanced
     }
 }
 
