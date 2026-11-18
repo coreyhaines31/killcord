@@ -3,7 +3,7 @@ import Foundation
 /// Made-up readings for demo mode and screenshots. Every surface that shows these labels them sample data.
 public enum DemoData {
     /// Fixed ids, so demo renders are the same every time. Two Anthropic accounts show the provider subtotal.
-    static let ids: [String: UUID] = [
+    public static let ids: [String: UUID] = [
         "anthropic": "D0000000-0000-0000-0000-000000000001", "anthropic-2": "D0000000-0000-0000-0000-000000000002",
         "google": "D0000000-0000-0000-0000-000000000003", "openai": "D0000000-0000-0000-0000-000000000004",
         "vercel": "D0000000-0000-0000-0000-000000000005", "cloudflare": "D0000000-0000-0000-0000-000000000006",
@@ -12,8 +12,10 @@ public enum DemoData {
 
     public static func registry(now: Date = Date()) -> ConnectionRegistry {
         let created = now.addingTimeInterval(-30 * 86400)
-        func record(_ key: String, _ provider: ProviderID, name: String? = nil, offset: Double = 0) -> ConnectionRecord {
-            ConnectionRecord(id: ids[key]!, provider: provider, createdAt: created.addingTimeInterval(offset), name: name)
+        func record(_ key: String, _ provider: ProviderID, name: String? = nil,
+                    offset: Double = 0) -> ConnectionRecord {
+            ConnectionRecord(id: ids[key]!, provider: provider, createdAt: created.addingTimeInterval(offset),
+                             name: name)
         }
         return ConnectionRegistry(records: [
             record("anthropic", .anthropic), record("anthropic-2", .anthropic, name: "Client work", offset: 60),
@@ -50,8 +52,10 @@ public enum DemoData {
             ProviderState(provider: .vercel, connectionID: ids["vercel"]!, snapshot: snapshot(
                 .vercel, today: nil, month: Decimal(string: "24.00"), minutesAgo: 20)),
             cloudflare,
-            ProviderState(provider: .twilio, connectionID: ids["twilio"]!, lastAttempt: now.addingTimeInterval(-60), lastError: .invalidKey),
-            ProviderState(provider: .neon, connectionID: ids["neon"]!, snapshot: snapshot(.neon, today: nil, month: nil, minutesAgo: 9, usage: [
+            ProviderState(provider: .twilio, connectionID: ids["twilio"]!, lastAttempt: now.addingTimeInterval(-60),
+                          lastError: .invalidKey),
+            ProviderState(provider: .neon, connectionID: ids["neon"]!, snapshot: snapshot(
+                .neon, today: nil, month: nil, minutesAgo: 9, usage: [
                 UsageMetric(id: "compute_unit_seconds", name: "Compute", value: Decimal(string: "41.7")!,
                             unit: "CU-hours"),
                 UsageMetric(id: "root_branch_bytes_month", name: "Root branch storage",
