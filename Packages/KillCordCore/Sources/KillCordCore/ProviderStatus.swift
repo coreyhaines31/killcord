@@ -52,8 +52,10 @@ public struct ProviderStatus: Sendable, Equatable {
         }
     }
 
-    /// The single most useful number: today's spend, else this month's, else the first usage figure.
+    /// The single most useful number: the balance left, else today's spend, else this month's, else the
+    /// first usage figure.
     static func headline(_ snapshot: SpendSnapshot) -> String? {
+        if let balance = snapshot.balance { return BalanceText.amount(balance.remaining, balance.unit) + " left" }
         let estimate = snapshot.isEstimate ? " (estimate)" : ""
         if let today = snapshot.today { return "\(MoneyText.string(today)) today\(estimate)" }
         if let month = snapshot.month {

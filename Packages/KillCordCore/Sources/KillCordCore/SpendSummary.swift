@@ -61,10 +61,17 @@ public struct SpendSummary: Equatable, Sendable {
             let monthValue = readWindow?.monthKey == window.monthKey ? snapshot?.month : nil
             rows.append(Row(connectionID: id, provider: state.provider, name: names[id] ?? state.provider.info.name,
                             today: todayValue, month: monthValue, freshness: freshness, error: state.lastError))
-            if state.provider.info.capability.showsMoney {
+            // Balances never count: they're what's left, not what was spent.
+            let capability = state.provider.info.capability
+            if capability.countsToday {
                 if let todayValue { today.add(todayValue) } else { missingToday.append(id) }
+            }
+            if capability.countsMonth {
                 if let monthValue { month.add(monthValue) } else { missingMonth.append(id) }
-                if todayValue != nil || monthValue != nil, !freshness.isLive { stale.append(id) }
+            }
+            if capability.showsMoney {
+                let counted = (capability.countsToday && todayValue != nil) || (capability.countsMonth && monthValue != nil)
+                if counted, !freshness.isLive { stale.append(id) }
                 if snapshot?.isEstimate == true { hasEstimates = true }
             }
             if state.lastError != nil { failing.append(id) }

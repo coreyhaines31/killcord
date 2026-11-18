@@ -33,6 +33,8 @@ public enum SpendCapability: Hashable, Sendable {
     case noUsageAPI
     /// Spend is available only after one-time setup outside Kill Cord (Google's BigQuery billing export).
     case requiresSetup(String)
+    /// The API reports what's left of a prepaid balance or plan allowance, plus spend for `spend`'s periods.
+    case balance(spend: SpendPeriods)
 
     public var summary: String {
         switch self {
@@ -40,15 +42,46 @@ public enum SpendCapability: Hashable, Sendable {
         case .usageUnitsOnly: "Shows usage, not dollars: the API doesn't report money."
         case .noUsageAPI: "No spend API. Kill Cord can't show spend here, but the caps audit still works."
         case .requiresSetup(let what): "Shows spend after one-time setup: \(what)."
+        case .balance(let spend) where spend.isEmpty: "Shows the balance left, not spend."
+        case .balance: "Shows the balance left, and spend where the API reports it."
         }
     }
 
-    public var showsMoney: Bool {
+    /// Whether today's spend is reported, so a missing number is worth saying.
+    public var countsToday: Bool {
         switch self {
         case .dollars, .requiresSetup: true
         case .usageUnitsOnly, .noUsageAPI: false
+        case .balance(let spend): spend.contains(.today)
         }
     }
+
+    /// Whether this month's spend is reported.
+    public var countsMonth: Bool {
+        switch self {
+        case .dollars, .requiresSetup: true
+        case .usageUnitsOnly, .noUsageAPI: false
+        case .balance(let spend): spend.contains(.month)
+        }
+    }
+
+    /// Whether any spend in money is reported.
+    public var showsMoney: Bool { countsToday || countsMonth }
+
+    /// Whether a balance is the headline.
+    public var showsBalance: Bool {
+        if case .balance = self { return true }
+        return false
+    }
+}
+
+/// Which spend periods a balance provider also reports.
+public struct SpendPeriods: OptionSet, Hashable, Sendable {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
+
+    public static let today = SpendPeriods(rawValue: 1)
+    public static let month = SpendPeriods(rawValue: 2)
 }
 
 /// One thing a person pastes in to connect a provider.
