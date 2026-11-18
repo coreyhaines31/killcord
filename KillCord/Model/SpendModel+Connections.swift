@@ -19,10 +19,10 @@ extension SpendModel {
 }
 
 extension ConnectionRegistry {
-    /// Adds a connection. A custom one starts with the service's own name.
+    /// Adds a connection. A custom or manual one starts with the service's own name.
     mutating func adding(_ provider: ProviderID, named name: String?) -> ConnectionRecord {
         let record = add(provider, now: Date())
-        guard provider == .custom, let name else { return record }
+        guard provider == .custom || provider == .manual, let name else { return record }
         rename(record.id, to: name)
         return self.record(record.id) ?? record
     }

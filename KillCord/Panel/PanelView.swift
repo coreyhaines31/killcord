@@ -19,7 +19,8 @@ struct PanelView: View {
                        detail: model.isDemo ? "Sample data" : "While your Mac is awake",
                        label: "API spend monitor", isLit: model.isOnline && !model.isAsleep) {
                     if !model.connected.isEmpty {
-                        TotalsView(summary: summary, hasBalances: model.hasBalances)
+                        TotalsView(summary: summary, hasBalances: model.hasBalances,
+                                   hasManualPlans: !model.connections(for: .manual).isEmpty)
                     }
                 }
                 .trailingAccessory {
@@ -112,6 +113,7 @@ struct EmptyStateView: View {
 struct TotalsView: View {
     let summary: SpendSummary
     var hasBalances = false
+    var hasManualPlans = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -142,6 +144,7 @@ struct TotalsView: View {
         }
         if summary.hasEstimates { notes.append("Includes estimates.") }
         if hasBalances { notes.append("Balances are what's left, not spend, so they're not in these totals.") }
+        if hasManualPlans { notes.append("Plans you entered by hand aren't live and aren't in these totals.") }
         notes.append("Each provider's day and month follow its own billing clock.")
         return notes
     }
