@@ -131,6 +131,8 @@ extension SpendProvider {
 }
 
 public enum SpendProviders {
+    // One case per provider.
+    // swiftlint:disable:next cyclomatic_complexity
     public static func make(_ id: ProviderID, http: HTTPClient) -> SpendProvider {
         switch id {
         case .anthropic: AnthropicProvider(http: http)
@@ -141,6 +143,12 @@ public enum SpendProviders {
         case .twilio: TwilioProvider(http: http)
         case .neon: NeonProvider(http: http)
         case .supabase: SupabaseProvider()
+        case .openrouter: OpenRouterProvider(http: http)
+        case .dataforseo: DataForSEOProvider(http: http)
+        case .ahrefs: AhrefsProvider(http: http)
+        case .firecrawl: FirecrawlProvider(http: http)
+        case .treg: TregProvider(http: http)
+        case .monid: MonidProvider(http: http)
         }
     }
 }

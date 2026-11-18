@@ -86,7 +86,13 @@ import Testing
             .cloudflare: ["token", "accountID"],
             .twilio: ["accountSID", "apiKeySID", "secret"],
             .neon: ["apiKey", "orgID"],
-            .supabase: []
+            .supabase: [],
+            .openrouter: ["apiKey"],
+            .dataforseo: ["login", "password"],
+            .ahrefs: ["apiKey"],
+            .firecrawl: ["apiKey"],
+            .treg: ["token", "org"],
+            .monid: ["apiKey"]
         ])
         #expect(Brand.keychainService == "app.killcord.KillCord.providers")
     }

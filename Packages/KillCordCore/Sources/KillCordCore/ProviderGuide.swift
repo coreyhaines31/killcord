@@ -33,6 +33,12 @@ extension ProviderInfo {
         case .twilio: "Twilio Console"
         case .neon: "Neon Console"
         case .supabase: "Supabase dashboard"
+        case .openrouter: "OpenRouter settings"
+        case .dataforseo: "DataForSEO dashboard"
+        case .ahrefs: "Ahrefs app"
+        case .firecrawl: "Firecrawl dashboard"
+        case .treg: "treg dashboard"
+        case .monid: "Monid dashboard"
         }
     }
 
@@ -72,7 +78,9 @@ extension ProviderInfo {
         case .cloudflare: "Updated once a day."
         case .twilio: "Runs a few minutes behind."
         case .neon: "Runs about 15 minutes behind."
-        case .supabase: nil
+        case .openrouter: "Recent requests settle after a short delay."
+        case .treg: "The balance is live."
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid: nil
         }
     }
 
@@ -82,6 +90,8 @@ extension ProviderInfo {
         case .anthropic: "Priority Tier costs aren't included."
         case .cloudflare: "Pay-as-you-go accounts only."
         case .neon: "Launch, Scale, and Agent plans only."
+        case .openrouter: "Reads this key only, not the whole account."
+        case .ahrefs: "Shows the workspace's API units. Plans without API access can't connect."
         default: nil
         }
     }
@@ -95,6 +105,12 @@ extension ProviderInfo {
         case .vercel: "A token acts as you on the teams it covers. Scope it to one team and set an expiry."
         case .twilio: "Twilio has no read-only key. A Standard API key can also send messages and calls."
         case .neon: "Neon has no read-only key. This one can manage every project in the organization."
+        case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
+        case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
+        case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
+        case .firecrawl: "No read-only key is documented. This key can run scrapes on your credits."
+        case .treg: "Every treg token can call tools on the balance. Use a limited agent token."
+        case .monid: "No read-only key is documented. This key can start paid runs."
         case .cloudflare, .supabase: nil
         }
     }
@@ -176,6 +192,42 @@ extension ProviderInfo {
             ]
         case .supabase:
             return []
+        case .openrouter:
+            return [
+                SetupStep("Open API Keys in OpenRouter", "Under Settings › API Keys.", link: open("Open OpenRouter Keys")),
+                SetupStep("Create a key with a small credit limit and copy it", "Kill Cord shows that key's limit "
+                    + "left and its spend today and this month.")
+            ]
+        case .dataforseo:
+            return [
+                SetupStep("Open API Access in DataForSEO", "Your API login and API password are there. They're "
+                    + "not your dashboard sign-in.", link: open("Open API Access")),
+                SetupStep("Copy the API login and API password", "Kill Cord reads your balance with them. "
+                    + "DataForSEO doesn't charge for that call.")
+            ]
+        case .ahrefs:
+            let docs = URL(string: "https://docs.ahrefs.com/docs/api/subscription-info/operations/get-limits-and-usage")!
+            return [
+                SetupStep("Create an API key in Ahrefs", "Your plan needs API access. Give the key its own unit "
+                    + "limit if Ahrefs offers it.", link: ("Open Ahrefs API Docs", docs)),
+                SetupStep("Copy the key", "Kill Cord reads limits and usage, which Ahrefs says uses no units.")
+            ]
+        case .firecrawl:
+            return [
+                SetupStep("Open API Keys in Firecrawl", "In the Firecrawl dashboard.", link: open("Open Firecrawl Keys")),
+                SetupStep("Copy a key for the team to watch", "It starts with fc-.")
+            ]
+        case .treg:
+            return [
+                SetupStep("Make an agent token for Kill Cord", "An admin runs treg org agent-new kill-cord, with "
+                    + "options that limit it. treg shows the token once.", link: open("Open treg Docs")),
+                SetupStep("Copy the token", "A personal sign-in token works too if you add your team's slug.")
+            ]
+        case .monid:
+            return [
+                SetupStep("Open API Keys in Monid", "In the Monid dashboard.", link: open("Open Monid Keys")),
+                SetupStep("Create a key and copy it", "It starts with monid_.")
+            ]
         }
     }
 }

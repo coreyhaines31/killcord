@@ -338,7 +338,8 @@ extension SpendModel {
     /// connect, so marking its cap is how it joins the audit).
     var auditProviders: [ProviderID] {
         ProviderID.allCases.filter { provider in
-            connected.contains(provider)
+            guard !CapsCatalog.controls(for: provider).isEmpty else { return false }
+            return connected.contains(provider)
                 || CapsCatalog.controls(for: provider).contains { audit.marks[$0.id] != nil }
         }
     }

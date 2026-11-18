@@ -237,6 +237,27 @@ public enum CapsCatalog {
                     "Make sure the Spend Cap is on."],
             caveat: "Compute, custom domains, IPv4, PITR, and some other items bill even with the cap on. "
                 + "Supabase has no API for it, so Kill Cord trusts your mark."
+        ),
+        // OpenRouter. https://openrouter.ai/docs/api-reference/limits
+        CapControl(
+            id: "openrouter.key-limit", provider: .openrouter, name: "Credit limit on each key",
+            summary: "A key with a credit limit stops working once it has spent that much. Keys with no limit "
+                + "can spend the whole balance.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://openrouter.ai/settings/keys"),
+            docURL: url("https://openrouter.ai/docs/api-reference/limits"),
+            steps: ["Open Settings › API Keys.", "Edit each key your apps use and give it a credit limit."],
+            caveat: "Kill Cord reads the limit of the key you connect, not the others."
+        ),
+        // Monid. https://monid.ai/SKILL.md
+        CapControl(
+            id: "monid.workspace-budget", provider: .monid, name: "Workspace budget and run caps",
+            summary: "Monid blocks a run that would go past a workspace budget or run cap.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://app.monid.ai/"),
+            docURL: url("https://monid.ai/SKILL.md"),
+            steps: ["Open the Monid dashboard.", "Set a workspace budget or run cap."],
+            caveat: "Monid's public docs mention these settings but don't describe them in detail."
         )
     ]
 
