@@ -71,6 +71,7 @@ targets:
       - KillCord/Model/SpendModel.swift
       - KillCord/Model/SpendModel+Connections.swift
       - KillCord/App/Preferences.swift
+      - KillCord/Panel/PanelSpace.swift
       - KillCord/Panel/PanelView.swift
       - KillCord/Panel/ProviderCard.swift
       - KillCord/Assets.xcassets

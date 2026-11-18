@@ -10,6 +10,7 @@ final class StatusItemController {
     private let popover = NSPopover()
     private let model: SpendModel
     private var hosting: NSHostingController<PanelView>?
+    private let space = PanelSpace()
 
     init(model: SpendModel, openSettings: @escaping (SettingsTab?) -> Void,
          checkForUpdates: @escaping () -> Void) {
@@ -22,7 +23,7 @@ final class StatusItemController {
         item.button?.target = self
         item.button?.action = #selector(toggle)
 
-        let panel = PanelView(model: model, openSettings: { [weak popover] tab in
+        let panel = PanelView(model: model, space: space, openSettings: { [weak popover] tab in
             popover?.performClose(nil)
             openSettings(tab)
         }, checkForUpdates: checkForUpdates)
@@ -31,6 +32,11 @@ final class StatusItemController {
         self.hosting = hosting
         popover.contentViewController = hosting
         popover.behavior = .transient
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.measureSpace() }
+        }
         update()
     }
 
@@ -70,8 +76,13 @@ final class StatusItemController {
         }
     }
 
+    private func measureSpace() {
+        if let button = item.button { space.update(for: button) }
+    }
+
     func show() {
         guard let button = item.button else { return }
+        space.update(for: button)
         if let view = hosting?.view {
             popover.contentSize = view.fittingSize
         }
