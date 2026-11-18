@@ -31,8 +31,8 @@ builtin_shows = {
     'cloudflare': 'this billing period’s spend in dollars, and whether a Spend Management limit is set',
     'twilio': 'today’s and this month’s spend in dollars, and whether a usage trigger is set',
     'neon': 'this month’s usage in compute hours, storage and transfer (Neon doesn’t report dollars)',
-    'supabase': 'nothing to connect, because Supabase has no billing API, but its Spend Cap is in the caps audit',
 }
+caps_only = {'supabase'}
 builtin_names = 'Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon'
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),
@@ -95,6 +95,8 @@ def category_url(key):
 
 def tier_badge(s):
     tier = s['killcord']['tier']
+    if s['slug'] in caps_only:
+        return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>In Kill Cord’s caps audit</p>'
     if tier == 'built-in':
         return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Built into Kill Cord</p>'
     if tier == 'planned':
@@ -135,6 +137,8 @@ def facts_table(s):
         rows.append(('Auth', inline(a['auth'])))
     if known(a['key_type']):
         rows.append(('Key', inline(a['key_type'])))
+    if not a['endpoint']:
+        return '\n'.join(f'      <div><dt>{k}</dt><dd>{v}</dd></div>' for k, v in rows)
     ro = {'yes': 'Yes', 'no': 'No', 'partial': 'Partly', 'unknown': 'Not documented'}[a['read_only']]
     if a['read_only_note']:
         ro += f'. {inline(a["read_only_note"])}'
@@ -183,7 +187,8 @@ def caps_section(s):
             note = f' {inline(sentence(c["note"]))}' if c['note'] else ''
             items.append(f'<li><b>{inline(c["name"])}</b><span>{where}.{note}</span><i class="kind {cls}">{label}</i></li>')
         stops = [c for c in caps if c['kind'] in ('hard-stop', 'partial-stop')]
-        intro = (f'{e(name)} can stop spend on its own. Turn this on first: it works even when nothing is watching.'
+        full = any(c['kind'] == 'hard-stop' for c in stops)
+        intro = (f'{e(name)} can stop {"" if full else "part of its "}spend on its own. Turn this on first: it works even when nothing is watching.'
                  if stops else f'{e(name)} can warn you, but nothing here stops spend on its own.')
         body = f'<p>{intro}</p>\n    <ul class="caps-list">{"".join(items)}</ul>'
     elif s['caps_status'] == 'none-documented':
@@ -201,6 +206,9 @@ def caps_section(s):
 
 def killcord_text(s):
     name, tier = s['name'], s['killcord']['tier']
+    if s['slug'] in caps_only:
+        return (f'Partly. {name} has no billing API, so Kill Cord can’t show its spend. Kill Cord’s caps audit '
+                f'walks you through turning on {name}’s own cap and reminds you to re-check it.')
     if tier == 'built-in':
         return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, says how fresh each number is, '
                 f'and walks you through {name}’s own caps in its caps audit.')
@@ -215,10 +223,11 @@ def killcord_text(s):
 
 def killcord_section(s):
     tier = s['killcord']['tier']
-    heading = {'built-in': f'Track {e(s["name"])} in your menu bar', 'planned': 'Kill Cord and ' + e(s['name']),
+    heading = {'built-in': f'Track {e(s["name"])} in your menu bar' if s['slug'] not in caps_only else f'Kill Cord and {e(s["name"])}', 'planned': 'Kill Cord and ' + e(s['name']),
                'none': 'Kill Cord and ' + e(s['name'])}[tier]
     extra = ('<p>Kill Cord is free, with no account. Your key stays in your Mac’s Keychain and goes only to '
-             f'{e(s["name"])}’s billing API.</p>' if tier == 'built-in' else
+             f'{e(s["name"])}’s billing API.</p>' if tier == 'built-in' and s['slug'] not in caps_only else
+             '<p>Kill Cord is free, with no account, and it reads spend for ' + builtin_names + '.</p>' if tier == 'built-in' else
              '<p>If you also use any of those, Kill Cord puts their spend in one glance and gets their caps turned on.</p>')
     return f'''  <section aria-labelledby="kc-title" class="kc-box">
     <h2 id="kc-title">{heading}</h2>
@@ -270,12 +279,14 @@ def related(s):
 def intro(s):
     a, name = s['spend_api'], s['name']
     stops = any(c['kind'] in ('hard-stop', 'partial-stop') for c in s['native_caps'])
-    caps = f'and the cap that stops {name} spend on its own' if stops else f'and whether {name} can cap spend at all'
+    full = any(c['kind'] == 'hard-stop' for c in s['native_caps'])
+    stop_text = f'the cap that stops {name} spend on its own' if full else f'the cap that stops some {name} spend on its own'
+    caps = f'and {stop_text}' if stops else f'and whether {name} can cap spend at all'
     if a['status'] == 'yes':
         return f'{name} tells you your {noun(s)} with one API call. Here’s the call, the key it needs, {caps}.'
     if a['status'] == 'partial':
         return f'{name}’s API tells you part of it. Here’s what it returns, what it leaves out, {caps}.'
-    tail = f'the cap that stops {name} spend on its own' if stops else f'whether {name} can cap spend at all'
+    tail = stop_text if stops else f'whether {name} can cap spend at all'
     return f'{name} has no documented usage API, so the number lives in its console. Here’s where to look, and {tail}.'
 
 
@@ -351,7 +362,7 @@ def table(rows):
         stops = [c for c in s['native_caps'] if c['kind'] in ('hard-stop', 'partial-stop')]
         cap_cell = 'Hard stop' if any(c['kind'] == 'hard-stop' for c in stops) else 'Partial stop' if stops else \
             'Alert only' if s['native_caps'] else 'None found'
-        kc = {'built-in': 'Built in', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
+        kc = 'Caps audit' if s['slug'] in caps_only else {'built-in': 'Built in', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
         body.append(f'<tr><th scope="row"><a href="{url_for(s)}">{e(s["search_name"])}</a></th>'
                     f'<td data-label="Spend API">{api_cell}</td><td data-label="Native cap">{cap_cell}</td>'
                     f'<td data-label="Kill Cord">{kc}</td></tr>')
