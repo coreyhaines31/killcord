@@ -141,6 +141,26 @@ final class BalanceRenderTests: XCTestCase {
         }
     }
 
+    /// Every provider's mark on its key, at the sidebar and header sizes, to compare the new ones with the rest.
+    func testRendersEveryMark() throws {
+        let sheet = VStack(alignment: .leading, spacing: 10) {
+            ForEach(ProviderID.allCases) { provider in
+                HStack(spacing: 12) {
+                    ProviderMark(provider: provider, size: 16)
+                    ProviderMark(provider: provider, size: 22)
+                    ProviderMark(provider: provider, size: 34)
+                    Text(provider.info.name)
+                }
+            }
+        }
+        .padding(16)
+        .frame(width: 320, alignment: .leading)
+        let folder = renderFolder()
+        for dark in [false, true] {
+            try render(sheet, dark: dark, to: folder.appendingPathComponent("marks-\(dark ? "dark" : "light").png"))
+        }
+    }
+
     // MARK: - Rendering (as in AccountsTests)
 
     private func renderFolder() -> URL {
