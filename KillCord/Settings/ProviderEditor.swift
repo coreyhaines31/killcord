@@ -276,7 +276,7 @@ extension ProviderEditor {
 
     @ViewBuilder
     private var connectedSections: some View {
-        Section("Spend") {
+        Section(info.capability.showsBalance && !info.capability.showsMoney ? "Balance" : "Spend") {
             if phase == .connected {
                 ResultBox(light: .go, title: "Connected", message: "\(info.name) accepted the key. It's saved in "
                     + "your Keychain.", fix: nil)

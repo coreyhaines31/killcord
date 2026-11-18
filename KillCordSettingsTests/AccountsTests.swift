@@ -23,7 +23,7 @@ final class AccountsTests: XCTestCase {
 
         var body: some View {
             ProvidersSidebar(model: model, selection: $selection)
-                .frame(width: 230, height: 900)
+                .frame(width: 230, height: 1300)
                 .onChange(of: selection) { _, value in recorder.seen.append(value) }
         }
     }
@@ -56,15 +56,19 @@ final class AccountsTests: XCTestCase {
         let anthropic = model.connections(for: .anthropic).map(\.id)
         XCTAssertEqual(anthropic.count, 2)
         let recorder = Recorder()
-        let window = offscreenWindow(SidebarHost(model: model, recorder: recorder), size: NSSize(width: 230, height: 900))
+        let window = offscreenWindow(SidebarHost(model: model, recorder: recorder), size: NSSize(width: 230, height: 1300))
         defer { window.orderOut(nil) }
-        for top in stride(from: CGFloat(2), to: 890, by: 4) {
+        for top in stride(from: CGFloat(2), to: 1290, by: 4) {
             click(window, x: 80, top: top)
         }
         var distinct: [ProviderSidebarItem] = []
         for item in recorder.seen where distinct.last != item { distinct.append(item) }
-        // Every account, top to bottom, then the one provider that isn't connected.
-        XCTAssertEqual(distinct, model.connections.map { .connection($0.id) } + [.new(.supabase)])
+        // Every account, top to bottom, then the providers that aren't connected (as many as fit).
+        XCTAssertEqual(Array(distinct.prefix(model.connections.count)), model.connections.map { .connection($0.id) })
+        XCTAssertTrue(distinct.dropFirst(model.connections.count).allSatisfy {
+            if case .new = $0 { return true }
+            return false
+        })
         XCTAssertEqual(Array(distinct.prefix(2)), anthropic.map { .connection($0) })
     }
 

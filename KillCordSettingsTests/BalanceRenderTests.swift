@@ -63,6 +63,34 @@ final class BalanceRenderTests: XCTestCase {
         print("Renders in \(folder.path)")
     }
 
+    func testRendersTheBalanceProvidersFromDemoDataAndTheirSetup() throws {
+        let model = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) },
+                               isDemo: true)
+        model.start()
+        let dataforseo = try XCTUnwrap(model.connections(for: .dataforseo).first)
+        let firecrawl = try XCTUnwrap(model.connections(for: .firecrawl).first)
+        XCTAssertEqual(model.status(dataforseo.id).line, "Connected · $41.25 left")
+        // Nothing connected for the setup screens. In-memory keys, no network.
+        let empty = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) })
+        empty.start()
+        let folder = renderFolder()
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            for (record, name) in [(dataforseo, "dataforseo"), (firecrawl, "firecrawl")] {
+                let card = ProviderCard(connectionID: record.id, provider: record.provider, name: record.name,
+                                        model: model, now: Date(), openSettings: { _ in }).frame(width: 340)
+                try render(card, dark: dark, to: folder.appendingPathComponent("\(name)-card-\(suffix).png"))
+            }
+            let pane = ProvidersSettingsView(model: model, selection: .connection(firecrawl.id)).frame(width: 700)
+            try render(pane, dark: dark, to: folder.appendingPathComponent("firecrawl-settings-\(suffix).png"))
+            for provider in [ProviderID.dataforseo, .treg, .openrouter] {
+                let setup = ProvidersSettingsView(model: empty, selection: .new(provider),
+                                                  editorStart: .init(showsWhy: true)).frame(width: 700)
+                try render(setup, dark: dark, to: folder.appendingPathComponent("\(provider.rawValue)-setup-\(suffix).png"))
+            }
+        }
+    }
+
     // MARK: - Rendering (as in AccountsTests)
 
     private func renderFolder() -> URL {
