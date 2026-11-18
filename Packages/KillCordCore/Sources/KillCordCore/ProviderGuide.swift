@@ -84,7 +84,7 @@ extension ProviderInfo {
     /// The key-power warning in one short line. The full `keyPowerWarning` sits behind "Why?".
     public var keyPowerSummary: String? {
         switch id {
-        case .anthropic: "Anthropic has no read-only key. This one can also manage your organization."
+        case .anthropic: "No Anthropic key is read-only. A key can do what its linked account's role allows."
         case .google: "Give the account read roles only. Your organization may block service account keys."
         case .openai: "Admin keys cover your whole organization. Choose read-only if it's offered."
         case .vercel: "A token acts as you on the teams it covers. Scope it to one team and set an expiry."
@@ -111,11 +111,21 @@ extension ProviderInfo {
         func open(_ title: String) -> (String, URL)? { keyURL.map { (title, $0) } }
         switch id {
         case .anthropic:
+            let organization = URL(string: "https://platform.claude.com/settings/organization")!
+            let serviceAccounts = URL(string: "https://platform.claude.com/settings/service-accounts")!
             return [
-                SetupStep("Open Admin keys in the Claude Console", "You need to be an admin of the organization.",
-                          link: open("Open Claude Console")),
-                SetupStep("Create an admin key and copy it", "It starts with sk-ant-admin01-. A regular API key "
-                    + "won't work.")
+                SetupStep("Use an organization, not an Individual Org", "The cost report isn't available to "
+                    + "individual Console accounts. If the Console shows an Individual Org, set up an "
+                    + "organization first.",
+                          link: ("Open Organization Settings", organization)),
+                SetupStep("Create a service account (recommended)", "An organization admin creates it on the "
+                    + "Service accounts page. Its key acts only as that service account, with its permissions, "
+                    + "and isn't tied to you.",
+                          link: ("Open Service Accounts", serviceAccounts)),
+                SetupStep("Create a key that isn't scoped to a workspace", "On API keys, set Linked account to "
+                    + "the service account (or yourself) and leave the workspace unset. Workspace keys won't "
+                    + "work. An Admin API key (sk-ant-admin…) from Admin keys also works.",
+                          link: open("Open API Keys"))
             ]
         case .google:
             return [

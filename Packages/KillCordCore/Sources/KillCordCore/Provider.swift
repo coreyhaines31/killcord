@@ -122,13 +122,16 @@ extension ProviderInfo {
     public static let all: [ProviderID: ProviderInfo] = Dictionary(uniqueKeysWithValues: [
         ProviderInfo(
             id: .anthropic, name: "Anthropic", capability: .dollars,
-            fields: [CredentialField(id: "apiKey", label: "Admin API key", placeholder: "sk-ant-admin01-…",
-                                     isSecret: true)],
-            keyKind: "Admin API key",
-            keyURL: url("https://platform.claude.com/settings/admin-keys"),
-            keyPowerWarning: "Anthropic has no read-only admin key. This key can also manage members, workspaces, "
-                + "and API keys in your organization. Kill Cord only reads the cost report, and the key stays in "
-                + "your Mac's Keychain, but treat it like a password and revoke it in the Console if it leaks.",
+            fields: [CredentialField(id: "apiKey", label: "API key", placeholder: "sk-ant-…", isSecret: true,
+                                     help: "A service account key or personal key that isn't scoped to a "
+                                        + "workspace, or an Admin API key.")],
+            keyKind: "Admin API key, or a service account or personal key that isn't scoped to a workspace",
+            keyURL: url("https://platform.claude.com/settings/keys"),
+            keyPowerWarning: "Anthropic has no read-only key for the cost report. A service account or personal "
+                + "key has the same permissions as the account it's linked to, so it can do whatever that "
+                + "account's role allows. An Admin API key can also manage members, workspaces, and API keys. "
+                + "Kill Cord only reads the cost report, and the key stays in your Mac's Keychain, but treat it "
+                + "like a password and revoke it in the Console if it leaks.",
             lag: ProviderLag(typical: 5 * 60, note: "Anthropic's cost report usually catches up within 5 minutes. "
                 + "Priority Tier costs aren't included."),
             billingTimeZone: utc, minimumRefreshInterval: 5 * 60,

@@ -144,7 +144,10 @@ struct ProviderEditor: View {
     private var pasteTitle: String {
         if replacing { return "Paste the new key. Leave a secret empty to keep the saved one." }
         if info.fields.count == 1, let field = info.fields.first {
-            return "Paste the \(field.label.prefix(1).lowercased() + field.label.dropFirst()) here"
+            // "Admin API key" reads "admin API key"; "API key" keeps its acronym.
+            let label = field.label.dropFirst().first?.isLowercase == true
+                ? field.label.prefix(1).lowercased() + field.label.dropFirst() : field.label
+            return "Paste the \(label) here"
         }
         return "Fill in these fields"
     }

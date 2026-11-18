@@ -84,6 +84,20 @@ final class AccountsTests: XCTestCase {
         print("Renders in \(folder.path)")
     }
 
+    func testRendersTheAnthropicSetupSteps() throws {
+        // Nothing connected, so Anthropic shows its first-connect steps. In-memory keys, no network.
+        let model = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) })
+        model.start()
+        XCTAssertTrue(model.connections.isEmpty)
+        let folder = renderFolder()
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            let pane = ProvidersSettingsView(model: model, selection: .new(.anthropic),
+                                             editorStart: .init(showsWhy: true)).frame(width: 700)
+            try render(pane, dark: dark, to: folder.appendingPathComponent("anthropic-setup-\(suffix).png"))
+        }
+    }
+
     // MARK: - Rendering
 
     private func renderFolder() -> URL {

@@ -143,7 +143,7 @@ All local, no network, no new UI:
 
 ## Technical: several accounts per provider (#27)
 
-The release after 0.1.2 lets a provider have several connections (two Anthropic organizations, a personal and a client OpenAI). The connection is now the unit everywhere the cloud cares about:
+The release after 0.1.3 lets a provider have several connections (two Anthropic organizations, a personal and a client OpenAI). The connection is now the unit everywhere the cloud cares about:
 
 - **Identity.** `ConnectionRecord` (id, provider, created date, name). The id is the one 0.1.2 gave the provider's connection, kept through the move, so anything that already refers to it still does. A second account gets a new id and starts named "Anthropic 2" until renamed. Names are the person's labels, not secrets, and move with the settings.
 - **Keychain.** One item per connection, account = the connection's UUID string, label "Kill Cord: <name>". The payload is unchanged (field id to value).
