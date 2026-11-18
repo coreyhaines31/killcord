@@ -190,6 +190,50 @@ import Testing
         #expect(store.inner.accounts == ["cloudflare"])
     }
 
+    @Test func anUnreadableConnectionItemIsNeverTreatedAsEmpty() throws {
+        // Two Anthropic connections. The first one's own item can't be read this launch; the second has none.
+        let store = FlakyStore()
+        let first = UUID.of(.anthropic), second = UUID.of(.anthropic, 2)
+        let mine = ProviderCredentials(provider: .anthropic, values: ["apiKey": FakeKeys.anthropic + "-mine"])
+        try store.inner.write(CredentialStore.encode(mine), account: first.uuidString)
+        try legacy(store.inner, [.anthropic])
+        store.unreadable = [first.uuidString]
+        var registry = ConnectionRegistry(records: [ConnectionRecord(id: first, provider: .anthropic, createdAt: testNow)])
+        _ = registry.add(.anthropic, now: testNow, makeID: { second })
+        var saves: [ConnectionRegistry] = []
+        let outcome = run(store, registry, saves: &saves)
+        #expect(!outcome.isComplete)
+        #expect(outcome.registry.records.map(\.id) == [first, second])
+        #expect(outcome.legacyFallback == [second: "anthropic"])
+        // Nothing written or deleted: the first connection keeps its own key, the old item stays.
+        #expect(try store.inner.read(account: first.uuidString) == CredentialStore.encode(mine))
+        #expect(try store.inner.read(account: second.uuidString) == nil)
+        #expect(store.inner.accounts.contains("anthropic"))
+
+        // Next launch the read works and the move finishes onto the empty connection.
+        store.unreadable = []
+        let retry = run(store, outcome.registry, saves: &saves)
+        #expect(retry.isComplete)
+        #expect(retry.legacyFallback.isEmpty)
+        #expect(try store.inner.read(account: first.uuidString) == CredentialStore.encode(mine))
+        let keys = CredentialStore(secrets: store)
+        let record = try #require(retry.registry.record(second))
+        #expect(try keys.load(record) == FakeKeys.credentials(.anthropic))
+        #expect(!store.inner.accounts.contains("anthropic"))
+    }
+
+    @Test func anUnreadableOnlyConnectionGetsNoNewConnection() throws {
+        let store = FlakyStore()
+        try legacy(store.inner, [.vercel])
+        store.unreadable = [UUID.of(.vercel).uuidString]
+        var saves: [ConnectionRegistry] = []
+        let outcome = run(store, oneEach([.vercel]), saves: &saves)
+        #expect(!outcome.isComplete)
+        #expect(outcome.registry.records.map(\.id) == [.of(.vercel)])
+        #expect(outcome.legacyFallback == [.of(.vercel): "vercel"])
+        #expect(store.inner.accounts == ["vercel"])
+    }
+
     @Test func runningAgainAfterItFinishedChangesNothing() throws {
         let store = InMemorySecretStore()
         try legacy(store, [.anthropic, .google])
