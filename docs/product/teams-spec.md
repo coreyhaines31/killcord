@@ -3,7 +3,7 @@
 Mode: spec (product-manager skill). Written and approved November 17, 2026. Planning only: nothing here is built and no cloud resource exists. Tracking issue: #52. Unit 0 findings: `docs/product/spikes/2026-11-unit-0.md`.
 
 This extends the November 16 plan in `docs/product/cloud-migration.md` from one person to teams. Nothing decided there is reversed.
-Read from `origin/development` of `~/code/killcord`: `CLAUDE.md`, `docs/product/spec.md`, `docs/product/cloud-migration.md`, `KeyPower.swift`, `SpendReading.swift`, `LocalAccountSnapshot.swift`, `ConnectionRegistry.swift`, `Provider.swift`, the adapter headers, `site/data/services.json`, and the scratchpad `kc-niche-research.md`.
+Read from `origin/development`: `CLAUDE.md`, `docs/product/spec.md`, `docs/product/cloud-migration.md`, `KeyPower.swift`, `SpendReading.swift`, `LocalAccountSnapshot.swift`, `ConnectionRegistry.swift`, `Provider.swift`, the adapter headers, `site/data/services.json`, and separate research on niche credit services (not in the repo).
 Provider facts in section 3 come from official docs fetched today. Anything a page did not say is marked unknown.
 
 Profile: collaborative web SaaS (many orgs) with a local macOS utility as a client. Outcomes O1 to O4 apply. O5 applies in a small way (export).
@@ -93,7 +93,7 @@ An admin connects a provider and within the first session sees up to 12 months o
 - Any proxy or gateway. Any change to provider settings: Kill Cord stays read-only, so no auto-stop.
 - Cost estimates from token counts. A number is the provider's or it is absent.
 - Generic custom JSON connections in the cloud (a user-supplied URL fetched by our server is an SSRF path). They can ship in the local Mac app first.
-- Niche credit services from `kc-niche-research.md` beyond the eight built in. Add them after the core is proven.
+- Niche credit services from that research beyond the eight built in. Add them after the core is proven.
 - SSO/SAML, SCIM, custom roles, Slack and SMS alerts, an API or MCP for outside agents, an "ask your spend" chat.
 - Windows or Linux desktop clients. Those employees use the web.
 - Readings-only sync for personal workspaces (decided on November 16 as the free cloud tier). It reuses this build and can follow. Nothing here reverses it.
