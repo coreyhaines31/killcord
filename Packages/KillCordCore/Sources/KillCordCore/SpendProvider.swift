@@ -208,12 +208,19 @@ enum ProviderErrorDetail {
     /// Header values, whole and split on spaces ("Bearer abc" gives "abc"), plus what a Basic auth token
     /// decodes to ("sid:token" gives both halves). Longest first.
     private static func sensitiveValues(in request: HTTPRequest) -> [String] {
-        let values = request.headers.filter { !plainHeaders.contains($0.key.lowercased()) }.values.flatMap { value in
-            let words = value.split(separator: " ").map(String.init)
-            let decoded = words.compactMap { Data(base64Encoded: $0).flatMap { String(data: $0, encoding: .utf8) } }
-            return [value] + words + decoded + decoded.flatMap { $0.split(separator: ":").map(String.init) }
+        var values: Set<String> = []
+        for (name, value) in request.headers where !plainHeaders.contains(name.lowercased()) {
+            values.insert(value)
+            for word in value.split(separator: " ").map(String.init) {
+                values.insert(word)
+                guard let data = Data(base64Encoded: word), let decoded = String(data: data, encoding: .utf8) else {
+                    continue
+                }
+                values.insert(decoded)
+                for part in decoded.split(separator: ":") { values.insert(String(part)) }
+            }
         }
-        return Set(values.filter { $0.count >= 8 }).sorted { $0.count > $1.count }
+        return values.filter { $0.count >= 8 }.sorted { $0.count > $1.count }
     }
 }
 
