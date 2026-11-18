@@ -38,6 +38,8 @@ struct ThresholdsSettingsView: View {
             .formStyle(.grouped)
         }
         .frame(height: 560)
+        // The tab stays alive while Settings is open; removing an account drops its limits from Preferences.
+        .onAppear { thresholds = Preferences.thresholds }
         .onChange(of: thresholds) { _, value in
             Preferences.thresholds = value
             if !value.isEmpty { alerts.requestPermission() }
