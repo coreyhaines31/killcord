@@ -1,0 +1,77 @@
+{
+  "object": "page",
+  "data": [
+    {
+      "object": "bucket",
+      "start_time": 1794528000,
+      "end_time": 1794614400,
+      "results": [
+        {
+          "object": "organization.costs.result",
+          "amount": {
+            "value": 12.345678,
+            "currency": "usd"
+          },
+          "line_item": null,
+          "project_id": "proj_TESTalpha",
+          "user_id": null,
+          "api_key_id": null,
+          "api_source": null,
+          "quantity": null,
+          "quantity_unit": null
+        },
+        {
+          "object": "organization.costs.result",
+          "amount": {
+            "value": 0.1,
+            "currency": "usd"
+          },
+          "line_item": null,
+          "project_id": "proj_TESTbeta",
+          "user_id": null,
+          "api_key_id": null,
+          "api_source": null,
+          "quantity": null,
+          "quantity_unit": null
+        },
+        {
+          "object": "organization.costs.result",
+          "amount": {
+            "value": 0.2,
+            "currency": "usd"
+          },
+          "line_item": null,
+          "project_id": null,
+          "user_id": null,
+          "api_key_id": null,
+          "api_source": null,
+          "quantity": null,
+          "quantity_unit": null
+        }
+      ]
+    },
+    {
+      "object": "bucket",
+      "start_time": 1794614400,
+      "end_time": 1794700800,
+      "results": [
+        {
+          "object": "organization.costs.result",
+          "amount": {
+            "value": 3.3,
+            "currency": "usd"
+          },
+          "line_item": null,
+          "project_id": "proj_TESTalpha",
+          "user_id": null,
+          "api_key_id": null,
+          "api_source": null,
+          "quantity": null,
+          "quantity_unit": null
+        }
+      ]
+    }
+  ],
+  "has_more": true,
+  "next_page": "page_TEST_2"
+}

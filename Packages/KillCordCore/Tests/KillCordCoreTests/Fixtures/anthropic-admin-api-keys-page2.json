@@ -1,0 +1,40 @@
+{
+  "data": [
+    {
+      "id": "apikey_01TESTbbbbbbbbbbbbbbbbbb",
+      "created_at": "2026-04-01T00:00:00Z",
+      "created_by": null,
+      "expires_at": null,
+      "name": "CI",
+      "partial_key_hint": "sk-ant-api03-Xy9...q7Zz",
+      "principal": {
+        "type": "service_account_actor",
+        "service_account_id": "svac_01TESTci"
+      },
+      "scope": {
+        "type": "workspace",
+        "workspace_id": "wrkspc_01TESTdefault"
+      },
+      "status": "active",
+      "type": "api_key"
+    },
+    {
+      "id": "apikey_01TESTlegacy",
+      "created_at": "2025-12-01T00:00:00Z",
+      "created_by": null,
+      "expires_at": null,
+      "name": "Legacy",
+      "partial_key_hint": null,
+      "principal": null,
+      "scope": {
+        "type": "workspace",
+        "workspace_id": "wrkspc_01TESTold"
+      },
+      "status": "archived",
+      "type": "api_key"
+    }
+  ],
+  "first_id": "apikey_01TESTbbbbbbbbbbbbbbbbbb",
+  "has_more": false,
+  "last_id": "apikey_01TESTlegacy"
+}
