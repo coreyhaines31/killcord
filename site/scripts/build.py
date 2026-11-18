@@ -1,7 +1,9 @@
 from html import escape
 from pathlib import Path
 from string import Template
+import hashlib
 import json
+import re
 import shutil
 
 import directory
@@ -59,6 +61,30 @@ for asset in assets:
     target = output / asset
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source / 'assets' / asset, target)
+
+# Fingerprinted copies under /_a/ carry a content hash in the name, so vercel.json can cache them forever.
+# The plain copies stay for anything that links them directly. og.png and favicon.ico keep fixed URLs.
+hashable = ('.css', '.png', '.jpg', '.webp', '.avif', '.woff2', '.svg')
+fixed = {Path('og.png'), Path('favicon.ico')}
+hashed = {}
+
+
+def rewrite(text):
+    return re.sub(r'(?<![\w.:/])/[\w./-]+', lambda m: hashed.get(m.group(0), m.group(0)), text)
+
+
+for asset in sorted(assets, key=lambda a: a.suffix == '.css'):
+    if asset.suffix not in hashable or asset in fixed:
+        continue
+    data = (source / 'assets' / asset).read_bytes()
+    if asset.suffix == '.css':
+        data = rewrite(data.decode()).encode()
+    name = asset.with_name(f'{asset.stem}.{hashlib.sha256(data).hexdigest()[:10]}{asset.suffix}')
+    target = output / '_a' / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+    expected.add(Path('_a') / name)
+    hashed[f'/{asset.as_posix()}'] = f'/_a/{name.as_posix()}'
 for page in pages:
     path = page['path']
     values = {key: escape(page[key], quote=True) for key in ('title', 'description', 'og_title', 'og_description', 'body_class')}
@@ -71,7 +97,7 @@ for page in pages:
     values['content'] = fill(page['content'] if 'content' in page else (source / 'pages' / path).read_text().strip())
     target = output / path
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(layout.substitute(values))
+    target.write_text(rewrite(layout.substitute(values)))
 entries = sorted((site + page['path'].removesuffix('index.html'), page['updated']) for page in pages)
 (output / 'sitemap.xml').write_text(
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

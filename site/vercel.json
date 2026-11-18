@@ -4,5 +4,16 @@
   "buildCommand": "make lint",
   "installCommand": "",
   "outputDirectory": "dist",
-  "trailingSlash": true
+  "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/_a/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
 }
