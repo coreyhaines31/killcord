@@ -55,10 +55,10 @@ import Testing
 
     @Test func readsAVersionOneRegistryKeepingItsIDs() throws {
         // What Kill Cord 0.1.2 saved: no names, version 1.
-        let v1 = """
+        let versionOne = """
         {"version":1,"records":[{"id":"\(UUID.of(.openai).uuidString)","provider":"openai","createdAt":0}]}
         """
-        let decoded = try JSONDecoder().decode(ConnectionRegistry.self, from: Data(v1.utf8))
+        let decoded = try JSONDecoder().decode(ConnectionRegistry.self, from: Data(versionOne.utf8))
         #expect(decoded.version == 1)
         #expect(decoded.records == [ConnectionRecord(id: .of(.openai), provider: .openai,
                                                      createdAt: Date(timeIntervalSinceReferenceDate: 0))])

@@ -24,7 +24,8 @@ import Testing
     }
 
     @Test func neverCheckedSaysSo() {
-        #expect(Freshness.of(ProviderState(provider: .openai, connectionID: .of(.openai)), context: context()) == .neverChecked)
+        let unread = ProviderState(provider: .openai, connectionID: .of(.openai))
+        #expect(Freshness.of(unread, context: context()) == .neverChecked)
     }
 
     @Test func aReadingFromBeforeSleepIsStaleUntilTheNextCheck() {

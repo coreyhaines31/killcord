@@ -70,7 +70,18 @@ public struct SpendSummary: Equatable, Sendable {
             if state.lastError != nil { failing.append(id) }
         }
         self.rows = rows
-        groups = ProviderID.allCases.compactMap { provider in
+        groups = Self.groups(rows)
+        self.today = today
+        self.month = month
+        self.missingToday = missingToday
+        self.missingMonth = missingMonth
+        self.stale = stale
+        self.failing = failing
+        self.hasEstimates = hasEstimates
+    }
+
+    private static func groups(_ rows: [Row]) -> [Group] {
+        ProviderID.allCases.compactMap { provider in
             let members = rows.filter { $0.provider == provider }
             guard !members.isEmpty else { return nil }
             var today = MoneyTotals()
@@ -81,13 +92,6 @@ public struct SpendSummary: Equatable, Sendable {
             }
             return Group(provider: provider, rows: members, today: today, month: month)
         }
-        self.today = today
-        self.month = month
-        self.missingToday = missingToday
-        self.missingMonth = missingMonth
-        self.stale = stale
-        self.failing = failing
-        self.hasEstimates = hasEstimates
     }
 
     /// True when every money connection is in the totals with a live reading.

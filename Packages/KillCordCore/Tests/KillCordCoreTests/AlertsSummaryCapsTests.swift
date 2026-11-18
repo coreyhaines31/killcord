@@ -108,7 +108,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
             reading(.openai, today: "1.0601", month: "13.8332"),
             reading(.vercel, today: nil, month: "124.72"),
             ProviderState(provider: .twilio, connectionID: .of(.twilio), lastAttempt: testNow, lastError: .invalidKey),
-            ProviderState(provider: .neon, connectionID: .of(.neon), snapshot: SpendSnapshot(provider: .neon, today: nil, month: nil,
+            ProviderState(provider: .neon, connectionID: .of(.neon), snapshot: SpendSnapshot(
+                provider: .neon, today: nil, month: nil,
                                                                    fetchedAt: testNow))
         ]
         let summary = SpendSummary(states: states, context: context)
