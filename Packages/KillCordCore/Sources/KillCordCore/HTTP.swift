@@ -141,7 +141,7 @@ public final class URLSessionHTTPClient: HTTPClient, @unchecked Sendable {
         for try await byte in bytes {
             data.append(byte)
             if data.count > limits.maxResponseBytes { throw SpendError.unexpectedResponse }
-            if data.count % 1024 == 0, Date() > deadline { throw SpendError.network }
+            if Date() > deadline { throw SpendError.network }
         }
         guard Date() <= deadline else { throw SpendError.network }
         return (data, response)
