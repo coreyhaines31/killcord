@@ -24,7 +24,7 @@ public struct SpendReading: Sendable, Equatable, Codable {
     }
 
     public let schemaVersion: Int
-    /// The `ConnectionRecord` id, so readings from two Macs for the same provider stay apart.
+    /// The `ConnectionRecord` id, so readings from two accounts of one provider, or two Macs, stay apart.
     public let connectionID: UUID
     public let provider: ProviderID
     public let today: Amount?
@@ -61,10 +61,11 @@ public struct SpendReading: Sendable, Equatable, Codable {
         fetchedAt = snapshot.fetchedAt
     }
 
-    /// The latest reading for each recorded connection that has one. Providers with no record are left out.
+    /// The latest reading for each recorded connection that has one, in registry order. States whose
+    /// connection has no record are left out.
     public static func all(states: [ProviderState], registry: ConnectionRegistry) -> [SpendReading] {
-        states.sorted { $0.provider < $1.provider }.compactMap { state in
-            guard let snapshot = state.snapshot, let record = registry.record(for: state.provider) else { return nil }
+        registry.records.compactMap { record in
+            guard let snapshot = states.first(where: { $0.connectionID == record.id })?.snapshot else { return nil }
             return SpendReading(snapshot, connectionID: record.id)
         }
     }

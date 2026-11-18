@@ -5,10 +5,7 @@ import SwiftUI
 /// hears which row is selected. It replaces `List(selection:)`, whose rows were identified by
 /// `ProviderID.id` (a String) while the selection was a `ProviderID?`, so clicks never reached the binding.
 struct SidebarPicker<Item: Hashable, Row: View>: View {
-    struct Group {
-        let title: String
-        let items: [Item]
-    }
+    typealias Group = SidebarGroup<Item>
 
     let groups: [Group]
     @Binding var selection: Item
@@ -78,6 +75,12 @@ struct SidebarPicker<Item: Hashable, Row: View>: View {
         default: break
         }
     }
+}
+
+/// A titled run of sidebar rows. The title is hidden when the group is empty.
+struct SidebarGroup<Item: Hashable> {
+    let title: String
+    let items: [Item]
 }
 
 /// The standard sidebar material behind the rows.

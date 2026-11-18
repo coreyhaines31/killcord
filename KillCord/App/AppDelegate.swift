@@ -33,7 +33,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.onChange = { [weak self] in self?.statusItemController?.update() }
         model.onSpend = { [weak self, weak model] states in
             guard let model, !model.isDemo else { return }
-            self?.alerts?.check(states)
+            self?.alerts?.check(states, names: model.registry.names)
         }
         NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification, object: nil, queue: .main

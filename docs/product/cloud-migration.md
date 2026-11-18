@@ -19,7 +19,7 @@ What they should get:
 
 - **Keys stay put unless they say otherwise.** A new account syncs readings only (free): spend amounts and times go up so every Mac shows the same numbers, history builds up, and alerts reach all of them. No key moves.
 - **No re-pasting when they want more.** For always-on monitoring (paid), the app already has the keys and offers to hand them over.
-- **One provider at a time.** Each key has its own switch, and every switch starts off. Moving the Anthropic key says nothing about the Twilio key.
+- **One key at a time.** Each connection has its own switch, and every switch starts off. Moving one Anthropic account's key says nothing about the other Anthropic account or the Twilio key.
 - **They see what the cloud will do with each key before it moves.** For example: "Reads your Anthropic cost report every 15 minutes, day and night. Never changes a setting."
 - **Their settings come along on their own.** Thresholds, caps audit checkmarks, and which alerts already went out today aren't secrets, so they move when the account is created, and the review screen lists them.
 - **Honest about the trade.** With readings only, the cloud knows only what a Mac told it, so there's still no coverage while every Mac sleeps. The review screen says so next to the switches.
@@ -32,7 +32,7 @@ What has to stay true: until someone creates an account, every current promise h
 
 1. **Settings > General.** The "Always-on monitoring (coming later)" line becomes a "Kill Cord Cloud" section with one button: **Create a Kill Cord Cloud account** (and "Sign in" for a second Mac).
 2. **Sign in.** The app opens the sign-in page in a system web sheet (`ASWebAuthenticationSession`). Sign in with Apple or a passwordless email link, through Better Auth. The page returns a device token, which the app saves in the Keychain under its own service (`app.killcord.KillCord.cloud`), apart from provider keys. If the person belongs to more than one workspace, they pick which one this Mac's setup goes to.
-3. **Review.** One screen, one row per connected provider:
+3. **Review.** One screen, one row per connection (two Anthropic accounts are two rows, each with its name):
    - the provider and the saved key's hint ("Ending in 0001", or the service account email for Google);
    - how much the key can do, from `ProviderID.keyPower`: `readOnly` shows a calm recommendation ("This key can only read billing. Good to move."), `readOnlyIfChosen` (OpenAI) asks them to confirm they picked the read-only option, and `canManage` shows a clear warning with the provider's `keyPowerWarning` text, for example that Anthropic's admin key can also manage members and API keys;
    - what the cloud will do with it, in one sentence, from the provider's lag and minimum refresh interval;
@@ -54,9 +54,9 @@ What has to stay true: until someone creates an account, every current promise h
 | Cap verification readings | Preferences, inside `capAudit` | No | The cloud checks again with its own reads. |
 | Spend readings | `~/Library/Application Support/Kill Cord/spend.json` (the last one only) | Automatically, as `SpendReading`, from then on | The readings-only sync, free. History starts on the day of the account: Kill Cord keeps no history before that, so there's none to carry. |
 | Refresh interval, menu bar period, launch at login | Preferences | No | Settings for this Mac. The cloud's schedule follows each provider's minimum interval and the plan. |
-| A provider's key and its other fields (account id, team id, export table) | Keychain, one item per provider | **Only when that provider's switch is on** | Non-secret fields go with their key, because together they identify the person's account at the provider. |
+| A connection's key and its other fields (account id, team id, export table) | Keychain, one item per connection | **Only when that connection's switch is on** | Non-secret fields go with their key, because together they identify the person's account at the provider. |
 
-`LocalAccountSnapshot.make` (KillCordCore) produces exactly the "Automatically" rows plus a reference to each Keychain item. It never holds a key or a field value.
+`LocalAccountSnapshot.make` (KillCordCore, schema 2, per connection) produces exactly the "Automatically" rows plus a reference to each Keychain item. It never holds a key or a field value.
 
 ## Security model
 
@@ -125,7 +125,7 @@ From `development` at 4c07322, Kill Cord 0.1.1.
 1. **No stable id per connection.** A connection was only "the item named `openai`". Nothing could refer to it without the key, and the cloud couldn't tell a re-pasted key from a new connection. *Fixed in #18.*
 2. **Nothing was versioned.** Not the preferences, the Keychain payload, or `spend.json`. *Fixed in #18 for preferences (version stamp) and the export (schema version); the Keychain payload stays as it is and a test now pins its field ids.*
 3. **Saved shapes are Swift's defaults, hard to read from anything else.** `SpendThresholds.perProvider` is a dictionary with enum keys, which encodes as an alternating array. Cap marks are enums with associated values. Dates are seconds since 2001, and amounts are JSON numbers, which other languages read as floating point. *Fixed in #18: the snapshot uses plain strings, ISO 8601 dates, and decimal strings, and leaves the stored shapes alone.*
-4. **One connection per provider.** The account name is the provider id, so two OpenAI organizations can't both be connected. That's fine for v1, but a workspace that manages clients will want it. *Later:* new items use `provider:uuid` as the account and the existing `provider` item stays readable, with no rewrite.
+4. **One connection per provider.** The account name was the provider id, so two OpenAI organizations couldn't both be connected. *Fixed in #27:* the account is the connection's UUID (see "Several accounts per provider" below).
 5. **Unreadable data looks like no data.** `Preferences.load` and `CredentialStore.load` return nil on a decode failure, so "couldn't read" and "nothing saved" look the same. *Later:* a migration must tell those apart before it says "nothing to move".
 6. **File-based keychain trusted for the app.** Fine for the app reading its own items at upload time. A future CLI or helper would get a Keychain prompt, so the upload belongs in the app. Not synced to iCloud, which is right: Macs share through the cloud, not iCloud Keychain.
 
@@ -140,6 +140,20 @@ All local, no network, no new UI:
 - `LocalAccountSnapshot.make(credentials:registry:state:now:)` (KillCordCore): the one function a migration calls, a versioned JSON-ready value with settings, thresholds as decimal strings, cap marks, sent alerts, and per connection its id, created date, and Keychain reference (service, account, saved field ids, which are secret). It reads the credential store only to see which fields are saved.
 - Tests with fake keys only: readings carry amounts as text and the right connection id, and skip providers with no record or no reading. And the snapshot contains no secret and no field value, references every item correctly, round-trips, leaves out records with no item, and leaves the items byte-for-byte unchanged. Registry tests cover adoption, stable ids, drop, and re-connect. A test pins every provider's credential field ids and the Keychain service name.
 - README and privacy page now mention the per-connection id.
+
+## Technical: several accounts per provider (#27)
+
+The release after 0.1.2 lets a provider have several connections (two Anthropic organizations, a personal and a client OpenAI). The connection is now the unit everywhere the cloud cares about:
+
+- **Identity.** `ConnectionRecord` (id, provider, created date, name). The id is the one 0.1.2 gave the provider's connection, kept through the move, so anything that already refers to it still does. A second account gets a new id and starts named "Anthropic 2" until renamed. Names are the person's labels, not secrets, and move with the settings.
+- **Keychain.** One item per connection, account = the connection's UUID string, label "Kill Cord: <name>". The payload is unchanged (field id to value).
+- **Registry.** Version 2, under the preference `connectionRegistry` (a new key, so running 0.1.2 again can't rewrite it). It's the list of connections; on launch a record is dropped only when the Keychain says for sure its item is gone, never when the Keychain can't answer (locked, refused).
+- **The move from 0.1.2** (`ConnectionMigration`, every launch until done). For each provider-named item: pick its connection (one whose UUID item already holds the same bytes, meaning an earlier run stopped before deleting; else the oldest connection of that provider with no UUID item; else a new connection), save the registry before any Keychain write, write the bytes to the UUID account, read them back and compare, and only then delete the old item. A failed write, read-back, or delete leaves the old item in place and the connection reading from it, and the next launch tries again. Tests cover a fresh install, one provider, many, an unrecorded item, interrupted before and after the copy, halfway through several, a read-back mismatch, a failed write, an unreadable item, running again after it finished, and an item saved by a downgraded 0.1.2.
+- **Alerts.** Per connection, an optional total per provider across its connections, and the overall total. 0.1.2's per-provider limits move onto the provider's one connection (or become the provider total when it has none), and alerts already sent this period move with them, so none fires twice. `localDataVersion` is 2 once that's done.
+- **Readings.** `ProviderState`, the spend cache, and `SpendReading` carry the connection id; the summary groups connections by provider with a subtotal.
+- **Snapshot.** `LocalAccountSnapshot` schema 2: each connection has its name and its Keychain account (its UUID, or its old provider-named account while a move is unfinished), and thresholds are scoped `connection` (with the connection id), `provider` (with the provider id), or `total`. Still no key or field value.
+- **Caps audit.** Still one mark per cap, per provider. With two accounts of a provider that the API can check (OpenAI's hard limit, Google's budget), the last answer read is the one shown. A per-account audit is left for when someone needs it.
+- **For the cloud.** Matching by the provider's own account identity (below, "More than one Mac") now also keeps two accounts of one provider apart on one Mac.
 
 ## Technical: what the cloud build will need later
 

@@ -3,17 +3,19 @@ import KillCordCore
 import PanelKit
 import SwiftUI
 
-/// One provider: today, this month, when it was last checked, and anything wrong, inline.
+/// One connection: today, this month, when it was last checked, and anything wrong, inline.
 struct ProviderCard: View {
+    let connectionID: UUID
     let provider: ProviderID
+    let name: String
     let model: SpendModel
     let now: Date
-    let openSettings: (SettingsWindow.Tab?) -> Void
+    let openSettings: (SettingsTab?) -> Void
 
     @Environment(\.panelTheme) private var theme
 
-    private var state: ProviderState? { model.states[provider] }
-    private var freshness: Freshness { model.freshness(provider, now: now) }
+    private var state: ProviderState? { model.states[connectionID] }
+    private var freshness: Freshness { model.freshness(connectionID, now: now) }
     private var snapshot: SpendSnapshot? { state?.snapshot }
 
     var body: some View {
@@ -21,7 +23,7 @@ struct ProviderCard: View {
             HStack(alignment: .center) {
                 HStack(spacing: 6) {
                     ProviderMark(provider: provider, size: 16)
-                    Text(provider.info.name).font(PanelFont.condensed(14, .semibold))
+                    Text(name).font(PanelFont.condensed(14, .semibold))
                 }
                 Spacer()
                 StatusLight(freshness.isLive ? .go : .caution, freshness.isLive ? "Checked" : "Not live")

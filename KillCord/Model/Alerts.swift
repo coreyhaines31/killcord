@@ -46,8 +46,8 @@ final class Alerts: NSObject, UNUserNotificationCenterDelegate {
         }
     }
 
-    func check(_ states: [ProviderState], now: Date = Date()) {
-        let (alerts, next) = ThresholdPlanner().plan(states: states, thresholds: Preferences.thresholds,
+    func check(_ states: [ProviderState], names: [UUID: String], now: Date = Date()) {
+        let (alerts, next) = ThresholdPlanner().plan(states: states, names: names, thresholds: Preferences.thresholds,
                                                      state: state, now: now)
         state = next
         Preferences.firedAlerts = next

@@ -85,3 +85,16 @@ func base64URLDecode(_ text: String) -> Data? {
     while base64.count % 4 != 0 { base64 += "=" }
     return Data(base64Encoded: base64)
 }
+
+extension UUID {
+    /// A fixed connection id per provider, for tests with one connection each.
+    static func of(_ provider: ProviderID, _ number: Int = 1) -> UUID {
+        let index = ProviderID.allCases.firstIndex(of: provider)!
+        return UUID(uuidString: String(format: "00000000-0000-0000-%04d-%012d", index, number))!
+    }
+}
+
+/// One connection per provider, with the `.of(provider)` ids.
+func oneEach(_ providers: [ProviderID]) -> ConnectionRegistry {
+    ConnectionRegistry(records: providers.map { ConnectionRecord(id: .of($0), provider: $0, createdAt: testNow) })
+}

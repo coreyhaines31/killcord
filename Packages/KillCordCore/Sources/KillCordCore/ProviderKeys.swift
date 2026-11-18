@@ -4,8 +4,15 @@ import Foundation
 /// Nothing else in Kill Cord may write a key anywhere: not files, not UserDefaults, not logs.
 public protocol SecretStore: Sendable {
     func read(account: String) throws -> Data?
-    func write(_ data: Data, account: String) throws
+    /// `label` is what Keychain Access shows. Never part of the secret.
+    func write(_ data: Data, account: String, label: String?) throws
     func delete(account: String) throws
+}
+
+extension SecretStore {
+    public func write(_ data: Data, account: String) throws {
+        try write(data, account: account, label: nil)
+    }
 }
 
 public enum SecretStoreError: Error, Equatable, Sendable, LocalizedError {
@@ -32,7 +39,7 @@ public final class InMemorySecretStore: SecretStore, @unchecked Sendable {
         lock.withLock { items[account] }
     }
 
-    public func write(_ data: Data, account: String) throws {
+    public func write(_ data: Data, account: String, label: String?) throws {
         lock.withLock { items[account] = data }
     }
 
@@ -107,36 +114,73 @@ public struct ProviderCredentials: Sendable, Equatable, Codable, CustomStringCon
     }
 }
 
-/// Saves each provider's credentials as one Keychain item (account = provider id).
+/// Saves each connection's fields as one Keychain item, account = the connection's UUID. Kill Cord 0.1.2
+/// and earlier named the item by provider ("anthropic"); `ConnectionMigration` moves those, and until a move
+/// is verified, `legacyFallback` lets the connection keep reading its old item.
 public struct CredentialStore: Sendable {
     private let secrets: SecretStore
+    /// Connection id to the provider-named account it still reads from, for an unfinished migration.
+    public let legacyFallback: [UUID: String]
 
-    public init(secrets: SecretStore) {
+    public init(secrets: SecretStore, legacyFallback: [UUID: String] = [:]) {
         self.secrets = secrets
+        self.legacyFallback = legacyFallback
     }
 
-    public func load(_ provider: ProviderID) throws -> ProviderCredentials? {
-        guard let data = try secrets.read(account: provider.rawValue) else { return nil }
+    public func load(_ connection: ConnectionRecord) throws -> ProviderCredentials? {
+        var data = try secrets.read(account: connection.keychainAccount)
+        if data == nil, let legacy = legacyFallback[connection.id] {
+            data = try secrets.read(account: legacy)
+        }
+        guard let data else { return nil }
         guard let values = try? JSONDecoder().decode([String: String].self, from: data) else { return nil }
-        return ProviderCredentials(provider: provider, values: values)
+        return ProviderCredentials(provider: connection.provider, values: values)
     }
 
-    public func save(_ credentials: ProviderCredentials) throws {
+    /// Whether the connection has an item. Throws when the Keychain can't say.
+    public func hasItem(_ connection: ConnectionRecord) throws -> Bool {
+        if try secrets.read(account: connection.keychainAccount) != nil { return true }
+        guard let legacy = legacyFallback[connection.id] else { return false }
+        return try secrets.read(account: legacy) != nil
+    }
+
+    /// The account that holds the connection's item now: its own, or its old one until the move finishes.
+    public func account(for connection: ConnectionRecord) -> String {
+        if ((try? secrets.read(account: connection.keychainAccount)) ?? nil) != nil { return connection.keychainAccount }
+        return legacyFallback[connection.id] ?? connection.keychainAccount
+    }
+
+    public func save(_ credentials: ProviderCredentials, for connection: ConnectionRecord) throws {
+        try secrets.write(Self.encode(credentials), account: connection.keychainAccount,
+                          label: Self.label(connection))
+        // The new item wins from now on. Drop the old one so a later migration can't bring it back.
+        if let legacy = legacyFallback[connection.id] { try? secrets.delete(account: legacy) }
+    }
+
+    public func delete(_ connection: ConnectionRecord) throws {
+        try secrets.delete(account: connection.keychainAccount)
+        if let legacy = legacyFallback[connection.id] { try secrets.delete(account: legacy) }
+    }
+
+    /// Deletes these connections' items and every provider-named item from before connections had their
+    /// own. For "Remove all local data".
+    public func deleteAll(_ connections: [ConnectionRecord]) throws {
+        for connection in connections { try secrets.delete(account: connection.keychainAccount) }
+        for provider in ProviderID.allCases { try secrets.delete(account: provider.rawValue) }
+    }
+
+    /// The item's payload: field id to value, in the provider's field order. Unchanged since 0.1.0.
+    static func encode(_ credentials: ProviderCredentials) throws -> Data {
         var values: [String: String] = [:]
         for field in credentials.provider.info.fields {
             if let value = credentials[field.id] { values[field.id] = value }
         }
-        let data = try JSONEncoder().encode(values)
-        try secrets.write(data, account: credentials.provider.rawValue)
+        return try JSONEncoder().encode(values)
     }
 
-    public func delete(_ provider: ProviderID) throws {
-        try secrets.delete(account: provider.rawValue)
-    }
-
-    /// Providers that have something saved.
-    public func connected() -> [ProviderID] {
-        ProviderID.allCases.filter { (try? secrets.read(account: $0.rawValue)) != nil }
+    /// What Keychain Access shows: "Kill Cord: Anthropic 2".
+    static func label(_ connection: ConnectionRecord) -> String {
+        "\(Brand.name): \(connection.name)"
     }
 }
 

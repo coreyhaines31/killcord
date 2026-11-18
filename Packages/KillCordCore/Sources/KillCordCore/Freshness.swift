@@ -1,16 +1,19 @@
 import Foundation
 
-/// What Kill Cord last knew about one provider. Saved between launches (spend numbers only, never keys), so
-/// the panel can show the last reading, clearly marked as not live.
+/// What Kill Cord last knew about one connection. Saved between launches (spend numbers only, never keys),
+/// so the panel can show the last reading, clearly marked as not live.
 public struct ProviderState: Sendable, Equatable, Codable {
     public let provider: ProviderID
+    /// The `ConnectionRecord` this reading belongs to.
+    public let connectionID: UUID
     public var snapshot: SpendSnapshot?
     public var lastAttempt: Date?
     public var lastError: SpendError?
 
-    public init(provider: ProviderID, snapshot: SpendSnapshot? = nil, lastAttempt: Date? = nil,
+    public init(provider: ProviderID, connectionID: UUID, snapshot: SpendSnapshot? = nil, lastAttempt: Date? = nil,
                 lastError: SpendError? = nil) {
         self.provider = provider
+        self.connectionID = connectionID
         self.snapshot = snapshot
         self.lastAttempt = lastAttempt
         self.lastError = lastError
