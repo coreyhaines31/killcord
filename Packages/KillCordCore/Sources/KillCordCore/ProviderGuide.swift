@@ -40,6 +40,7 @@ extension ProviderInfo {
         case .treg: "treg dashboard"
         case .monid: "Monid dashboard"
         case .fal: "fal dashboard"
+        case .elevenlabs: "ElevenLabs settings"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -86,7 +87,7 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -121,6 +122,7 @@ extension ProviderInfo {
         case .treg: "Every treg token can call tools on the balance. Use a limited agent token."
         case .monid: "No read-only key is documented. This key can start paid runs."
         case .fal: "Use a BILLING-preset key: fal lists only billing reads for it. A FULL key can run models."
+        case .elevenlabs: "Limit the key to User read access, so it can't call the speech endpoints."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -245,6 +247,14 @@ extension ProviderInfo {
                 SetupStep("Open API Keys in fal", "In the fal dashboard.", link: open("Open fal Keys")),
                 SetupStep("Create a key with the BILLING preset and copy it", "fal lists only billing reads for "
                     + "it. Don't use a FULL key: it can run models on your credits.")
+            ]
+        case .elevenlabs:
+            return [
+                SetupStep("Open API Keys in ElevenLabs", "Under Settings › API Keys.",
+                          link: open("Open ElevenLabs Keys")),
+                SetupStep("Create a key that can only read User and copy it", "Turn off every other endpoint, "
+                    + "so the key can't make speech. ElevenLabs doesn't say which permission this call needs; "
+                    + "User read is the likely one.")
             ]
         case .manual:
             return [

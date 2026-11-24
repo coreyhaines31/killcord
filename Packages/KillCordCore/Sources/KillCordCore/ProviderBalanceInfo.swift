@@ -105,6 +105,19 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "fal doesn't say how current the credit balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://fal.ai/dashboard/billing")
+        ),
+        ProviderInfo(
+            id: .elevenlabs, name: "ElevenLabs", capability: .balance(spend: []),
+            fields: [apiKeyField("sk_…", help: "A key limited to User read access.")],
+            keyKind: "API key with User read access",
+            keyURL: url("https://elevenlabs.io/app/settings/api-keys"),
+            keyPowerWarning: "ElevenLabs lets you limit a key to some endpoints and give it a credit quota. A key "
+                + "with every endpoint on can make speech on your credits. Turn off everything but User (read): "
+                + "Kill Cord only reads your subscription's credits. ElevenLabs doesn't document which permission "
+                + "that call needs, so if the key is refused, Kill Cord shows ElevenLabs' message.",
+            lag: ProviderLag(typical: 0, note: "ElevenLabs doesn't say how current the credit count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://elevenlabs.io/app/subscription")
         )
     ]
 }

@@ -38,6 +38,8 @@ extension ProviderID {
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.
         case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid: .canSpend
+        // ElevenLabs keys can be limited to some endpoints; one limited to User read can't make speech.
+        case .elevenlabs: .readOnlyIfChosen
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
