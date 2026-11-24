@@ -39,6 +39,7 @@ extension ProviderInfo {
         case .bfl: "BFL dashboard"
         case .digitalocean: "DigitalOcean control panel"
         case .telnyx: "Telnyx Mission Control Portal"
+        case .luma: "Luma developer dashboard"
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
@@ -108,6 +109,7 @@ extension ProviderInfo {
         case .bfl: nil
         case .digitalocean: "Usage is as of the time DigitalOcean last generated it."
         case .telnyx: nil
+        case .luma: "Credits held for running generations are already taken out."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
@@ -133,6 +135,7 @@ extension ProviderInfo {
         case .xapi: "Pay-per-use accounts only. Shows prepaid and free credits together."
         case .bfl: "BFL prices 1 credit at $0.01, so the dollar figure is an estimate from that."
         case .telnyx: "Shows available credit: your balance plus Telnyx's credit limit."
+        case .luma: "Shows your team's whole credit balance. Luma sets no fixed dollar rate, so it stays in credits."
         default: batch3Requirement
         }
     }
@@ -152,6 +155,7 @@ extension ProviderInfo {
         case .bfl: "BFL has no read-only key. A project key can generate images on your credits."
         case .digitalocean: "Use a custom-scoped token with only billing:read. It can't change anything."
         case .telnyx: "Telnyx has no read-only key. This key can send messages, buy numbers and change the account."
+        case .luma: "Luma has no read-only key for the balance. This API key can start generations on your credits."
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
@@ -253,7 +257,7 @@ extension ProviderInfo {
             ]
         case .supabase:
             return []
-        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx:
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma:
             return moreSetupSteps
         case .openrouter:
             return [

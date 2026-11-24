@@ -83,6 +83,20 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Telnyx doesn't say how current the balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://portal.telnyx.com")
+        ),
+        ProviderInfo(
+            id: .luma, name: "Luma AI", capability: .balance(spend: []),
+            fields: [apiKeyField("luma-api-…")],
+            keyKind: "API key",
+            keyURL: url("https://platform.lumalabs.ai"),
+            keyPowerWarning: "Luma's balance call takes the same API key you generate with, so the key can start "
+                + "image and video generations that use your credits. Luma's read-only Admin keys can't spend, but "
+                + "they're for enterprise accounts and can't call the balance endpoint. Kill Cord only reads the "
+                + "credit balance.",
+            lag: ProviderLag(typical: 0, note: "The balance already leaves out credits held for generations still "
+                + "running."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.lumalabs.ai/usage")
         )
     ]
 }

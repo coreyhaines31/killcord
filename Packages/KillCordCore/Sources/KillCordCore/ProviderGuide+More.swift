@@ -48,6 +48,13 @@ extension ProviderInfo {
                 SetupStep("Create a key for Kill Cord and copy it", "Telnyx keys reach the whole account, so make "
                     + "one just for Kill Cord that you can revoke on its own.")
             ]
+        case .luma:
+            return [
+                SetupStep("Open the Luma developer dashboard", "On the Luma API Platform.",
+                          link: open("Open Luma Platform")),
+                SetupStep("Create an API key for Kill Cord and copy it", "It starts with luma-api-. Luma shows it "
+                    + "only once.")
+            ]
         default:
             return []
         }

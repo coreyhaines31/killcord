@@ -46,6 +46,8 @@ extension ProviderID {
         case .digitalocean: .readOnly
         // Telnyx documents no key scopes: an API key can do anything in the account.
         case .telnyx: .canManage
+        // Luma's generation keys spend credits; its read-only Admin keys can't read the balance and are enterprise-only.
+        case .luma: .canSpend
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

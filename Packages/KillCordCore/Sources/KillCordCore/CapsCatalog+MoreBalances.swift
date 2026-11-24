@@ -119,6 +119,20 @@ extension CapsCatalog {
                     "Turn auto recharge off, or set a threshold and recharge amount you accept."],
             caveat: "Telnyx \"may\" suspend services at a negative balance; it isn't a promised stop. Spend can also "
                 + "run past zero up to your credit limit."
+        ),
+        // Luma AI. https://docs.agents.lumalabs.ai/agents/budgets/
+        CapControl(
+            id: "luma.credits", provider: .luma, name: "Prepaid credits and key spending caps",
+            summary: "Luma refuses a generation with HTTP 402 when your account balance, or your API key's cap for "
+                + "the billing period, runs out.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://app.lumalabs.ai/settings/developer"),
+            docURL: url("https://docs.agents.lumalabs.ai/agents/budgets/"),
+            steps: ["Open Developer settings in Luma.",
+                    "Keep only the credits you're willing to spend, and give your API keys a spending cap where "
+                        + "Luma offers one."],
+            caveat: "Luma's docs mention a per-key cap per billing period but don't show where to set it. Settled "
+                + "spend can end slightly above a cap, because generations are admitted on estimates."
         )
     ]
 }
