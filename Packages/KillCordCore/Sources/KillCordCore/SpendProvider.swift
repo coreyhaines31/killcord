@@ -160,6 +160,7 @@ public enum SpendProviders {
         case .tavily: TavilyProvider(http: http)
         case .deepgram: DeepgramProvider(http: http)
         case .runway: RunwayProvider(http: http)
+        case .serpapi: SerpApiProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

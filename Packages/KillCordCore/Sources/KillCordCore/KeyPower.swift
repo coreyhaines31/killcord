@@ -52,6 +52,8 @@ extension ProviderID {
         case .deepgram: .canManage
         // Runway documents no key scopes: a key can start generations that use credits.
         case .runway: .canSpend
+        // SerpApi has one private key per account, with no scopes: it can run searches.
+        case .serpapi: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

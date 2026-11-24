@@ -205,6 +205,19 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Runway doesn't say how current the credit balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://dev.runway.com/usage")
+        ),
+        ProviderInfo(
+            id: .serpapi, name: "SerpApi", capability: .balance(spend: []),
+            fields: [apiKeyField("Private API key")],
+            keyKind: "Private API key",
+            keyURL: url("https://serpapi.com/dashboard"),
+            keyPowerWarning: "SerpApi has a single private key with no scopes or read-only form. It can run "
+                + "searches that use your plan. SerpApi sends the key in the address of each request, as its API "
+                + "requires; Kill Cord removes it from any error it shows. Kill Cord only reads your account, "
+                + "which SerpApi says is free and doesn't count toward your monthly searches.",
+            lag: ProviderLag(typical: 0, note: "SerpApi doesn't say how current the search count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://serpapi.com/dashboard")
         )
     ]
 }

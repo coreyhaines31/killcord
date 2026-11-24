@@ -47,6 +47,7 @@ extension ProviderInfo {
         case .tavily: "Tavily dashboard"
         case .deepgram: "Deepgram Console"
         case .runway: "Runway developer portal"
+        case .serpapi: "SerpApi dashboard"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -94,7 +95,7 @@ extension ProviderInfo {
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
-             .tavily, .deepgram, .runway: nil
+             .tavily, .deepgram, .runway, .serpapi: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -139,6 +140,7 @@ extension ProviderInfo {
         case .tavily: "Tavily has no read-only key. This key can run searches on your credits. Give it a credit limit."
         case .deepgram: "Reading balances needs an Admin or Owner key, which can also manage the project's keys."
         case .runway: "Runway has no read-only key. This key can start generations on your credits."
+        case .serpapi: "SerpApi has one private key with no scopes. It can run searches on your plan."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -316,6 +318,13 @@ extension ProviderInfo {
                 SetupStep("Open the Runway developer portal", "Pick the project, then its API Keys tab.",
                           link: open("Open Runway Dev")),
                 SetupStep("Create a key for Kill Cord and copy it", "It starts with key_. Runway shows it once.")
+            ]
+        case .serpapi:
+            return [
+                SetupStep("Open the SerpApi dashboard", "Your private API key is on it.",
+                          link: open("Open SerpApi Dashboard")),
+                SetupStep("Copy the private API key", "Kill Cord reads your account, which SerpApi says is free "
+                    + "and doesn't count toward your searches.")
             ]
         case .manual:
             return [
