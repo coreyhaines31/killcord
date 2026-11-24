@@ -60,6 +60,28 @@ extension CapsCatalog {
                 + "can-i-be-notified-when-im-running-low-on-credits"),
             steps: ["Open Subscription.", "Turn on the credit usage notification and pick the percentage."],
             caveat: "It only notifies. Nothing stops."
+        ),
+        // xAI. https://docs.x.ai/console/billing
+        CapControl(
+            id: "xai.invoiced-limit", provider: .xai, name: "Invoiced billing limit at $0",
+            summary: "With a $0 invoiced billing limit (the default), xAI uses only your prepaid credits and rejects "
+                + "API requests once they run out.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://console.x.ai/team/default/billing"),
+            docURL: url("https://docs.x.ai/console/billing"),
+            steps: ["Open Billing in the xAI Console.",
+                    "Check that monthly invoiced billing is off, or its limit is $0 or an amount you accept."],
+            caveat: "Above $0, requests keep working until the month's invoiced amount reaches the limit."
+        ),
+        CapControl(
+            id: "xai.auto-topup-max", provider: .xai, name: "Auto top-up monthly maximum",
+            summary: "If auto top-up is on, a monthly maximum caps how much it can buy for you.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://console.x.ai/team/default/billing"),
+            docURL: url("https://docs.x.ai/console/billing"),
+            steps: ["Open Billing in the xAI Console.",
+                    "Turn auto top-up off, or set its maximum total of top-ups per month."],
+            caveat: "It stops spend only while the invoiced billing limit is $0."
         )
     ]
 }
