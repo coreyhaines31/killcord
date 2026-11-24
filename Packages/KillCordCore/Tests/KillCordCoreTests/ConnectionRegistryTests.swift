@@ -98,6 +98,8 @@ import Testing
             .browseruse: ["apiKey"],
             .novita: ["apiKey"],
             .baseten: ["apiKey"],
+            .hunter: ["apiKey"],
+            .zerobounce: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

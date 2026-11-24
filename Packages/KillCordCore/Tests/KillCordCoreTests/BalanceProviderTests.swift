@@ -200,7 +200,7 @@ import Testing
 /// missing key.
 @Suite struct BalanceProviderRulesTests {
     /// Services in `ProviderInfo.moreBalanceProviders`, kept in their own lists so the two batches don't collide.
-    static let moreProviders: [ProviderID] = [.runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita]
+    static let moreProviders: [ProviderID] = [.runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .hunter, .zerobounce]
     static let moreHosts: [ProviderID: String] = [
         .runpod: "api.runpod.io",
         .xapi: "api.x.com",
@@ -209,12 +209,15 @@ import Testing
         .luma: "agents.lumalabs.ai",
         .heygen: "api.heygen.com",
         .browseruse: "api.browser-use.com",
-        .novita: "api.novita.ai"
+        .novita: "api.novita.ai",
+        .hunter: "api.hunter.io",
+        .zerobounce: "api.zerobounce.net"
     ]
     static let moreKeyPowers: [ProviderID: KeyPower] = [
         .runpod: .readOnlyIfChosen,
         .telnyx: .canManage,
-        .heygen: .readOnlyIfChosen
+        .heygen: .readOnlyIfChosen,
+        .hunter: .canManage
     ]
     /// Services in `ProviderInfo.batch3Providers` that read a balance with GETs.
     static let batch3Providers: [ProviderID] = [.stability, .moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland]

@@ -150,6 +150,33 @@ extension ProviderInfo {
                 + "appears."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.baseten.co")
+        ),
+        ProviderInfo(
+            id: .hunter, name: "Hunter", capability: .balance(spend: []),
+            fields: [apiKeyField("Hunter API key")],
+            keyKind: "API key",
+            keyURL: url("https://hunter.io/api-keys"),
+            keyPowerWarning: "Hunter documents no read-only or scoped key. An API key \"identifies your account\": "
+                + "it can run searches and verifications that use your credits, and create and delete leads, "
+                + "sequences and API keys. Make a key just for Kill Cord so you can delete it on its own. Kill Cord "
+                + "only reads your account, which Hunter says is a free call.",
+            lag: ProviderLag(typical: 0, note: "Hunter says the remaining figure matches the balance on its "
+                + "dashboard."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://hunter.io/")
+        ),
+        ProviderInfo(
+            id: .zerobounce, name: "ZeroBounce", capability: .balance(spend: []),
+            fields: [apiKeyField("ZeroBounce API key")],
+            keyKind: "API key",
+            keyURL: url("https://www.zerobounce.net/docs/api-dashboard/keys-management"),
+            keyPowerWarning: "ZeroBounce documents no read-only or scoped key. An API key can validate emails and "
+                + "send files that use your credits. ZeroBounce takes the key in the address of each request, as "
+                + "its API requires; Kill Cord removes it from any error it shows. Kill Cord only reads the credit "
+                + "balance.",
+            lag: ProviderLag(typical: 0, note: "ZeroBounce doesn't say how current the credit balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://www.zerobounce.net/members/signin")
         )
     ]
 }

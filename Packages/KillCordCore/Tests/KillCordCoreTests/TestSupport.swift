@@ -51,7 +51,11 @@ enum FakeKeys {
     static let browseruse = "bu_TEST-browseruse-secret-0109"
     static let novita = "sk_TEST-novita-secret-0110"
     static let baseten = "bt-TEST-baseten-secret-0111"
+    static let hunter = "hunter-TEST-secret-0112"
+    static let zerobounce = "zerobounceTESTsecret0113abcd"
     static let more: [String] = [
+        zerobounce,
+        hunter,
         baseten,
         novita,
         browseruse,
@@ -123,6 +127,8 @@ enum FakeKeys {
         case .browseruse: ["apiKey": browseruse]
         case .novita: ["apiKey": novita]
         case .baseten: ["apiKey": baseten]
+        case .hunter: ["apiKey": hunter]
+        case .zerobounce: ["apiKey": zerobounce]
         case .openrouter: ["apiKey": openrouter]
         case .dataforseo: ["login": "kc-test@example.com", "password": dataforseo]
         case .ahrefs: ["apiKey": ahrefs]

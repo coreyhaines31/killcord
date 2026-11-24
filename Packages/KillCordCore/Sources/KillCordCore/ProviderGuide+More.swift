@@ -83,6 +83,19 @@ extension ProviderInfo {
                     + "billing, so a personal key is the one known to work. It carries your permissions; set an "
                     + "expiry.")
             ]
+        case .hunter:
+            return [
+                SetupStep("Open API keys in Hunter", "In your Hunter dashboard.", link: open("Open Hunter API Keys")),
+                SetupStep("Create a key for Kill Cord and copy it", "Kill Cord reads your account, which Hunter says "
+                    + "is free.")
+            ]
+        case .zerobounce:
+            return [
+                SetupStep("Create an API key in ZeroBounce", "In the API dashboard's Keys Management. The guide shows "
+                    + "where.", link: open("Open ZeroBounce Key Guide")),
+                SetupStep("Copy the key", "ZeroBounce takes the key in the address of each request; Kill Cord "
+                    + "removes it from any error it shows.")
+            ]
         default:
             return []
         }
@@ -102,6 +115,8 @@ extension ProviderInfo {
         case .browseruse: "Browser Use Cloud dashboard"
         case .novita: "Novita AI settings"
         case .baseten: "Baseten workspace"
+        case .hunter: "Hunter dashboard"
+        case .zerobounce: "ZeroBounce API dashboard"
         default: "service's site"
         }
     }
@@ -120,6 +135,8 @@ extension ProviderInfo {
         case .browseruse: nil
         case .novita: nil
         case .baseten: "Reported in whole UTC days."
+        case .hunter: nil
+        case .zerobounce: nil
         default: nil
         }
     }
@@ -135,6 +152,7 @@ extension ProviderInfo {
         case .browseruse: "Shows the credits of the key's project. Each project has its own balance."
         case .novita: "Shows available credit: your top-ups plus any credit limit."
         case .baseten: "Spend is after Baseten credits, across dedicated models, training, Model APIs and Loops."
+        case .hunter: "Shows the team's credits, or its searches when searches and verifications are separate quotas."
         default: nil
         }
     }
@@ -153,6 +171,8 @@ extension ProviderInfo {
         case .browseruse: "Browser Use has no read-only key. This key can run agents and browsers on the project's credits."
         case .novita: "Novita has no read-only key. This key can call models and start GPU instances on your balance."
         case .baseten: "Baseten has no billing-only key. A personal key can do whatever your account can."
+        case .hunter: "Hunter has no read-only key. This key can run searches and manage leads, sequences and keys."
+        case .zerobounce: "ZeroBounce has no read-only key. This key can validate emails on your credits."
         default: nil
         }
     }
