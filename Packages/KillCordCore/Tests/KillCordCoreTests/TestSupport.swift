@@ -86,7 +86,7 @@ enum FakeKeys {
     }
 
     // One case per provider.
-    // swiftlint:disable:next cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     static func credentials(_ provider: ProviderID) -> ProviderCredentials {
         let values: [String: String] = switch provider {
         case .anthropic: ["apiKey": anthropic]
