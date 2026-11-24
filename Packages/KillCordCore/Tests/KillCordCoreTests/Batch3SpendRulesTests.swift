@@ -13,7 +13,8 @@ import Testing
         .fireworks,
         .vapi,
         .retell,
-        .browserbase
+        .browserbase,
+        .resend
     ]
     static let hosts: [ProviderID: Set<String>] = [
         .llamacloud: ["api.cloud.llamaindex.ai", "api.cloud.eu.llamaindex.ai"],
@@ -22,13 +23,15 @@ import Testing
         .fireworks: ["api.fireworks.ai"],
         .vapi: ["api.vapi.ai"],
         .retell: ["api.retellai.com"],
-        .browserbase: ["api.browserbase.com"]
+        .browserbase: ["api.browserbase.com"],
+        .resend: ["api.resend.com"]
     ]
     static let keyPowers: [ProviderID: KeyPower] = [
         .llamacloud: .canManage,
         .cartesia: .canManage,
         .vapi: .canManage,
-        .retell: .readOnlyIfChosen
+        .retell: .readOnlyIfChosen,
+        .resend: .canManage
     ]
 
     @Test(arguments: providers)
