@@ -39,6 +39,7 @@ Vercel env (Production and Preview, all sensitive):
 |---|---|
 | `WAITLIST_DATABASE_URL` | Neon `killcord-cloud` (`royal-cell-20606862`), branch `main`, database `killcord`, as role `kc_waitlist`. Read at build time to open the form, and by the functions. |
 | `WAITLIST_HMAC_KEY` | Signs unsubscribe tokens and hashes IPs. Rotating it breaks links in emails already sent. |
+| `WAITLIST_REPLY_TO` | Optional. Where replies to the welcome email go; set in Vercel so the inbox stays out of the repo. Without it, replies go to the sending address. |
 | `POSTSHIBA_INJECT_AUTH` | `username:password` of a PostShiba SMTP credential on the `coreys-apps` cluster. |
 
 Without the first two the page says signups open soon and the functions answer 503.
