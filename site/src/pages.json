@@ -4,9 +4,9 @@
     "title": "Kill Cord: API Spend in Your Mac Menu Bar, Free",
     "description": "Kill Cord is a free Mac menu bar app that shows today's and this month's API spend across providers, and helps you turn on each provider's own spend caps.",
     "og_title": "Kill Cord: see your API spend before the bill does",
-    "og_description": "Today's and this month's spend for Anthropic, Google, OpenAI, Vercel, Cloudflare, and more in your menu bar, plus a guided audit of each provider's own caps. Free for macOS.",
+    "og_description": "Today's and this month's spend for Anthropic, Google, OpenAI, Vercel, Cloudflare, and more, plus prepaid balances like OpenRouter and DataForSEO, and a guided audit of each provider's own caps. Free for macOS.",
     "body_class": "home",
-    "updated": "2026-11-16"
+    "updated": "2026-11-24"
   },
   {
     "path": "privacy/index.html",

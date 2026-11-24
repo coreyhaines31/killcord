@@ -3,7 +3,7 @@
     <div class="hero-copy">
       <p class="bx-badge"><i aria-hidden="true"></i>Free · Source available · macOS 14+</p>
       <h1 id="hero-title">See your API spend <span>before the bill does.</span></h1>
-      <p class="bx-lede">Today’s and this month’s spend for every provider, one click from your menu bar. Kill Cord says honestly how fresh each number is, and walks you through turning on the caps each provider already offers, since those are what actually stop a runaway bill.</p>
+      <p class="bx-lede">Today’s and this month’s spend for every provider, plus what’s left on your prepaid credits, one click from your menu bar. Kill Cord says honestly how fresh each number is, and walks you through turning on the caps each provider already offers, since those are what actually stop a runaway bill.</p>
       <div class="bx-cta">
         <a class="bx-btn" href="{{download_url}}">Download for Mac <span aria-hidden="true">↓</span></a>
         <a class="bx-btn sec" href="https://github.com/coreyhaines31/killcord">View source <span aria-hidden="true">↗</span></a>
@@ -42,9 +42,55 @@
     <p class="bx-intro">Total spend sits next to a small plug in your menu bar. Click it for each provider’s today and month to date.</p>
     <div class="bx-grid">
       <article class="bx-card"><span class="bx-led">In the menu bar</span><h3>Spend where you already look</h3><p>Today’s total, or this month’s, right in the menu bar. No more opening five billing consoles to add it up.</p></article>
-      <article class="bx-card"><span class="bx-led">Every provider</span><h3>Today and this month, side by side</h3><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon in one panel, each on its own billing clock.</p></article>
+      <article class="bx-card"><span class="bx-led">Every provider</span><h3>Today and this month, side by side</h3><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon in one panel, each on its own billing clock. Connect more than one account per provider, like a work and a personal org.</p></article>
       <article class="bx-card"><span class="bx-led ca">Alerts</span><h3>A nudge at the amount you choose</h3><p>Notifications at daily and monthly amounts you pick, per provider and in total, once per day or month.</p></article>
     </div>
+  </div>
+</section>
+
+<section class="bx-section" id="balances" aria-labelledby="balances-title">
+  <div class="bx-wrap honest-grid">
+    <div>
+      <span class="bx-eyebrow">Balances and credits</span>
+      <h2 id="balances-title">What’s left, next to what’s spent.</h2>
+      <p class="bx-intro">Plenty of the APIs your agents call are prepaid, and when the credits run out, the job stops. Kill Cord shows the balance or credits left on each one, and warns you once when it drops to the amount you pick.</p>
+      <ul class="facts">
+        <li><b>Prepaid balances, built in.</b> OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, and Monid, in dollars, credits, or API units.</li>
+        <li><b>Any service with a balance endpoint.</b> Give Kill Cord an https address and where the number sits in its JSON. It tests the call once before it saves, and marks the number as one it can’t verify.</li>
+        <li><b>Plans with no API.</b> Enter the plan, price, and renewal date for a service like Truelist. Kill Cord marks it “not live”, leaves it out of your totals, and reminds you before it renews.</li>
+      </ul>
+      <p class="fine">Balances are what’s left, not spend, so they never add into your totals.</p>
+    </div>
+    <figure class="stage" aria-labelledby="balances-caption">
+      <div class="bx-mount stage-mount">
+        <span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span>
+        <div class="pop light kc-pop kc-mini">
+          <div class="kc-prov">
+            <div class="kc-head"><b><span class="pmark" aria-hidden="true">O</span>OpenRouter</b><span class="led-l go">Checked</span></div>
+            <p class="kc-sub">Checked 9:21a</p>
+            <div class="kc-pair"><span><small>Balance</small>$18.60 left</span><span><small>Today</small>$1.40</span><span><small>This month</small>$31.40</span></div>
+          </div>
+          <div class="kc-prov">
+            <div class="kc-head"><b><span class="pmark" aria-hidden="true">D</span>DataForSEO</b><span class="led-l go">Checked</span></div>
+            <p class="kc-sub">Checked 9:20a</p>
+            <div class="kc-pair"><span><small>Balance</small>$41.25 left</span></div>
+            <p class="kc-note">$50.00 deposited.</p>
+          </div>
+          <div class="kc-prov">
+            <div class="kc-head"><b><span class="pmark" aria-hidden="true">F</span>Firecrawl</b><span class="led-l go">Checked</span></div>
+            <p class="kc-sub">Checked 9:18a</p>
+            <div class="kc-pair"><span><small>Left this period</small>2,140 credits left</span></div>
+          </div>
+          <div class="kc-prov">
+            <div class="kc-head"><b><span class="pmark" aria-hidden="true">T</span>Truelist</b><span class="led-l ca">Not live</span></div>
+            <p class="kc-sub">Not live: entered by you</p>
+            <div class="kc-pair"><span><small>Starter, $49.00 a month</small>Renews Dec 3</span></div>
+            <p class="kc-note">10,000 credits a month included</p>
+          </div>
+        </div>
+      </div>
+      <figcaption id="balances-caption">Balance, credit, and hand-entered rows from Kill Cord’s panel, with sample data.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -98,23 +144,32 @@
 <section class="bx-section" id="providers" aria-labelledby="providers-title">
   <div class="bx-wrap">
     <span class="bx-eyebrow">Providers</span>
-    <h2 id="providers-title">Eight providers, read only.</h2>
-    <p class="bx-intro">Kill Cord reads each provider’s own billing data with a key you create. Here’s what it reads, and what it can and can’t see.</p>
+    <h2 id="providers-title">Fourteen services built in, read only.</h2>
+    <p class="bx-intro">Kill Cord reads each provider’s own billing or balance data with a key you create. Here’s what it reads, and what it can and can’t see. Anything else connects as a custom service or a plan you enter by hand.</p>
     <div class="table-wrap" role="region" aria-label="Provider coverage" tabindex="0">
       <table class="coverage">
         <thead><tr><th scope="col">Provider</th><th scope="col">Spend source</th><th scope="col">Key you need</th><th scope="col">Dollars?</th></tr></thead>
         <tbody>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-anthropic"/></svg></span>Anthropic</th><td data-label="Spend source">Admin API cost report</td><td data-label="Key you need">Service account or Admin API key</td><td data-label="Dollars?">Yes, within about 5 minutes</td></tr>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-google"/></svg></span>Google Cloud and Gemini</th><td data-label="Spend source">Cloud Billing export to BigQuery</td><td data-label="Key you need">Service account key with read access to the export</td><td data-label="Dollars?">Yes, after one-time setup; hours behind</td></tr>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-openai"/></svg></span>OpenAI</th><td data-label="Spend source">Organization costs</td><td data-label="Key you need">Admin API key</td><td data-label="Dollars?">Yes</td></tr>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-vercel"/></svg></span>Vercel</th><td data-label="Spend source">Billing charges (FOCUS)</td><td data-label="Key you need">Access token</td><td data-label="Dollars?">Yes, daily</td></tr>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-cloudflare"/></svg></span>Cloudflare</th><td data-label="Spend source">Billable usage (pay-as-you-go accounts)</td><td data-label="Key you need">API token with Billing Read</td><td data-label="Dollars?">Yes, daily; by billing period</td></tr>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-twilio"/></svg></span>Twilio</th><td data-label="Spend source">Usage records (total price)</td><td data-label="Key you need">API key or Auth Token</td><td data-label="Dollars?">Yes</td></tr>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-neon"/></svg></span>Neon</th><td data-label="Spend source">Consumption history</td><td data-label="Key you need">Organization API key</td><td data-label="Dollars?">No: usage only</td></tr>
-          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-supabase"/></svg></span>Supabase</th><td data-label="Spend source">None</td><td data-label="Key you need">Nothing to connect</td><td data-label="Dollars?">No: no billing API (caps audit only)</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-anthropic"/></svg></span><a href="/track/anthropic/">Anthropic</a></th><td data-label="Spend source">Admin API cost report</td><td data-label="Key you need">Service account or Admin API key</td><td data-label="Dollars?">Yes, within about 5 minutes</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-google"/></svg></span><a href="/track/google-cloud/">Google Cloud and Gemini</a></th><td data-label="Spend source">Cloud Billing export to BigQuery</td><td data-label="Key you need">Service account key with read access to the export</td><td data-label="Dollars?">Yes, after one-time setup; hours behind</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-openai"/></svg></span><a href="/track/openai/">OpenAI</a></th><td data-label="Spend source">Organization costs</td><td data-label="Key you need">Admin API key</td><td data-label="Dollars?">Yes</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-vercel"/></svg></span><a href="/track/vercel/">Vercel</a></th><td data-label="Spend source">Billing charges (FOCUS)</td><td data-label="Key you need">Access token</td><td data-label="Dollars?">Yes, daily</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-cloudflare"/></svg></span><a href="/track/cloudflare/">Cloudflare</a></th><td data-label="Spend source">Billable usage (pay-as-you-go accounts)</td><td data-label="Key you need">API token with Billing Read</td><td data-label="Dollars?">Yes, daily; by billing period</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-twilio"/></svg></span><a href="/track/twilio/">Twilio</a></th><td data-label="Spend source">Usage records (total price)</td><td data-label="Key you need">API key or Auth Token</td><td data-label="Dollars?">Yes</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-neon"/></svg></span><a href="/track/neon/">Neon</a></th><td data-label="Spend source">Consumption history</td><td data-label="Key you need">Organization API key</td><td data-label="Dollars?">No: usage only</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true"><svg viewBox="0 0 10 10"><use href="#m-supabase"/></svg></span><a href="/track/supabase/">Supabase</a></th><td data-label="Spend source">None</td><td data-label="Key you need">Nothing to connect</td><td data-label="Dollars?">No: no billing API (caps audit only)</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">O</span><a href="/track/openrouter/">OpenRouter</a></th><td data-label="Spend source">Key limits and usage</td><td data-label="Key you need">API key (reads that key only)</td><td data-label="Dollars?">Balance left on the key, plus its spend today and this month</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">D</span><a href="/track/dataforseo/">DataForSEO</a></th><td data-label="Spend source">Account data (a free call)</td><td data-label="Key you need">API login and password</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">A</span><a href="/track/ahrefs/">Ahrefs</a></th><td data-label="Spend source">Limits and usage (a free call)</td><td data-label="Key you need">API key</td><td data-label="Dollars?">No: API units left</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">F</span><a href="/track/firecrawl/">Firecrawl</a></th><td data-label="Spend source">Team credit usage</td><td data-label="Key you need">API key</td><td data-label="Dollars?">No: credits left</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">T</span><a href="/track/treg/">treg</a></th><td data-label="Spend source">Team balance</td><td data-label="Key you need">Team or agent token</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">M</span><a href="/track/monid/">Monid</a></th><td data-label="Spend source">Wallet balance</td><td data-label="Key you need">API key</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">+</span>Custom service</th><td data-label="Spend source">The https address you enter</td><td data-label="Key you need">Whatever that service uses</td><td data-label="Dollars?">What its reply says; Kill Cord can’t verify it</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">#</span>Manual entry</th><td data-label="Spend source">You</td><td data-label="Key you need">Nothing</td><td data-label="Dollars?">No: not live, never in totals</td></tr>
         </tbody>
       </table>
     </div>
+    <p class="band-note">Using a service that isn’t listed? <a href="/track/">The API spend directory</a> covers more than 60 API services: whether each has a spend or balance API, which key it needs, and which caps it offers.</p>
     <p class="fine">Logos are trademarks of their owners and are used only to identify the services Kill Cord reads. Kill Cord isn’t affiliated with or endorsed by them.</p>
   </div>
 </section>
@@ -153,7 +208,8 @@
     <div class="bx-faq faq-list">
       <details><summary>Does Kill Cord stop my spending?</summary><p>No. Kill Cord only reads billing and never changes a provider setting. The hard stops are each provider’s own caps, and Kill Cord’s caps audit walks you through turning them on and opens the right console page.</p></details>
       <details><summary>Does it watch my spend while my Mac is asleep?</summary><p>No. Kill Cord checks only while your Mac is awake. After sleep or time offline, numbers say “Last checked 11:42p, not live” until the next check, which happens about 10 seconds after wake. That’s why native caps matter: they keep working when your Mac doesn’t.</p></details>
-      <details><summary>Which providers does it support?</summary><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon for spend, plus Supabase in the caps audit. Neon reports usage rather than dollars, and Supabase has no billing API. <a href="#providers">See what each one needs.</a></p></details>
+      <details><summary>Which providers does it support?</summary><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon for spend, plus Supabase in the caps audit. Neon reports usage rather than dollars, and Supabase has no billing API. For prepaid balances: OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, and Monid. Anything else connects as a custom service with a balance endpoint, or as a plan you enter by hand. <a href="#providers">See what each one needs.</a></p></details>
+      <details><summary>Can I connect more than one account?</summary><p>Yes. Add as many accounts per provider as you need, like a work and a personal Anthropic organization. Each one has its own name, key, alerts, and numbers.</p></details>
       <details><summary>What key do I need?</summary><p>A billing key for each provider you connect. OpenAI needs an admin key. Anthropic needs a service account, personal, or Admin API key that isn’t scoped to a workspace, in an organization rather than an Individual Org. Cloudflare needs a token with Billing Read, and Google needs a service account that can read your billing export. Never paste a key into a chat or an AI agent to set Kill Cord up. If you already have, revoke it and create a new one.</p></details>
       <details><summary>Is my key safe?</summary><p>Each key lives in your login Keychain and goes only to its own provider’s billing API over HTTPS. It never appears in files, preferences, logs, error messages, or exports. If a key ever leaks, revoke it in the provider’s console.</p></details>
       <details><summary>Why does Google read low?</summary><p>Google’s billing export runs hours behind, typically up to a day, and starts a few hours after you turn it on. Kill Cord shows Google’s own “data current through” time so you know how far behind it is.</p></details>
