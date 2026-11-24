@@ -47,12 +47,13 @@ builtin_shows = {
     'runway': 'your credits left, with a labeled dollar estimate',
     'serpapi': 'the searches you have left this month, and when your plan renews',
     'bright-data': 'the funds left in your account, in dollars',
+    'scrapecreators': 'the credits you have left',
 }
 # Built-ins with no native cap in Kill Cord's caps audit: a prepaid balance stops at zero on its own.
-no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi'}
+no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi', 'scrapecreators'}
 caps_only = {'supabase'}
 builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Vercel, Cloudflare, Twilio, Neon, '
-                 'OpenRouter, fal, ElevenLabs, Runway, Deepgram, Apify, Tavily, SerpApi, Bright Data, DataForSEO, '
+                 'OpenRouter, fal, ElevenLabs, Runway, Deepgram, Apify, Tavily, SerpApi, Bright Data, ScrapeCreators, DataForSEO, '
                  'Ahrefs, Firecrawl, treg, and Monid')
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),

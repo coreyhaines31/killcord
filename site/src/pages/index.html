@@ -55,7 +55,7 @@
       <h2 id="balances-title">What’s left, next to what’s spent.</h2>
       <p class="bx-intro">Plenty of the APIs your agents call are prepaid, and when the credits run out, the job stops. Kill Cord shows the balance or credits left on each one, and warns you once when it drops to the amount you pick.</p>
       <ul class="facts">
-        <li><b>Prepaid balances, built in.</b> OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, and Monid, in dollars, credits, or API units.</li>
+        <li><b>Prepaid balances, built in.</b> OpenRouter, xAI, DeepSeek, fal, ElevenLabs, Runway, Deepgram, Tavily, SerpApi, Bright Data, ScrapeCreators, DataForSEO, Ahrefs, Firecrawl, treg, and Monid, in dollars, credits, or API units.</li>
         <li><b>Any service with a balance endpoint.</b> Give Kill Cord an https address and where the number sits in its JSON. It tests the call once before it saves, and marks the number as one it can’t verify.</li>
         <li><b>Plans with no API.</b> Enter the plan, price, and renewal date for a service like Truelist. Kill Cord marks it “not live”, leaves it out of your totals, and reminds you before it renews.</li>
       </ul>
@@ -162,7 +162,7 @@
 <section class="bx-section" id="providers" aria-labelledby="providers-title">
   <div class="bx-wrap">
     <span class="bx-eyebrow">Providers</span>
-    <h2 id="providers-title">Fourteen services built in. Kill Cord only reads billing.</h2>
+    <h2 id="providers-title">Twenty-five services built in. Kill Cord only reads billing.</h2>
     <p class="bx-intro">Kill Cord reads each provider’s own billing or balance data with a key you create. Here’s what it reads, and what it can and can’t see. Anything else connects as a custom service or a plan you enter by hand.</p>
     <div class="table-wrap" role="region" aria-label="Provider coverage" tabindex="0">
       <table class="coverage">
@@ -182,12 +182,23 @@
           <tr><th scope="row"><span class="pmark" aria-hidden="true">F</span><a href="/track/firecrawl/">Firecrawl</a></th><td data-label="Spend source">Team credit usage</td><td data-label="Key you need">API key</td><td data-label="Dollars?">No: credits left</td></tr>
           <tr><th scope="row"><span class="pmark" aria-hidden="true">T</span><a href="/track/treg/">treg</a></th><td data-label="Spend source">Team balance</td><td data-label="Key you need">Team or agent token</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
           <tr><th scope="row"><span class="pmark" aria-hidden="true">M</span><a href="/track/monid/">Monid</a></th><td data-label="Spend source">Wallet balance</td><td data-label="Key you need">API key</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">F</span><a href="/track/fal/">fal</a></th><td data-label="Spend source">Account credits (billing API)</td><td data-label="Key you need">API key with the BILLING preset</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">E</span><a href="/track/elevenlabs/">ElevenLabs</a></th><td data-label="Spend source">Subscription credits</td><td data-label="Key you need">API key limited to User read</td><td data-label="Dollars?">No: credits left this period</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">X</span><a href="/track/xai/">xAI</a></th><td data-label="Spend source">Prepaid balance (Management API)</td><td data-label="Key you need">Management key and team ID</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">D</span><a href="/track/deepseek/">DeepSeek</a></th><td data-label="Spend source">Account balance</td><td data-label="Key you need">API key</td><td data-label="Dollars?">Balance left, in dollars or yuan</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">A</span><a href="/track/apify/">Apify</a></th><td data-label="Spend source">Usage this cycle and the usage limit</td><td data-label="Key you need">API token</td><td data-label="Dollars?">Yes, this usage cycle, plus what’s left before the limit</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">T</span>Tavily</th><td data-label="Spend source">Plan credits this cycle</td><td data-label="Key you need">API key</td><td data-label="Dollars?">No: plan credits left</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">D</span><a href="/track/deepgram/">Deepgram</a></th><td data-label="Spend source">Project balances</td><td data-label="Key you need">API key with the Admin role</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">R</span><a href="/track/runway/">Runway</a></th><td data-label="Spend source">Organization credits</td><td data-label="Key you need">API key</td><td data-label="Dollars?">Credits left, with a labeled dollar estimate</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">S</span><a href="/track/serpapi/">SerpApi</a></th><td data-label="Spend source">Account searches (a free call)</td><td data-label="Key you need">Private API key</td><td data-label="Dollars?">No: searches left this month</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">B</span><a href="/track/bright-data/">Bright Data</a></th><td data-label="Spend source">Account balance</td><td data-label="Key you need">API key with the Finance level</td><td data-label="Dollars?">Balance left, in dollars</td></tr>
+          <tr><th scope="row"><span class="pmark" aria-hidden="true">S</span><a href="/track/scrapecreators/">ScrapeCreators</a></th><td data-label="Spend source">Credit balance (a free call)</td><td data-label="Key you need">API key</td><td data-label="Dollars?">No: credits left</td></tr>
           <tr><th scope="row"><span class="pmark" aria-hidden="true">+</span>Custom service</th><td data-label="Spend source">The https address you enter</td><td data-label="Key you need">Whatever that service uses</td><td data-label="Dollars?">What its reply says; Kill Cord can’t verify it</td></tr>
           <tr><th scope="row"><span class="pmark" aria-hidden="true">#</span>Manual entry</th><td data-label="Spend source">You</td><td data-label="Key you need">Nothing</td><td data-label="Dollars?">No: not live, never in totals</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="band-note">Using a service that isn’t listed? <a href="/track/">The API spend directory</a> covers more than 60 API services: whether each has a spend or balance API, which key it needs, and which caps it offers.</p>
+    <p class="band-note">Using a service that isn’t listed? <a href="/track/">The API spend directory</a> covers more than 65 API services: whether each has a spend or balance API, which key it needs, and which caps it offers.</p>
     <p class="fine">Logos are trademarks of their owners and are used only to identify the services Kill Cord reads. Kill Cord isn’t affiliated with or endorsed by them.</p>
   </div>
 </section>
@@ -226,7 +237,7 @@
     <div class="bx-faq faq-list">
       <details><summary>Does Kill Cord stop my spending?</summary><p>No. Kill Cord only reads billing and never changes a provider setting. The hard stops are each provider’s own caps, and Kill Cord’s caps audit walks you through turning them on and opens the right console page.</p></details>
       <details><summary>Does it watch my spend while my Mac is asleep?</summary><p>No. Kill Cord checks only while your Mac is awake. After sleep or time offline, numbers say “Last checked 11:42p, not live” until the next check, which happens about 10 seconds after wake. That’s why native caps matter: they keep working when your Mac doesn’t.</p></details>
-      <details><summary>Which providers does it support?</summary><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon for spend, plus Supabase in the caps audit. Neon reports usage rather than dollars, and Supabase has no billing API. For prepaid balances: OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, and Monid. Anything else connects as a custom service with a balance endpoint, or as a plan you enter by hand. <a href="#providers">See what each one needs.</a></p></details>
+      <details><summary>Which providers does it support?</summary><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon for spend, plus Supabase in the caps audit. Neon reports usage rather than dollars, and Supabase has no billing API. Apify reports this usage cycle’s spend and its usage limit. For prepaid balances and credits: OpenRouter, xAI, DeepSeek, fal, ElevenLabs, Runway, Deepgram, Tavily, SerpApi, Bright Data, ScrapeCreators, DataForSEO, Ahrefs, Firecrawl, treg, and Monid. Services with no billing API, like Groq, Replicate, or Perplexity, can be entered by hand from a preset, and anything else connects as a custom service with a balance endpoint. <a href="#providers">See what each one needs.</a></p></details>
       <details><summary>Can I connect more than one account?</summary><p>Yes. Add as many accounts per provider as you need, like a work and a personal Anthropic organization. Each one has its own name, key, alerts, and numbers.</p></details>
       <details><summary>What key do I need?</summary><p>A billing key for each provider you connect. OpenAI needs an admin key. Anthropic needs a service account, personal, or Admin API key that isn’t scoped to a workspace, in an organization rather than an Individual Org. Cloudflare needs a token with Billing Read, and Google needs a service account that can read your billing export. Never paste a key into a chat or an AI agent to set Kill Cord up. If you already have, revoke it and create a new one.</p></details>
       <details><summary>Is my key safe?</summary><p>Each key lives in your login Keychain and goes only to its own provider’s billing API over HTTPS. It never appears in files, preferences, logs, error messages, or exports. If a key ever leaks, revoke it in the provider’s console.</p></details>

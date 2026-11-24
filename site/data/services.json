@@ -2442,7 +2442,7 @@
     "spend_api": {
       "status": "yes",
       "endpoint": "GET https://api.scrapecreators.com/v1/account/credit-balance",
-      "returns": "`credits_remaining` (balance), `credits_charged` (credits this call used) and `creditCount` (not explained in the docs).",
+      "returns": "`creditCount` (credits left) and a `message`",
       "units": "credits",
       "auth": "x-api-key: <API key>",
       "key_type": "API key",
@@ -2451,20 +2451,21 @@
       "read_only_note": null,
       "rate_limit": "Scrape Creators enforces no API rate limits. The docs recommend staying under 500 concurrent requests.",
       "lag": "unknown",
-      "cost_to_call": "1 credit per call",
-      "notes": "A 402 response means you need to buy more credits. The docs describe no auto top-up or spend cap."
+      "cost_to_call": "free",
+      "notes": "The docs say checking your balance is free and does not deduct credits. A 402 response means you need to buy more credits. The docs describe no auto top-up or spend cap."
     },
     "native_caps": [],
     "caps_status": "none-documented",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
-      "https://scrapecreators.com/scrape-creators/endpoints/get-credit-balance",
-      "https://docs.scrapecreators.com/"
+      "https://docs.scrapecreators.com/",
+      "https://docs.scrapecreators.com/v1/credit-balance",
+      "https://docs.scrapecreators.com/openapi.json"
     ],
-    "last_verified": "2026-11-17"
+    "last_verified": "2026-11-24"
   },
   {
     "slug": "scraperapi",
