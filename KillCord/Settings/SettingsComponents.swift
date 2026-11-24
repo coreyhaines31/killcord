@@ -16,17 +16,17 @@ extension SignalLight {
 extension ProviderID {
     /// The asset catalog name of the provider's official mark. `docs/third-party-marks.md` gives each source.
     /// Nil for custom and manual connections, which aren't a vendor and draw a symbol instead, and for vendors
-    /// with no usable official symbol (Bright Data's logo is a wordmark, ScrapeCreators' a small raster tile) or
-    /// whose terms ask permission before logo use (Stability AI), which draw their first letter.
+    /// with no usable official symbol (Bright Data's logo is a wordmark, ScrapeCreators' a small raster tile),
+    /// which draw their first letter.
     var markAssetName: String? {
         switch self {
         case .custom, .manual, .brightdata, .scrapecreators: nil
         // Batch 4 vendors with no usable vector symbol: Telnyx's logo is a wordmark; HeyGen, ZeroBounce and Prospeo
         // publish raster logos only; lemlist's symbol is a white cut-out on a blue tile; SearchApi's is drawn through masks.
         case .telnyx, .heygen, .zerobounce, .prospeo, .lemlist, .searchapi: nil
-        // This batch's vendors that draw their letter.
-        case .stability, .moonshot, .scrapingbee, .scrapfly, .kie, .bland, .cartesia, .together, .retell, .postmark,
-             .huggingface, .magister: nil
+        // This batch's vendors with no usable one-colour vector: raster only, a wordmark, or colours that carry
+        // the shape.
+        case .scrapingbee, .kie, .bland, .postmark: nil
         default: "mark-\(rawValue)"
         }
     }
@@ -54,7 +54,7 @@ extension ProviderID {
 extension ManualPreset {
     /// Presets whose service publishes a usable official symbol. The rest draw their first letter.
     static let marked: Set<String> = ["assemblyai", "cerebras", "cohere", "e2b", "jina", "modal", "pinecone",
-                                      "twelvelabs", "typesafe", "unstructured"]
+                                      "truelist", "twelvelabs", "typesafe", "unstructured"]
 
     /// The asset catalog name of the service's official mark. `docs/third-party-marks.md` gives each source.
     var markAssetName: String? { Self.marked.contains(id) ? "preset-\(id)" : nil }
