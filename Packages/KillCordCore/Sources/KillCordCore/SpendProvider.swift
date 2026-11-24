@@ -135,7 +135,7 @@ extension SpendProvider {
 
 public enum SpendProviders {
     // One case per provider.
-    // swiftlint:disable:next cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     public static func make(_ id: ProviderID, http: HTTPClient) -> SpendProvider {
         switch id {
         case .anthropic: AnthropicProvider(http: http)
