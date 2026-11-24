@@ -131,6 +131,19 @@ extension ProviderInfo {
                 + "credits used, not money or credits left."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://play.cartesia.ai/usage")
+        ),
+        ProviderInfo(
+            id: .together, name: "Together AI", capability: .monthDollars,
+            fields: [apiKeyField("Together API key")],
+            keyKind: "API key",
+            keyURL: url("https://api.together.ai/settings/projects/~current/api-keys"),
+            keyPowerWarning: "Together has no read-only key. Its docs say anyone holding a key \"has full access to "
+                + "its project's resources and can spend your credit balance\". The billing report covers the "
+                + "whole organization, and any project's key can read it. Kill Cord only reads the report.",
+            lag: ProviderLag(typical: 24 * 3600, note: "Together finalizes daily usage through the end of "
+                + "yesterday (UTC), so this month's number leaves out today."),
+            billingTimeZone: utc, minimumRefreshInterval: 60 * 60,
+            consoleURL: url("https://api.together.ai/settings/organization/~current/billing")
         )
     ]
 }

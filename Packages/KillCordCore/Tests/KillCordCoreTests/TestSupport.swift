@@ -99,7 +99,8 @@ enum FakeKeys {
     static let bland = "org_s_TEST-bland-secret-0033"
     static let llamacloud = "llx-TEST-llamacloud-secret-0034"
     static let cartesia = "sk_car_admin_TEST-cartesia-secret-0035"
-    static let batch3 = [stability, moonshot, exa, scrapingbee, scrapfly, kie, bland, llamacloud, cartesia]
+    static let together = "together-TEST-secret-0036"
+    static let batch3 = [stability, moonshot, exa, scrapingbee, scrapfly, kie, bland, llamacloud, cartesia, together]
 
     static var googleJSON: String {
         let object: [String: String] = [
@@ -171,6 +172,7 @@ enum FakeKeys {
         case .bland: ["apiKey": bland]
         case .llamacloud: ["apiKey": llamacloud]
         case .cartesia: ["apiKey": cartesia]
+        case .together: ["apiKey": together]
         case .custom: ["serviceName": "Example", "url": "https://api.example.com/v1/balance", "key": custom,
                        "remainingPath": "data.balance"]
         // Values long enough not to turn up by chance inside an id or a date.
