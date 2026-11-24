@@ -150,6 +150,19 @@ extension CapsCatalog {
                     "Leave auto-recharge off, and buy only the credits you're willing to spend."],
             caveat: "Together says this \"does not guarantee an exact spending cap\". Budgets and spend alerts "
                 + "aren't available yet, and keys can't have their own limits."
+        ),
+        // Fireworks AI. https://docs.fireworks.ai/guides/quotas_usage/account-quotas
+        CapControl(
+            id: FireworksProvider.spendLimitCapID, provider: .fireworks, name: "Monthly spend limit",
+            summary: "When usage reaches 100% of the limit, Fireworks pauses all API requests across serverless "
+                + "inference, deployments, and training. It emails a warning at 80%.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://fireworks.ai/billing"),
+            docURL: url("https://docs.fireworks.ai/guides/quotas_usage/account-quotas"),
+            steps: ["Set the limit with firectl: firectl quota update monthly-spend-usd --value <amount>.",
+                    "Add notification amounts on the Billing page if you want more warnings."],
+            caveat: "Kill Cord reads the monthly-spend-usd quota from Fireworks' API. Enterprise accounts get "
+                + "alerts only."
         )
     ]
 }

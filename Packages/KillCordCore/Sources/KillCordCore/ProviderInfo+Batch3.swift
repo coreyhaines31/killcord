@@ -144,6 +144,25 @@ extension ProviderInfo {
                 + "yesterday (UTC), so this month's number leaves out today."),
             billingTimeZone: utc, minimumRefreshInterval: 60 * 60,
             consoleURL: url("https://api.together.ai/settings/organization/~current/billing")
+        ),
+        ProviderInfo(
+            id: .fireworks, name: "Fireworks AI", capability: .dollars,
+            fields: [
+                apiKeyField("Fireworks API key", help: "A key from a service account or user with the Inference user role."),
+                CredentialField(id: "accountID", label: "Account ID", placeholder: "my-account", isSecret: false,
+                                isOptional: true, help: "Needed only if the key sees more than one account.")
+            ],
+            keyKind: "API key from an Inference user",
+            keyURL: url("https://app.fireworks.ai/settings/users/api-keys"),
+            keyPowerWarning: "Fireworks has no read-only or billing-only key: a key carries its user's role, and "
+                + "Fireworks says any key on the account can read billing. The least-powerful role, Inference user, "
+                + "\"can view all resources and run inference, but cannot create or modify resources\", so this "
+                + "key can still run models on your account. Kill Cord only reads the billing summary and the spend "
+                + "limit.",
+            lag: ProviderLag(typical: 60 * 60, note: "Fireworks doesn't say how far behind the billing summary "
+                + "runs. Its amounts are before credits are applied, so they can differ from the invoice."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://fireworks.ai/billing")
         )
     ]
 }

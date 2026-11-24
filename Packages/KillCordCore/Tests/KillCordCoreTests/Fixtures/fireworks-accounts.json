@@ -1,0 +1,12 @@
+{
+  "accounts": [
+    {
+      "name": "accounts/kc-test",
+      "displayName": "KC Test",
+      "accountType": "ACCOUNT_TYPE_UNSPECIFIED",
+      "state": "READY"
+    }
+  ],
+  "nextPageToken": "",
+  "totalSize": 1
+}
