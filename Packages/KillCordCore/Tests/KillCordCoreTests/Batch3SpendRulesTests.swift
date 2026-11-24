@@ -6,15 +6,28 @@ import Testing
 /// `BalanceProviderRulesTests`): https only, its documented host, a key-power label, and no network for a
 /// missing key.
 @Suite struct Batch3SpendRulesTests {
-    static let providers: [ProviderID] = [.llamacloud, .cartesia, .together, .fireworks, .vapi]
+    static let providers: [ProviderID] = [
+        .llamacloud,
+        .cartesia,
+        .together,
+        .fireworks,
+        .vapi,
+        .retell
+    ]
     static let hosts: [ProviderID: Set<String>] = [
         .llamacloud: ["api.cloud.llamaindex.ai", "api.cloud.eu.llamaindex.ai"],
         .cartesia: ["api.cartesia.ai"],
         .together: ["api.together.ai"],
         .fireworks: ["api.fireworks.ai"],
-        .vapi: ["api.vapi.ai"]
+        .vapi: ["api.vapi.ai"],
+        .retell: ["api.retellai.com"]
     ]
-    static let keyPowers: [ProviderID: KeyPower] = [.llamacloud: .canManage, .cartesia: .canManage, .vapi: .canManage]
+    static let keyPowers: [ProviderID: KeyPower] = [
+        .llamacloud: .canManage,
+        .cartesia: .canManage,
+        .vapi: .canManage,
+        .retell: .readOnlyIfChosen
+    ]
 
     @Test(arguments: providers)
     func onlyCallsItsDocumentedHost(_ provider: ProviderID) async throws {

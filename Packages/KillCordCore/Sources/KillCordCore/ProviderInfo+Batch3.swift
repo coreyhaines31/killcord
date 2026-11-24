@@ -176,6 +176,20 @@ extension ProviderInfo {
                 + "counted, not other usage."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://dashboard.vapi.ai")
+        ),
+        ProviderInfo(
+            id: .retell, name: "Retell AI", capability: .dollars,
+            fields: [apiKeyField("Retell API key", help: "A key with only the History › Read permission.")],
+            keyKind: "API key with only History › Read",
+            keyURL: url("https://dashboard.retellai.com"),
+            keyPowerWarning: "Retell keys have full access by default, but can be limited by permission. Retell says "
+                + "\"a key that only pulls call history needs just History › Read\", which covers call and chat "
+                + "history, transcripts, recordings, and call metadata. That's sensitive, but it can't start calls or "
+                + "change agents. Kill Cord only adds up call costs.",
+            lag: ProviderLag(typical: 0, note: "A call's cost appears once it ends. Chats and subscription items "
+                + "such as phone numbers aren't counted."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://dashboard.retellai.com")
         )
     ]
 }

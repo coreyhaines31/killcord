@@ -176,6 +176,28 @@ extension CapsCatalog {
                     "Leave auto-reload off, or set a threshold and top-up you accept."],
             caveat: "Vapi documents no spend limit you set yourself. With auto-reload on, it buys credits every "
                 + "time the balance reaches your threshold."
+        ),
+        // Retell AI. https://docs.retellai.com/accounts/billing
+        CapControl(
+            id: "retell.monthly-budget", provider: .retell, name: "Monthly budget",
+            summary: "At 100% of the budget, Retell pauses calls and API requests until the next calendar month "
+                + "(UTC), even with credits left. It emails at 80% and 100%.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://dashboard.retellai.com"),
+            docURL: url("https://docs.retellai.com/accounts/billing"),
+            steps: ["Open Billing in the Retell dashboard.", "Set a monthly budget, from $10 to $100,000."],
+            caveat: "Workspaces without the budget button have no monthly cap. While it's paused, Kill Cord can't "
+                + "read the call list either."
+        ),
+        CapControl(
+            id: "retell.auto-recharge", provider: .retell, name: "Auto recharge off",
+            summary: "With auto recharge off, calls, chat and other usage stop when the credits reach $0, until you "
+                + "buy more.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://dashboard.retellai.com"),
+            docURL: url("https://docs.retellai.com/accounts/billing"),
+            steps: ["Open Billing in the Retell dashboard.", "Leave auto recharge off, or set a refill you accept."],
+            caveat: nil
         )
     ]
 }
