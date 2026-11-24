@@ -218,15 +218,30 @@ enum ProviderErrorDetail {
             return message
         }
         if let message = object["message"] as? String { return message }
-        return object["error"] as? String
+        if let message = object["error"] as? String { return message }
+        // `{detail: "…"}`, `{detail: {message | error}}` and `{detail: [{msg}]}` (ElevenLabs, Tavily), and
+        // Deepgram's older `{err_msg}`.
+        if let detail = object["detail"] as? String { return detail }
+        if let detail = object["detail"] as? [String: Any] {
+            return detail["message"] as? String ?? detail["error"] as? String
+        }
+        if let details = object["detail"] as? [[String: Any]], let message = details.first?["msg"] as? String {
+            return message
+        }
+        return object["err_msg"] as? String
     }
 
     private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent"]
 
     /// Header values, whole and split on spaces ("Bearer abc" gives "abc"), plus what a Basic auth token
-    /// decodes to ("sid:token" gives both halves). Longest first.
+    /// decodes to ("sid:token" gives both halves), and query values (SerpApi takes its key as `api_key=`).
+    /// Longest first.
     private static func sensitiveValues(in request: HTTPRequest) -> [String] {
         var values: Set<String> = []
+        let query = URLComponents(url: request.url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        for item in query {
+            if let value = item.value { values.insert(value) }
+        }
         for (name, value) in request.headers where !plainHeaders.contains(name.lowercased()) {
             values.insert(value)
             for word in value.split(separator: " ").map(String.init) {
