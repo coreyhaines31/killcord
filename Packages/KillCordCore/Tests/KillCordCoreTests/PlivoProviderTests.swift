@@ -42,6 +42,37 @@ import Testing
         #expect(http.requests.isEmpty)
     }
 
+    @Test func aPostpaidAccountNeverConfirmsTheCreditsCap() async {
+        let http = MockHTTPClient { _ in HTTPResponse(status: 200, json: #"{"auto_recharge":false,"billing_mode":"postpaid"}"#) }
+        let caps = await PlivoProvider(http: http).verifyCaps(FakeKeys.credentials(.plivo), now: testNow)
+        guard case .off = caps.first?.status else {
+            Issue.record("Expected off, got \(caps)")
+            return
+        }
+    }
+
+    @Test func anAuthIDWithANewlineIsRefused() async {
+        let http = MockHTTPClient { _ in HTTPResponse(status: 200) }
+        let credentials = ProviderCredentials(provider: .plivo, values: ["authID": "MA12\nX", "authToken": FakeKeys.plivo])
+        await #expect(throws: SpendError.invalidKey) {
+            try await PlivoProvider(http: http).fetchSpend(credentials, now: testNow)
+        }
+        #expect(http.requests.isEmpty)
+    }
+
+    @Test func anEchoedTokenIsRedacted() async {
+        let body = #"{"error":"Bad token \#(FakeKeys.plivo)"}"#
+        let http = MockHTTPClient { _ in HTTPResponse(status: 400, json: body) }
+        do {
+            _ = try await PlivoProvider(http: http).fetchSpend(FakeKeys.credentials(.plivo), now: testNow)
+            Issue.record("Expected an error")
+        } catch let error as SpendError {
+            #expect(!error.message(for: .plivo).contains(FakeKeys.plivo))
+        } catch {
+            Issue.record("Unexpected \(error)")
+        }
+    }
+
     @Test func autoRechargeOffConfirmsTheCap() async throws {
         let http = MockHTTPClient(routes: ["/v1/Account/MAKCTESTAUTHID0115AB": try json("plivo-account.json")])
         let caps = await PlivoProvider(http: http).verifyCaps(FakeKeys.credentials(.plivo), now: testNow)

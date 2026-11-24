@@ -21,9 +21,11 @@ public struct PlivoProvider: SpendProvider {
     }
 
     struct Account: Decodable {
-        let cashCredits: FlexibleDecimal
+        let cashCredits: FlexibleDecimal?
         let autoRecharge: Bool?
         let billingMode: String?
+
+        var isPostpaid: Bool { billingMode?.lowercased() == "postpaid" }
 
         enum CodingKeys: String, CodingKey {
             case cashCredits = "cash_credits"
@@ -34,14 +36,15 @@ public struct PlivoProvider: SpendProvider {
 
     static func accountURL(authID: String) throws -> URL {
         // An Auth ID is letters and digits; anything else would change the path.
-        guard authID.range(of: "^[A-Za-z0-9]+$", options: .regularExpression) != nil else {
+        guard authID.range(of: "\\A[A-Za-z0-9]+\\z", options: .regularExpression) != nil,
+              let url = URL(string: "https://api.plivo.com/v1/Account/\(authID)/") else {
             throw SpendError.invalidKey
         }
-        return URL(string: "https://api.plivo.com/v1/Account/\(authID)/")!
+        return url
     }
 
     func read(_ credentials: ProviderCredentials) async throws -> Account {
-        let authID = try credentials.require("authID")
+        let authID = try credentials.require("authID").trimmingCharacters(in: .whitespacesAndNewlines)
         let token = try credentials.require("authToken")
         let basic = Data("\(authID):\(token)".utf8).base64EncodedString()
         return try await api.get(Account.self, try Self.accountURL(authID: authID),
@@ -54,16 +57,22 @@ public struct PlivoProvider: SpendProvider {
 
     public func fetchSpend(_ credentials: ProviderCredentials, now: Date) async throws -> SpendSnapshot {
         let account = try await read(credentials)
-        if account.billingMode?.lowercased() == "postpaid" {
+        if account.isPostpaid {
             throw SpendError.planNotSupported("Plivo bills this account after use, so its credits don't limit "
                 + "spending. Kill Cord shows prepaid Plivo accounts only.")
         }
-        let balance = Balance.usd(account.cashCredits.value)
+        guard let credits = account.cashCredits?.value else { throw SpendError.unexpectedResponse }
+        let balance = Balance.usd(credits)
         return SpendSnapshot(provider: id, today: nil, month: nil, balance: balance, fetchedAt: now)
     }
 
     public func verifyCaps(_ credentials: ProviderCredentials, now: Date) async -> [CapVerification] {
         guard let account = try? await read(credentials), let autoRecharge = account.autoRecharge else { return [] }
+        // A postpaid account is invoiced, so running out of credits stops nothing.
+        if account.isPostpaid {
+            return [CapVerification(capID: Self.autoRechargeCapID, status: .off("Plivo invoices this account after "
+                + "use, so its credits don't stop spending."), checkedAt: now)]
+        }
         let status: CapVerification.Status = autoRecharge
             ? .off("Plivo reports auto recharge is on, so credits are topped up instead of running out.")
             : .on("Plivo reports auto recharge is off, so nothing tops up the credits.")
