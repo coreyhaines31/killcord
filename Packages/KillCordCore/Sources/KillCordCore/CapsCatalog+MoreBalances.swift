@@ -133,6 +133,29 @@ extension CapsCatalog {
                         + "Luma offers one."],
             caveat: "Luma's docs mention a per-key cap per billing period but don't show where to set it. Settled "
                 + "spend can end slightly above a cap, because generations are admitted on estimates."
+        ),
+        // HeyGen. https://developers.heygen.com/user-profile and https://developers.heygen.com/reference/get-current-user
+        CapControl(
+            id: HeyGenProvider.spendingCapID, provider: .heygen, name: "Spending cap (usage-based billing)",
+            summary: "Usage-based HeyGen accounts can carry a spending cap in dollars. Kill Cord reads it, and "
+                + "what's been spent against it.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://platform.heygen.com"),
+            docURL: url("https://developers.heygen.com/user-profile"),
+            steps: ["Open billing on the HeyGen API platform.", "Set a spending cap you accept."],
+            caveat: "HeyGen's API docs name the optional cap but don't say where it's set or exactly what stops at "
+                + "it. Prepaid wallet accounts have no cap: the wallet is the limit."
+        ),
+        CapControl(
+            id: HeyGenProvider.autoReloadCapID, provider: .heygen, name: "Prepaid wallet, auto reload off",
+            summary: "A wallet with auto reload off can't spend past its balance: HeyGen answers 402 "
+                + "insufficient_credit.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://platform.heygen.com"),
+            docURL: url("https://developers.heygen.com/user-profile"),
+            steps: ["Open billing on the HeyGen API platform.",
+                    "Turn auto reload off, or set a threshold and amount you accept."],
+            caveat: "Applies only to wallet billing."
         )
     ]
 }

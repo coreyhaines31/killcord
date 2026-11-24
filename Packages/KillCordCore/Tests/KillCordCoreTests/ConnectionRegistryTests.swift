@@ -94,6 +94,7 @@ import Testing
             .digitalocean: ["apiKey"],
             .telnyx: ["apiKey"],
             .luma: ["apiKey"],
+            .heygen: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

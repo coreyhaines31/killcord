@@ -97,6 +97,19 @@ extension ProviderInfo {
                 + "running."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.lumalabs.ai/usage")
+        ),
+        ProviderInfo(
+            id: .heygen, name: "HeyGen", capability: .balance(spend: []),
+            fields: [apiKeyField("HeyGen API key", help: "A key restricted to account:read.")],
+            keyKind: "API key restricted to account:read",
+            keyURL: url("https://platform.heygen.com/api-keys"),
+            keyPowerWarning: "HeyGen keys take permission scopes of the form resource:read or resource:write. The "
+                + "balance call needs only account:read, and HeyGen says a read grant never satisfies a write "
+                + "requirement, so that key can't make videos. Full-access keys (*:*) can. Kill Cord only reads your "
+                + "balance, auto reload and spending cap.",
+            lag: ProviderLag(typical: 0, note: "HeyGen doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://platform.heygen.com")
         )
     ]
 }

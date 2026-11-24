@@ -55,6 +55,13 @@ extension ProviderInfo {
                 SetupStep("Create an API key for Kill Cord and copy it", "It starts with luma-api-. Luma shows it "
                     + "only once.")
             ]
+        case .heygen:
+            return [
+                SetupStep("Open API keys on the HeyGen platform", "Create a new key for Kill Cord.",
+                          link: open("Open HeyGen API Keys")),
+                SetupStep("Restrict it to account:read and copy it", "That's the only scope GET /v3/users/me "
+                    + "needs. A full-access key (*:*) can make videos on your balance.")
+            ]
         default:
             return []
         }
