@@ -1,0 +1,12 @@
+{
+  "credits_usd": 412.37,
+  "expiring_credits": [
+    {
+      "amount_usd": 20.00,
+      "expires_at": "2026-12-01T00:00:00Z"
+    }
+  ],
+  "metadata": {
+    "generated_at": "2026-11-15T18:25:00Z"
+  }
+}

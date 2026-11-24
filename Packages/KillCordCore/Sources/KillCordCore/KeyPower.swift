@@ -26,16 +26,112 @@ extension ProviderID {
         case .google: .readOnly
         // A read-only admin key may be offered when it's created.
         case .openai: .readOnlyIfChosen
+        // fal's BILLING preset lists only billing reads; a FULL key could run models.
+        case .fal: .readOnlyIfChosen
         // No read-only key. An Anthropic service account or personal key has its linked account's
         // permissions, and the docs don't name a role limited to the cost report. Vercel tokens can be
         // scoped to a team, but not to billing.
         case .anthropic, .vercel, .twilio, .neon: .canManage
         // Nothing secret: a manual entry is a plan and a date.
         case .supabase, .manual: .noKey
+        // Runpod offers Read Only keys, and Restricted keys scoped to billing:read; an All key can start Pods.
+        case .runpod: .readOnlyIfChosen
+        // DeepInfra keys take scopes; billing:read only reads usage, invoices and key limits.
+        case .deepinfra: .readOnly
+        // The X API's app Bearer token makes paid reads on the credits; there's no billing-only token.
+        case .xapi: .canSpend
+        // Black Forest Labs keys are scoped to a project, not to reads: any key can generate images.
+        case .bfl: .canSpend
+        // DigitalOcean custom-scoped tokens can hold only billing:read, which views billing and invoices.
+        case .digitalocean: .readOnly
+        // Telnyx documents no key scopes: an API key can do anything in the account.
+        case .telnyx: .canManage
+        // Luma's generation keys spend credits; its read-only Admin keys can't read the balance and are enterprise-only.
+        case .luma: .canSpend
+        // HeyGen keys can be restricted to account:read; a full-access (*:*) key can make videos.
+        case .heygen: .readOnlyIfChosen
+        // Browser Use keys belong to a project and run agents and browsers on its credits; no read-only key.
+        case .browseruse: .canSpend
+        // Novita documents no key scopes: a key can call models and start GPU instances on the balance.
+        case .novita: .canSpend
+        // Baseten doesn't say which key permission reads billing; a personal key carries all of its owner's permissions.
+        case .baseten: .canManage
+        // Hunter documents no key scopes: a key can run paid searches and manage leads, sequences and API keys.
+        case .hunter: .canManage
+        // ZeroBounce documents no read-only key: an API key validates emails on the account's credits.
+        case .zerobounce: .canSpend
+        // Vonage's account API key and secret reach the whole account: messages, calls, numbers and secrets.
+        case .vonage: .canManage
+        // Plivo's Auth ID and Auth Token reach the whole account; no read-only credential is documented.
+        case .plivo: .canManage
+        // Prospeo documents no key scopes: an API key runs email and mobile finders on the credits.
+        case .prospeo: .canSpend
+        // A lemlist API key acts as the team member who made it: campaigns, leads and, for an admin, the team.
+        case .lemlist: .canManage
+        // SearchApi documents no key scopes: the key runs searches on the plan.
+        case .searchapi: .canSpend
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.
         case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid: .canSpend
+        // ElevenLabs keys can be limited to some endpoints; one limited to User read can't make speech.
+        case .elevenlabs: .readOnlyIfChosen
+        // An xAI management key can also create and delete API keys, top up, and change spending limits.
+        case .xai: .canManage
+        // DeepSeek documents no key scopes: every key can make paid model calls.
+        case .deepseek: .canSpend
+        // Apify tokens can access all account data by default; no read-only token is documented.
+        case .apify: .canManage
+        // Tavily documents no read-only key; any key can run searches on the plan's credits.
+        case .tavily: .canSpend
+        // Deepgram gives billing:read only to Admin and Owner roles, which can manage the project's keys.
+        case .deepgram: .canManage
+        // Runway documents no key scopes: a key can start generations that use credits.
+        case .runway: .canSpend
+        // SerpApi has one private key per account, with no scopes: it can run searches.
+        case .serpapi: .canSpend
+        // Bright Data's Finance level reaches billing pages, and its docs don't call any key read-only.
+        case .brightdata: .canManage
+        // ScrapeCreators documents one API key per team, with no scopes: it can run scrapes.
+        case .scrapecreators: .canSpend
+        // Stability AI documents one kind of API key, with no scopes: it can run generations.
+        case .stability: .canSpend
+        // Kimi Admin keys carry chosen scopes and can't call inference; billing:read alone reads bills.
+        case .moonshot: .readOnlyIfChosen
+        // Exa's Team Management service keys create, rotate and delete API keys; none is read-only.
+        case .exa: .canManage
+        // ScrapingBee has one API key per account, with no documented scopes: it can run scrapes.
+        case .scrapingbee: .canSpend
+        // Scrapfly has one key per project environment, giving access to every product: it can scrape.
+        case .scrapfly: .canSpend
+        // Kie.ai documents one kind of API key with no scopes, only usage caps and an IP allow list.
+        case .kie: .canSpend
+        // Every Bland restricted key can read the balance; one with only analytics:read can't place calls.
+        case .bland: .readOnlyIfChosen
+        // A LlamaCloud user key inherits its owner's privileges; there's no admin or read-only scope.
+        case .llamacloud: .canManage
+        // Cartesia admin keys read usage and key metadata, and can remove users and send invites.
+        case .cartesia: .canManage
+        // Together keys have full access to their project and can spend the organization's credits.
+        case .together: .canSpend
+        // Any Fireworks key reads billing; an Inference user's key can run models but not change resources.
+        case .fireworks: .canSpend
+        // A Vapi private key "can access everything in your organization"; public keys are client-only.
+        case .vapi: .canManage
+        // Retell keys can be scoped; one with only History › Read reads call history.
+        case .retell: .readOnlyIfChosen
+        // Browserbase has one key per project, with no scopes: it can run browser sessions.
+        case .browserbase: .canSpend
+        // Only a Resend full-access key can read anything; it can create and delete any resource.
+        case .resend: .canManage
+        // A Postmark Server API token has server-level privileges, including sending email.
+        case .postmark: .canSpend
+        // A Mistral Admin API key reaches every admin endpoint: users, workspaces, keys and the spend limit.
+        case .mistral: .canManage
+        // A fine-grained Hugging Face token can be limited to reading the organization's billing.
+        case .huggingface: .readOnlyIfChosen
+        // Magister documents read-only API keys: they read the balance and can never spend credits.
+        case .magister: .readOnly
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

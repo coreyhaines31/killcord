@@ -1,6 +1,6 @@
 import Foundation
 
-/// A paid service with no API (Truelist, Gojiberry, Resend, Postmark): what the person typed in about its
+/// A paid service with no API (Truelist, Gojiberry): what the person typed in about its
 /// plan. Never read from the service, never live, never added into spend totals. Kill Cord only rolls the
 /// renewal date forward and reminds before it.
 public struct ManualPlan: Sendable, Equatable, Codable {

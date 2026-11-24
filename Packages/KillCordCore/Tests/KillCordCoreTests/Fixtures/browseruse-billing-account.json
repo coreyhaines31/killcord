@@ -1,0 +1,14 @@
+{
+  "name": null,
+  "totalCreditsBalanceUsd": 42.5,
+  "monthlyCreditsBalanceUsd": 0,
+  "additionalCreditsBalanceUsd": 42.5,
+  "rateLimit": 50,
+  "concurrentSessionLimit": 50,
+  "activeSessionCount": 0,
+  "planInfo": null,
+  "isFreeTier": false,
+  "projectId": "0b9a3c1e-5f8d-4c2a-9e7b-1a2b3c4d5e6f",
+  "apiKeyId": null,
+  "tracingDisabled": false
+}

@@ -135,7 +135,7 @@ extension SpendProvider {
 
 public enum SpendProviders {
     // One case per provider.
-    // swiftlint:disable:next cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     public static func make(_ id: ProviderID, http: HTTPClient) -> SpendProvider {
         switch id {
         case .anthropic: AnthropicProvider(http: http)
@@ -146,12 +146,60 @@ public enum SpendProviders {
         case .twilio: TwilioProvider(http: http)
         case .neon: NeonProvider(http: http)
         case .supabase: SupabaseProvider()
+        case .runpod: RunpodProvider(http: http)
+        case .deepinfra: DeepInfraProvider(http: http)
+        case .xapi: XAPIProvider(http: http)
+        case .bfl: BFLProvider(http: http)
+        case .digitalocean: DigitalOceanProvider(http: http)
+        case .telnyx: TelnyxProvider(http: http)
+        case .luma: LumaProvider(http: http)
+        case .heygen: HeyGenProvider(http: http)
+        case .browseruse: BrowserUseProvider(http: http)
+        case .novita: NovitaProvider(http: http)
+        case .baseten: BasetenProvider(http: http)
+        case .hunter: HunterProvider(http: http)
+        case .zerobounce: ZeroBounceProvider(http: http)
+        case .vonage: VonageProvider(http: http)
+        case .plivo: PlivoProvider(http: http)
+        case .prospeo: ProspeoProvider(http: http)
+        case .lemlist: LemlistProvider(http: http)
+        case .searchapi: SearchApiProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)
         case .firecrawl: FirecrawlProvider(http: http)
         case .treg: TregProvider(http: http)
         case .monid: MonidProvider(http: http)
+        case .fal: FalProvider(http: http)
+        case .elevenlabs: ElevenLabsProvider(http: http)
+        case .xai: XAIProvider(http: http)
+        case .deepseek: DeepSeekProvider(http: http)
+        case .apify: ApifyProvider(http: http)
+        case .tavily: TavilyProvider(http: http)
+        case .deepgram: DeepgramProvider(http: http)
+        case .runway: RunwayProvider(http: http)
+        case .serpapi: SerpApiProvider(http: http)
+        case .brightdata: BrightDataProvider(http: http)
+        case .scrapecreators: ScrapeCreatorsProvider(http: http)
+        case .stability: StabilityProvider(http: http)
+        case .moonshot: KimiProvider(http: http)
+        case .exa: ExaProvider(http: http)
+        case .scrapingbee: ScrapingBeeProvider(http: http)
+        case .scrapfly: ScrapflyProvider(http: http)
+        case .kie: KieProvider(http: http)
+        case .bland: BlandProvider(http: http)
+        case .llamacloud: LlamaCloudProvider(http: http)
+        case .cartesia: CartesiaProvider(http: http)
+        case .together: TogetherProvider(http: http)
+        case .fireworks: FireworksProvider(http: http)
+        case .vapi: VapiProvider(http: http)
+        case .retell: RetellProvider(http: http)
+        case .browserbase: BrowserbaseProvider(http: http)
+        case .resend: ResendProvider(http: http)
+        case .postmark: PostmarkProvider(http: http)
+        case .mistral: MistralProvider(http: http)
+        case .huggingface: HuggingFaceProvider(http: http)
+        case .magister: MagisterProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
@@ -214,19 +262,42 @@ enum ProviderErrorDetail {
 
     private static func text(in object: [String: Any]) -> String? {
         if let error = object["error"] as? [String: Any], let message = error["message"] as? String { return message }
-        if let errors = object["errors"] as? [[String: Any]], let message = errors.first?["message"] as? String {
+        // `{errors: [{title, detail}]}` is the JSON:API shape (Telnyx).
+        if let errors = object["errors"] as? [[String: Any]], let first = errors.first,
+           let message = first["message"] as? String ?? first["detail"] as? String ?? first["details"] as? String
+               ?? first["title"] as? String {
             return message
         }
         if let message = object["message"] as? String { return message }
-        return object["error"] as? String
+        // Postmark's `{ErrorCode, Message}`.
+        if let message = object["Message"] as? String { return message }
+        if let message = object["error"] as? String { return message }
+        // `{detail: "…"}`, `{detail: {message | error}}` and `{detail: [{msg}]}` (ElevenLabs, Tavily), and
+        // Deepgram's older `{err_msg}`.
+        if let detail = object["detail"] as? String { return detail }
+        if let detail = object["detail"] as? [String: Any] {
+            return detail["message"] as? String ?? detail["error"] as? String
+        }
+        if let details = object["detail"] as? [[String: Any]], let message = details.first?["msg"] as? String {
+            return message
+        }
+        // Kie.ai's `{code, msg}`.
+        return object["err_msg"] as? String ?? object["msg"] as? String
     }
 
-    private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent"]
+    private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent",
+                                                           "x-runway-version",
+                                                           "cartesia-version"]
 
     /// Header values, whole and split on spaces ("Bearer abc" gives "abc"), plus what a Basic auth token
-    /// decodes to ("sid:token" gives both halves). Longest first.
+    /// decodes to ("sid:token" gives both halves), and query values (SerpApi takes its key as `api_key=`).
+    /// Longest first.
     private static func sensitiveValues(in request: HTTPRequest) -> [String] {
         var values: Set<String> = []
+        let query = URLComponents(url: request.url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        for item in query {
+            if let value = item.value { values.insert(value) }
+        }
         for (name, value) in request.headers where !plainHeaders.contains(name.lowercased()) {
             values.insert(value)
             for word in value.split(separator: " ").map(String.init) {

@@ -186,7 +186,15 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let withCaps = ProviderID.allCases.filter {
             $0.info.capability.showsBalance && !CapsCatalog.controls(for: $0).isEmpty
         }
-        #expect(withCaps == [.openrouter, .monid])
+        let more = Set(ProviderInfo.moreBalanceProviders.map(\.id))
+        let batch3 = Set(ProviderInfo.batch3Providers.map(\.id))
+        #expect(withCaps.filter { !more.contains($0) && !batch3.contains($0) }
+            == [.openrouter, .monid, .fal, .elevenlabs, .xai, .apify, .tavily, .runway, .brightdata])
+        #expect(withCaps.filter { more.contains($0) } == [
+            .runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .vonage, .plivo, .searchapi
+        ])
+        #expect(withCaps.filter { batch3.contains($0) }
+            == [.moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland, .magister])
     }
 
     @Test func everyCapHasHTTPSLinksStepsAndAUniqueID() {
@@ -209,8 +217,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
             let controls = CapsCatalog.controls(for: provider)
             let stops = controls.filter { $0.enforcement != .alertOnly }
             if stops.isEmpty {
-                // Twilio is the only one with no native stop, and its caveat says so.
-                #expect(provider == .twilio)
+                // Twilio, Browserbase and Postmark have no native stop, and their caveats say so.
+                #expect([.twilio, .browserbase, .postmark].contains(provider))
                 #expect(controls.contains { $0.caveat?.contains("no native hard spend cap") == true })
             }
         }
@@ -220,7 +228,12 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let verifiable = Set(CapsCatalog.controls.filter { $0.verification == .api }.map(\.id))
         #expect(verifiable == [
             OpenAIProvider.hardLimitCapID, GoogleCloudProvider.spendCapID, GoogleCloudProvider.budgetAlertCapID,
-            CloudflareProvider.spendLimitCapID, TwilioProvider.triggerCapID, NeonProvider.thresholdCapID
+            CloudflareProvider.spendLimitCapID, TwilioProvider.triggerCapID, NeonProvider.thresholdCapID,
+            ApifyProvider.usageLimitCapID, TelnyxProvider.autoRechargeCapID, LlamaCloudProvider.spendLimitCapID,
+            HeyGenProvider.spendingCapID, HeyGenProvider.autoReloadCapID, VonageProvider.autoReloadCapID,
+            PlivoProvider.autoRechargeCapID, SearchApiProvider.earlyRenewalCapID,
+            FireworksProvider.spendLimitCapID,
+            MistralProvider.spendLimitCapID
         ])
         // Anthropic can't be checked over the API for Console organizations.
         #expect(CapsCatalog.controls(for: .anthropic).allSatisfy { $0.verification == .selfReported })

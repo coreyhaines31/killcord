@@ -15,20 +15,55 @@ extension SignalLight {
 
 extension ProviderID {
     /// The asset catalog name of the provider's official mark. `docs/third-party-marks.md` gives each source.
-    /// Nil for custom and manual connections, which aren't a vendor and draw a symbol instead.
+    /// Nil for custom and manual connections, which aren't a vendor and draw a symbol instead, and for vendors
+    /// with no usable official symbol (Bright Data's logo is a wordmark, ScrapeCreators' a small raster tile),
+    /// which draw their first letter.
     var markAssetName: String? {
         switch self {
-        case .custom, .manual: nil
+        case .custom, .manual, .brightdata, .scrapecreators: nil
+        // Batch 4 vendors with no usable vector symbol: Telnyx's logo is a wordmark; HeyGen, ZeroBounce and Prospeo
+        // publish raster logos only.
+        case .telnyx, .heygen, .zerobounce, .prospeo: nil
+        // This batch's vendors with no usable one-colour vector: raster only, a wordmark, or colours that carry
+        // the shape.
+        case .scrapingbee, .kie, .bland, .postmark: nil
         default: "mark-\(rawValue)"
         }
     }
 
     /// How much larger than the key's mark area to draw the file. OpenAI's file carries its own clear space;
-    /// Cloudflare's cloud is so wide that fitting its width alone leaves it too short to read.
+    /// Cloudflare's cloud is so wide that fitting its width alone leaves it too short to read. ElevenLabs' file
+    /// is mostly clear space around its two bars, and Apify's and Deepgram's
+    /// files have wide clear space.
     var markScale: CGFloat {
         switch self {
         case .openai: 1.45
         case .cloudflare: 1.3
+        case .elevenlabs: 2.8
+        case .apify: 1.45
+        case .deepgram: 1.5
+        case .llamacloud: 1.3
+        // Plivo's symbol sits in a 2000-unit square with a quarter of it as clear space.
+        case .plivo: 1.35
+        case .fireworks: 1.3
+        default: 1
+        }
+    }
+}
+
+extension ManualPreset {
+    /// Presets whose service publishes a usable official symbol. The rest draw their first letter.
+    static let marked: Set<String> = ["assemblyai", "cerebras", "cohere", "e2b", "jina", "modal", "pinecone",
+                                      "truelist", "twelvelabs", "typesafe", "unstructured", "netlify", "render"]
+
+    /// The asset catalog name of the service's official mark. `docs/third-party-marks.md` gives each source.
+    var markAssetName: String? { Self.marked.contains(id) ? "preset-\(id)" : nil }
+
+    /// E2B's small-size file leaves wide clear space around its symbol; Render's logomark fills half its canvas.
+    var markScale: CGFloat {
+        switch id {
+        case "e2b": 1.5
+        case "render": 1.8
         default: 1
         }
     }
@@ -41,6 +76,8 @@ private final class MarkBundle {}
 struct ProviderMark: View {
     let provider: ProviderID
     var size: CGFloat = 22
+    /// A manual entry's name, so one named after a preset draws that service's mark or letter.
+    var serviceName: String?
 
     @Environment(\.panelTheme) private var theme
 
@@ -56,9 +93,20 @@ struct ProviderMark: View {
             .accessibilityHidden(true)
     }
 
+    private var preset: ManualPreset? { provider == .manual ? ManualPreset.matching(serviceName) : nil }
+
     @ViewBuilder
     private var face: some View {
-        if let asset = provider.markAssetName {
+        if let preset, let asset = preset.markAssetName {
+            Image(asset, bundle: Bundle(for: MarkBundle.self), label: Text(preset.name))
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.5 * preset.markScale, height: size * 0.5 * preset.markScale)
+                .frame(width: size * 0.5, height: size * 0.5)
+        } else if let preset {
+            letter(preset.name)
+        } else if let asset = provider.markAssetName {
             Image(asset, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
                 .renderingMode(.template)
                 .resizable()
@@ -72,11 +120,15 @@ struct ProviderMark: View {
                 .frame(width: size * 0.5, height: size * 0.5)
         } else {
             // No official mark in the app yet: the name's first letter, never a made-up logo.
-            Text(provider.info.name.prefix(1).uppercased())
-                .font(.system(size: size * 0.5, weight: .bold, design: .rounded))
-                .minimumScaleFactor(0.5)
-                .frame(width: size * 0.62, height: size * 0.62)
+            letter(provider.info.name)
         }
+    }
+
+    private func letter(_ name: String) -> some View {
+        Text(name.prefix(1).uppercased())
+            .font(.system(size: size * 0.5, weight: .bold, design: .rounded))
+            .minimumScaleFactor(0.5)
+            .frame(width: size * 0.62, height: size * 0.62)
     }
 }
 
@@ -104,10 +156,12 @@ struct ProviderHeader: View {
     let statusLabel: String
     let chips: [String]
     let message: String
+    /// A provider not yet verified with a live account: a Beta chip, and the reason inline.
+    var isBeta = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            ProviderMark(provider: provider, size: 34)
+            ProviderMark(provider: provider, size: 34, serviceName: title)
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     Text(title)
@@ -119,12 +173,19 @@ struct ProviderHeader: View {
                 }
                 HStack(spacing: 6) {
                     ForEach(chips, id: \.self) { Chip(text: $0) }
+                    if isBeta { BetaChip() }
                 }
                 Text(message)
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 1)
+                if isBeta {
+                    Text(ProviderVerification.betaDetail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .padding(.horizontal, 20)

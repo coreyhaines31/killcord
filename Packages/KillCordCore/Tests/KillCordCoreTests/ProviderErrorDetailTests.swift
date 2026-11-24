@@ -20,6 +20,38 @@ import Testing
         #expect(detail(#"{"error":"bad_request"}"#) == "bad_request")
     }
 
+    @Test func readsDetailAndErrMsgShapes() {
+        // ElevenLabs: https://elevenlabs.io/docs/eleven-api/resources/errors
+        #expect(detail(#"{"detail":{"type":"authentication_error","code":"invalid_api_key","message":"Invalid API key"}}"#) == "Invalid API key")
+        #expect(detail(#"{"detail":[{"loc":["header"],"msg":"Field required","type":"missing"}]}"#) == "Field required")
+        // Tavily: https://docs.tavily.com/documentation/api-reference/endpoint/usage
+        #expect(detail(#"{"detail":{"error":"Unauthorized: missing or invalid API key."}}"#) == "Unauthorized: missing or invalid API key.")
+        #expect(detail(#"{"detail":"Not found"}"#) == "Not found")
+        // Deepgram's legacy shape: https://developers.deepgram.com/reference/manage/billing/list
+        #expect(detail(#"{"err_code":"FORBIDDEN","err_msg":"Insufficient permissions.","request_id":"r1"}"#) == "Insufficient permissions.")
+    }
+
+    @Test func readsJSONAPIErrors() {
+        // Telnyx: https://developers.telnyx.com/api-reference/billing/get-user-balance-details
+        #expect(detail(#"{"errors":[{"code":"10010","title":"Authorization failed","detail":"You do not have permission."}]}"#) == "You do not have permission.")
+        #expect(detail(#"{"errors":[{"code":"10007","title":"Unexpected error"}]}"#) == "Unexpected error")
+        // Hunter: https://hunter.io/openapi.json (standard_error_response)
+        #expect(detail(#"{"errors":[{"id":"wrong_params","code":400,"details":"You are missing the api_key parameter"}]}"#) == "You are missing the api_key parameter")
+    }
+
+    @Test func readsKiesMsgShape() {
+        // Kie.ai: https://docs.kie.ai/common-api/get-account-credits
+        #expect(detail(#"{"code":455,"msg":"Service under maintenance","data":null}"#) == "Service under maintenance")
+    }
+
+    @Test func removesAKeyCarriedInTheQueryString() throws {
+        let key = "serpapi-TEST-query-secret-0099"
+        let queryRequest = HTTPRequest(url: URL(string: "https://serpapi.com/account.json?api_key=\(key)")!)
+        let echoed = try #require(ProviderErrorDetail.message(in: Data(#"{"error":"Invalid API key \#(key)"}"#.utf8),
+                                                              sentWith: queryRequest))
+        #expect(echoed == "Invalid API key [redacted]")
+    }
+
     @Test func nilWhenThereIsNoMessage() {
         #expect(detail(#"{"error":{}}"#) == nil)
         #expect(detail("{}") == nil)

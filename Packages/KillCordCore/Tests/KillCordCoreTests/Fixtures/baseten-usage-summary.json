@@ -1,0 +1,17 @@
+{
+  "dedicated_usage": {
+    "subtotal": 12.5,
+    "credits_used": 2.5,
+    "total": 10.0,
+    "minutes": 90,
+    "breakdown": []
+  },
+  "training_usage": null,
+  "model_apis_usage": {
+    "subtotal": "3.25",
+    "credits_used": "0",
+    "total": "3.25",
+    "breakdown": []
+  },
+  "loops_usage": null
+}

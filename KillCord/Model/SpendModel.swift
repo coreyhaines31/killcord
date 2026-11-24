@@ -335,20 +335,6 @@ extension SpendModel {
         Preferences.capAudit = audit
         onChange?()
     }
-
-    /// Providers the person uses: connected ones, plus any they've marked a cap for (Supabase has nothing to
-    /// connect, so marking its cap is how it joins the audit).
-    var auditProviders: [ProviderID] {
-        ProviderID.allCases.filter { provider in
-            guard !CapsCatalog.controls(for: provider).isEmpty else { return false }
-            return connected.contains(provider)
-                || CapsCatalog.controls(for: provider).contains { audit.marks[$0.id] != nil }
-        }
-    }
-
-    var capsNeedingAttention: Int {
-        auditProviders.reduce(0) { $0 + audit.progress(for: $1, now: Date()).needsAttention }
-    }
 }
 
 // MARK: - What Settings shows

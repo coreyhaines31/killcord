@@ -18,6 +18,54 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case firecrawl
     case treg
     case monid
+    case fal
+    case elevenlabs
+    case xai
+    case deepseek
+    case apify
+    case tavily
+    case deepgram
+    case runway
+    case serpapi
+    case brightdata
+    case scrapecreators
+    case stability
+    case moonshot
+    case exa
+    case scrapingbee
+    case scrapfly
+    case kie
+    case bland
+    case llamacloud
+    case cartesia
+    case together
+    case fireworks
+    case vapi
+    case retell
+    case browserbase
+    case resend
+    case postmark
+    case mistral
+    case huggingface
+    case magister
+    case runpod
+    case deepinfra
+    case xapi
+    case bfl
+    case digitalocean
+    case telnyx
+    case luma
+    case heygen
+    case browseruse
+    case novita
+    case baseten
+    case hunter
+    case zerobounce
+    case vonage
+    case plivo
+    case prospeo
+    case lemlist
+    case searchapi
     /// A service the person sets up: an https address and where the balance is in its JSON.
     case custom
     /// A paid service with no API: a plan, price and renewal date the person types in.
@@ -38,6 +86,8 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
 public enum SpendCapability: Hashable, Sendable {
     /// The API returns spend in money.
     case dollars
+    /// The API returns this month's spend in money, but nothing finer than a month (DeepInfra).
+    case monthDollars
     /// The API returns usage (compute hours, bytes) but not money.
     case usageUnitsOnly
     /// There is no API for spend or usage. The caps audit still works.
@@ -52,6 +102,7 @@ public enum SpendCapability: Hashable, Sendable {
     public var summary: String {
         switch self {
         case .dollars: "Shows spend in dollars."
+        case .monthDollars: "Shows this month's spend in dollars. The API doesn't report a day."
         case .usageUnitsOnly: "Shows usage, not dollars: the API doesn't report money."
         case .noUsageAPI: "No spend API. Kill Cord can't show spend here, but the caps audit still works."
         case .requiresSetup(let what): "Shows spend after one-time setup: \(what)."
@@ -65,7 +116,7 @@ public enum SpendCapability: Hashable, Sendable {
     public var countsToday: Bool {
         switch self {
         case .dollars, .requiresSetup: true
-        case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
+        case .monthDollars, .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
         case .balance(let spend): spend.contains(.today)
         }
     }
@@ -73,7 +124,7 @@ public enum SpendCapability: Hashable, Sendable {
     /// Whether this month's spend is reported.
     public var countsMonth: Bool {
         switch self {
-        case .dollars, .requiresSetup: true
+        case .dollars, .monthDollars, .requiresSetup: true
         case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
         case .balance(let spend): spend.contains(.month)
         }
@@ -305,5 +356,5 @@ extension ProviderInfo {
             billingTimeZone: utc, minimumRefreshInterval: 24 * 3600,
             consoleURL: url("https://supabase.com/dashboard/org/_/billing")
         )
-    ] + balanceProviders + [custom, manual]).map { ($0.id, $0) })
+    ] + balanceProviders + moreBalanceProviders + batch3Providers + [custom, manual]).map { ($0.id, $0) })
 }

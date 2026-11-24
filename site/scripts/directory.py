@@ -37,12 +37,70 @@ builtin_shows = {
     'firecrawl': 'the credits your team has left, and when the billing period ends',
     'treg': 'your team’s prepaid balance in dollars',
     'monid': 'your wallet balance',
+    'fal': 'your credit balance in dollars',
+    'elevenlabs': 'the credits your plan has left this period, and when they reset',
+    'xai': 'your prepaid credit balance in dollars',
+    'deepseek': 'your balance in dollars or yuan',
+    'apify': 'this usage cycle’s spend in dollars and what’s left before your usage limit',
+    'tavily': 'the credits your plan has left this cycle',
+    'deepgram': 'your project’s balance in dollars',
+    'runway': 'your credits left, with a labeled dollar estimate',
+    'serpapi': 'the searches you have left this month, and when your plan renews',
+    'bright-data': 'the funds left in your account, in dollars',
+    'scrapecreators': 'the credits you have left',
+    'stability-ai': 'your credits left, with a labeled dollar estimate',
+    'moonshot-ai': 'your balance in dollars (global platform)',
+    'exa': 'your team’s credit balance in dollars',
+    'scrapingbee': 'the credits your plan has left, and when it renews',
+    'together-ai': 'this month’s spend in dollars, through yesterday',
+    'fireworks-ai': 'today’s and this month’s spend in dollars, and whether the monthly spend limit is set',
+    'browserbase': 'your project’s browser minutes and proxy data (Browserbase doesn’t report dollars)',
+    'resend': 'the emails you’ve used this month (Resend doesn’t report dollars or your quota)',
+    'postmark': 'one server’s emails sent today and this month (Postmark doesn’t report dollars)',
+    'mistral': 'this month’s spend in dollars against your spending limit, and whether the limit is set',
+    'hugging-face': 'your organization’s Inference Providers spend today and this month (Enterprise)',
+    'magister': 'your API credits left, with a labeled dollar estimate',
+    'scrapfly': 'the credits your plan has left, and when the period ends',
+    'kie-ai': 'your credits left, with a labeled dollar estimate',
+    'bland-ai': 'the credits you have left',
+    'llamacloud': 'this billing period’s invoice in dollars, and whether the monthly invoice limit is set',
+    'cartesia': 'the credits you’ve used this month (Cartesia doesn’t report dollars or credits left)',
+    'vapi': 'today’s and this month’s call spend in dollars',
+    'retell-ai': 'today’s and this month’s call spend in dollars',
+    'runpod': 'your prepaid balance in dollars',
+    'deepinfra': 'this month’s spend in dollars',
+    'x-api': 'your pay-per-use credit balance in dollars',
+    'black-forest-labs': 'your credits left, with a labeled dollar estimate',
+    'digitalocean': 'this month’s usage in dollars',
+    'telnyx': 'your available credit in your account’s currency, and whether auto recharge is on',
+    'luma-ai': 'your team’s credits left',
+    'heygen': 'your wallet balance, or what’s left under your spending cap, and whether the cap is set',
+    'browser-use': 'your project’s credits left in dollars',
+    'novita-ai': 'your available balance in dollars',
+    'baseten': 'today’s and this month’s spend in dollars, after credits',
+    'hunter': 'the credits your plan has left, and when they reset',
+    'zerobounce': 'the credits you have left',
+    'vonage': 'your balance in euros, and whether auto reload is on',
+    'plivo': 'your cash credits in dollars, and whether auto recharge is on',
+    'prospeo': 'the credits your plan has left, and when they renew',
+    'lemlist': 'your team’s credits left',
+    'searchapi': 'the searches you have left, and whether early renewal is on',
 }
 # Built-ins with no native cap in Kill Cord's caps audit: a prepaid balance stops at zero on its own.
-no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg'}
+no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi', 'scrapecreators',
+                 'stability-ai', 'browserbase', 'postmark', 'hunter', 'zerobounce', 'prospeo', 'lemlist'}
 caps_only = {'supabase'}
-builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, OpenRouter, '
-                 'DataForSEO, Ahrefs, Firecrawl, treg, and Monid')
+# Built-in providers read with a real account. The rest were built from the provider's docs and are labeled
+# beta in the app (ProviderVerification.swift) until verified, so the directory says so too.
+live_verified = {'anthropic', 'google-cloud', 'openai', 'vercel', 'cloudflare', 'twilio', 'neon', 'supabase',
+                 'openrouter', 'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'monid'}
+builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Mistral, Kimi, Together AI, '
+                 'Fireworks AI, Hugging Face, DeepInfra, Novita AI, Baseten, Runpod, Vercel, Cloudflare, DigitalOcean, '
+                 'Twilio, Telnyx, Vonage, Plivo, Neon, OpenRouter, fal, Black Forest Labs, Luma AI, HeyGen, ElevenLabs, '
+                 'Runway, Stability AI, Deepgram, Cartesia, Vapi, Retell AI, Bland AI, Kie.ai, Apify, Tavily, Exa, '
+                 'SerpApi, SearchApi, Bright Data, ScrapeCreators, ScrapingBee, Scrapfly, Browserbase, Browser Use, '
+                 'X API, LlamaCloud, Resend, Postmark, Hunter, ZeroBounce, Prospeo, lemlist, Magister, DataForSEO, '
+                 'Ahrefs, Firecrawl, treg, and Monid')
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),
                'alert-only': ('alert', 'Alert only'), 'auto-recharge-off': ('part', 'Top-up control')}
@@ -119,10 +177,14 @@ def tier_badge(s):
     tier = s['killcord']['tier']
     if s['slug'] in caps_only:
         return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>In Kill Cord’s caps audit</p>'
+    if tier == 'built-in' and s['slug'] not in live_verified:
+        return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Built into Kill Cord (beta)</p>'
     if tier == 'built-in':
         return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Built into Kill Cord</p>'
     if tier == 'planned':
         return '<p class="bx-badge tier-planned"><i aria-hidden="true"></i>Not in Kill Cord yet</p>'
+    if tier == 'manual':
+        return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Tracked by Kill Cord as a manual entry</p>'
     return '<p class="bx-badge tier-off"><i aria-hidden="true"></i>Not tracked by Kill Cord</p>'
 
 
@@ -232,6 +294,13 @@ def caps_section(s):
 '''
 
 
+def beta_note(s):
+    if s['slug'] in live_verified:
+        return ''
+    return (f' {s["name"]} is in beta in Kill Cord: it isn’t yet verified with a live account, so the numbers come from '
+            f'{s["name"]}’s documented API.')
+
+
 def killcord_text(s):
     name, tier = s['name'], s['killcord']['tier']
     if s['slug'] in caps_only:
@@ -239,10 +308,11 @@ def killcord_text(s):
                 f'walks you through turning on {name}’s own cap and reminds you to re-check it.')
     if tier == 'built-in' and s['slug'] in no_caps_audit:
         return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, for one account or several, says how fresh each number is, '
-                f'and can alert you once when it runs low. A balance is what’s left, not spend, so it stays out of your spend totals.')
+                f'and can alert you once when it runs low. A balance is what’s left, not spend, so it stays out of your spend totals.'
+                + beta_note(s))
     if tier == 'built-in':
         return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, for one account or several, says how fresh each number is, '
-                f'and walks you through {name}’s own caps in its caps audit.')
+                f'and walks you through {name}’s own caps in its caps audit.' + beta_note(s))
     if s['killcord'].get('note'):
         return s['killcord']['note']
     if tier == 'planned':
@@ -257,11 +327,13 @@ def killcord_text(s):
 def killcord_section(s):
     tier = s['killcord']['tier']
     heading = {'built-in': f'Track {e(s["name"])} in your menu bar' if s['slug'] not in caps_only else f'Kill Cord and {e(s["name"])}', 'planned': 'Kill Cord and ' + e(s['name']),
-               'none': 'Kill Cord and ' + e(s['name'])}[tier]
+               'manual': f'Track {e(s["name"])} by hand in Kill Cord', 'none': 'Kill Cord and ' + e(s['name'])}[tier]
     extra = ('<p>To connect it, click the plug in your menu bar, choose Connect a Provider, and paste the key. Kill Cord '
              f'checks it with {e(s["name"])} before it saves it. The key stays in your Mac’s Keychain and goes only to '
              f'{e(s["name"])}’s billing API. Kill Cord is free, with no account.</p>' if tier == 'built-in' and s['slug'] not in caps_only else
              '<p>Kill Cord is free, with no account, and it reads spend for ' + builtin_names + '.</p>' if tier == 'built-in' else
+             ('<p>To add it, open Settings › Providers in Kill Cord, choose Manual entry, and pick it from the services '
+              'with no billing API. Kill Cord is free, with no account.</p>') if tier == 'manual' else
              (f'<p>Today Kill Cord tracks {builtin_names}. If you use any of those, it puts their spend in one glance and gets their caps turned on.</p>'
               if s['killcord'].get('note') else
               '<p>If you also use any of those, Kill Cord puts their spend in one glance and gets their caps turned on.</p>'))
@@ -407,7 +479,8 @@ def description_clauses(s):
     tier = s['killcord']['tier']
     out.append(' Kill Cord audits its cap.' if s['slug'] in caps_only else
                ' Kill Cord shows it in your menu bar.' if tier == 'built-in' else
-               ' Not in Kill Cord yet.' if tier == 'planned' else '')
+               ' Not in Kill Cord yet.' if tier == 'planned' else
+               ' Kill Cord tracks it as a manual entry.' if tier == 'manual' else '')
     if a['endpoint']:
         out.append({'yes': ' A read-only key works.', 'no': ' No key is read-only.'}.get(a['read_only'], ''))
     elif a['status'] == 'partial':
@@ -437,7 +510,8 @@ def table(rows, billing=False):
         stops = [c for c in s['native_caps'] if c['kind'] in ('hard-stop', 'partial-stop')]
         cap_cell = 'Hard stop' if any(c['kind'] == 'hard-stop' for c in stops) else 'Partial stop' if stops else \
             'Alert only' if s['native_caps'] else 'None found'
-        kc = 'Caps audit' if s['slug'] in caps_only else {'built-in': 'Built in', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
+        kc = 'Caps audit' if s['slug'] in caps_only else 'Built in (beta)' if (
+            s['killcord']['tier'] == 'built-in' and s['slug'] not in live_verified) else {'built-in': 'Built in', 'manual': 'Manual entry', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
         body.append(f'<tr><th scope="row"><a href="{url_for(s)}">{e(s["search_name"])}</a></th>'
                     f'<td data-label="Spend API">{api_cell}</td><td data-label="Native cap">{cap_cell}</td>'
                     f'<td data-label="Kill Cord">{kc}</td>'
@@ -449,7 +523,7 @@ def table(rows, billing=False):
 
 
 def order(rows):
-    tiers = {'built-in': 0, 'planned': 1, 'none': 2}
+    tiers = {'built-in': 0, 'manual': 1, 'planned': 2, 'none': 3}
     return sorted(rows, key=lambda s: (tiers[s['killcord']['tier']], s['search_name'].lower()))
 
 
@@ -567,7 +641,7 @@ def hub_pages():
     <ul>
       <li><b>Spend API</b> is Yes when an endpoint returns your balance, credits left, or spend in money. Partly means it returns usage counts or spend without a balance.</li>
       <li><b>Native cap</b> is the service’s own control. A hard stop refuses requests past the limit. An alert only tells you.</li>
-      <li><b>Kill Cord</b> is Built in for the eight providers the app reads today. Not yet means the API is suitable, but no adapter exists.</li>
+      <li><b>Kill Cord</b> is Built in for providers the app reads today. Built in (beta) means it isn’t yet verified with a live account: the numbers come from the provider’s documented API. Not yet means the API is suitable, but no adapter exists.</li>
     </ul>
     <p>Facts come from each service’s official docs, checked {max(s['last_verified'] for s in published)}. Anything the docs don’t say is marked “Not documented”.</p>
   </section>
@@ -619,8 +693,10 @@ def validate():
     allowed = {'billing_type': {'prepaid', 'usage', 'quota', 'mixed'}, 'caps_status': {'found', 'none-documented', 'unknown'}}
     for s in services:
         assert s['category'] in categories, f'{s["slug"]}: unknown category {s["category"]}'
-        assert s['killcord']['tier'] in ('built-in', 'planned', 'none'), f'{s["slug"]}: unknown tier'
+        assert s['killcord']['tier'] in ('built-in', 'manual', 'planned', 'none'), f'{s["slug"]}: unknown tier'
         assert set(s['killcord']) <= {'tier', 'note'}, f'{s["slug"]}: unknown killcord field'
+        # A manual preset says what Kill Cord does for it, since there's no API to read.
+        assert s['killcord']['tier'] != 'manual' or s['killcord'].get('note'), f'{s["slug"]}: manual without a note'
         assert s.get('noun', 'spend') in ('balance', 'credits', 'usage', 'spend'), f'{s["slug"]}: unknown noun'
         assert s['spend_api']['status'] in ('yes', 'partial', 'no', 'unknown'), f'{s["slug"]}: unknown API status'
         assert s['spend_api']['read_only'] in ('yes', 'no', 'partial', 'unknown'), f'{s["slug"]}: unknown read_only'

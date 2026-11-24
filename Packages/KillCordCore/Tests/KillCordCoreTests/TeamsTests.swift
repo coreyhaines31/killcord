@@ -20,8 +20,11 @@ private func freshDefaults() -> UserDefaults {
 /// isn't Teams: OpenRouter's own API lives there.
 private func isTeamsRequest(_ request: HTTPRequest) -> Bool {
     let path = request.url.path
+    // SearchApi's own account call is also /api/v1/me, on its documented host.
+    let providerHosts: Set<String> = ["www.searchapi.io"]
     return request.url.host == TeamsSettings.defaultBaseURL.host || request.url.host == "localhost"
-        || ["/api/v1/devices", "/api/v1/me", "/api/v1/orgs"].contains { path.hasPrefix($0) }
+        || (["/api/v1/devices", "/api/v1/me", "/api/v1/orgs"].contains { path.hasPrefix($0) }
+            && !providerHosts.contains(request.url.host ?? ""))
 }
 
 @Suite struct TeamsFlagOffTests {

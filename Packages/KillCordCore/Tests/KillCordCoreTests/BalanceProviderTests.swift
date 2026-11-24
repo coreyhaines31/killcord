@@ -199,11 +199,66 @@ import Testing
 /// What every new adapter shares: read-only setup copy, one host, a key-power label, and no network for a
 /// missing key.
 @Suite struct BalanceProviderRulesTests {
-    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid]
+    /// Services in `ProviderInfo.moreBalanceProviders`, kept in their own lists so the two batches don't collide.
+    static let moreProviders: [ProviderID] = [.runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist, .searchapi]
+    static let moreHosts: [ProviderID: String] = [
+        .runpod: "api.runpod.io",
+        .xapi: "api.x.com",
+        .bfl: "api.bfl.ai",
+        .telnyx: "api.telnyx.com",
+        .luma: "agents.lumalabs.ai",
+        .heygen: "api.heygen.com",
+        .browseruse: "api.browser-use.com",
+        .novita: "api.novita.ai",
+        .hunter: "api.hunter.io",
+        .zerobounce: "api.zerobounce.net",
+        .vonage: "rest.nexmo.com",
+        .plivo: "api.plivo.com",
+        .prospeo: "api.prospeo.io",
+        .lemlist: "api.lemlist.com",
+        .searchapi: "www.searchapi.io"
+    ]
+    static let moreKeyPowers: [ProviderID: KeyPower] = [
+        .runpod: .readOnlyIfChosen,
+        .telnyx: .canManage,
+        .heygen: .readOnlyIfChosen,
+        .hunter: .canManage,
+        .vonage: .canManage,
+        .plivo: .canManage,
+        .lemlist: .canManage
+    ]
+    /// Services in `ProviderInfo.batch3Providers` that read a balance with GETs.
+    static let batch3Providers: [ProviderID] = [.stability, .moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland, .magister]
+    static let batch3Hosts: [ProviderID: String] = [
+        .magister: "api.magistermarketing.com",
+        .bland: "api.bland.ai",
+        .kie: "api.kie.ai",
+        .scrapfly: "api.scrapfly.io",
+        .scrapingbee: "app.scrapingbee.com",
+        .exa: "admin-api.exa.ai",
+        .moonshot: "api.moonshot.ai",
+        .stability: "api.stability.ai"
+    ]
+    static let batch3KeyPowers: [ProviderID: KeyPower] = [.moonshot: .readOnlyIfChosen, .exa: .canManage, .bland: .readOnlyIfChosen, .magister: .readOnly]
+    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily, .deepgram, .runway, .serpapi, .brightdata, .scrapecreators] + moreProviders
+        + batch3Providers
     static let hosts: [ProviderID: String] = [
         .openrouter: "openrouter.ai", .dataforseo: "api.dataforseo.com", .ahrefs: "api.ahrefs.com",
-        .firecrawl: "api.firecrawl.dev", .treg: "treg.to", .monid: "api.monid.ai"
-    ]
+        .firecrawl: "api.firecrawl.dev", .treg: "treg.to", .monid: "api.monid.ai", .fal: "api.fal.ai",
+        .elevenlabs: "api.elevenlabs.io",
+        .xai: "management-api.x.ai",
+        .deepseek: "api.deepseek.com",
+        .apify: "api.apify.com",
+        .tavily: "api.tavily.com",
+        .deepgram: "api.deepgram.com",
+        .runway: "api.dev.runwayml.com",
+        .serpapi: "serpapi.com",
+        .brightdata: "api.brightdata.com",
+        .scrapecreators: "api.scrapecreators.com"
+    ].merging(moreHosts) { $1 }.merging(batch3Hosts) { $1 }
+    /// What each provider's docs say its key can do. Anything not listed can make paid calls.
+    static let keyPowers: [ProviderID: KeyPower] = [.fal: .readOnlyIfChosen, .elevenlabs: .readOnlyIfChosen, .xai: .canManage, .apify: .canManage, .deepgram: .canManage, .brightdata: .canManage].merging(moreKeyPowers) { $1 }
+        .merging(batch3KeyPowers) { $1 }
 
     @Test(arguments: balanceProviders)
     func onlyGETsToItsDocumentedHost(_ provider: ProviderID) async throws {
@@ -232,7 +287,7 @@ import Testing
     func setupSaysWhatTheKeyCanDo(_ provider: ProviderID) {
         let info = provider.info
         #expect(info.capability.showsBalance)
-        #expect(provider.keyPower == .canSpend)
+        #expect(provider.keyPower == Self.keyPowers[provider, default: .canSpend])
         #expect(info.keyPowerWarning != nil)
         #expect(info.keyPowerSummary != nil)
         #expect(!info.setupSteps.isEmpty)

@@ -71,9 +71,14 @@ struct ProviderEditor: View {
         return isAddingAnother ? "New \(info.name) account" : info.name
     }
 
+    private var preset: ManualPreset? {
+        provider == .manual ? ManualPreset.matching(record?.name ?? values["serviceName"]) : nil
+    }
+
     private var chips: [String] {
         var chips = [info.capabilityLabel]
         if provider == .custom { chips.append("Not verified by Kill Cord") }
+        if preset != nil { chips.append("No billing API") }
         if let record, record.name != info.name { chips.insert(info.name, at: 0) }
         return chips
     }
@@ -81,7 +86,8 @@ struct ProviderEditor: View {
     var body: some View {
         VStack(spacing: 0) {
             ProviderHeader(provider: provider, title: title, status: status.light.panel,
-                           statusLabel: status.label, chips: chips, message: info.overview)
+                           statusLabel: status.label, chips: chips, message: info.overview,
+                           isBeta: provider.isBeta)
             Form {
                 if !info.connects {
                     CapsSummarySection(provider: provider, model: model, openTab: openTab)
@@ -100,6 +106,7 @@ struct ProviderEditor: View {
                 } else if isConnected && !replacing {
                     connectedSections
                 } else {
+                    if provider == .manual && !replacing { ManualPresetSection(serviceName: $values["serviceName"]) }
                     setupSection
                 }
             }
@@ -192,7 +199,7 @@ struct ProviderEditor: View {
                 Button("Cancel") { select(.connection(first.id), false) }
                     .keyboardShortcut(.cancelAction)
             }
-            Button(connectTitle, action: connect)
+            Button(connectTitle(replacing: replacing), action: connect)
                 .keyboardShortcut(.defaultAction)
                 .disabled(phase == .checking)
         }
@@ -201,7 +208,9 @@ struct ProviderEditor: View {
     @ViewBuilder
     private var outcome: some View {
         if case .failed(let title, let message, let fix) = phase {
-            ResultBox(light: .stop, title: title, message: message, fix: fix)
+            ResultBox(light: .stop, title: title, message: message, fix: fix) {
+                if provider.isBeta, message != nil { BetaReportLine() }
+            }
         } else if phase == .idle, !replacing, provider == .manual {
             Text("Kill Cord never contacts the service. It shows what you entered as not live, and reminds you "
                 + "before the renewal.")
@@ -359,13 +368,9 @@ extension ProviderEditor {
                 : "Kill Cord deletes it from your Keychain and stops checking \(title). The key keeps working "
                     + "until you revoke it in the \(info.consoleName).")
         }
-        CapsSummarySection(provider: provider, model: model, openTab: openTab)
-    }
-
-    private var connectTitle: String {
-        if provider == .manual { return replacing ? "Save Changes" : "Save" }
-        if replacing { return "Save New Key" }
-        return provider == .custom ? "Test and Save" : "Connect \(info.name)"
+        if let preset { Section(preset.name) { ManualPresetNote(preset: preset) } }
+        CapsSummarySection(provider: provider, model: model, controls: provider == .manual ? preset?.caps ?? [] : nil,
+                           openTab: openTab)
     }
 
     private func commitName() {
@@ -379,6 +384,7 @@ extension ProviderEditor {
         if let error = connectionID.flatMap({ model.states[$0] })?.lastError {
             ResultBox(light: error.isTransient ? .caution : .stop, title: error.shortLabel,
                       message: error.message(for: provider), fix: error.isTransient ? nil : error.fix(for: provider)) {
+                if provider.isBeta, !error.isTransient { BetaReportLine() }
                 if !error.isTransient {
                     Button("Replace Key…") {
                         replacing = true

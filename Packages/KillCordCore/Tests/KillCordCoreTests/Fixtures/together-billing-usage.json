@@ -1,0 +1,28 @@
+{
+  "object": "list",
+  "organization_id": "org_kctest",
+  "billing_period": "2026-11",
+  "earliest_window_start": "2026-11-01T00:00:00Z",
+  "latest_window_end": "2026-11-15T00:00:00Z",
+  "currency": "USD",
+  "data": [
+    {
+      "date": "2026-11-01",
+      "start_time": "2026-11-01T00:00:00Z",
+      "end_time": "2026-11-02T00:00:00Z",
+      "line_items": [
+        { "product_name": "Llama 3.3 70B input tokens", "quantity": "1500000", "unit_price": "0.00000088", "cost": "1.32", "pricing_dimensions": {}, "attributes": {} },
+        { "product_name": "Llama 3.3 70B output tokens", "quantity": "250000", "unit_price": "0.00000088", "cost": "0.22", "pricing_dimensions": {}, "attributes": {}, "applied_credit": { "type": "PREPAID" } }
+      ]
+    },
+    {
+      "date": "2026-11-14",
+      "start_time": "2026-11-14T00:00:00Z",
+      "end_time": "2026-11-15T00:00:00Z",
+      "line_items": [
+        { "product_name": "FLUX.1 schnell images", "quantity": "100", "unit_price": "0.0027", "cost": "0.27", "pricing_dimensions": {}, "attributes": {} }
+      ]
+    }
+  ],
+  "next_cursor": null
+}

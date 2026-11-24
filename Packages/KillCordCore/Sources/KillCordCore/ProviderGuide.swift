@@ -33,21 +33,35 @@ extension ProviderInfo {
         case .twilio: "Twilio Console"
         case .neon: "Neon Console"
         case .supabase: "Supabase dashboard"
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist, .searchapi: moreConsoleName
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
         case .firecrawl: "Firecrawl dashboard"
         case .treg: "treg dashboard"
         case .monid: "Monid dashboard"
+        case .fal: "fal dashboard"
+        case .elevenlabs: "ElevenLabs settings"
+        case .xai: "xAI Console"
+        case .deepseek: "DeepSeek Platform"
+        case .apify: "Apify Console"
+        case .tavily: "Tavily dashboard"
+        case .deepgram: "Deepgram Console"
+        case .runway: "Runway developer portal"
+        case .serpapi: "SerpApi dashboard"
+        case .brightdata: "Bright Data control panel"
+        case .scrapecreators: "ScrapeCreators dashboard"
         case .custom: "service's site"
         case .manual: "service's site"
+        default: batch3ConsoleName
         }
     }
 
     /// A chip next to the name: what kind of number Kill Cord can show.
     public var capabilityLabel: String {
         switch capability {
-        case .dollars: "Dollar spend"
+        case .dollars, .monthDollars: "Dollar spend"
         case .requiresSetup: "Dollar spend, needs setup"
         case .usageUnitsOnly: "Usage units only"
         case .noUsageAPI: "Caps only"
@@ -60,6 +74,7 @@ extension ProviderInfo {
     public var overview: String {
         let shows: String = switch capability {
         case .dollars: "Shows today's and this month's spend."
+        case .monthDollars: "Shows this month's spend. \(name) doesn't report a day's."
         case .requiresSetup: "Shows spend from your Cloud Billing export in BigQuery."
         case .usageUnitsOnly: "Shows this month's usage. \(name) doesn't report dollars."
         case .noUsageAPI: "\(name) has no spend API, so there's nothing to connect. Turn on its Spend Cap in Caps Audit."
@@ -70,7 +85,7 @@ extension ProviderInfo {
         case .enteredByHand: "For a service with no API: the plan, price and renewal date you enter, with a "
             + "reminder before it renews. It isn't live and isn't in your totals."
         }
-        return [shows, delaySummary, requirement].compactMap { $0 }.joined(separator: " ")
+        return [batch3Shows ?? shows, delaySummary, requirement].compactMap { $0 }.joined(separator: " ")
     }
 
     /// How far behind the provider's numbers run, in a few words.
@@ -83,11 +98,15 @@ extension ProviderInfo {
         case .cloudflare: "Updated once a day."
         case .twilio: "Runs a few minutes behind."
         case .neon: "Runs about 15 minutes behind."
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist, .searchapi: moreDelaySummary
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
+             .tavily, .deepgram, .runway, .serpapi, .brightdata, .scrapecreators: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
+        default: batch3DelaySummary
         }
     }
 
@@ -100,7 +119,12 @@ extension ProviderInfo {
         case .openrouter: "Reads this key only, not the whole account."
         case .ahrefs: "Shows the workspace's API units. Plans without API access can't connect."
         case .custom: "Kill Cord can't verify a custom service's numbers: they're whatever its reply says."
-        default: nil
+        case .deepseek: "If the account holds both dollars and yuan, shows the dollar balance."
+        case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
+        case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
+        case .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten, .hunter, .vonage, .plivo, .lemlist,
+             .searchapi: moreRequirement
+        default: batch3Requirement
         }
     }
 
@@ -113,15 +137,29 @@ extension ProviderInfo {
         case .vercel: "A token acts as you on the teams it covers. Scope it to one team and set an expiry."
         case .twilio: "Twilio has no read-only key. A Standard API key can also send messages and calls."
         case .neon: "Neon has no read-only key. This one can manage every project in the organization."
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist, .searchapi: moreKeyPowerSummary
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
         case .firecrawl: "No read-only key is documented. This key can run scrapes on your credits."
         case .treg: "Every treg token can call tools on the balance. Use a limited agent token."
         case .monid: "No read-only key is documented. This key can start paid runs."
+        case .fal: "Use a BILLING-preset key: fal lists only billing reads for it. A FULL key can run models."
+        case .elevenlabs: "Limit the key to User read access, so it can't call the speech endpoints."
+        case .xai: "xAI has no read-only management key. This one can also create keys and change limits."
+        case .deepseek: "DeepSeek has no read-only key. This key can make paid model calls on your balance."
+        case .apify: "Apify tokens can do everything in your account unless you scope them. Kill Cord only reads limits."
+        case .tavily: "Tavily has no read-only key. This key can run searches on your credits. Give it a credit limit."
+        case .deepgram: "Reading balances needs an Admin or Owner key, which can also manage the project's keys."
+        case .runway: "Runway has no read-only key. This key can start generations on your credits."
+        case .serpapi: "SerpApi has one private key with no scopes. It can run searches on your plan."
+        case .brightdata: "Bright Data has no read-only key. Use the Finance level, limited to billing pages."
+        case .scrapecreators: "ScrapeCreators documents no read-only key. This key can run scrapes on your credits."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
+        default: batch3KeyPowerSummary
         }
     }
 
@@ -202,6 +240,8 @@ extension ProviderInfo {
             ]
         case .supabase:
             return []
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist, .searchapi: return moreSetupSteps
         case .openrouter:
             return [
                 SetupStep("Open API Keys in OpenRouter", "Under Settings › API Keys.", link: open("Open OpenRouter Keys")),
@@ -238,6 +278,87 @@ extension ProviderInfo {
                 SetupStep("Open API Keys in Monid", "In the Monid dashboard.", link: open("Open Monid Keys")),
                 SetupStep("Create a key and copy it", "It starts with monid_.")
             ]
+        case .fal:
+            return [
+                SetupStep("Open API Keys in fal", "In the fal dashboard.", link: open("Open fal Keys")),
+                SetupStep("Create a key with the BILLING preset and copy it", "fal lists only billing reads for "
+                    + "it. Don't use a FULL key: it can run models on your credits.")
+            ]
+        case .elevenlabs:
+            return [
+                SetupStep("Open API Keys in ElevenLabs", "Under Settings › API Keys.",
+                          link: open("Open ElevenLabs Keys")),
+                SetupStep("Create a key that can only read User and copy it", "Turn off every other endpoint, "
+                    + "so the key can't make speech. ElevenLabs doesn't say which permission this call needs; "
+                    + "User read is the likely one.")
+            ]
+        case .xai:
+            return [
+                SetupStep("Open Management Keys in the xAI Console", "Under Settings › Management Keys. Your "
+                    + "account needs the Management Keys Read and Write permissions.",
+                          link: open("Open xAI Management Keys")),
+                SetupStep("Create a management key and copy it", "It's separate from the API keys that call Grok."),
+                SetupStep("Copy your team ID", "On Settings › Team in the same console.",
+                          link: ("Open Team Settings", URL(string: "https://console.x.ai/team/default/settings/team")!))
+            ]
+        case .deepseek:
+            return [
+                SetupStep("Open API Keys on the DeepSeek Platform", "Sign in at platform.deepseek.com.",
+                          link: open("Open DeepSeek Keys")),
+                SetupStep("Create a key just for Kill Cord and copy it", "DeepSeek shows it once. It starts "
+                    + "with sk-.")
+            ]
+        case .apify:
+            return [
+                SetupStep("Open API & Integrations in Apify Console", "Under Settings › API & Integrations.",
+                          link: open("Open Apify Tokens")),
+                SetupStep("Create a token for Kill Cord and copy it", "Apify's docs don't say which scoped-token "
+                    + "permission reads usage limits. If a scoped token is refused, Kill Cord says so.")
+            ]
+        case .tavily:
+            return [
+                SetupStep("Open the Tavily dashboard", "API keys are on the Overview page.",
+                          link: open("Open Tavily Dashboard")),
+                SetupStep("Create a key for Kill Cord and copy it", "It starts with tvly-. Give it a small credit "
+                    + "limit: Kill Cord only reads usage.")
+            ]
+        case .deepgram:
+            return [
+                SetupStep("Open the Deepgram Console", "Pick the project, then Settings › API Keys.",
+                          link: open("Open Deepgram Console")),
+                SetupStep("Create an Admin key and copy it", "Deepgram gives billing:read to the Admin and Owner "
+                    + "roles only, so a Member key can't read balances."),
+                SetupStep("Add the project ID if the key sees more than one", "It's in the project's settings. "
+                    + "With one project, Kill Cord finds it.")
+            ]
+        case .runway:
+            return [
+                SetupStep("Open the Runway developer portal", "Pick the project, then its API Keys tab.",
+                          link: open("Open Runway Dev")),
+                SetupStep("Create a key for Kill Cord and copy it", "It starts with key_. Runway shows it once.")
+            ]
+        case .serpapi:
+            return [
+                SetupStep("Open the SerpApi dashboard", "Your private API key is on it.",
+                          link: open("Open SerpApi Dashboard")),
+                SetupStep("Copy the private API key", "Kill Cord reads your account, which SerpApi says is free "
+                    + "and doesn't count toward your searches.")
+            ]
+        case .brightdata:
+            return [
+                SetupStep("Open Account settings › Users and API keys", "Only an admin can create keys, and each "
+                    + "user gets one.", link: open("Open Bright Data Users")),
+                SetupStep("Create a key with the Finance permission level and copy it", "Bright Data says Finance "
+                    + "allows access to billing and financial pages only. Its docs don't name the level this call "
+                    + "needs; Admin and Finance keys read billing elsewhere in its API.")
+            ]
+        case .scrapecreators:
+            return [
+                SetupStep("Open the ScrapeCreators dashboard", "Your API key is on it.",
+                          link: open("Open ScrapeCreators")),
+                SetupStep("Copy the API key", "Kill Cord reads your credit balance, which ScrapeCreators says is "
+                    + "free and doesn't use credits.")
+            ]
         case .manual:
             return [
                 SetupStep("Open the service's billing page", "Find your plan, its price, and the next renewal date."),
@@ -251,6 +372,8 @@ extension ProviderInfo {
                 SetupStep("Fill in where the number is", "Kill Cord calls it once to test before saving. It can't "
                     + "check that the number is right, so compare it with the service's own dashboard.")
             ]
+        default:
+            return batch3SetupSteps
         }
     }
 }

@@ -1,0 +1,6 @@
+{
+  "credits": 100,
+  "details": {
+    "remaining": { "total": 100, "freemium": 0, "subscription": 80, "gifted": 10, "paid": 10 }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "changes": [
+    {
+      "teamId": "65c1e471-205f-4566-9c5a-07198bcdf4ce",
+      "changeOrigin": "PURCHASE",
+      "topupStatus": "SUCCEEDED",
+      "amount": { "val": "-2500" },
+      "invoiceId": "TEST-invoice-0001",
+      "invoiceNumber": "000-000-000-001",
+      "createTime": "2026-11-02T15:28:02.308840Z",
+      "paymentProcessor": { "kind": "STRIPE" }
+    },
+    {
+      "teamId": "65c1e471-205f-4566-9c5a-07198bcdf4ce",
+      "changeOrigin": "SPEND",
+      "amount": { "val": "765" },
+      "createTime": "2026-11-15T12:00:00.000000Z"
+    }
+  ],
+  "total": { "val": "-1735" }
+}

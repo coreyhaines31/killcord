@@ -1,0 +1,21 @@
+{
+  "lineItems": [
+    {
+      "category": "Text Completion",
+      "groupingKey": "model",
+      "groupingValue": "llama-v3p3-70b-instruct",
+      "quantity": 12500000,
+      "unitAmount": { "currencyCode": "USD", "units": "0", "nanos": 900 },
+      "totalCost": { "currencyCode": "USD", "units": "11", "nanos": 250000000 },
+      "series": "SERVERLESS"
+    },
+    {
+      "category": "Audio Transcription",
+      "groupingKey": "model",
+      "groupingValue": "whisper-v3",
+      "quantity": 300,
+      "totalCost": { "currencyCode": "USD", "units": "1", "nanos": 500000000 },
+      "series": "SERVERLESS"
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, and Monid.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, Scrapfly, Kie.ai, Bland AI, Runpod, X API, Black Forest Labs, Telnyx, Luma AI, HeyGen, Browser Use, Novita AI, Hunter, ZeroBounce, Vonage, Plivo, Prospeo, lemlist, and SearchApi, and spend on DeepInfra, DigitalOcean, and Baseten.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
@@ -28,13 +28,15 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
+- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, Scrapfly, Kie.ai, Bland AI, Runpod, X API, Black Forest Labs, Telnyx, Luma AI, HeyGen, Browser Use, Novita AI, Hunter, ZeroBounce, Vonage, Plivo, Prospeo, lemlist, SearchApi), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
 - **Takes any balance endpoint.** A custom connection reads a service Kill Cord doesn't know from an https address you enter and a path into its JSON. Kill Cord can't verify those numbers and says so.
-- **Remembers plans with no API.** For services like Truelist or Gojiberry, enter the plan, price, and renewal date. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
+- **Remembers plans with no API.** For services with no billing API, enter the plan, price, and renewal date. Thirty-nine of them are presets (Replicate, Groq, Perplexity, Cohere, AssemblyAI, E2B, Cerebras, Jina AI, Twelve Labs, Unstructured, Voyage AI, TypeSafe Jev, Modal, Pinecone, Truelist, Gojiberry, Apollo, Brave Search API, Clay, Cloudinary, Composio, Enrich Layer, Fly.io, Gladia, Hetzner, Ideogram, Instantly, Lambda, Leonardo.Ai, Linode, n8n Cloud, Netlify, People Data Labs, Railway, Render, SambaNova Cloud, Serper, Vultr, and Zapier): pick one and Kill Cord links its billing page and adds its own spend caps to the audit. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
 - **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month. Low-balance alerts fire once when a balance drops to your amount, and again only after a top-up.
 - **Keeps keys in the Keychain.** Not in files, preferences, logs, or exports. No account, no telemetry.
 
 ## Provider coverage
+
+Providers marked (beta) were built from each provider's documented API and haven't been verified with a live account yet. Kill Cord labels them Beta in the app until they are. If one looks wrong, [open an issue](https://github.com/coreyhaines31/killcord/issues).
 
 | Provider | Spend source | Key you need | Dollars? | Caps Kill Cord can confirm |
 | --- | --- | --- | --- | --- |
@@ -52,6 +54,54 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Firecrawl | Team credit usage | API key | Credits left | None |
 | treg | Team balance | Team or agent token | Balance left, in dollars | None |
 | Monid | Wallet balance | API key | Balance left, in dollars | None (budgets are your checkmark) |
+| fal (beta) | Account credits | API key with the BILLING preset | Balance left, in dollars | None (the balance is the cap) |
+| ElevenLabs (beta) | Subscription credits | API key limited to User read | Credits left this period | None (key quotas are your checkmark) |
+| xAI (beta) | Prepaid credits (Management API) | Management key and team ID | Balance left, in dollars | None (the invoiced billing limit is your checkmark) |
+| DeepSeek (beta) | Account balance | API key | Balance left, in dollars or yuan | None (DeepSeek documents no cap) |
+| Apify (beta) | Usage this cycle and the usage limit | API token | Yes, this usage cycle, plus what's left before the limit | Usage limit |
+| Tavily (beta) | Plan credits this cycle | API key | Credits left of the plan | None (workspace and key limits are your checkmark) |
+| Deepgram (beta) | Project balances | API key with the Admin role (plus the project ID if it sees several) | Balance left, in dollars | None (Deepgram documents no cap) |
+| Runway (beta) | Organization credits | API key | Credits left, with a labeled dollar estimate at $0.01 a credit | None (autobilling off is your checkmark) |
+| SerpApi (beta) | Account searches | Private API key | Searches left this month | None |
+| Bright Data (beta) | Account balance | API key with the Finance permission level | Balance left, in dollars | None (zone limits are your checkmark) |
+| ScrapeCreators (beta) | Account credits | API key | Credits left | None (the credits are the cap) |
+| Stability AI (beta) | Account credits | API key | Credits left, with a labeled dollar estimate at $0.01 a credit | None (Stability AI documents no cap) |
+| Kimi (Moonshot AI) (beta) | Account balance (global platform) | Admin key with billing:read, or an API key | Balance left, in dollars | None (project budgets are your checkmark) |
+| Exa (beta) | Team credits (Team Management API) | Service key | Balance left, in dollars | None (key budgets and the auto-recharge maximum are your checkmark) |
+| ScrapingBee (beta) | Plan credit usage | API key | Credits left of the plan, with the renewal date | None (auto renew off is your checkmark) |
+| Scrapfly (beta) | Account scrape credits | API key (LIVE) | Credits left of the plan, with the period's end | None (extra credit use off on each project is your checkmark) |
+| Kie.ai (beta) | Account credits | API key | Credits left, with a labeled dollar estimate at about $0.005 a credit | None (key usage caps are your checkmark) |
+| Bland AI (beta) | Account balance | Restricted API key with only Analytics read (or a full-access key) | Credits left | None (auto refill off is your checkmark) |
+| LlamaCloud (beta) | Organization usage (this billing period's invoice) | User API key (plus the organization ID if it sees several) | Yes, this billing period, no day | Monthly invoice limit |
+| Cartesia (beta) | Credit usage | Admin key | No: credits used this month | None (overages off is your checkmark) |
+| Together AI (beta) | Billing usage report (beta, per organization) | API key | Yes, this month through yesterday | None (auto-recharge off is your checkmark) |
+| Fireworks AI (beta) | Billing summary | API key (an Inference user's) | Yes | Monthly spend limit |
+| Vapi (beta) | Analytics: sum of call costs | Private API key | Yes, call costs only | None (auto-reload off is your checkmark) |
+| Retell AI (beta) | Call list (costs added up) | API key with only History › Read | Yes, call costs only | None (the monthly budget is your checkmark) |
+| Browserbase (beta) | Project usage | Project API key | No: browser minutes and proxy data, period not stated | None (Browserbase documents no cap) |
+| Resend (beta) | Quota headers on a domain list | API key with Full access | No: emails used this month | None (overages off is your checkmark) |
+| Postmark (beta) | Outbound send stats (one server) | Server API token | No: emails sent today and this month | None (Postmark can't cap overage) |
+| Mistral (beta) | Admin API spend limit (beta, Enterprise) | Admin API key | Yes, this month, no day | Organization spending limit |
+| Hugging Face (beta) | Organization Inference Providers usage (Enterprise) | Fine-grained token with org billing read, plus the organization name | Yes, up to 2 hours behind | None (the organization spending limit is your checkmark) |
+| Magister (beta) | API credit balance (free call) | Read-only API key | Credits left, with a labeled dollar estimate at Magister's price per credit | None (auto-recharge off is your checkmark) |
+| Runpod (beta) | Account balance | API key with billing:read (Read Only works) | Balance left, in dollars (prepaid accounts) | Prepaid balance with auto-pay off; low balance notification |
+| DeepInfra (beta) | Monthly usage | API key scoped to billing:read | Yes, this month, no day | Spending limit |
+| X API (beta) | Pay-per-use credits | App Bearer token | Balance left, in dollars | Spending limit per billing cycle; prepaid credits |
+| Black Forest Labs (beta) | Account credits | API key | Credits left, with a labeled dollar estimate at $0.01 a credit | Prepaid credits with auto top-up off |
+| DigitalOcean (beta) | Month-to-date usage | Custom token with only billing:read | Yes, this month, no day | Spend alerts; inference key pausing |
+| Telnyx (beta) | Account balance | API key | Available credit, in the account's currency | Auto recharge off (Kill Cord checks it) |
+| Luma AI (beta) | Team credits (Luma API Platform) | API key | Credits left | Prepaid credits and key spending caps |
+| HeyGen (beta) | Wallet, usage-based cap, or plan credits | API key restricted to account:read | Balance left, in dollars or credits | Spending cap and wallet auto reload (Kill Cord checks both) |
+| Browser Use (beta) | Project credits | API key | Balance left, in dollars | Monthly cap on each key; prepaid credits |
+| Novita AI (beta) | Account balance | API key | Balance left, in dollars | Prepaid balance |
+| Baseten (beta) | Billing usage summary | Personal API key | Yes, after credits | Maximum replicas per deployment |
+| Hunter (beta) | Account credits (free call) | API key | Credits left of the plan, with the reset date | None |
+| ZeroBounce (beta) | Credit balance | API key (travels in the request address; removed from errors) | Credits left | None |
+| Vonage (beta) | Account balance | API key and secret | Balance left, in euros | Auto reload off (Kill Cord checks it) |
+| Plivo (beta) | Account cash credits | Auth ID and Auth Token | Balance left, in dollars (prepaid accounts) | Auto recharge off (Kill Cord checks it); monthly recharge limit |
+| Prospeo (beta) | Account information (free call) | API key | Credits left of the plan, with the renewal date | None |
+| lemlist (beta) | Team credits | API key | Credits left | None |
+| SearchApi (beta) | Account searches | API key | Searches left, with the period's end | Early renewal off (Kill Cord checks it) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -83,11 +133,59 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Neon | An organization API key and the organization ID. Consumption data needs a Launch, Scale, Agent, or Enterprise plan. |
 | Supabase | Nothing to connect. Use the caps audit. |
 | OpenRouter | Settings › API Keys. Create a key just for Kill Cord with a small credit limit. |
+| Deepgram | An Admin key from the Deepgram Console › project Settings › API Keys. Member keys can't read balances. |
+| Runway | An API key (key_…) from the project's API Keys tab at dev.runway.com. |
+| SerpApi | The private API key from the SerpApi dashboard. It travels in the request address, as SerpApi requires, and Kill Cord strips it from errors. |
+| Bright Data | An API key with the Finance permission level from Account settings › Users and API keys (an admin creates it). |
+| ScrapeCreators | The API key from the ScrapeCreators dashboard. |
+| Stability AI | An API key from the API Keys page at platform.stability.ai. Keys have no scopes. |
 | DataForSEO | The API login and API password from the API Access page (not your dashboard sign-in). |
 | Ahrefs | An API key from your Ahrefs account. Your plan needs API access. |
 | Firecrawl | An API key from the dashboard's API Keys page. |
 | treg | An agent token (`treg org agent-new`, run by an admin), or a personal token plus your team's slug. |
 | Monid | An API key from app.monid.ai › Access › API keys. |
+| fal | A key with the BILLING preset from fal.ai › Dashboard › Keys. Don't use a FULL key. |
+| ElevenLabs | An API key from Settings › API Keys with every endpoint off except User (read). |
+| xAI | A management key from the xAI Console › Settings › Management Keys, and the team ID from Settings › Team. A management key can also manage API keys and limits. |
+| DeepSeek | An API key from platform.deepseek.com › API Keys, made just for Kill Cord. |
+| Apify | An API token from Apify Console › Settings › API & Integrations. Tokens can do everything in the account unless scoped. |
+| Tavily | An API key (tvly-…) from the Tavily dashboard, with a small credit limit. |
+| Kimi (Moonshot AI) | An Admin key with only the billing:read scope from the Kimi console › Organization › Admin API Keys (verified organizations). An inference API key also works but can spend. |
+| Exa | A service key from the dashboard's API Keys › Service keys tab. Exa turns the Team Management API on per team when you ask support. The key can manage your API keys. |
+| ScrapingBee | The API key from the dashboard's Account › Manage › API key page. |
+| Scrapfly | A project's LIVE API key from the dashboard's Projects page. It travels in the request address, as Scrapfly requires, and Kill Cord strips it from errors. |
+| Kie.ai | An API key from kie.ai's API Key page, with small usage caps. |
+| Bland AI | A restricted key (org_s_…) with only Analytics read from Settings › API keys. Restricted keys are rolling out by organization; a full-access key also works but can place calls. |
+| LlamaCloud | A key from the User API Keys table on LlamaCloud's API Key page (not a project key), plus the organization ID if it sees more than one. Choose the EU region for cloud.eu.llamaindex.ai. |
+| Cartesia | An admin key (sk_car_admin_…) from the playground's Admin keys page. Only organization admins can make one, and it can also manage users and invites. |
+| Together AI | An API key from any project in the organization. Together turns its billing usage API on per organization; ask support. |
+| Fireworks AI | An API key from Settings › Users › API Keys, from a service account or user with the Inference user role, plus the account ID if it sees more than one. |
+| Vapi | A private API key from the dashboard's API Keys page. It can do everything in the organization. |
+| Retell AI | An API key from Settings › API Keys limited to History › Read. |
+| Browserbase | The project's API key from Settings, plus the project ID if it sees more than one. |
+| Resend | A Full access API key from resend.com › API Keys. Sending access keys can't read, and a Full access key can manage domains and keys. |
+| Postmark | A Server API token from the server's API Tokens tab. It can send email. |
+| Mistral | An Admin API key from the Admin Panel's enterprise section (Enterprise plans only). It can manage users, keys and the spending limit. |
+| Hugging Face | A fine-grained token from Settings › Access Tokens with only the organization's billing read permission, and the organization's name. Enterprise plan or above. |
+| Magister | A read-only API key (mm_live_…) from Settings › Developers › API keys. |
+| Runpod | A Read Only key (or Restricted with billing:read) from console.runpod.io › Credentials › API Keys. Not an All key. |
+| DeepInfra | A scoped key from deepinfra.com › Dash › API Keys with only billing:read: untick the default inference scopes. |
+| X API | Your app's Bearer token from the X Developer Console › Keys and tokens. Use an app made just for Kill Cord. |
+| Black Forest Labs | A project API key (bfl_…) from dashboard.bfl.ai › API › Keys. |
+| DigitalOcean | A personal access token with Custom Scopes and only billing:read, from API › Tokens. |
+| Telnyx | An API key from Mission Control Portal › API Keys, made just for Kill Cord. It reaches the whole account. |
+| Luma AI | An API key (luma-api-…) from the Luma API Platform. |
+| HeyGen | An API key from platform.heygen.com › API keys, restricted to account:read. |
+| Browser Use | An API key from the project you want, with a small monthly spending cap. |
+| Novita AI | An API key from Settings › Key Management, made just for Kill Cord. |
+| Baseten | A personal API key from Settings › API keys, with an expiry. Baseten doesn't say which team key permission reads billing. |
+| Hunter | An API key from hunter.io › API keys. |
+| ZeroBounce | An API key from the API dashboard's Keys Management. |
+| Vonage | The account's API key and a secret made just for Kill Cord. |
+| Plivo | The account's Auth ID and Auth Token. |
+| Prospeo | A key made just for Kill Cord at app.prospeo.io/api. |
+| lemlist | The API key from Settings › Integrations, ideally from a member who isn't an admin. |
+| SearchApi | The API key from your SearchApi dashboard. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 

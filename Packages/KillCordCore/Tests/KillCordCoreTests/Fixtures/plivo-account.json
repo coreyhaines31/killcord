@@ -1,0 +1,14 @@
+{
+  "account_type": "standard",
+  "address": "",
+  "api_id": "c2c8f6aa-0000-11ee-0000-0242ac110003",
+  "auth_id": "MAKCTESTAUTHID0115AB",
+  "auto_recharge": false,
+  "billing_mode": "prepaid",
+  "cash_credits": "1.80900",
+  "city": "",
+  "name": "Kill Cord Test",
+  "resource_uri": "/v1/Account/MAKCTESTAUTHID0115AB/",
+  "state": "",
+  "timezone": "America/New_York"
+}

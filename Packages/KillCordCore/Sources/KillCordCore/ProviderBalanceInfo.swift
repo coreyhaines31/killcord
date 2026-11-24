@@ -93,6 +93,156 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Monid doesn't say how current the wallet balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.monid.ai/")
+        ),
+        ProviderInfo(
+            id: .fal, name: "fal", capability: .balance(spend: []),
+            fields: [apiKeyField("key_id:key_secret", help: "A key with the BILLING preset.")],
+            keyKind: "API key with the BILLING preset",
+            keyURL: url("https://fal.ai/dashboard/keys"),
+            keyPowerWarning: "fal's BILLING preset reads usage, invoices, billing settings, the list of keys, and "
+                + "the model catalog. fal's docs list no other permission for it. A FULL key can also run models "
+                + "on your credits, so don't use one. Kill Cord only reads the credit balance.",
+            lag: ProviderLag(typical: 0, note: "fal doesn't say how current the credit balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://fal.ai/dashboard/billing")
+        ),
+        ProviderInfo(
+            id: .elevenlabs, name: "ElevenLabs", capability: .balance(spend: []),
+            fields: [apiKeyField("sk_…", help: "A key limited to User read access.")],
+            keyKind: "API key with User read access",
+            keyURL: url("https://elevenlabs.io/app/settings/api-keys"),
+            keyPowerWarning: "ElevenLabs lets you limit a key to some endpoints and give it a credit quota. A key "
+                + "with every endpoint on can make speech on your credits. Turn off everything but User (read): "
+                + "Kill Cord only reads your subscription's credits. ElevenLabs doesn't document which permission "
+                + "that call needs. If the key is refused, also give it read access to User.",
+            lag: ProviderLag(typical: 0, note: "ElevenLabs doesn't say how current the credit count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://elevenlabs.io/app/subscription")
+        ),
+        ProviderInfo(
+            id: .xai, name: "xAI", capability: .balance(spend: []),
+            fields: [
+                CredentialField(id: "managementKey", label: "Management key", placeholder: "Management API key",
+                                isSecret: true, help: "From Settings › Management Keys, not an API key."),
+                CredentialField(id: "teamID", label: "Team ID", placeholder: "65c1e471-205f-…", isSecret: false,
+                                help: "On Settings › Team in the xAI Console.")
+            ],
+            keyKind: "Management API key",
+            keyURL: url("https://console.x.ai/team/default/management-keys"),
+            keyPowerWarning: "xAI has no read-only management key. A management key can create, change, and "
+                + "delete API keys, top up your prepaid credits with the default payment method, and change "
+                + "spending limits. Kill Cord only reads the prepaid balance, and the key stays in your Mac's "
+                + "Keychain. Revoke it in the xAI Console if it leaks.",
+            lag: ProviderLag(typical: 0, note: "xAI doesn't say how current the prepaid balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://console.x.ai/team/default/billing")
+        ),
+        ProviderInfo(
+            id: .deepseek, name: "DeepSeek", capability: .balance(spend: []),
+            fields: [apiKeyField("sk-…")],
+            keyKind: "API key",
+            keyURL: url("https://platform.deepseek.com/api_keys"),
+            keyPowerWarning: "DeepSeek documents no read-only or limited key. An API key can make paid model calls "
+                + "until the balance runs out. Create one just for Kill Cord so you can revoke it on its own. Kill "
+                + "Cord only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "DeepSeek doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://platform.deepseek.com/top_up")
+        ),
+        ProviderInfo(
+            id: .apify, name: "Apify", capability: .balance(spend: [.month]),
+            fields: [apiKeyField("apify_api_…")],
+            keyKind: "API token",
+            keyURL: url("https://console.apify.com/settings/integrations"),
+            keyPowerWarning: "Apify has no read-only token. By default a token can access all data in your account "
+                + "and run Actors on it. Apify's scoped tokens can be limited to chosen resources, but its docs "
+                + "don't say which permission reads usage limits. Kill Cord only reads this cycle's usage and "
+                + "your usage limit.",
+            lag: ProviderLag(typical: 0, note: "Apify doesn't say how current usage is. The month is Apify's "
+                + "usage cycle, which may not start on the 1st."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://console.apify.com/billing#/limits")
+        ),
+        ProviderInfo(
+            id: .tavily, name: "Tavily", capability: .balance(spend: []),
+            fields: [apiKeyField("tvly-…")],
+            keyKind: "API key",
+            keyURL: url("https://app.tavily.com"),
+            keyPowerWarning: "Tavily doesn't document a read-only key. An API key can run searches, extracts, and "
+                + "crawls that use your credits. Tavily lets a key carry its own credit limit, so set a small one. "
+                + "Kill Cord only reads usage.",
+            lag: ProviderLag(typical: 0, note: "Tavily doesn't say how current usage is. Its usage call allows "
+                + "10 requests every 10 minutes, so Kill Cord checks it at most every 15 minutes."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.tavily.com/billing")
+        ),
+        ProviderInfo(
+            id: .deepgram, name: "Deepgram", capability: .balance(spend: []),
+            fields: [
+                apiKeyField("Deepgram API key", help: "A key with the Admin role."),
+                CredentialField(id: "projectID", label: "Project ID", placeholder: "Project ID", isSecret: false,
+                                isOptional: true,
+                                help: "Only if the key can see more than one project.")
+            ],
+            keyKind: "API key with the Admin role",
+            keyURL: url("https://console.deepgram.com"),
+            keyPowerWarning: "Deepgram has no read-only key for balances. Its role table gives billing:read to the "
+                + "Admin and Owner roles only, and an Admin key can also manage the project's keys and members "
+                + "and make paid requests. Deepgram lets you create a key with chosen scopes, but its docs don't "
+                + "say which scope the balance call needs. Kill Cord only reads balances.",
+            lag: ProviderLag(typical: 0, note: "Deepgram doesn't say how current balances are."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://console.deepgram.com")
+        ),
+        ProviderInfo(
+            id: .runway, name: "Runway", capability: .balance(spend: []),
+            fields: [apiKeyField("key_…")],
+            keyKind: "API key",
+            keyURL: url("https://dev.runway.com/"),
+            keyPowerWarning: "Runway doesn't document a read-only or scoped key. An API key can start image and "
+                + "video generations that use your credits. Create one just for Kill Cord so you can revoke it on "
+                + "its own. Kill Cord only reads the credit balance.",
+            lag: ProviderLag(typical: 0, note: "Runway doesn't say how current the credit balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://dev.runway.com/usage")
+        ),
+        ProviderInfo(
+            id: .serpapi, name: "SerpApi", capability: .balance(spend: []),
+            fields: [apiKeyField("Private API key")],
+            keyKind: "Private API key",
+            keyURL: url("https://serpapi.com/dashboard"),
+            keyPowerWarning: "SerpApi has a single private key with no scopes or read-only form. It can run "
+                + "searches that use your plan. SerpApi sends the key in the address of each request, as its API "
+                + "requires; Kill Cord removes it from any error it shows. Kill Cord only reads your account, "
+                + "which SerpApi says is free and doesn't count toward your monthly searches.",
+            lag: ProviderLag(typical: 0, note: "SerpApi doesn't say how current the search count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://serpapi.com/dashboard")
+        ),
+        ProviderInfo(
+            id: .brightdata, name: "Bright Data", capability: .balance(spend: []),
+            fields: [apiKeyField("Bright Data API key", help: "A key with the Finance permission level.")],
+            keyKind: "API key with the Finance permission level",
+            keyURL: url("https://brightdata.com/cp/setting/users"),
+            keyPowerWarning: "Bright Data doesn't document a read-only key. It says its Finance level \"allows "
+                + "access to Billing and Financial pages only\", but not whether that includes changing billing "
+                + "settings, so Kill Cord treats the key as able to. An Admin key can do everything. Kill Cord "
+                + "only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "Bright Data doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://brightdata.com/cp/billing/settings")
+        ),
+        ProviderInfo(
+            id: .scrapecreators, name: "ScrapeCreators", capability: .balance(spend: []),
+            fields: [apiKeyField("ScrapeCreators API key")],
+            keyKind: "API key",
+            keyURL: url("https://app.scrapecreators.com/"),
+            keyPowerWarning: "ScrapeCreators doesn't document a read-only or scoped key. The API key can run "
+                + "scrapes that use your credits. Kill Cord only reads the credit balance, which ScrapeCreators "
+                + "says is free.",
+            lag: ProviderLag(typical: 0, note: "ScrapeCreators doesn't say how current the credit count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.scrapecreators.com/")
         )
     ]
 }

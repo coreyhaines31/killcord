@@ -23,8 +23,9 @@ struct ProviderCard: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center) {
                 HStack(spacing: 6) {
-                    ProviderMark(provider: provider, size: 16)
+                    ProviderMark(provider: provider, size: 16, serviceName: name)
                     Text(name).font(PanelFont.condensed(14, .semibold))
+                    if provider.isBeta { BetaChip(compact: true) }
                 }
                 Spacer()
                 if provider == .manual {
@@ -150,6 +151,7 @@ struct ProviderCard: View {
             Label(error.message(for: provider), systemImage: "exclamationmark.circle")
                 .font(.system(size: 12))
                 .fixedSize(horizontal: false, vertical: true)
+            if provider.isBeta, !error.isTransient { BetaReportLine(fontSize: 11) }
             if !error.isTransient {
                 Button("Fix in Settings…") { openSettings(.providers) }
                     .buttonStyle(.panelCompact)

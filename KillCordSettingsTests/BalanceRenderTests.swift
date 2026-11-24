@@ -189,6 +189,56 @@ final class BalanceRenderTests: XCTestCase {
         }
     }
 
+    /// Every manual preset's mark (or letter) on a manual entry named after it.
+    func testRendersEveryPresetMark() throws {
+        let sheet = VStack(alignment: .leading, spacing: 10) {
+            ForEach(ManualPreset.all) { preset in
+                HStack(spacing: 12) {
+                    ProviderMark(provider: .manual, size: 16, serviceName: preset.name)
+                    ProviderMark(provider: .manual, size: 22, serviceName: preset.name)
+                    ProviderMark(provider: .manual, size: 34, serviceName: preset.name)
+                    Text(preset.name)
+                }
+            }
+        }
+        .padding(16)
+        .frame(width: 320, alignment: .leading)
+        let folder = renderFolder()
+        for dark in [false, true] {
+            try render(sheet, dark: dark, to: folder.appendingPathComponent("presets-\(dark ? "dark" : "light").png"))
+        }
+    }
+
+    /// Starting a manual entry from a preset, and the entry once saved.
+    func testRendersAManualPresetSetupAndEntry() throws {
+        let empty = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) },
+                               isDemo: true)
+        let setup = ProviderEditor(provider: .manual, connectionID: nil, model: empty,
+                                   start: .init(values: ["serviceName": "Groq"]), openTab: { _ in })
+            .frame(width: 470, height: 1500)
+        let model = SpendModel(secrets: InMemorySecretStore(), http: MockHTTPClient { _ in HTTPResponse(status: 503) },
+                               isDemo: true)
+        model.start()
+        let id = UUID(uuidString: "B0000000-0000-0000-0000-000000000002")!
+        var registry = DemoData.registry()
+        registry.insert(ConnectionRecord(id: id, provider: .manual, createdAt: Date(), name: "Groq"))
+        let plan = ManualPlan(plan: "Developer", price: Money(25), renewsOn: Date().addingTimeInterval(12 * 86400))
+        let state = ProviderState(provider: .manual, connectionID: id, snapshot: SpendSnapshot(
+            provider: .manual, today: nil, month: nil, manual: plan, fetchedAt: Date()))
+        model.showSample(registry: registry, states: DemoData.states() + [state])
+        XCTAssertEqual(model.capControls(for: .manual).map(\.id), ["manual.groq.spend-limit", "manual.groq.spend-alerts"])
+        let folder = renderFolder()
+        for dark in [false, true] {
+            let suffix = dark ? "dark" : "light"
+            try render(setup, dark: dark, to: folder.appendingPathComponent("preset-setup-\(suffix).png"))
+            let entry = ProviderEditor(provider: .manual, connectionID: id, model: model, openTab: { _ in })
+                .frame(width: 470, height: 1500)
+            try render(entry, dark: dark, to: folder.appendingPathComponent("preset-entry-\(suffix).png"))
+            let caps = CapsAuditView(model: model, selection: .manual)
+            try render(caps, dark: dark, to: folder.appendingPathComponent("preset-caps-\(suffix).png"))
+        }
+    }
+
     // MARK: - Rendering (as in AccountsTests)
 
     private func renderFolder() -> URL {

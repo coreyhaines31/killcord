@@ -1,0 +1,6 @@
+{
+  "balances": [
+    { "balance_id": "bal-TEST-0001", "amount": 150.0, "units": "USD", "purchase_order_id": "po-TEST-0001" },
+    { "balance_id": "bal-TEST-0002", "amount": 12.37, "units": "USD", "purchase_order_id": "po-TEST-0002" }
+  ]
+}

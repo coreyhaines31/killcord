@@ -1,0 +1,29 @@
+{
+  "months": [
+    {
+      "period": "2026.11",
+      "interval": { "fr": 1793491200000, "to": 1794767400000 },
+      "items": [
+        {
+          "model": { "provider": "deepinfra", "model_name": "meta-llama/Meta-Llama-3.1-8B-Instruct", "task": "text-generation", "private": false },
+          "units": 2500000,
+          "rate": 0.000003,
+          "cost": 750,
+          "pricing_type": "input_tokens",
+          "interval": { "fr": 1793491200000, "to": 1794767400000 }
+        },
+        {
+          "model": { "provider": "deepinfra", "model_name": "black-forest-labs/FLUX-1-schnell", "task": "text-to-image", "private": false },
+          "units": 412,
+          "rate": 1.2,
+          "cost": 484,
+          "pricing_type": "image_units",
+          "interval": { "fr": 1793491200000, "to": 1794767400000 }
+        }
+      ],
+      "total_cost": 1234,
+      "invoice_id": "NOT_FINAL"
+    }
+  ],
+  "initial_month": "2025.03"
+}

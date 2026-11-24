@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "id": "org_0123456789abcdef",
+      "name": "kc-test",
+      "created_at": "2026-01-02T03:04:05.000Z",
+      "metadata": {},
+      "updated_at": "2026-01-02T03:04:05.000Z"
+    }
+  ],
+  "next_page_token": null
+}
