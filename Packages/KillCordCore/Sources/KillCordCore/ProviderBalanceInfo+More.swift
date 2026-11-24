@@ -70,6 +70,19 @@ extension ProviderInfo {
                 + "Kill Cord shows that time. Its docs don't say how often that is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://cloud.digitalocean.com/account/billing")
+        ),
+        ProviderInfo(
+            id: .telnyx, name: "Telnyx", capability: .balance(spend: []),
+            fields: [apiKeyField("Telnyx API key")],
+            keyKind: "API key",
+            keyURL: url("https://portal.telnyx.com/#/app/api-keys"),
+            keyPowerWarning: "Telnyx documents no read-only or scoped key. An API key works for the whole account: "
+                + "it can send messages, place calls, buy numbers, and change settings. Make a key just for Kill "
+                + "Cord so you can revoke it on its own. Kill Cord only reads the balance and the auto recharge "
+                + "setting.",
+            lag: ProviderLag(typical: 0, note: "Telnyx doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://portal.telnyx.com")
         )
     ]
 }

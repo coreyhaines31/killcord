@@ -92,6 +92,7 @@ import Testing
             .xapi: ["apiKey"],
             .bfl: ["apiKey"],
             .digitalocean: ["apiKey"],
+            .telnyx: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

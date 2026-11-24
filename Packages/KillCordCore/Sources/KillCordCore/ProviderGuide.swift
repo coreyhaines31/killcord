@@ -38,6 +38,7 @@ extension ProviderInfo {
         case .xapi: "X Developer Console"
         case .bfl: "BFL dashboard"
         case .digitalocean: "DigitalOcean control panel"
+        case .telnyx: "Telnyx Mission Control Portal"
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
@@ -105,6 +106,7 @@ extension ProviderInfo {
         case .xapi: "Credits are deducted as requests are made."
         case .bfl: nil
         case .digitalocean: "Usage is as of the time DigitalOcean last generated it."
+        case .telnyx: nil
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
@@ -128,6 +130,7 @@ extension ProviderInfo {
         case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
         case .xapi: "Pay-per-use accounts only. Shows prepaid and free credits together."
         case .bfl: "BFL prices 1 credit at $0.01, so the dollar figure is an estimate from that."
+        case .telnyx: "Shows available credit: your balance plus Telnyx's credit limit."
         default: nil
         }
     }
@@ -146,6 +149,7 @@ extension ProviderInfo {
         case .xapi: "The X API has no read-only token. This Bearer token can make paid reads on your credits."
         case .bfl: "BFL has no read-only key. A project key can generate images on your credits."
         case .digitalocean: "Use a custom-scoped token with only billing:read. It can't change anything."
+        case .telnyx: "Telnyx has no read-only key. This key can send messages, buy numbers and change the account."
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
@@ -246,7 +250,7 @@ extension ProviderInfo {
             ]
         case .supabase:
             return []
-        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean:
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx:
             return moreSetupSteps
         case .openrouter:
             return [

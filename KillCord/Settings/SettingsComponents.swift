@@ -21,6 +21,8 @@ extension ProviderID {
     var markAssetName: String? {
         switch self {
         case .custom, .manual, .brightdata, .scrapecreators: nil
+        // Batch 4 vendors whose only logo is a wordmark.
+        case .telnyx: nil
         default: "mark-\(rawValue)"
         }
     }
