@@ -80,6 +80,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Resend | Quota headers on a domain list | API key with Full access | No: emails used this month | None (overages off is your checkmark) |
 | Postmark | Outbound send stats (one server) | Server API token | No: emails sent today and this month | None (Postmark can't cap overage) |
 | Mistral | Admin API spend limit (beta, Enterprise) | Admin API key | Yes, this month, no day | Organization spending limit |
+| Hugging Face | Organization Inference Providers usage (Enterprise) | Fine-grained token with org billing read, plus the organization name | Yes, up to 2 hours behind | None (the organization spending limit is your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -144,6 +145,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Resend | A Full access API key from resend.com › API Keys. Sending access keys can't read, and a Full access key can manage domains and keys. |
 | Postmark | A Server API token from the server's API Tokens tab. It can send email. |
 | Mistral | An Admin API key from the Admin Panel's enterprise section (Enterprise plans only). It can manage users, keys and the spending limit. |
+| Hugging Face | A fine-grained token from Settings › Access Tokens with only the organization's billing read permission, and the organization's name. Enterprise plan or above. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
