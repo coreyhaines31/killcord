@@ -157,6 +157,8 @@ public enum SpendProviders {
         case .browseruse: BrowserUseProvider(http: http)
         case .novita: NovitaProvider(http: http)
         case .baseten: BasetenProvider(http: http)
+        case .hunter: HunterProvider(http: http)
+        case .zerobounce: ZeroBounceProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)
@@ -246,7 +248,8 @@ enum ProviderErrorDetail {
         if let error = object["error"] as? [String: Any], let message = error["message"] as? String { return message }
         // `{errors: [{title, detail}]}` is the JSON:API shape (Telnyx).
         if let errors = object["errors"] as? [[String: Any]], let first = errors.first,
-           let message = first["message"] as? String ?? first["detail"] as? String ?? first["title"] as? String {
+           let message = first["message"] as? String ?? first["detail"] as? String ?? first["details"] as? String
+               ?? first["title"] as? String {
             return message
         }
         if let message = object["message"] as? String { return message }

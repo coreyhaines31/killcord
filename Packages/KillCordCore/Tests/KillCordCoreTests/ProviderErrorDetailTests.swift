@@ -35,6 +35,8 @@ import Testing
         // Telnyx: https://developers.telnyx.com/api-reference/billing/get-user-balance-details
         #expect(detail(#"{"errors":[{"code":"10010","title":"Authorization failed","detail":"You do not have permission."}]}"#) == "You do not have permission.")
         #expect(detail(#"{"errors":[{"code":"10007","title":"Unexpected error"}]}"#) == "Unexpected error")
+        // Hunter: https://hunter.io/openapi.json (standard_error_response)
+        #expect(detail(#"{"errors":[{"id":"wrong_params","code":400,"details":"You are missing the api_key parameter"}]}"#) == "You are missing the api_key parameter")
     }
 
     @Test func readsKiesMsgShape() {
