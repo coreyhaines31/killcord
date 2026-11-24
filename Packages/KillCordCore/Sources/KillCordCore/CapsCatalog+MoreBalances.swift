@@ -177,6 +177,21 @@ extension CapsCatalog {
             steps: ["Open Settings › Billing with the project selected.",
                     "Leave auto recharge off, or set a threshold and recharge amount you accept."],
             caveat: "Turning auto recharge on below the threshold can charge right away."
+        ),
+        // Novita AI. https://docs.novita.ai/api-reference/basic-error-code and
+        // https://docs.novita.ai/api-reference/budget-query-key-list
+        CapControl(
+            id: "novita.prepaid-balance", provider: .novita, name: "Prepaid balance",
+            summary: "Novita refuses paid requests with an insufficient balance error once the available credit runs "
+                + "out.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://novita.ai/billing"),
+            docURL: url("https://docs.novita.ai/api-reference/basic-error-code"),
+            steps: ["Open Billing and Payments in Novita AI.",
+                    "Top up only what you're willing to spend, then mark this done."],
+            caveat: "A credit limit, if your account has one, lets spending run past your top-ups. Teams can also "
+                + "give each member's API keys a one-time or recurring budget, which Kill Cord can't read without "
+                + "the member's ID."
         )
     ]
 }

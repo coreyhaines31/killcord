@@ -96,6 +96,7 @@ import Testing
             .luma: ["apiKey"],
             .heygen: ["apiKey"],
             .browseruse: ["apiKey"],
+            .novita: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

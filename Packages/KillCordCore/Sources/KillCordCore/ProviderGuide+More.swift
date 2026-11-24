@@ -69,6 +69,12 @@ extension ProviderInfo {
                 SetupStep("Create a key for Kill Cord and copy it", "Give it a small monthly spending cap: Kill Cord "
                     + "only reads the balance.")
             ]
+        case .novita:
+            return [
+                SetupStep("Open Key Management in Novita AI", "Under Settings.", link: open("Open Novita Keys")),
+                SetupStep("Create a key for Kill Cord and copy it", "If your team uses API key budgets, give this "
+                    + "key a small one: Kill Cord only reads the balance.")
+            ]
         default:
             return []
         }
@@ -86,6 +92,7 @@ extension ProviderInfo {
         case .luma: "Luma developer dashboard"
         case .heygen: "HeyGen API dashboard"
         case .browseruse: "Browser Use Cloud dashboard"
+        case .novita: "Novita AI settings"
         default: "service's site"
         }
     }
@@ -102,6 +109,7 @@ extension ProviderInfo {
         case .luma: "Credits held for running generations are already taken out."
         case .heygen: nil
         case .browseruse: nil
+        case .novita: nil
         default: nil
         }
     }
@@ -115,6 +123,7 @@ extension ProviderInfo {
         case .luma: "Shows your team's whole credit balance. Luma sets no fixed dollar rate, so it stays in credits."
         case .heygen: "Shows a prepaid wallet, what's left under a usage-based spending cap, or plan credits."
         case .browseruse: "Shows the credits of the key's project. Each project has its own balance."
+        case .novita: "Shows available credit: your top-ups plus any credit limit."
         default: nil
         }
     }
@@ -131,6 +140,7 @@ extension ProviderInfo {
         case .luma: "Luma has no read-only key for the balance. This API key can start generations on your credits."
         case .heygen: "Restrict the key to account:read. A full-access key can make videos on your balance."
         case .browseruse: "Browser Use has no read-only key. This key can run agents and browsers on the project's credits."
+        case .novita: "Novita has no read-only key. This key can call models and start GPU instances on your balance."
         default: nil
         }
     }

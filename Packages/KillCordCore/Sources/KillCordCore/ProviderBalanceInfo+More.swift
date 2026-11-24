@@ -123,6 +123,19 @@ extension ProviderInfo {
                 + "balance while you read it."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://cloud.browser-use.com/settings?tab=billing")
+        ),
+        ProviderInfo(
+            id: .novita, name: "Novita AI", capability: .balance(spend: []),
+            fields: [apiKeyField("Novita API key")],
+            keyKind: "API key",
+            keyURL: url("https://novita.ai/settings/key-management"),
+            keyPowerWarning: "Novita AI documents no read-only or scoped key. An API key can call models, run "
+                + "sandboxes and start GPU instances that bill your balance. Make a key just for Kill Cord so you "
+                + "can revoke it on its own. Kill Cord only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "Novita says pending charges currently default to zero, so recent "
+                + "usage may not be in the balance yet."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://novita.ai/billing")
         )
     ]
 }
