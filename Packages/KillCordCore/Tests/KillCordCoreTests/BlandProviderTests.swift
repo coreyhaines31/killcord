@@ -4,7 +4,7 @@ import Foundation
 import Testing
 
 @Suite struct BlandProviderTests {
-    @Test func readsTheBalanceWithABareKeyHeader() async throws {
+    @Test func readsCreditsWithABareKeyHeader() async throws {
         let http = MockHTTPClient(routes: ["/v1/me": try json("bland-me.json")])
         let snapshot = try await BlandProvider(http: http).fetchSpend(FakeKeys.credentials(.bland), now: testNow)
         let request = try #require(http.requests.first)
@@ -12,7 +12,8 @@ import Testing
         #expect(request.method == .get)
         #expect(request.url.absoluteString == "https://api.bland.ai/v1/me")
         #expect(request.headers["authorization"] == FakeKeys.bland)
-        #expect(snapshot.balance == .usd(decimal("42.1210000034")))
+        #expect(snapshot.balance == Balance(remaining: decimal("42.1210000034"), unit: .units("credits"), kind: .prepaid))
+        #expect(snapshot.balance?.estimatedDollars == nil)
     }
 
     @Test func showsBlandsOwnErrorMessage() async {

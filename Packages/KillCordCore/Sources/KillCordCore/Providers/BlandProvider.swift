@@ -1,7 +1,7 @@
 // Bland AI credit balance.
 // Reference: https://docs.bland.ai/api-v1/get/me
-// Credits are dollars: Bland's billing docs price minutes in dollars and grant credits as dollar amounts
-// ("Credit applied: $22.22", https://docs.bland.ai/platform/billing).
+// The docs call `current_balance` a "number of credits" and state no credit-to-dollar rate, so it reads as credits
+// with no dollar estimate (https://docs.bland.ai/platform/billing).
 // Restricted keys: https://docs.bland.ai/api-v1/post/keys-create ("Every restricted key can also read your account
 // details (`GET /v1/me`)").
 //
@@ -42,7 +42,7 @@ public struct BlandProvider: SpendProvider {
     public func fetchSpend(_ credentials: ProviderCredentials, now: Date) async throws -> SpendSnapshot {
         let key = try credentials.require("apiKey")
         let account = try await api.get(Account.self, Self.meURL, headers: ["authorization": key])
-        return SpendSnapshot(provider: id, today: nil, month: nil, balance: .usd(account.billing.currentBalance.value),
-                             fetchedAt: now)
+        let balance = Balance(remaining: account.billing.currentBalance.value, unit: .units("credits"))
+        return SpendSnapshot(provider: id, today: nil, month: nil, balance: balance, fetchedAt: now)
     }
 }

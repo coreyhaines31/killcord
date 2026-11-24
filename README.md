@@ -69,7 +69,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | ScrapingBee | Plan credit usage | API key | Credits left of the plan, with the renewal date | None (auto renew off is your checkmark) |
 | Scrapfly | Account scrape credits | API key (LIVE) | Credits left of the plan, with the period's end | None (extra credit use off on each project is your checkmark) |
 | Kie.ai | Account credits | API key | Credits left, with a labeled dollar estimate at about $0.005 a credit | None (key usage caps are your checkmark) |
-| Bland AI | Account balance | Restricted API key with only Analytics read (or a full-access key) | Balance left, in dollars | None (auto refill off is your checkmark) |
+| Bland AI | Account balance | Restricted API key with only Analytics read (or a full-access key) | Credits left | None (auto refill off is your checkmark) |
 | LlamaCloud | Organization usage (this billing period's invoice) | User API key (plus the organization ID if it sees several) | Yes, this billing period, no day | Monthly invoice limit |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
