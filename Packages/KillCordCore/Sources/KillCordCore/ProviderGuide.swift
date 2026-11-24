@@ -48,6 +48,7 @@ extension ProviderInfo {
         case .deepgram: "Deepgram Console"
         case .runway: "Runway developer portal"
         case .serpapi: "SerpApi dashboard"
+        case .brightdata: "Bright Data control panel"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -95,7 +96,7 @@ extension ProviderInfo {
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
-             .tavily, .deepgram, .runway, .serpapi: nil
+             .tavily, .deepgram, .runway, .serpapi, .brightdata: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -141,6 +142,7 @@ extension ProviderInfo {
         case .deepgram: "Reading balances needs an Admin or Owner key, which can also manage the project's keys."
         case .runway: "Runway has no read-only key. This key can start generations on your credits."
         case .serpapi: "SerpApi has one private key with no scopes. It can run searches on your plan."
+        case .brightdata: "Bright Data has no read-only key. Use the Finance level, limited to billing pages."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -325,6 +327,14 @@ extension ProviderInfo {
                           link: open("Open SerpApi Dashboard")),
                 SetupStep("Copy the private API key", "Kill Cord reads your account, which SerpApi says is free "
                     + "and doesn't count toward your searches.")
+            ]
+        case .brightdata:
+            return [
+                SetupStep("Open Account settings › Users and API keys", "Only an admin can create keys, and each "
+                    + "user gets one.", link: open("Open Bright Data Users")),
+                SetupStep("Create a key with the Finance permission level and copy it", "Bright Data says Finance "
+                    + "allows access to billing and financial pages only. Its docs don't name the level this call "
+                    + "needs; Admin and Finance keys read billing elsewhere in its API.")
             ]
         case .manual:
             return [

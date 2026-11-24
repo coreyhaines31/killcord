@@ -130,6 +130,20 @@ extension CapsCatalog {
                     "Leave autobilling off, or set a recharge amount you accept."],
             caveat: "With autobilling on, Runway tops up every hour below your threshold. Your usage tier's "
                 + "maximum monthly spend caps those purchases."
+        ),
+        // Bright Data. https://docs.brightdata.com/general/usage-monitoring/Usage
+        CapControl(
+            id: "brightdata.zone-limit", provider: .brightdata, name: "Daily usage limit on each zone",
+            summary: "A daily limit in dollars or bytes on a zone. When it's reached, the zone is suspended, you're "
+                + "alerted, or both, as you choose.",
+            enforcement: .partialStop, verification: .selfReported,
+            consoleURL: url("https://brightdata.com/cp/zones"),
+            docURL: url("https://docs.brightdata.com/general/usage-monitoring/Usage"),
+            steps: ["Open Zones in the Bright Data control panel.",
+                    "In the Usage spent limit column, set a daily limit on each zone you use.",
+                    "Choose to suspend the zone at the limit, not only to alert."],
+            caveat: "Bright Data checks the limit every 15 minutes, so a zone can run past it for that long. The "
+                + "account is also suspended when the balance is used up, unless auto recharge is on."
         )
     ]
 }

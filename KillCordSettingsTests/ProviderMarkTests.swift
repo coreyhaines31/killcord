@@ -11,7 +11,8 @@ final class ProviderMarkTests: XCTestCase {
             let image = try XCTUnwrap(bundle.image(forResource: name), name)
             XCTAssertTrue(image.isTemplate, "\(name) must be a template image")
         }
-        // Every vendor has its mark; custom and manual connections draw a symbol.
-        XCTAssertEqual(ProviderID.allCases.filter { $0.markAssetName == nil }, [.custom, .manual])
+        // Every vendor with an official symbol has its mark; custom and manual connections draw a symbol, and
+        // Bright Data (a wordmark only) its letter.
+        XCTAssertEqual(ProviderID.allCases.filter { $0.markAssetName == nil }, [.brightdata, .custom, .manual])
     }
 }

@@ -199,7 +199,7 @@ import Testing
 /// What every new adapter shares: read-only setup copy, one host, a key-power label, and no network for a
 /// missing key.
 @Suite struct BalanceProviderRulesTests {
-    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily, .deepgram, .runway, .serpapi]
+    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily, .deepgram, .runway, .serpapi, .brightdata]
     static let hosts: [ProviderID: String] = [
         .openrouter: "openrouter.ai", .dataforseo: "api.dataforseo.com", .ahrefs: "api.ahrefs.com",
         .firecrawl: "api.firecrawl.dev", .treg: "treg.to", .monid: "api.monid.ai", .fal: "api.fal.ai",
@@ -210,10 +210,11 @@ import Testing
         .tavily: "api.tavily.com",
         .deepgram: "api.deepgram.com",
         .runway: "api.dev.runwayml.com",
-        .serpapi: "serpapi.com"
+        .serpapi: "serpapi.com",
+        .brightdata: "api.brightdata.com"
     ]
     /// What each provider's docs say its key can do. Anything not listed can make paid calls.
-    static let keyPowers: [ProviderID: KeyPower] = [.fal: .readOnlyIfChosen, .elevenlabs: .readOnlyIfChosen, .xai: .canManage, .apify: .canManage, .deepgram: .canManage]
+    static let keyPowers: [ProviderID: KeyPower] = [.fal: .readOnlyIfChosen, .elevenlabs: .readOnlyIfChosen, .xai: .canManage, .apify: .canManage, .deepgram: .canManage, .brightdata: .canManage]
 
     @Test(arguments: balanceProviders)
     func onlyGETsToItsDocumentedHost(_ provider: ProviderID) async throws {

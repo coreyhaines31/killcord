@@ -54,6 +54,8 @@ extension ProviderID {
         case .runway: .canSpend
         // SerpApi has one private key per account, with no scopes: it can run searches.
         case .serpapi: .canSpend
+        // Bright Data's Finance level reaches billing pages, and its docs don't call any key read-only.
+        case .brightdata: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
