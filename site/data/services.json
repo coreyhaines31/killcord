@@ -410,15 +410,15 @@
     "name": "Bland AI",
     "search_name": "Bland AI",
     "category": "ai-media",
-    "noun": "balance",
+    "noun": "credits",
     "website": "https://www.bland.ai",
-    "billing_model": "Prepaid credits in dollars, with optional auto refill.",
+    "billing_model": "Prepaid credits, with optional auto refill.",
     "billing_type": "prepaid",
     "spend_api": {
       "status": "yes",
       "endpoint": "GET https://api.bland.ai/v1/me",
       "returns": "`billing.current_balance` and `billing.refill_to`",
-      "units": "USD",
+      "units": "credits",
       "auth": "authorization: <API key> (no Bearer)",
       "key_type": "Restricted API key",
       "key_url": null,
@@ -427,7 +427,7 @@
       "rate_limit": "unknown",
       "lag": "unknown",
       "cost_to_call": "unknown",
-      "notes": null
+      "notes": "Bland documents the balance as a number of credits and states no credit-to-dollar rate."
     },
     "native_caps": [
       {

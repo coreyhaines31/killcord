@@ -62,7 +62,7 @@ builtin_shows = {
     'magister': 'your API credits left, with a labeled dollar estimate',
     'scrapfly': 'the credits your plan has left, and when the period ends',
     'kie-ai': 'your credits left, with a labeled dollar estimate',
-    'bland-ai': 'your balance in dollars',
+    'bland-ai': 'the credits you have left',
     'llamacloud': 'this billing period’s invoice in dollars, and whether the monthly invoice limit is set',
     'cartesia': 'the credits you’ve used this month (Cartesia doesn’t report dollars or credits left)',
     'vapi': 'today’s and this month’s call spend in dollars',
