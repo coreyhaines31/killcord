@@ -216,8 +216,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
             let controls = CapsCatalog.controls(for: provider)
             let stops = controls.filter { $0.enforcement != .alertOnly }
             if stops.isEmpty {
-                // Twilio is the only one with no native stop, and its caveat says so.
-                #expect(provider == .twilio)
+                // Twilio and Browserbase have no native stop, and their caveats say so.
+                #expect([.twilio, .browserbase].contains(provider))
                 #expect(controls.contains { $0.caveat?.contains("no native hard spend cap") == true })
             }
         }

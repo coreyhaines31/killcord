@@ -76,6 +76,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Fireworks AI | Billing summary | API key (an Inference user's) | Yes | Monthly spend limit |
 | Vapi | Analytics: sum of call costs | Private API key | Yes, call costs only | None (auto-reload off is your checkmark) |
 | Retell AI | Call list (costs added up) | API key with only History › Read | Yes, call costs only | None (the monthly budget is your checkmark) |
+| Browserbase | Project usage | Project API key | No: browser minutes and proxy data, period not stated | None (Browserbase documents no cap) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -136,6 +137,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Fireworks AI | An API key from Settings › Users › API Keys, from a service account or user with the Inference user role, plus the account ID if it sees more than one. |
 | Vapi | A private API key from the dashboard's API Keys page. It can do everything in the organization. |
 | Retell AI | An API key from Settings › API Keys limited to History › Read. |
+| Browserbase | The project's API key from Settings, plus the project ID if it sees more than one. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 

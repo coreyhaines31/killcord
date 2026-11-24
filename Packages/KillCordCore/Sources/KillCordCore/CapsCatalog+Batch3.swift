@@ -198,6 +198,19 @@ extension CapsCatalog {
             docURL: url("https://docs.retellai.com/accounts/billing"),
             steps: ["Open Billing in the Retell dashboard.", "Leave auto recharge off, or set a refill you accept."],
             caveat: nil
+        ),
+        // Browserbase. https://docs.browserbase.com/account/billing/plans
+        CapControl(
+            id: "browserbase.allocations", provider: .browserbase, name: "Plan allocations, watched by hand",
+            summary: "Plans include browser hours and proxy data. Usage past them is billed as overage, and "
+                + "nothing stops it.",
+            enforcement: .alertOnly, verification: .selfReported,
+            consoleURL: url("https://www.browserbase.com/settings"),
+            docURL: url("https://docs.browserbase.com/account/billing/plans"),
+            steps: ["Open Settings › Usage & billing in Browserbase.",
+                    "Check your plan's hours and proxy data against the usage Kill Cord shows."],
+            caveat: "Browserbase has no native hard spend cap: its docs call the allocations \"not limits\", with "
+                + "\"No caps. No cut-offs.\" Only concurrency is limited."
         )
     ]
 }

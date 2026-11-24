@@ -54,6 +54,7 @@ Checked 2026-11-17 (the six balance services added the same day).
 | Fireworks AI | `fireworks-mark.svg`: the symbol path from Fireworks' site icon (https://fireworks.ai/icon.svg), unchanged, without the icon's tile, canvas cropped to it, drawn 1.3 times larger since it's wide | https://fireworks.ai/ (no brand page; /brand and /press are 404) | No logo terms found in its terms of service. Checked 2026-11-24. | Unknown |
 | Vapi | `vapi-mark.svg`: the symbol path from Vapi's `va-square-1.svg`, unchanged, with the canvas cropped to the symbol's own inner frame (the file nests it in a larger square) | https://vapi.ai/brand | "Do not alter these files, imply a relationship, affiliation, or endorsement by Vapi … or combine these graphics with other marks without written consent from Vapi." Kill Cord shows the symbol on its own, next to Vapi's name. Checked 2026-11-24. | No, for showing it unaltered and on its own |
 | Retell AI | None: it draws its first letter, because its terms ask permission before using its marks. Its icon files are on https://www.retellai.com/logos. | n/a | https://www.retellai.com/terms-of-service: "You may not use any trademarks, service marks, or trade names appearing on the Service without the owner's prior written consent." Checked 2026-11-24. | Yes |
+| Browserbase | `browserbase-logomark-black.svg`, unmodified | Brand kit on https://www.browserbase.com/brand | "Use approved artwork as supplied, preserve its proportions… Don't use the logo in other colors." No permission clause. Checked 2026-11-24. | No |
 
 ## Manual presets
 
