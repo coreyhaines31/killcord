@@ -29,6 +29,7 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case serpapi
     case brightdata
     case scrapecreators
+    case runpod
     /// A service the person sets up: an https address and where the balance is in its JSON.
     case custom
     /// A paid service with no API: a plan, price and renewal date the person types in.
@@ -316,5 +317,5 @@ extension ProviderInfo {
             billingTimeZone: utc, minimumRefreshInterval: 24 * 3600,
             consoleURL: url("https://supabase.com/dashboard/org/_/billing")
         )
-    ] + balanceProviders + [custom, manual]).map { ($0.id, $0) })
+    ] + balanceProviders + moreBalanceProviders + [custom, manual]).map { ($0.id, $0) })
 }

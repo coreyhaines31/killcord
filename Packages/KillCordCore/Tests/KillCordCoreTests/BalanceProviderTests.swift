@@ -199,7 +199,15 @@ import Testing
 /// What every new adapter shares: read-only setup copy, one host, a key-power label, and no network for a
 /// missing key.
 @Suite struct BalanceProviderRulesTests {
-    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily, .deepgram, .runway, .serpapi, .brightdata, .scrapecreators]
+    /// Services in `ProviderInfo.moreBalanceProviders`, kept in their own lists so the two batches don't collide.
+    static let moreProviders: [ProviderID] = [.runpod]
+    static let moreHosts: [ProviderID: String] = [
+        .runpod: "api.runpod.io"
+    ]
+    static let moreKeyPowers: [ProviderID: KeyPower] = [
+        .runpod: .readOnlyIfChosen
+    ]
+    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily, .deepgram, .runway, .serpapi, .brightdata, .scrapecreators] + moreProviders
     static let hosts: [ProviderID: String] = [
         .openrouter: "openrouter.ai", .dataforseo: "api.dataforseo.com", .ahrefs: "api.ahrefs.com",
         .firecrawl: "api.firecrawl.dev", .treg: "treg.to", .monid: "api.monid.ai", .fal: "api.fal.ai",
@@ -213,9 +221,9 @@ import Testing
         .serpapi: "serpapi.com",
         .brightdata: "api.brightdata.com",
         .scrapecreators: "api.scrapecreators.com"
-    ]
+    ].merging(moreHosts) { $1 }
     /// What each provider's docs say its key can do. Anything not listed can make paid calls.
-    static let keyPowers: [ProviderID: KeyPower] = [.fal: .readOnlyIfChosen, .elevenlabs: .readOnlyIfChosen, .xai: .canManage, .apify: .canManage, .deepgram: .canManage, .brightdata: .canManage]
+    static let keyPowers: [ProviderID: KeyPower] = [.fal: .readOnlyIfChosen, .elevenlabs: .readOnlyIfChosen, .xai: .canManage, .apify: .canManage, .deepgram: .canManage, .brightdata: .canManage].merging(moreKeyPowers) { $1 }
 
     @Test(arguments: balanceProviders)
     func onlyGETsToItsDocumentedHost(_ provider: ProviderID) async throws {

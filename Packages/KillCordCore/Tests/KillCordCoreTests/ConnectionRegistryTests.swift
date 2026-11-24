@@ -87,6 +87,7 @@ import Testing
             .twilio: ["accountSID", "apiKeySID", "secret"],
             .neon: ["apiKey", "orgID"],
             .supabase: [],
+            .runpod: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],
