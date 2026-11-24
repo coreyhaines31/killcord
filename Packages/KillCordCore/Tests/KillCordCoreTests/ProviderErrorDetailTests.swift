@@ -37,6 +37,11 @@ import Testing
         #expect(detail(#"{"errors":[{"code":"10007","title":"Unexpected error"}]}"#) == "Unexpected error")
     }
 
+    @Test func readsKiesMsgShape() {
+        // Kie.ai: https://docs.kie.ai/common-api/get-account-credits
+        #expect(detail(#"{"code":455,"msg":"Service under maintenance","data":null}"#) == "Service under maintenance")
+    }
+
     @Test func removesAKeyCarriedInTheQueryString() throws {
         let key = "serpapi-TEST-query-secret-0099"
         let queryRequest = HTTPRequest(url: URL(string: "https://serpapi.com/account.json?api_key=\(key)")!)
