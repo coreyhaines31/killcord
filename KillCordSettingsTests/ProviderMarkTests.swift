@@ -19,6 +19,6 @@ final class ProviderMarkTests: XCTestCase {
         // Every vendor with an official symbol has its mark; custom and manual connections draw a symbol, and
         // Bright Data and ScrapeCreators (no usable symbol) their letter.
         XCTAssertEqual(ProviderID.allCases.filter { $0.markAssetName == nil },
-                       [.brightdata, .scrapecreators, .custom, .manual])
+                       [.brightdata, .scrapecreators, .telnyx, .custom, .manual])
     }
 }
