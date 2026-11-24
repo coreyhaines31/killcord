@@ -152,6 +152,7 @@ public enum SpendProviders {
         case .firecrawl: FirecrawlProvider(http: http)
         case .treg: TregProvider(http: http)
         case .monid: MonidProvider(http: http)
+        case .fal: FalProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

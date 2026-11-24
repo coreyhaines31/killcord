@@ -93,6 +93,18 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Monid doesn't say how current the wallet balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.monid.ai/")
+        ),
+        ProviderInfo(
+            id: .fal, name: "fal", capability: .balance(spend: []),
+            fields: [apiKeyField("key_id:key_secret", help: "A key with the BILLING preset.")],
+            keyKind: "API key with the BILLING preset",
+            keyURL: url("https://fal.ai/dashboard/keys"),
+            keyPowerWarning: "fal's BILLING preset reads usage, invoices, billing settings, the list of keys, and "
+                + "the model catalog. fal's docs list no other permission for it. A FULL key can also run models "
+                + "on your credits, so don't use one. Kill Cord only reads the credit balance.",
+            lag: ProviderLag(typical: 0, note: "fal doesn't say how current the credit balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://fal.ai/dashboard/billing")
         )
     ]
 }
