@@ -172,8 +172,9 @@ extension ProviderInfo {
             return [
                 SetupStep("Open Settings › API Keys in the Retell dashboard", "Pick the workspace to watch.",
                           link: open("Open Retell Dashboard")),
-                SetupStep("Create a key with only History › Read and copy it", "Under Monitor › History, choose "
-                    + "Read and nothing else. Retell keys have full access unless you limit them.")
+                SetupStep("Create a key with only History › Read and copy it", "Turn on Restrict permissions, "
+                    + "then give Monitor › History Read access and nothing else. A key created without "
+                    + "restrictions keeps full access.")
             ]
         default:
             return []
