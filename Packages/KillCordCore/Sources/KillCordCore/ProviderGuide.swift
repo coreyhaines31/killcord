@@ -42,6 +42,7 @@ extension ProviderInfo {
         case .fal: "fal dashboard"
         case .elevenlabs: "ElevenLabs settings"
         case .xai: "xAI Console"
+        case .deepseek: "DeepSeek Platform"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -88,7 +89,7 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -125,6 +126,7 @@ extension ProviderInfo {
         case .fal: "Use a BILLING-preset key: fal lists only billing reads for it. A FULL key can run models."
         case .elevenlabs: "Limit the key to User read access, so it can't call the speech endpoints."
         case .xai: "xAI has no read-only management key. This one can also create keys and change limits."
+        case .deepseek: "DeepSeek has no read-only key. This key can make paid model calls on your balance."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -266,6 +268,13 @@ extension ProviderInfo {
                 SetupStep("Create a management key and copy it", "It's separate from the API keys that call Grok."),
                 SetupStep("Copy your team ID", "On Settings › Team in the same console.",
                           link: ("Open Team Settings", URL(string: "https://console.x.ai/team/default/settings/team")!))
+            ]
+        case .deepseek:
+            return [
+                SetupStep("Open API Keys on the DeepSeek Platform", "Sign in at platform.deepseek.com.",
+                          link: open("Open DeepSeek Keys")),
+                SetupStep("Create a key just for Kill Cord and copy it", "DeepSeek shows it once. It starts "
+                    + "with sk-.")
             ]
         case .manual:
             return [

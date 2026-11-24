@@ -42,6 +42,8 @@ extension ProviderID {
         case .elevenlabs: .readOnlyIfChosen
         // An xAI management key can also create and delete API keys, top up, and change spending limits.
         case .xai: .canManage
+        // DeepSeek documents no key scopes: every key can make paid model calls.
+        case .deepseek: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
