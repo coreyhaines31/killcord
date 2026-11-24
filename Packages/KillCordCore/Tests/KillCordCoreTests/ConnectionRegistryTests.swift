@@ -104,6 +104,7 @@ import Testing
             .plivo: ["authID", "authToken"],
             .prospeo: ["apiKey"],
             .lemlist: ["apiKey"],
+            .searchapi: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

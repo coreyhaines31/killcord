@@ -240,6 +240,17 @@ extension CapsCatalog {
             docURL: url("https://www.plivo.com/docs/faq/billing-and-invoices/payments"),
             steps: ["Open Payment Settings in the Plivo console.", "Set the monthly limit you accept."],
             caveat: "It limits how much can be added in a month, not what's spent from credits already there."
+        ),
+        // SearchApi. https://www.searchapi.io/docs/account-api
+        CapControl(
+            id: SearchApiProvider.earlyRenewalCapID, provider: .searchapi, name: "Monthly allowance, early renewal off",
+            summary: "At zero searches left, SearchApi rejects searches until the allowance renews or credits are "
+                + "added. Automatic early renewal starts a new paid period instead.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://www.searchapi.io/"),
+            docURL: url("https://www.searchapi.io/docs/account-api"),
+            steps: ["Open your SearchApi dashboard.", "Turn off automatic early renewal."],
+            caveat: "SearchApi's docs name the setting but don't show where it is in the dashboard."
         )
     ]
 }

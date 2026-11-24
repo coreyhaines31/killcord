@@ -57,7 +57,9 @@ enum FakeKeys {
     static let plivo = "plivo-TEST-token-secret-0115"
     static let prospeo = "prospeo-TEST-secret-0116"
     static let lemlist = "lemlist-TEST-secret-0117"
+    static let searchapi = "searchapi-TEST-secret-0118"
     static let more: [String] = [
+        searchapi,
         lemlist,
         prospeo,
         plivo,
@@ -141,6 +143,7 @@ enum FakeKeys {
         case .plivo: ["authID": "MAKCTESTAUTHID0115AB", "authToken": plivo]
         case .prospeo: ["apiKey": prospeo]
         case .lemlist: ["apiKey": lemlist]
+        case .searchapi: ["apiKey": searchapi]
         case .openrouter: ["apiKey": openrouter]
         case .dataforseo: ["login": "kc-test@example.com", "password": dataforseo]
         case .ahrefs: ["apiKey": ahrefs]
