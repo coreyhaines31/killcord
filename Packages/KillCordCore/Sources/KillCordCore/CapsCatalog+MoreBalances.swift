@@ -217,6 +217,29 @@ extension CapsCatalog {
             steps: ["Open Billing & payments in the Vonage API Dashboard.",
                     "Set Auto reload to off, or choose a reload amount you accept."],
             caveat: "At zero your virtual numbers are cancelled too, so keep enough balance for the numbers you rent."
+        ),
+        // Plivo. https://www.plivo.com/docs/faq/billing-and-invoices/payments
+        CapControl(
+            id: PlivoProvider.autoRechargeCapID, provider: .plivo, name: "Prepaid credits, auto recharge off",
+            summary: "With auto recharge off, nothing tops up the credits; with it on, Plivo adds funds whenever the "
+                + "balance drops below $25.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://cx.plivo.com"),
+            docURL: url("https://www.plivo.com/docs/faq/billing-and-invoices/payments"),
+            steps: ["Open Billing in the Plivo console.", "In the Auto Recharge section, turn it off or pick an amount "
+                + "you accept."],
+            caveat: "Plivo's support pages say calls and messages stop at a zero balance, and outbound SMS fail with "
+                + "error 900."
+        ),
+        CapControl(
+            id: "plivo.monthly-recharge-limit", provider: .plivo, name: "Monthly recharge limit",
+            summary: "A monthly limit on recharges that Plivo sets from your usage and you can lower. It caps auto "
+                + "recharge, against fraud like SMS pumping or leaked credentials.",
+            enforcement: .partialStop, verification: .selfReported,
+            consoleURL: url("https://cx.plivo.com"),
+            docURL: url("https://www.plivo.com/docs/faq/billing-and-invoices/payments"),
+            steps: ["Open Payment Settings in the Plivo console.", "Set the monthly limit you accept."],
+            caveat: "It limits how much can be added in a month, not what's spent from credits already there."
         )
     ]
 }
