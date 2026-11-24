@@ -84,6 +84,8 @@ extension ProviderID {
         case .kie: .canSpend
         // Every Bland restricted key can read the balance; one with only analytics:read can't place calls.
         case .bland: .readOnlyIfChosen
+        // A LlamaCloud user key inherits its owner's privileges; there's no admin or read-only scope.
+        case .llamacloud: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

@@ -12,6 +12,7 @@ extension ProviderInfo {
         case .scrapfly: "Scrapfly dashboard"
         case .kie: "Kie.ai dashboard"
         case .bland: "Bland dashboard"
+        case .llamacloud: "LlamaCloud settings"
         default: "service's site"
         }
     }
@@ -31,6 +32,7 @@ extension ProviderInfo {
         case .moonshot: "Global platform (platform.kimi.ai) accounts only, in dollars."
         case .exa: "Needs Exa's Team Management API, which Exa turns on per team on request."
         case .scrapfly: "Shows the plan's scrape credits for the whole account."
+        case .llamacloud: "Shows this billing period's invoice so far. Plans without User API Keys can't connect."
         default: nil
         }
     }
@@ -44,6 +46,7 @@ extension ProviderInfo {
         case .scrapfly: "Scrapfly has no read-only key. This key can run scrapes on your plan's credits."
         case .kie: "Kie.ai has no read-only key. This key can run generations on your credits. Give it small caps."
         case .bland: "Use a restricted key with only Analytics read. A full-access key can place calls."
+        case .llamacloud: "A user key does what its owner can. Make it from the member with the least access."
         default: nil
         }
     }
@@ -105,6 +108,16 @@ extension ProviderInfo {
                     + "restricted key can read the balance."),
                 SetupStep("No Restricted option? Use a full-access key", "Bland is rolling restricted keys out by "
                     + "organization. A full-access key works, but it can place calls on your credits.")
+            ]
+        case .llamacloud:
+            return [
+                SetupStep("Open API Key in LlamaCloud", "Pick your region's site if your account is in Europe.",
+                          link: open("Open LlamaCloud Keys")),
+                SetupStep("Create a key under User API Keys and copy it", "Not under Project API Keys: a project "
+                    + "key can't read organization usage. If there's no User API Keys table, your plan doesn't "
+                    + "offer one."),
+                SetupStep("Add the organization ID if the key sees more than one", "It's on Organization Settings. "
+                    + "With one organization, Kill Cord finds it.")
             ]
         default:
             return []

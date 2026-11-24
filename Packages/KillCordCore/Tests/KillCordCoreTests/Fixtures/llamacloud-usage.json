@@ -1,0 +1,31 @@
+{
+  "plan": {
+    "limits": {
+      "allow_pay_as_you_go": true,
+      "max_monthly_invoice_total_usd": 500,
+      "subscription_cost_usd": 50,
+      "spending_soft_alerts_usd_cents": [25000]
+    },
+    "name": "pro_v2",
+    "plan_frequency": "MONTHLY",
+    "id": "plan_1",
+    "credit_pack_rate_usd_cents_per_1k": 100,
+    "current_billing_period": {
+      "end_date": "2026-12-03T00:00:00.000Z",
+      "start_date": "2026-11-03T00:00:00.000Z"
+    }
+  },
+  "usage": {
+    "active_alerts": [],
+    "active_free_credits_usage": [
+      {
+        "expires_at": "2026-12-03T00:00:00.000Z",
+        "grant_name": "Monthly credits",
+        "remaining_balance": 12000,
+        "starting_balance": 40000
+      }
+    ],
+    "current_invoice_total_usd_cents": 12345,
+    "total_users": 3
+  }
+}

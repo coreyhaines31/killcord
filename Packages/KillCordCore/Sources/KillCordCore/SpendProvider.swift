@@ -176,6 +176,7 @@ public enum SpendProviders {
         case .scrapfly: ScrapflyProvider(http: http)
         case .kie: KieProvider(http: http)
         case .bland: BlandProvider(http: http)
+        case .llamacloud: LlamaCloudProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

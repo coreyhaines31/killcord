@@ -95,6 +95,28 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Bland doesn't say how current the balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.bland.ai/dashboard/pay")
+        ),
+        ProviderInfo(
+            id: .llamacloud, name: "LlamaCloud", capability: .monthDollars,
+            fields: [
+                apiKeyField("llx-…", help: "A key from the User API Keys table, not a project key."),
+                CredentialField(id: "organizationID", label: "Organization ID", placeholder: "Organization ID",
+                                isSecret: false, isOptional: true,
+                                help: "Needed only if the key sees more than one organization."),
+                CredentialField(id: "region", label: "Region", isSecret: false,
+                                help: "Where the LlamaCloud account lives.", choices: ["US", "EU"])
+            ],
+            keyKind: "User API key",
+            keyURL: url("https://cloud.llamaindex.ai/?target=api-key"),
+            keyPowerWarning: "LlamaCloud says \"An API key inherits its owner's privileges\": there's no read-only "
+                + "or billing-only key. Organization usage needs a key from the User API Keys table, which some "
+                + "plans don't offer; a project key can't read it. Make the key from the member with the least "
+                + "access that can read the organization, since a key from an admin can manage the organization. "
+                + "Kill Cord only reads usage and the plan's limits.",
+            lag: ProviderLag(typical: 0, note: "LlamaCloud doesn't say how current the invoice total is. The month "
+                + "is your billing period."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://cloud.llamaindex.ai")
         )
     ]
 }
