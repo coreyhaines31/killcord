@@ -48,6 +48,7 @@ public enum CapsCatalog {
     private static func url(_ string: String) -> URL { URL(string: string)! }
 
     public static let controls: [CapControl] = providerControls + balanceControls + moreBalanceControls
+        + batch3Controls
 
     static let providerControls: [CapControl] = [
         // Anthropic. https://platform.claude.com/docs/en/api/rate-limits

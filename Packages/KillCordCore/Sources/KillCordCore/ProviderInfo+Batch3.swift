@@ -14,6 +14,20 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Stability AI doesn't say how current the credit balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://platform.stability.ai/dashboard/billing")
+        ),
+        ProviderInfo(
+            id: .moonshot, name: "Kimi (Moonshot AI)", capability: .balance(spend: []),
+            fields: [apiKeyField("sk-admin-…", help: "An Admin key with the billing:read scope, or an inference "
+                + "API key.")],
+            keyKind: "Admin key with the billing:read scope",
+            keyURL: url("https://platform.kimi.ai/console"),
+            keyPowerWarning: "Kimi's Admin keys carry only the scopes chosen when they're made, and Kimi says they "
+                + "\"cannot call any inference endpoint\". One with only billing:read reads bills, usage and the "
+                + "balance. An inference API key also works, but it has no scopes and can make paid model calls on "
+                + "your balance. Kill Cord only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "Kimi doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://platform.kimi.ai/console")
         )
     ]
 }

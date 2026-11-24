@@ -6,6 +6,7 @@ extension ProviderInfo {
     var batch3ConsoleName: String {
         switch id {
         case .stability: "Stability AI platform"
+        case .moonshot: "Kimi console"
         default: "service's site"
         }
     }
@@ -20,6 +21,7 @@ extension ProviderInfo {
 
     var batch3Requirement: String? {
         switch id {
+        case .moonshot: "Global platform (platform.kimi.ai) accounts only, in dollars."
         default: nil
         }
     }
@@ -27,6 +29,7 @@ extension ProviderInfo {
     var batch3KeyPowerSummary: String? {
         switch id {
         case .stability: "Stability AI has no read-only key. This key can run generations on your credits."
+        case .moonshot: "Use an Admin key with only billing:read: it can't call models. An inference key can spend."
         default: nil
         }
     }
@@ -40,6 +43,16 @@ extension ProviderInfo {
                           link: open("Open Stability Keys")),
                 SetupStep("Create a key just for Kill Cord and copy it", "Stability AI keys have no scopes, so "
                     + "revoke it there if it leaks.")
+            ]
+        case .moonshot:
+            return [
+                SetupStep("Open Admin API Keys in the Kimi console", "Under Organization › Admin API Keys. Kimi "
+                    + "offers Admin keys to organizations that have completed verification.",
+                          link: open("Open Kimi Console")),
+                SetupStep("Create an Admin key with only the billing:read scope and copy it", "It starts with "
+                    + "sk-admin-. Kimi says Admin keys can't call any inference endpoint."),
+                SetupStep("No Admin keys? Use an inference API key instead", "From API Keys in the same console. "
+                    + "It works, but it can make paid model calls on your balance.")
             ]
         default:
             return []
