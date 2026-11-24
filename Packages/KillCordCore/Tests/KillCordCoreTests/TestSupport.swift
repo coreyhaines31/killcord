@@ -39,6 +39,9 @@ enum FakeKeys {
     static let treg = "treg-TEST-token-secret-0012"
     static let monid = "monid_test_TEST-secret-0013"
     static let custom = "custom-TEST-key-secret-0014"
+    // Services in `ProviderInfo.moreBalanceProviders`.
+    static let runpod = "rpa_TEST-runpod-secret-0101"
+    static let more = [runpod]
     static let xai = "xai-mgmt-TEST-secret-0017"
     static let elevenlabs = "sk_TEST-elevenlabs-secret-0016"
     static let fal = "fal-TEST-key-id:fal-TEST-secret-0015"
@@ -77,6 +80,7 @@ enum FakeKeys {
                        "exportTable": "kc-billing.billing_export.gcp_billing_export_v1_0123AB_4567CD_89EF01",
                        "billingAccountID": "0123AB-4567CD-89EF01"]
         case .supabase: [:]
+        case .runpod: ["apiKey": runpod]
         case .openrouter: ["apiKey": openrouter]
         case .dataforseo: ["login": "kc-test@example.com", "password": dataforseo]
         case .ahrefs: ["apiKey": ahrefs]
@@ -107,6 +111,7 @@ enum FakeKeys {
     static let all = [anthropic, openai, vercel, cloudflare, twilio, neon, "TESTPRIVATEKEYgooglesecret0007",
                       "ya29.TEST-ACCESS-TOKEN", openrouter, dataforseo, ahrefs, firecrawl, treg, monid, custom,
                       fal, elevenlabs, xai, deepseek, apify, tavily, deepgram, runway, serpapi, brightdata, scrapecreators]
+        + more
 }
 
 /// Stands in for RSA signing, which needs the Security framework. Records what it was asked to sign.

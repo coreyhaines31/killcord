@@ -146,6 +146,7 @@ public enum SpendProviders {
         case .twilio: TwilioProvider(http: http)
         case .neon: NeonProvider(http: http)
         case .supabase: SupabaseProvider()
+        case .runpod: RunpodProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)
