@@ -294,7 +294,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: AssemblyAI has no billing API. Kill Cord has a preset for it: add AssemblyAI as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through AssemblyAI’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -569,7 +570,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Cerebras has no billing API. Kill Cord has a preset for it: add Cerebras as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Cerebras’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -664,7 +666,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Cohere has no billing API. Kill Cord has a preset for it: add Cohere as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": false,
     "sources": [
@@ -1334,7 +1337,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Groq has no billing API. Kill Cord has a preset for it: add Groq as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Groq’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -1472,7 +1476,8 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Jina AI has no billing API. Kill Cord has a preset for it: add Jina AI as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": false,
     "sources": [
@@ -2017,7 +2022,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Perplexity API has no billing API. Kill Cord has a preset for it: add Perplexity API as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Perplexity API’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -2276,7 +2282,8 @@
     "native_caps": [],
     "caps_status": "none-documented",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Replicate has no billing API. Kill Cord has a preset for it: add Replicate as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Replicate’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -3112,7 +3119,8 @@
     "native_caps": [],
     "caps_status": "none-documented",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Voyage AI has no billing API. Kill Cord has a preset for it: add Voyage AI as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": true,
     "sources": [

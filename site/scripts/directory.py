@@ -275,8 +275,8 @@ def killcord_section(s):
              f'checks it with {e(s["name"])} before it saves it. The key stays in your Mac’s Keychain and goes only to '
              f'{e(s["name"])}’s billing API. Kill Cord is free, with no account.</p>' if tier == 'built-in' and s['slug'] not in caps_only else
              '<p>Kill Cord is free, with no account, and it reads spend for ' + builtin_names + '.</p>' if tier == 'built-in' else
-             (f'<p>To add it, open Settings › Providers in Kill Cord, choose Manual entry, and pick {e(s["name"])} from the '
-              'services with no billing API. Kill Cord is free, with no account.</p>') if tier == 'manual' else
+             ('<p>To add it, open Settings › Providers in Kill Cord, choose Manual entry, and pick it from the services '
+              'with no billing API. Kill Cord is free, with no account.</p>') if tier == 'manual' else
              (f'<p>Today Kill Cord tracks {builtin_names}. If you use any of those, it puts their spend in one glance and gets their caps turned on.</p>'
               if s['killcord'].get('note') else
               '<p>If you also use any of those, Kill Cord puts their spend in one glance and gets their caps turned on.</p>'))
