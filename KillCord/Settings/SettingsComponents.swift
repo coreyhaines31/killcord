@@ -21,8 +21,9 @@ extension ProviderID {
     var markAssetName: String? {
         switch self {
         case .custom, .manual, .brightdata, .scrapecreators: nil
-        // Batch 4 vendors with no usable vector symbol: Telnyx's logo is a wordmark, HeyGen publishes PNGs only.
-        case .telnyx, .heygen: nil
+        // Batch 4 vendors with no usable vector symbol: Telnyx's logo is a wordmark; HeyGen and ZeroBounce publish
+        // raster logos only.
+        case .telnyx, .heygen, .zerobounce: nil
         // This batch's vendors that draw their letter.
         case .stability, .moonshot, .scrapingbee, .scrapfly, .kie, .bland: nil
         default: "mark-\(rawValue)"
