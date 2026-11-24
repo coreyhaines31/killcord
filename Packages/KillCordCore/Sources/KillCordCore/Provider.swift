@@ -19,6 +19,7 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case treg
     case monid
     case fal
+    case elevenlabs
     /// A service the person sets up: an https address and where the balance is in its JSON.
     case custom
     /// A paid service with no API: a plan, price and renewal date the person types in.

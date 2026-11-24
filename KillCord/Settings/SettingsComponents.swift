@@ -24,11 +24,13 @@ extension ProviderID {
     }
 
     /// How much larger than the key's mark area to draw the file. OpenAI's file carries its own clear space;
-    /// Cloudflare's cloud is so wide that fitting its width alone leaves it too short to read.
+    /// Cloudflare's cloud is so wide that fitting its width alone leaves it too short to read. ElevenLabs' file
+    /// is mostly clear space around its two bars.
     var markScale: CGFloat {
         switch self {
         case .openai: 1.45
         case .cloudflare: 1.3
+        case .elevenlabs: 2.8
         default: 1
         }
     }

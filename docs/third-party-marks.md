@@ -10,7 +10,7 @@ Rules for a mark:
 - Commit the vendor's file byte for byte where it is just the mark. Where the official file is a lockup (mark plus wordmark), the mark's paths are copied unchanged into a file of their own and the canvas is cropped to them. Both cases are noted below.
 - Every file lives in `KillCord/Assets.xcassets/ProviderMarks/mark-<provider>.imageset` as a template image, so it draws in one colour, the panel's label ink (#161616 light, #E6E7E8 dark). A colour mark becomes the same shape in one colour.
 - The provider's name always sits next to the mark, and the mark never suggests a partnership.
-- The mark fills about half of its key, which leaves clear space. OpenAI's file includes its own clear space, so it draws 1.45 times larger, the same as in Fuel Gauge. Cloudflare's cloud is very wide, so it draws 1.3 times larger to stay legible.
+- The mark fills about half of its key, which leaves clear space. OpenAI's file includes its own clear space, so it draws 1.45 times larger, the same as in Fuel Gauge. Cloudflare's cloud is very wide, so it draws 1.3 times larger to stay legible. ElevenLabs' file is mostly clear space around its two bars, so it draws 2.8 times larger.
 
 Checked 2026-11-17 (the six balance services added the same day).
 
@@ -31,3 +31,4 @@ Checked 2026-11-17 (the six balance services added the same day).
 | treg | `treg-mark.svg`: the two quadrant squares of the ▚ mark from treg's `favicon.svg` ("mono cut"), unchanged, without the favicon's black app tile, canvas cropped to them | https://treg.to/favicon.svg | No brand page or trademark guidelines found (treg.to/brand is 404). | Unknown: no published terms |
 | Monid | `Monid_Astrid_NearBlack.svg`, unmodified (the Astrid mark) | Brand kit at https://monid.ai/brand/ (file at monid.ai/brand/brand-kit/SVG/) | "Integrations, docs, talks and press may use the name and the logo as shown here. Ask before co-branding." "Do not alter … Use them as supplied." | No, for referring to Monid |
 | fal | `fal-mark.svg`: the symbol path from the logo in fal.ai's site header, unchanged, with the canvas cropped to it | https://fal.ai/ (no brand page; fal.ai/brand is 404) | https://fal.ai/legal/terms-of-service §12: you "will not copy, imitate, or use any of them … without our prior written permission." Checked 2026-11-24. | Yes |
+| ElevenLabs | `elevenlabs-symbol.svg`, unmodified (the two-bar symbol) | https://elevenlabs.io/brand | Guidance "for the correct use of ElevenLabs trademarks"; no permission clause. Checked 2026-11-24. | No |
