@@ -51,7 +51,19 @@ enum FakeKeys {
     static let browseruse = "bu_TEST-browseruse-secret-0109"
     static let novita = "sk_TEST-novita-secret-0110"
     static let baseten = "bt-TEST-baseten-secret-0111"
-    static let more = [baseten, novita, browseruse, heygen, luma, telnyx, digitalocean, bfl, xapi, runpod, deepinfra]
+    static let more: [String] = [
+        baseten,
+        novita,
+        browseruse,
+        heygen,
+        luma,
+        telnyx,
+        digitalocean,
+        bfl,
+        xapi,
+        runpod,
+        deepinfra
+    ]
     static let xai = "xai-mgmt-TEST-secret-0017"
     static let elevenlabs = "sk_TEST-elevenlabs-secret-0016"
     static let fal = "fal-TEST-key-id:fal-TEST-secret-0015"
