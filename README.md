@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, and DeepSeek, and credits on Tavily.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, and Tavily.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
