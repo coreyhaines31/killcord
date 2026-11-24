@@ -59,7 +59,7 @@ extension ProviderInfo {
     /// A chip next to the name: what kind of number Kill Cord can show.
     public var capabilityLabel: String {
         switch capability {
-        case .dollars: "Dollar spend"
+        case .dollars, .monthDollars: "Dollar spend"
         case .requiresSetup: "Dollar spend, needs setup"
         case .usageUnitsOnly: "Usage units only"
         case .noUsageAPI: "Caps only"
@@ -72,6 +72,7 @@ extension ProviderInfo {
     public var overview: String {
         let shows: String = switch capability {
         case .dollars: "Shows today's and this month's spend."
+        case .monthDollars: "Shows this month's spend. \(name) doesn't report a day's."
         case .requiresSetup: "Shows spend from your Cloud Billing export in BigQuery."
         case .usageUnitsOnly: "Shows this month's usage. \(name) doesn't report dollars."
         case .noUsageAPI: "\(name) has no spend API, so there's nothing to connect. Turn on its Spend Cap in Caps Audit."
