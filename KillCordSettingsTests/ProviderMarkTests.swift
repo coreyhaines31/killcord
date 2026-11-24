@@ -19,6 +19,6 @@ final class ProviderMarkTests: XCTestCase {
         // Every vendor with an official symbol has its mark; custom and manual connections draw a symbol, and
         XCTAssertEqual(Set(ProviderID.allCases.filter { $0.markAssetName == nil }),
                        Set([.brightdata, .scrapecreators, .scrapingbee, .kie, .bland, .postmark, .telnyx, .heygen,
-                            .zerobounce, .prospeo, .lemlist, .searchapi, .custom, .manual]))
+                            .zerobounce, .prospeo, .custom, .manual]))
     }
 }
