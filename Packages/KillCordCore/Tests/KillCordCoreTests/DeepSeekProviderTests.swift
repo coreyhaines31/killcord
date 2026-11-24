@@ -19,7 +19,9 @@ import Testing
         let body = #"{"is_available":true,"balance_infos":[{"currency":"CNY","total_balance":"110.00","granted_balance":"10.00","topped_up_balance":"100.00"}]}"#
         let http = MockHTTPClient { _ in HTTPResponse(status: 200, json: body) }
         let snapshot = try await DeepSeekProvider(http: http).fetchSpend(FakeKeys.credentials(.deepseek), now: testNow)
-        #expect(snapshot.balance == Balance(remaining: 110, unit: .money(Currency("CNY"))))
+        let balance = try #require(snapshot.balance)
+        #expect(balance == Balance(remaining: 110, unit: .money(Currency("CNY"))))
+        #expect(BalanceText.remaining(balance) == "CNY 110.00 left")
     }
 
     @Test func withBothCurrenciesItShowsDollars() async throws {
