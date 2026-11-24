@@ -161,6 +161,8 @@ public enum SpendProviders {
         case .zerobounce: ZeroBounceProvider(http: http)
         case .vonage: VonageProvider(http: http)
         case .plivo: PlivoProvider(http: http)
+        case .prospeo: ProspeoProvider(http: http)
+        case .lemlist: LemlistProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)

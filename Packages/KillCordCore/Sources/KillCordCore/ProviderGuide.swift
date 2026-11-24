@@ -34,7 +34,7 @@ extension ProviderInfo {
         case .neon: "Neon Console"
         case .supabase: "Supabase dashboard"
         case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
-             .hunter, .zerobounce, .vonage, .plivo: moreConsoleName
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist: moreConsoleName
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
@@ -99,7 +99,7 @@ extension ProviderInfo {
         case .twilio: "Runs a few minutes behind."
         case .neon: "Runs about 15 minutes behind."
         case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
-             .hunter, .zerobounce, .vonage, .plivo: moreDelaySummary
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist: moreDelaySummary
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
@@ -122,8 +122,8 @@ extension ProviderInfo {
         case .deepseek: "If the account holds both dollars and yuan, shows the dollar balance."
         case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
         case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
-        case .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten, .hunter, .vonage,
-             .plivo: moreRequirement
+        case .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten, .hunter, .vonage, .plivo,
+             .lemlist: moreRequirement
         default: batch3Requirement
         }
     }
@@ -138,7 +138,7 @@ extension ProviderInfo {
         case .twilio: "Twilio has no read-only key. A Standard API key can also send messages and calls."
         case .neon: "Neon has no read-only key. This one can manage every project in the organization."
         case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
-             .hunter, .zerobounce, .vonage, .plivo: moreKeyPowerSummary
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist: moreKeyPowerSummary
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
@@ -241,7 +241,7 @@ extension ProviderInfo {
         case .supabase:
             return []
         case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse, .novita, .baseten,
-             .hunter, .zerobounce, .vonage, .plivo: return moreSetupSteps
+             .hunter, .zerobounce, .vonage, .plivo, .prospeo, .lemlist: return moreSetupSteps
         case .openrouter:
             return [
                 SetupStep("Open API Keys in OpenRouter", "Under Settings › API Keys.", link: open("Open OpenRouter Keys")),

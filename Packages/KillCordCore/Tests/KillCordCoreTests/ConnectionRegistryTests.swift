@@ -102,6 +102,8 @@ import Testing
             .zerobounce: ["apiKey"],
             .vonage: ["apiKey", "apiSecret"],
             .plivo: ["authID", "authToken"],
+            .prospeo: ["apiKey"],
+            .lemlist: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

@@ -64,6 +64,10 @@ extension ProviderID {
         case .vonage: .canManage
         // Plivo's Auth ID and Auth Token reach the whole account; no read-only credential is documented.
         case .plivo: .canManage
+        // Prospeo documents no key scopes: an API key runs email and mobile finders on the credits.
+        case .prospeo: .canSpend
+        // A lemlist API key acts as the team member who made it: campaigns, leads and, for an admin, the team.
+        case .lemlist: .canManage
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

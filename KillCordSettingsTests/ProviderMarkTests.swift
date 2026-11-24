@@ -20,6 +20,6 @@ final class ProviderMarkTests: XCTestCase {
         // Bright Data and ScrapeCreators (no usable symbol) and Stability AI (permission first) their letter.
         XCTAssertEqual(Set(ProviderID.allCases.filter { $0.markAssetName == nil }),
                        Set([.brightdata, .scrapecreators, .stability, .moonshot, .scrapingbee, .scrapfly, .kie, .bland,
-                            .telnyx, .heygen, .zerobounce, .custom, .manual]))
+                            .telnyx, .heygen, .zerobounce, .prospeo, .lemlist, .custom, .manual]))
     }
 }
