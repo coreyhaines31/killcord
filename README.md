@@ -78,6 +78,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Retell AI | Call list (costs added up) | API key with only History › Read | Yes, call costs only | None (the monthly budget is your checkmark) |
 | Browserbase | Project usage | Project API key | No: browser minutes and proxy data, period not stated | None (Browserbase documents no cap) |
 | Resend | Quota headers on a domain list | API key with Full access | No: emails used this month | None (overages off is your checkmark) |
+| Postmark | Outbound send stats (one server) | Server API token | No: emails sent today and this month | None (Postmark can't cap overage) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -140,6 +141,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Retell AI | An API key from Settings › API Keys limited to History › Read. |
 | Browserbase | The project's API key from Settings, plus the project ID if it sees more than one. |
 | Resend | A Full access API key from resend.com › API Keys. Sending access keys can't read, and a Full access key can manage domains and keys. |
+| Postmark | A Server API token from the server's API Tokens tab. It can send email. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
