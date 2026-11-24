@@ -78,6 +78,17 @@ extension CapsCatalog {
                     "Uncheck Allow PAG, or keep it and set the project's Budget Limit, then mark this done."],
             caveat: "Each project has its own settings. Paid plans also cap extra use at 50% of the monthly quota by "
                 + "default, then suspend the account."
+        ),
+        // Kie.ai. https://docs.kie.ai/getting-started
+        CapControl(
+            id: "kie.key-caps", provider: .kie, name: "Usage caps on each API key",
+            summary: "Each key can carry hourly, daily and total usage caps.",
+            enforcement: .alertOnly, verification: .selfReported,
+            consoleURL: url("https://kie.ai/api-key"),
+            docURL: url("https://docs.kie.ai/getting-started"),
+            steps: ["Open API Key on kie.ai.", "Set hourly, daily and total caps on each key your apps use."],
+            caveat: "Kie.ai's docs don't say what happens when a key reaches a cap, so don't count on it to stop "
+                + "usage. Running out of credits does: services stop until you add more."
         )
     ]
 }

@@ -174,6 +174,7 @@ public enum SpendProviders {
         case .exa: ExaProvider(http: http)
         case .scrapingbee: ScrapingBeeProvider(http: http)
         case .scrapfly: ScrapflyProvider(http: http)
+        case .kie: KieProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
@@ -252,7 +253,8 @@ enum ProviderErrorDetail {
         if let details = object["detail"] as? [[String: Any]], let message = details.first?["msg"] as? String {
             return message
         }
-        return object["err_msg"] as? String
+        // Kie.ai's `{code, msg}`.
+        return object["err_msg"] as? String ?? object["msg"] as? String
     }
 
     private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent",

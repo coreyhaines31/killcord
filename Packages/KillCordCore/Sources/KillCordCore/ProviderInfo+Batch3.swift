@@ -68,6 +68,18 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Scrapfly doesn't say how current the account usage is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://scrapfly.io/dashboard/billing")
+        ),
+        ProviderInfo(
+            id: .kie, name: "Kie.ai", capability: .balance(spend: []),
+            fields: [apiKeyField("Kie.ai API key")],
+            keyKind: "API key",
+            keyURL: url("https://kie.ai/api-key"),
+            keyPowerWarning: "Kie.ai documents one kind of API key, with no scopes or read-only option. It can start "
+                + "generations that use your credits. Kie.ai lets a key carry hourly, daily and total usage caps and "
+                + "an IP allow list, so give this one small caps. Kill Cord only reads the credit balance.",
+            lag: ProviderLag(typical: 0, note: "Kie.ai doesn't say how current the credit balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://kie.ai/logs")
         )
     ]
 }

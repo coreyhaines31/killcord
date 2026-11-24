@@ -10,6 +10,7 @@ extension ProviderInfo {
         case .exa: "Exa dashboard"
         case .scrapingbee: "ScrapingBee dashboard"
         case .scrapfly: "Scrapfly dashboard"
+        case .kie: "Kie.ai dashboard"
         default: "service's site"
         }
     }
@@ -40,6 +41,7 @@ extension ProviderInfo {
         case .exa: "A service key can also create and delete your API keys. Exa has no read-only one."
         case .scrapingbee: "ScrapingBee has no read-only key. This key can run scrapes on your plan's credits."
         case .scrapfly: "Scrapfly has no read-only key. This key can run scrapes on your plan's credits."
+        case .kie: "Kie.ai has no read-only key. This key can run generations on your credits. Give it small caps."
         default: nil
         }
     }
@@ -85,6 +87,12 @@ extension ProviderInfo {
                           link: open("Open Scrapfly Projects")),
                 SetupStep("Copy the LIVE API key", "Kill Cord reads your account's credit usage with it. It "
                     + "travels in the request address, as Scrapfly requires, and Kill Cord strips it from errors.")
+            ]
+        case .kie:
+            return [
+                SetupStep("Open API Key on kie.ai", "Sign in to Kie.ai.", link: open("Open Kie.ai Keys")),
+                SetupStep("Create a key for Kill Cord with small usage caps and copy it", "Kie.ai keys have no "
+                    + "scopes, but each can carry hourly, daily and total usage caps.")
             ]
         default:
             return []
