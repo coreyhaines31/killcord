@@ -46,8 +46,8 @@ import Testing
         #expect(http.requests.isEmpty)
     }
 
-    @Test func noOutstandingBalanceIsZeroAndOtherUnitsKeepTheirName() throws {
-        #expect(try DeepgramProvider.balance([]) == .usd(0))
+    @Test func noBalancesIsNotReportedAndOtherUnitsKeepTheirName() throws {
+        #expect(try DeepgramProvider.balance([]) == nil)
         let hours = [DeepgramProvider.Balances.Entry(amount: nil, units: "hour")]
         #expect(try DeepgramProvider.balance(hours) == Balance(remaining: 0, unit: .units("hour")))
         let mixed = [DeepgramProvider.Balances.Entry(amount: nil, units: "hour"), .init(amount: nil, units: "token")]

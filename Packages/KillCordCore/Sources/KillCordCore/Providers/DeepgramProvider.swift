@@ -8,8 +8,8 @@
 // GET https://api.deepgram.com/v1/projects/{project_id}/balances
 //   headers: Authorization: Token <API key>
 //   200: { "balances": [ { "balance_id": "…", "amount": 12.5, "units": "USD", "purchase_order_id": "…" } ] }
-// "A list of outstanding balances": Kill Cord adds up the USD ones. Errors are a string, the older
-// { err_code, err_msg }, or { category, message, details }.
+// "A list of outstanding balances": Kill Cord adds up the USD ones, and shows none for an empty list.
+// Errors are a string, the older { err_code, err_msg }, or { category, message, details }.
 import Foundation
 
 public struct DeepgramProvider: SpendProvider {
@@ -75,10 +75,12 @@ public struct DeepgramProvider: SpendProvider {
         return only.projectID
     }
 
-    /// USD balances added up. An empty list means nothing is outstanding, so nothing is left.
-    static func balance(_ entries: [Balances.Entry]) throws -> Balance {
+    /// USD balances added up. No balances at all is "not reported", not $0: an invoiced project has none, and
+    /// a made-up zero would set off low-balance alerts.
+    static func balance(_ entries: [Balances.Entry]) throws -> Balance? {
+        guard !entries.isEmpty else { return nil }
         let usd = entries.filter { $0.units?.uppercased() == "USD" }
-        if !usd.isEmpty || entries.isEmpty {
+        if !usd.isEmpty {
             return .usd(usd.reduce(Decimal(0)) { $0 + ($1.amount?.value ?? 0) })
         }
         // Not dollars: show them in their own unit when there's only one kind.
