@@ -142,7 +142,8 @@ public struct HeyGenProvider: SpendProvider {
     static func usageBalance(_ usage: UsageBased?) throws -> Balance {
         guard let usage else { throw SpendError.unexpectedResponse }
         if let cap = usage.spendingCapUSD?.value {
-            let spent = usage.spendingCurrentUSD?.value ?? 0
+            // Without the spend so far, what's left under the cap is unknown: never assume $0 spent.
+            guard let spent = usage.spendingCurrentUSD?.value else { throw SpendError.unexpectedResponse }
             return .usd(max(cap - spent, 0), kind: .allowance, limit: cap, used: spent)
         }
         if let credits = usage.remainingCredits?.value {
@@ -168,7 +169,7 @@ public struct HeyGenProvider: SpendProvider {
             guard let usage = user.usageBased else { return [] }
             let status: CapVerification.Status
             if let cap = usage.spendingCapUSD?.value {
-                let spent = usage.spendingCurrentUSD?.value ?? 0
+                guard let spent = usage.spendingCurrentUSD?.value else { return [] }
                 let capText = MoneyText.string(Money(cap))
                 status = spent >= cap
                     ? .enforced("HeyGen reports \(MoneyText.string(Money(spent))) spent of a \(capText) spending cap.")

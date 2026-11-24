@@ -77,6 +77,40 @@ import Testing
         #expect(detail.contains("$10.00") && detail.contains("$50.00"))
     }
 
+    @Test func spendingAtTheCapIsEnforced() async {
+        let (heygen, _) = provider(#"{"data":{"username":"u","email":null,"first_name":null,"last_name":null,"billing_type":"usage_based","usage_based":{"spending_current_usd":100.5,"spending_cap_usd":100}}}"#)
+        let caps = await heygen.verifyCaps(FakeKeys.credentials(.heygen), now: testNow)
+        guard case .enforced = caps.first?.status else {
+            Issue.record("Expected enforced, got \(caps)")
+            return
+        }
+        let balance = try? await heygen.fetchSpend(FakeKeys.credentials(.heygen), now: testNow).balance
+        #expect(balance?.remaining == 0)
+    }
+
+    @Test func aCapWithoutSpendSoFarIsUnexpected() async {
+        let (heygen, _) = provider(#"{"data":{"username":"u","email":null,"first_name":null,"last_name":null,"billing_type":"usage_based","usage_based":{"spending_cap_usd":100}}}"#)
+        await #expect(throws: SpendError.unexpectedResponse) {
+            try await heygen.fetchSpend(FakeKeys.credentials(.heygen), now: testNow)
+        }
+    }
+
+    @Test func autoReloadOffConfirmsTheWalletCap() async {
+        let (heygen, _) = provider(#"{"data":{"username":"u","email":null,"first_name":null,"last_name":null,"billing_type":"wallet","wallet":{"currency":"usd","remaining_balance":5,"auto_reload":{"enabled":false}}}}"#)
+        let caps = await heygen.verifyCaps(FakeKeys.credentials(.heygen), now: testNow)
+        guard case .on = caps.first?.status else {
+            Issue.record("Expected on, got \(caps)")
+            return
+        }
+    }
+
+    @Test func anUnknownBillingTypeIsUnexpected() async {
+        let (heygen, _) = provider(#"{"data":{"username":"u","email":null,"first_name":null,"last_name":null,"billing_type":"barter"}}"#)
+        await #expect(throws: SpendError.unexpectedResponse) {
+            try await heygen.fetchSpend(FakeKeys.credentials(.heygen), now: testNow)
+        }
+    }
+
     @Test func aKeyWithoutAccountReadNamesTheScope() async {
         let body = #"{"error":{"code":"insufficient_api_key_scope","message":"This API key is missing a required scope."}}"#
         let http = MockHTTPClient { _ in HTTPResponse(status: 403, json: body) }

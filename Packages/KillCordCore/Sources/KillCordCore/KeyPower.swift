@@ -48,8 +48,8 @@ extension ProviderID {
         case .telnyx: .canManage
         // Luma's generation keys spend credits; its read-only Admin keys can't read the balance and are enterprise-only.
         case .luma: .canSpend
-        // HeyGen keys can be restricted to account:read, which only reads the account; *:read is read-only too.
-        case .heygen: .readOnly
+        // HeyGen keys can be restricted to account:read; a full-access (*:*) key can make videos.
+        case .heygen: .readOnlyIfChosen
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

@@ -212,7 +212,7 @@ import Testing
     static let moreKeyPowers: [ProviderID: KeyPower] = [
         .runpod: .readOnlyIfChosen,
         .telnyx: .canManage,
-        .heygen: .readOnly
+        .heygen: .readOnlyIfChosen
     ]
     /// Services in `ProviderInfo.batch3Providers` that read a balance with GETs.
     static let batch3Providers: [ProviderID] = [.stability, .moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland]
