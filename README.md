@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, and Deepgram.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, and Runway.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
@@ -28,7 +28,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
+- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
 - **Takes any balance endpoint.** A custom connection reads a service Kill Cord doesn't know from an https address you enter and a path into its JSON. Kill Cord can't verify those numbers and says so.
 - **Remembers plans with no API.** For services like Truelist or Gojiberry, enter the plan, price, and renewal date. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
 - **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month. Low-balance alerts fire once when a balance drops to your amount, and again only after a top-up.
@@ -59,6 +59,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Apify | Usage this cycle and the usage limit | API token | Yes, this usage cycle, plus what's left before the limit | Usage limit |
 | Tavily | Plan credits this cycle | API key | Credits left of the plan | None (workspace and key limits are your checkmark) |
 | Deepgram | Project balances | API key with the Admin role (plus the project ID if it sees several) | Balance left, in dollars | None (Deepgram documents no cap) |
+| Runway | Organization credits | API key | Credits left, with a labeled dollar estimate at $0.01 a credit | None (autobilling off is your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -91,6 +92,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Supabase | Nothing to connect. Use the caps audit. |
 | OpenRouter | Settings › API Keys. Create a key just for Kill Cord with a small credit limit. |
 | Deepgram | An Admin key from the Deepgram Console › project Settings › API Keys. Member keys can't read balances. |
+| Runway | An API key (key_…) from the project's API Keys tab at dev.runway.com. |
 | DataForSEO | The API login and API password from the API Access page (not your dashboard sign-in). |
 | Ahrefs | An API key from your Ahrefs account. Your plan needs API access. |
 | Firecrawl | An API key from the dashboard's API Keys page. |
