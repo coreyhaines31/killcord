@@ -236,8 +236,7 @@ extension ProviderInfo {
             ]
         case .supabase:
             return []
-        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse:
-            return moreSetupSteps
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse: return moreSetupSteps
         case .openrouter:
             return [
                 SetupStep("Open API Keys in OpenRouter", "Under Settings › API Keys.", link: open("Open OpenRouter Keys")),
