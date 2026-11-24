@@ -3,3 +3,4 @@ __pycache__/
 .vercel/
 .env*
 .indexnow-sitemap.xml
+.vercel
