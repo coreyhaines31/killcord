@@ -198,6 +198,7 @@ public enum SpendProviders {
         case .resend: ResendProvider(http: http)
         case .postmark: PostmarkProvider(http: http)
         case .mistral: MistralProvider(http: http)
+        case .huggingface: HuggingFaceProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

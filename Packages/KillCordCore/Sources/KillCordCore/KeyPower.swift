@@ -128,6 +128,8 @@ extension ProviderID {
         case .postmark: .canSpend
         // A Mistral Admin API key reaches every admin endpoint: users, workspaces, keys and the spend limit.
         case .mistral: .canManage
+        // A fine-grained Hugging Face token can be limited to reading the organization's billing.
+        case .huggingface: .readOnlyIfChosen
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
