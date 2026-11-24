@@ -163,6 +163,19 @@ extension ProviderInfo {
                 + "runs. Its amounts are before credits are applied, so they can differ from the invoice."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://fireworks.ai/billing")
+        ),
+        ProviderInfo(
+            id: .vapi, name: "Vapi", capability: .dollars,
+            fields: [apiKeyField("Vapi private key")],
+            keyKind: "Private API key",
+            keyURL: url("https://dashboard.vapi.ai/org/api-keys"),
+            keyPowerWarning: "Vapi has no read-only key. It says \"A private key can access everything in your "
+                + "organization\", so this key can start calls and change assistants. Public keys are only for "
+                + "client SDKs. Kill Cord only runs an analytics query that adds up call costs.",
+            lag: ProviderLag(typical: 0, note: "Vapi doesn't say how far behind call costs run. Only calls are "
+                + "counted, not other usage."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://dashboard.vapi.ai")
         )
     ]
 }

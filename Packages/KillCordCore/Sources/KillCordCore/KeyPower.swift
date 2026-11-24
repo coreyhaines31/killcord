@@ -116,6 +116,8 @@ extension ProviderID {
         case .together: .canSpend
         // Any Fireworks key reads billing; an Inference user's key can run models but not change resources.
         case .fireworks: .canSpend
+        // A Vapi private key "can access everything in your organization"; public keys are client-only.
+        case .vapi: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

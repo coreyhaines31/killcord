@@ -192,6 +192,7 @@ public enum SpendProviders {
         case .cartesia: CartesiaProvider(http: http)
         case .together: TogetherProvider(http: http)
         case .fireworks: FireworksProvider(http: http)
+        case .vapi: VapiProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

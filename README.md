@@ -74,6 +74,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Cartesia | Credit usage | Admin key | No: credits used this month | None (overages off is your checkmark) |
 | Together AI | Billing usage report (beta, per organization) | API key | Yes, this month through yesterday | None (auto-recharge off is your checkmark) |
 | Fireworks AI | Billing summary | API key (an Inference user's) | Yes | Monthly spend limit |
+| Vapi | Analytics: sum of call costs | Private API key | Yes, call costs only | None (auto-reload off is your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -132,6 +133,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Cartesia | An admin key (sk_car_admin_…) from the playground's Admin keys page. Only organization admins can make one, and it can also manage users and invites. |
 | Together AI | An API key from any project in the organization. Together turns its billing usage API on per organization; ask support. |
 | Fireworks AI | An API key from Settings › Users › API Keys, from a service account or user with the Inference user role, plus the account ID if it sees more than one. |
+| Vapi | A private API key from the dashboard's API Keys page. It can do everything in the organization. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
