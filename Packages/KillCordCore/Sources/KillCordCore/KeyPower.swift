@@ -48,6 +48,8 @@ extension ProviderID {
         case .apify: .canManage
         // Tavily documents no read-only key; any key can run searches on the plan's credits.
         case .tavily: .canSpend
+        // Deepgram gives billing:read only to Admin and Owner roles, which can manage the project's keys.
+        case .deepgram: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
