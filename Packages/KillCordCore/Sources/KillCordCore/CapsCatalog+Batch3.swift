@@ -163,6 +163,19 @@ extension CapsCatalog {
                     "Add notification amounts on the Billing page if you want more warnings."],
             caveat: "Kill Cord reads the monthly-spend-usd quota from Fireworks' API. Enterprise accounts get "
                 + "alerts only."
+        ),
+        // Vapi. https://docs.vapi.ai/billing/manage-billing-and-credits
+        CapControl(
+            id: "vapi.credits", provider: .vapi, name: "Prepaid credits, auto-reload off",
+            summary: "With auto-reload off, Vapi freezes the subscription when its credit balance reaches $0: no new "
+                + "calls or other billable usage until you buy more.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://dashboard.vapi.ai"),
+            docURL: url("https://docs.vapi.ai/billing/manage-billing-and-credits"),
+            steps: ["Open Billing in the Vapi dashboard.",
+                    "Leave auto-reload off, or set a threshold and top-up you accept."],
+            caveat: "Vapi documents no spend limit you set yourself. With auto-reload on, it buys credits every "
+                + "time the balance reaches your threshold."
         )
     ]
 }

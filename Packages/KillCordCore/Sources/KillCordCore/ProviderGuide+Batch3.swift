@@ -16,6 +16,7 @@ extension ProviderInfo {
         case .cartesia: "Cartesia playground"
         case .together: "Together settings"
         case .fireworks: "Fireworks dashboard"
+        case .vapi: "Vapi dashboard"
         default: "service's site"
         }
     }
@@ -41,6 +42,7 @@ extension ProviderInfo {
         case .cartesia: "Counts credits used since the 1st of the month (UTC), not since your plan renewed."
         case .together: "Needs Together's billing usage API, a beta that Together turns on per organization."
         case .fireworks: "Amounts are before credits are applied, so they can read higher than the invoice."
+        case .vapi: "Adds up call costs only. Other billable usage, such as phone numbers, isn't included."
         default: nil
         }
     }
@@ -58,6 +60,7 @@ extension ProviderInfo {
         case .cartesia: "Needs an admin key, which can also remove users and send invites. It can't make speech."
         case .together: "Together has no read-only key. This key can use its project and spend your credits."
         case .fireworks: "No read-only key. An Inference user's key reads billing but can still run models."
+        case .vapi: "Vapi has no read-only key. A private key can do everything in your organization."
         default: nil
         }
     }
@@ -153,6 +156,13 @@ extension ProviderInfo {
                 SetupStep("Create a key and copy it", "Fireworks says any key on the account can read billing."),
                 SetupStep("Add the account ID if the key sees more than one", "With one account, Kill Cord finds "
                     + "it.")
+            ]
+        case .vapi:
+            return [
+                SetupStep("Open API Keys in the Vapi dashboard", "Under your organization's settings.",
+                          link: open("Open Vapi Keys")),
+                SetupStep("Copy a private key", "Vapi has no read-only key, so this one can do everything in the "
+                    + "organization. Kill Cord only reads call costs with it.")
             ]
         default:
             return []
