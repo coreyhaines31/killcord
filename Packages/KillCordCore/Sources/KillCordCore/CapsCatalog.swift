@@ -47,7 +47,7 @@ public struct CapControl: Sendable, Identifiable, Equatable {
 public enum CapsCatalog {
     private static func url(_ string: String) -> URL { URL(string: string)! }
 
-    public static let controls: [CapControl] = providerControls + balanceControls
+    public static let controls: [CapControl] = providerControls + balanceControls + moreBalanceControls
 
     static let providerControls: [CapControl] = [
         // Anthropic. https://platform.claude.com/docs/en/api/rate-limits
