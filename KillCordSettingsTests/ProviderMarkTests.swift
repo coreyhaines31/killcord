@@ -17,7 +17,8 @@ final class ProviderMarkTests: XCTestCase {
             XCTAssertTrue(image.isTemplate, "\(name) must be a template image")
         }
         // Every vendor with an official symbol has its mark; custom and manual connections draw a symbol, and
-        // Bright Data (a wordmark only) its letter.
-        XCTAssertEqual(ProviderID.allCases.filter { $0.markAssetName == nil }, [.brightdata, .custom, .manual])
+        // Bright Data and ScrapeCreators (no usable symbol) their letter.
+        XCTAssertEqual(ProviderID.allCases.filter { $0.markAssetName == nil },
+                       [.brightdata, .scrapecreators, .custom, .manual])
     }
 }
