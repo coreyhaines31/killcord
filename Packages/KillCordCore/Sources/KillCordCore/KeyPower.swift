@@ -72,6 +72,8 @@ extension ProviderID {
         case .scrapecreators: .canSpend
         // Stability AI documents one kind of API key, with no scopes: it can run generations.
         case .stability: .canSpend
+        // Kimi Admin keys carry chosen scopes and can't call inference; billing:read alone reads bills.
+        case .moonshot: .readOnlyIfChosen
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
