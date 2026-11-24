@@ -56,6 +56,8 @@ extension ProviderID {
         case .serpapi: .canSpend
         // Bright Data's Finance level reaches billing pages, and its docs don't call any key read-only.
         case .brightdata: .canManage
+        // ScrapeCreators documents one API key per team, with no scopes: it can run scrapes.
+        case .scrapecreators: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

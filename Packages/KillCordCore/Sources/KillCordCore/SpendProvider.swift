@@ -162,6 +162,7 @@ public enum SpendProviders {
         case .runway: RunwayProvider(http: http)
         case .serpapi: SerpApiProvider(http: http)
         case .brightdata: BrightDataProvider(http: http)
+        case .scrapecreators: ScrapeCreatorsProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
