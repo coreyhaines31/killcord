@@ -139,6 +139,7 @@ import Testing
             .resend: ["apiKey"],
             .postmark: ["apiKey"],
             .mistral: ["apiKey"],
+            .huggingface: ["apiKey", "organization"],
             .custom: ["serviceName", "url", "method", "authStyle", "authName", "authValue", "key", "key2", "body",
                       "remainingPath", "usedPath", "limitPath", "resetPath", "currencyPath", "unit", "scale",
                       "dollarsPerUnit", "kind", "pollMinutes", "costsMoney"],

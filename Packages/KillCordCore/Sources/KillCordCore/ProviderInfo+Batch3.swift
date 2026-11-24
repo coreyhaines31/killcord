@@ -248,6 +248,24 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Mistral doesn't say how current usage against the limit is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://admin.mistral.ai/organization/usage")
+        ),
+        ProviderInfo(
+            id: .huggingface, name: "Hugging Face", capability: .dollars,
+            fields: [
+                apiKeyField("hf_…", help: "A fine-grained token that can only read the organization's billing."),
+                CredentialField(id: "organization", label: "Organization", placeholder: "my-org", isSecret: false,
+                                help: "The name in the organization's huggingface.co address.")
+            ],
+            keyKind: "Fine-grained token with org billing read",
+            keyURL: url("https://huggingface.co/settings/tokens"),
+            keyPowerWarning: "Hugging Face's fine-grained tokens carry only the permissions you tick. One with only "
+                + "the organization's billing read permission can read billing and usage, and nothing else. A "
+                + "Read or Write token reaches much more, so don't use one. Usage over the API is only for "
+                + "organizations on the Enterprise plan or above. Kill Cord only reads Inference Providers usage.",
+            lag: ProviderLag(typical: 2 * 3600, note: "Hugging Face says requests show up to 2 hours after they're "
+                + "made. Each row is rounded to the cent."),
+            billingTimeZone: utc, minimumRefreshInterval: 30 * 60,
+            consoleURL: url("https://huggingface.co/settings/billing")
         )
     ]
 }

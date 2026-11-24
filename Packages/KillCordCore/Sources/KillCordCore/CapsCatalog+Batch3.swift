@@ -259,6 +259,19 @@ extension CapsCatalog {
             steps: ["Open Administration › Workspaces in the Mistral Admin Panel.",
                     "Set a spending limit on each Workspace your apps use."],
             caveat: nil
+        ),
+        // Hugging Face. https://huggingface.co/docs/inference-providers/pricing
+        CapControl(
+            id: "huggingface.org-spending-limit", provider: .huggingface, name: "Organization spending limit",
+            summary: "Team and Enterprise administrators can set a spending limit for Inference Providers usage "
+                + "billed to the organization.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://huggingface.co/settings/billing"),
+            docURL: url("https://huggingface.co/docs/inference-providers/pricing"),
+            steps: ["Open the organization's settings on Hugging Face.",
+                    "Set an Inference Providers spending limit, then mark this done."],
+            caveat: "Hugging Face's docs don't say exactly what happens at the limit, so check that requests "
+                + "stop. It covers usage billed to the organization, not members' own accounts."
         )
     ]
 }
