@@ -40,6 +40,18 @@ extension ProviderID {
     }
 }
 
+extension ManualPreset {
+    /// Presets whose service publishes a usable official symbol. The rest draw their first letter.
+    static let marked: Set<String> = ["assemblyai", "cerebras", "cohere", "e2b", "jina", "twelvelabs",
+                                      "typesafe", "unstructured"]
+
+    /// The asset catalog name of the service's official mark. `docs/third-party-marks.md` gives each source.
+    var markAssetName: String? { Self.marked.contains(id) ? "preset-\(id)" : nil }
+
+    /// E2B's small-size file leaves wide clear space around its symbol.
+    var markScale: CGFloat { id == "e2b" ? 1.5 : 1 }
+}
+
 /// The bundle holding the marks: the app, or the test bundle that compiles these views.
 private final class MarkBundle {}
 
@@ -47,6 +59,8 @@ private final class MarkBundle {}
 struct ProviderMark: View {
     let provider: ProviderID
     var size: CGFloat = 22
+    /// A manual entry's name, so one named after a preset draws that service's mark or letter.
+    var serviceName: String?
 
     @Environment(\.panelTheme) private var theme
 
@@ -62,9 +76,20 @@ struct ProviderMark: View {
             .accessibilityHidden(true)
     }
 
+    private var preset: ManualPreset? { provider == .manual ? ManualPreset.matching(serviceName) : nil }
+
     @ViewBuilder
     private var face: some View {
-        if let asset = provider.markAssetName {
+        if let preset, let asset = preset.markAssetName {
+            Image(asset, bundle: Bundle(for: MarkBundle.self), label: Text(preset.name))
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.5 * preset.markScale, height: size * 0.5 * preset.markScale)
+                .frame(width: size * 0.5, height: size * 0.5)
+        } else if let preset {
+            letter(preset.name)
+        } else if let asset = provider.markAssetName {
             Image(asset, bundle: Bundle(for: MarkBundle.self), label: Text(provider.info.name))
                 .renderingMode(.template)
                 .resizable()
@@ -78,11 +103,15 @@ struct ProviderMark: View {
                 .frame(width: size * 0.5, height: size * 0.5)
         } else {
             // No official mark in the app yet: the name's first letter, never a made-up logo.
-            Text(provider.info.name.prefix(1).uppercased())
-                .font(.system(size: size * 0.5, weight: .bold, design: .rounded))
-                .minimumScaleFactor(0.5)
-                .frame(width: size * 0.62, height: size * 0.62)
+            letter(provider.info.name)
         }
+    }
+
+    private func letter(_ name: String) -> some View {
+        Text(name.prefix(1).uppercased())
+            .font(.system(size: size * 0.5, weight: .bold, design: .rounded))
+            .minimumScaleFactor(0.5)
+            .frame(width: size * 0.62, height: size * 0.62)
     }
 }
 
@@ -113,7 +142,7 @@ struct ProviderHeader: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            ProviderMark(provider: provider, size: 34)
+            ProviderMark(provider: provider, size: 34, serviceName: title)
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     Text(title)

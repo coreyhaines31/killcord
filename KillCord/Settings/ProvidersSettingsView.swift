@@ -108,7 +108,7 @@ struct ProviderRow: View {
 
     var body: some View {
         HStack(spacing: 9) {
-            ProviderMark(provider: provider)
+            ProviderMark(provider: provider, serviceName: title)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).lineLimit(1).truncationMode(.tail)
                 HStack(spacing: 5) {

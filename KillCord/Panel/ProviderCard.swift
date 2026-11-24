@@ -23,7 +23,7 @@ struct ProviderCard: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center) {
                 HStack(spacing: 6) {
-                    ProviderMark(provider: provider, size: 16)
+                    ProviderMark(provider: provider, size: 16, serviceName: name)
                     Text(name).font(PanelFont.condensed(14, .semibold))
                 }
                 Spacer()
