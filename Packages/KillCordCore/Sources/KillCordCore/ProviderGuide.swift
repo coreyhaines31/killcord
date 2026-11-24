@@ -125,7 +125,7 @@ extension ProviderInfo {
         case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
         case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
         case .xapi: "Pay-per-use accounts only. Shows prepaid and free credits together."
-        case .bfl: "Shows the credits of the key's organization. 1 credit is $0.01."
+        case .bfl: "BFL prices 1 credit at $0.01, so the dollar figure is an estimate from that."
         default: nil
         }
     }
