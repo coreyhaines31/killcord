@@ -56,6 +56,7 @@ Checked 2026-11-17 (the six balance services added the same day).
 | Retell AI | None: it draws its first letter, because its terms ask permission before using its marks. Its icon files are on https://www.retellai.com/logos. | n/a | https://www.retellai.com/terms-of-service: "You may not use any trademarks, service marks, or trade names appearing on the Service without the owner's prior written consent." Checked 2026-11-24. | Yes |
 | Browserbase | `browserbase-logomark-black.svg`, unmodified | Brand kit on https://www.browserbase.com/brand | "Use approved artwork as supplied, preserve its proportions… Don't use the logo in other colors." No permission clause. Checked 2026-11-24. | No |
 | Resend | `resend-icon-black.svg`, unmodified | `resend-brand-assets.zip` and files on https://resend.com/brand | "Do not alter these files in any way." No permission clause. Checked 2026-11-24. | No |
+| Postmark | None: it draws its first letter. Its stamp symbol (https://postmarkapp.com/images/logo-stamp-simple.svg) is two colours, and its terms grant no right to display its content, with no brand page (postmarkapp.com/brand is 404). | n/a | https://postmarkapp.com/terms-of-service §8: no right to "publicly display AC PM Content, except as expressly permitted". Checked 2026-11-24. | Yes, in effect |
 
 ## Manual presets
 
