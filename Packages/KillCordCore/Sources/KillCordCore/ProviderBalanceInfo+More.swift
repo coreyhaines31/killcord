@@ -193,6 +193,21 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Vonage reports the balance in euros."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://dashboard.nexmo.com/billing-and-payments")
+        ),
+        ProviderInfo(
+            id: .plivo, name: "Plivo", capability: .balance(spend: []),
+            fields: [
+                CredentialField(id: "authID", label: "Auth ID", placeholder: "MAXXXXXXXXXXXXXXXXXX", isSecret: false),
+                CredentialField(id: "authToken", label: "Auth Token", placeholder: "Auth Token", isSecret: true)
+            ],
+            keyKind: "Auth ID and Auth Token",
+            keyURL: url("https://cx.plivo.com"),
+            keyPowerWarning: "Plivo documents no read-only credential. Every API call uses the Auth ID and Auth Token, "
+                + "which can place calls, send messages, rent numbers, and update the account. Kill Cord only reads "
+                + "the account's cash credits and auto recharge setting.",
+            lag: ProviderLag(typical: 0, note: "Plivo doesn't say how current cash credits are."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://cx.plivo.com")
         )
     ]
 }

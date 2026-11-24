@@ -101,6 +101,7 @@ import Testing
             .hunter: ["apiKey"],
             .zerobounce: ["apiKey"],
             .vonage: ["apiKey", "apiSecret"],
+            .plivo: ["authID", "authToken"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

@@ -62,6 +62,8 @@ extension ProviderID {
         case .zerobounce: .canSpend
         // Vonage's account API key and secret reach the whole account: messages, calls, numbers and secrets.
         case .vonage: .canManage
+        // Plivo's Auth ID and Auth Token reach the whole account; no read-only credential is documented.
+        case .plivo: .canManage
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

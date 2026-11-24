@@ -103,6 +103,13 @@ extension ProviderInfo {
                 SetupStep("Copy the API key and a secret", "Create a second secret just for Kill Cord, so you can "
                     + "revoke it on its own. It works for the whole account.")
             ]
+        case .plivo:
+            return [
+                SetupStep("Open the Plivo console", "Find your account's Auth ID and Auth Token.",
+                          link: open("Open Plivo Console")),
+                SetupStep("Copy the Auth ID and Auth Token", "They work for the whole account, so keep them only in "
+                    + "Kill Cord's Keychain item.")
+            ]
         default:
             return []
         }
@@ -125,6 +132,7 @@ extension ProviderInfo {
         case .hunter: "Hunter dashboard"
         case .zerobounce: "ZeroBounce API dashboard"
         case .vonage: "Vonage API Dashboard"
+        case .plivo: "Plivo console"
         default: "service's site"
         }
     }
@@ -146,6 +154,7 @@ extension ProviderInfo {
         case .hunter: nil
         case .zerobounce: nil
         case .vonage: "Vonage checks the balance for auto reload every six minutes."
+        case .plivo: nil
         default: nil
         }
     }
@@ -163,6 +172,7 @@ extension ProviderInfo {
         case .baseten: "Spend is after Baseten credits, across dedicated models, training, Model APIs and Loops."
         case .hunter: "Shows the team's credits, or its searches when searches and verifications are separate quotas."
         case .vonage: "Shows the balance in euros, the currency Vonage reports it in."
+        case .plivo: "Prepaid accounts only. Shows cash credits in dollars."
         default: nil
         }
     }
@@ -184,6 +194,7 @@ extension ProviderInfo {
         case .hunter: "Hunter has no read-only key. This key can run searches and manage leads, sequences and keys."
         case .zerobounce: "ZeroBounce has no read-only key. This key can validate emails on your credits."
         case .vonage: "Vonage has no read-only key. The key and secret can send messages, buy numbers and change secrets."
+        case .plivo: "Plivo has no read-only credential. The Auth Token can call, send messages and change the account."
         default: nil
         }
     }

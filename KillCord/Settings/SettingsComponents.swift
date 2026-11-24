@@ -42,6 +42,8 @@ extension ProviderID {
         case .apify: 1.45
         case .deepgram: 1.5
         case .llamacloud: 1.3
+        // Plivo's symbol sits in a 2000-unit square with a quarter of it as clear space.
+        case .plivo: 1.35
         default: 1
         }
     }
