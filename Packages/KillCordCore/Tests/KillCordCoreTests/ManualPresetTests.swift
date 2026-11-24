@@ -6,8 +6,8 @@ import Testing
 @Suite struct ManualPresetTests {
     @Test func coversTheServicesWithNoBillingAPI() {
         #expect(ManualPreset.corePresets.map(\.name) == [
-            "AssemblyAI", "Cerebras", "Cohere", "E2B", "Groq", "Jina AI", "Perplexity", "Replicate", "Twelve Labs",
-            "TypeSafe Jev", "Unstructured", "Voyage AI"
+            "AssemblyAI", "Cerebras", "Cohere", "E2B", "Gojiberry", "Groq", "Jina AI", "Modal", "Perplexity",
+            "Pinecone", "Replicate", "Truelist", "Twelve Labs", "TypeSafe Jev", "Unstructured", "Voyage AI"
         ])
         #expect(ManualPreset.morePresets.map(\.name) == [
             "Apollo", "Brave Search API", "Clay", "Cloudinary", "Composio", "Enrich Layer", "Fly.io", "Gladia",
@@ -25,7 +25,8 @@ import Testing
         #expect(ManualPreset.matching("  twelve labs ")?.id == "twelvelabs")
         #expect(ManualPreset.matching("jina-ai")?.id == "jina")
         #expect(ManualPreset.matching("TypeSafe Jev")?.id == "typesafe")
-        #expect(ManualPreset.matching("Truelist") == nil)
+        #expect(ManualPreset.matching("Acme Mail") == nil)
+        #expect(ManualPreset.matching("truelist")?.id == "truelist")
         #expect(ManualPreset.matching("") == nil)
         #expect(ManualPreset.matching(nil) == nil)
     }
@@ -51,7 +52,7 @@ import Testing
 
     @Test func manualEntriesGetTheirPresetsCapsOnce() {
         #expect(CapsCatalog.controls(for: .manual).isEmpty)
-        let caps = CapsCatalog.controls(for: .manual, manualServices: ["Groq", "groq", "Truelist", "Cohere"])
+        let caps = CapsCatalog.controls(for: .manual, manualServices: ["Groq", "groq", "Acme Mail", "Cohere"])
         #expect(caps.map(\.id) == ["manual.groq.spend-limit", "manual.groq.spend-alerts"])
         #expect(CapsCatalog.controls(for: .openai, manualServices: ["Groq"]) == CapsCatalog.controls(for: .openai))
     }

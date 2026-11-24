@@ -115,6 +115,11 @@ extension ManualPreset {
                     caveat: "E2B's docs don't say whether usage stops at the limit, so don't count on it to.")
             ]),
         ManualPreset(
+            id: "gojiberry", name: "Gojiberry", billingURL: url("https://app.gojiberry.ai"),
+            docURL: url("https://ext.gojiberry.ai/openapi.json"),
+            note: "Gojiberry's API reports the credits each call uses, but no balance or plan usage.",
+            caps: []),
+        ManualPreset(
             id: "groq", name: "Groq", billingURL: url("https://console.groq.com/settings/billing"),
             docURL: url("https://console.groq.com/docs/spend-limits"),
             note: "Groq shows spend in its console only.",
@@ -139,6 +144,24 @@ extension ManualPreset {
             note: "Jina keeps a token balance on each API key, shown on its dashboard only.",
             caps: []),
         ManualPreset(
+            id: "modal", name: "Modal", billingURL: url("https://modal.com/settings/usage"),
+            docURL: url("https://modal.com/docs/guide/budgets"),
+            note: "Modal reports billing through its CLI and Python SDK only, not an HTTP API Kill Cord can call.",
+            caps: [
+                cap("Modal", "workspace-budget", "Workspace budget",
+                    "A monthly cap on the Workspace's total usage, before credits. Modal calls it the hard outer cap "
+                        + "for the Workspace.",
+                    .hardStop, console: "https://modal.com/settings/usage", doc: "https://modal.com/docs/guide/budgets",
+                    steps: ["Open Usage & Billing in Modal.", "Set a Workspace budget (your usage limit)."],
+                    caveat: "Only Workspace Owners and Managers can set it."),
+                cap("Modal", "spend-limit", "Spend limit",
+                    "When the monthly spend limit is reached, Modal stops workloads that would incur more "
+                        + "out-of-pocket charges.",
+                    .hardStop, console: "https://modal.com/settings/usage", doc: "https://modal.com/docs/guide/budgets",
+                    steps: ["Open Usage & Billing in Modal.", "Set a custom spend limit, or keep the default."],
+                    caveat: "Workloads covered by remaining credits can keep running until the usage limit.")
+            ]),
+        ManualPreset(
             id: "perplexity", name: "Perplexity", billingURL: url("https://console.perplexity.ai/project/billing"),
             docURL: url("https://docs.perplexity.ai/docs/getting-started/projects"),
             note: "Perplexity's API runs on prepaid credits shown in its console only.",
@@ -150,6 +173,20 @@ extension ManualPreset {
                     steps: ["Open Billing in the Perplexity console.", "Leave auto reload off, or set an amount you "
                         + "accept."],
                     caveat: "Perplexity documents no spend limit beyond the credits.")
+            ]),
+        ManualPreset(
+            id: "pinecone", name: "Pinecone", billingURL: url("https://app.pinecone.io/organizations/-/settings/usage"),
+            docURL: url("https://docs.pinecone.io/admin/billing/download-usage-report"),
+            note: "Pinecone exports cost only as an Enterprise CSV report, made on request, not as a balance Kill Cord "
+                + "can read.",
+            caps: [
+                cap("Pinecone", "spend-alerts", "Monthly spend alerts",
+                    "Emails the people you choose when the organization's spending reaches an amount you set.",
+                    .alertOnly, console: "https://app.pinecone.io/organizations/-/settings/spend-alerts",
+                    doc: "https://docs.pinecone.io/guides/cost/set-spend-alerts",
+                    steps: ["Open Settings › Spend alerts in the Pinecone console.", "Add an alert amount."],
+                    caveat: "It only notifies. Standard and Enterprise plans only; Builder usage past its limits is "
+                        + "blocked rather than billed.")
             ]),
         ManualPreset(
             id: "replicate", name: "Replicate", billingURL: url("https://replicate.com/account/billing"),
@@ -166,6 +203,11 @@ extension ManualPreset {
                     caveat: "Replicate retired its monthly spend limit in 2025. Accounts billed in arrears have no "
                         + "cap.")
             ]),
+        ManualPreset(
+            id: "truelist", name: "Truelist", billingURL: url("https://app.truelist.io"),
+            docURL: url("https://github.com/Truelist-Labs/truelist-openapi"),
+            note: "Truelist's API reports your plan's name but no credit balance.",
+            caps: []),
         ManualPreset(
             id: "twelvelabs", name: "Twelve Labs", billingURL: url("https://playground.twelvelabs.io"),
             docURL: url("https://docs.twelvelabs.io/docs/get-started/plans-and-billing/plans-allowances-and-overage"),
