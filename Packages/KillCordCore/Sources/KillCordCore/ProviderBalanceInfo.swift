@@ -193,6 +193,18 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Deepgram doesn't say how current balances are."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://console.deepgram.com")
+        ),
+        ProviderInfo(
+            id: .runway, name: "Runway", capability: .balance(spend: []),
+            fields: [apiKeyField("key_…")],
+            keyKind: "API key",
+            keyURL: url("https://dev.runway.com/"),
+            keyPowerWarning: "Runway doesn't document a read-only or scoped key. An API key can start image and "
+                + "video generations that use your credits. Create one just for Kill Cord so you can revoke it on "
+                + "its own. Kill Cord only reads the credit balance.",
+            lag: ProviderLag(typical: 0, note: "Runway doesn't say how current the credit balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://dev.runway.com/usage")
         )
     ]
 }

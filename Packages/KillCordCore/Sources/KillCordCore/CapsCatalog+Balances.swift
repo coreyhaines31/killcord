@@ -117,6 +117,19 @@ extension CapsCatalog {
             docURL: url("https://docs.tavily.com/documentation/platform/managing-organizations"),
             steps: ["On the Overview page, edit each key your apps use.", "Give it a credit limit."],
             caveat: "Tavily says enforcement is approximate, as for workspace limits."
+        ),
+        // Runway. https://docs.dev.runwayml.com/usage/autobilling
+        CapControl(
+            id: "runway.prepaid-credits", provider: .runway, name: "Prepaid credits, autobilling off",
+            summary: "Runway runs on credits you buy first. With autobilling off, generations stop when the "
+                + "credits run out.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://dev.runway.com/"),
+            docURL: url("https://docs.dev.runwayml.com/usage/autobilling"),
+            steps: ["Open your project's billing tab in the Runway developer portal.",
+                    "Leave autobilling off, or set a recharge amount you accept."],
+            caveat: "With autobilling on, Runway tops up every hour below your threshold. Your usage tier's "
+                + "maximum monthly spend caps those purchases."
         )
     ]
 }

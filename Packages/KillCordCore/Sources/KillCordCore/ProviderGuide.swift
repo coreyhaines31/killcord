@@ -46,6 +46,7 @@ extension ProviderInfo {
         case .apify: "Apify Console"
         case .tavily: "Tavily dashboard"
         case .deepgram: "Deepgram Console"
+        case .runway: "Runway developer portal"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -93,7 +94,7 @@ extension ProviderInfo {
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
-             .tavily, .deepgram: nil
+             .tavily, .deepgram, .runway: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -137,6 +138,7 @@ extension ProviderInfo {
         case .apify: "Apify tokens can do everything in your account unless you scope them. Kill Cord only reads limits."
         case .tavily: "Tavily has no read-only key. This key can run searches on your credits. Give it a credit limit."
         case .deepgram: "Reading balances needs an Admin or Owner key, which can also manage the project's keys."
+        case .runway: "Runway has no read-only key. This key can start generations on your credits."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -308,6 +310,12 @@ extension ProviderInfo {
                     + "roles only, so a Member key can't read balances."),
                 SetupStep("Add the project ID if the key sees more than one", "It's in the project's settings. "
                     + "With one project, Kill Cord finds it.")
+            ]
+        case .runway:
+            return [
+                SetupStep("Open the Runway developer portal", "Pick the project, then its API Keys tab.",
+                          link: open("Open Runway Dev")),
+                SetupStep("Create a key for Kill Cord and copy it", "It starts with key_. Runway shows it once.")
             ]
         case .manual:
             return [
