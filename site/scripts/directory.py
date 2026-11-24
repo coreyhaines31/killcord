@@ -37,12 +37,23 @@ builtin_shows = {
     'firecrawl': 'the credits your team has left, and when the billing period ends',
     'treg': 'your team’s prepaid balance in dollars',
     'monid': 'your wallet balance',
+    'fal': 'your credit balance in dollars',
+    'elevenlabs': 'the credits your plan has left this period, and when they reset',
+    'xai': 'your prepaid credit balance in dollars',
+    'deepseek': 'your balance in dollars or yuan',
+    'apify': 'this usage cycle’s spend in dollars and what’s left before your usage limit',
+    'tavily': 'the credits your plan has left this cycle',
+    'deepgram': 'your project’s balance in dollars',
+    'runway': 'your credits left, with a labeled dollar estimate',
+    'serpapi': 'the searches you have left this month, and when your plan renews',
+    'bright-data': 'the funds left in your account, in dollars',
 }
 # Built-ins with no native cap in Kill Cord's caps audit: a prepaid balance stops at zero on its own.
-no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg'}
+no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi'}
 caps_only = {'supabase'}
-builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, OpenRouter, '
-                 'DataForSEO, Ahrefs, Firecrawl, treg, and Monid')
+builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Vercel, Cloudflare, Twilio, Neon, '
+                 'OpenRouter, fal, ElevenLabs, Runway, Deepgram, Apify, Tavily, SerpApi, Bright Data, DataForSEO, '
+                 'Ahrefs, Firecrawl, treg, and Monid')
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),
                'alert-only': ('alert', 'Alert only'), 'auto-recharge-off': ('part', 'Top-up control')}

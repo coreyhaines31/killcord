@@ -206,7 +206,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -486,7 +486,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -743,7 +743,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -779,7 +779,7 @@
     "native_caps": [],
     "caps_status": "none-documented",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -874,7 +874,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -968,7 +968,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -2360,7 +2360,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -2658,7 +2658,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -2806,7 +2806,7 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": false,
     "sources": [
@@ -3163,7 +3163,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
