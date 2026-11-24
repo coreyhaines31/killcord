@@ -2322,8 +2322,16 @@
       "cost_to_call": "unknown",
       "notes": "The billing docs point only to the account billing page. No billing API is documented."
     },
-    "native_caps": [],
-    "caps_status": "none-documented",
+    "native_caps": [
+      {
+        "name": "Prepaid credit at zero",
+        "kind": "hard-stop",
+        "where": "Account › Billing",
+        "url": "https://replicate.com/docs/topics/billing/prepaid-credit",
+        "note": "On prepaid credit, when the balance hits zero Replicate stops new work from starting and shuts down what it’s running for you. Auto reload tops it up if it’s on. The monthly spend limit was retired in 2025; accounts billed in arrears have no cap."
+      }
+    ],
+    "caps_status": "found",
     "killcord": {
       "tier": "manual",
       "note": "Not read live: Replicate has no billing API. Kill Cord has a preset for it: add Replicate as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Replicate’s own spend controls."
@@ -2331,9 +2339,10 @@
     "publish": true,
     "sources": [
       "https://replicate.com/docs/topics/billing",
-      "https://replicate.com/changelog/2025-07-01-set-a-monthly-spend-limit"
+      "https://replicate.com/changelog/2025-07-01-set-a-monthly-spend-limit",
+      "https://replicate.com/docs/topics/billing/prepaid-credit"
     ],
-    "last_verified": "2026-11-17"
+    "last_verified": "2026-11-24"
   },
   {
     "slug": "resend",
