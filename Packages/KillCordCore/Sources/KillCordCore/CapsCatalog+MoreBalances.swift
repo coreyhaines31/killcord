@@ -156,6 +156,42 @@ extension CapsCatalog {
             steps: ["Open billing on the HeyGen API platform.",
                     "Turn auto reload off, or set a threshold and amount you accept."],
             caveat: "Applies only to wallet billing."
+        ),
+        // Browser Use. https://docs.browser-use.com/cloud/guides/billing
+        CapControl(
+            id: "browseruse.key-monthly-cap", provider: .browseruse, name: "Monthly spending cap on each API key",
+            summary: "When a key reaches its cap for the UTC calendar month, Browser Use refuses new runs and browsers "
+                + "for it with HTTP 402.",
+            enforcement: .partialStop, verification: .selfReported,
+            consoleURL: url("https://cloud.browser-use.com/settings"),
+            docURL: url("https://docs.browser-use.com/cloud/guides/billing"),
+            steps: ["Open API key settings in Browser Use Cloud.", "Give each key your apps use a monthly USD cap."],
+            caveat: "Browser Use calls it a soft limit: work already running can finish above the cap."
+        ),
+        CapControl(
+            id: "browseruse.prepaid-credits", provider: .browseruse, name: "Prepaid credits, auto recharge off",
+            summary: "A project spends its credits; with auto recharge off, nothing buys more.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://cloud.browser-use.com/settings?tab=billing"),
+            docURL: url("https://docs.browser-use.com/cloud/guides/billing"),
+            steps: ["Open Settings › Billing with the project selected.",
+                    "Leave auto recharge off, or set a threshold and recharge amount you accept."],
+            caveat: "Turning auto recharge on below the threshold can charge right away."
+        ),
+        // Novita AI. https://docs.novita.ai/api-reference/basic-error-code and
+        // https://docs.novita.ai/api-reference/budget-query-key-list
+        CapControl(
+            id: "novita.prepaid-balance", provider: .novita, name: "Prepaid balance",
+            summary: "Novita refuses paid requests with an insufficient balance error once the available credit runs "
+                + "out.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://novita.ai/billing"),
+            docURL: url("https://docs.novita.ai/api-reference/basic-error-code"),
+            steps: ["Open Billing and Payments in Novita AI.",
+                    "Top up only what you're willing to spend, then mark this done."],
+            caveat: "A credit limit, if your account has one, lets spending run past your top-ups. Teams can also "
+                + "give each member's API keys a one-time or recurring budget, which Kill Cord can't read without "
+                + "the member's ID."
         )
     ]
 }

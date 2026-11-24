@@ -76,7 +76,7 @@ import Testing
 
     /// The Keychain payload is a JSON object keyed by these field ids. A later migration (and anything that
     /// reads the items) depends on them, so renaming one needs a migration, not just a code change.
-    @Test func credentialFieldIDsAreStable() {
+    @Test func credentialFieldIDsAreStable() { // swiftlint:disable:this function_body_length
         let fields = Dictionary(uniqueKeysWithValues: ProviderID.allCases.map { ($0, $0.info.fields.map(\.id)) })
         #expect(fields == [
             .anthropic: ["apiKey"],
@@ -95,6 +95,8 @@ import Testing
             .telnyx: ["apiKey"],
             .luma: ["apiKey"],
             .heygen: ["apiKey"],
+            .browseruse: ["apiKey"],
+            .novita: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

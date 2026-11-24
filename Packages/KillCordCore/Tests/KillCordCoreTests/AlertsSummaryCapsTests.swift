@@ -190,7 +190,9 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let batch3 = Set(ProviderInfo.batch3Providers.map(\.id))
         #expect(withCaps.filter { !more.contains($0) && !batch3.contains($0) }
             == [.openrouter, .monid, .fal, .elevenlabs, .xai, .apify, .tavily, .runway, .brightdata])
-        #expect(withCaps.filter { more.contains($0) } == [.runpod, .xapi, .bfl, .telnyx, .luma, .heygen])
+        #expect(withCaps.filter { more.contains($0) } == [
+            .runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita
+        ])
         #expect(withCaps.filter { batch3.contains($0) } == [.moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland])
     }
 
