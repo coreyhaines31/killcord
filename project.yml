@@ -68,8 +68,11 @@ targets:
       - KillCord/Settings/ProviderEditor.swift
       - KillCord/Settings/ProviderEditor+Labels.swift
       - KillCord/Settings/ProviderDetailParts.swift
+      - KillCord/Settings/CapsAuditView.swift
       - KillCord/Model/SpendModel.swift
       - KillCord/Model/SpendModel+Connections.swift
+      - KillCord/Model/SpendModel+Caps.swift
+      - KillCord/Settings/ManualPresetViews.swift
       - KillCord/App/Preferences.swift
       - KillCord/Panel/PanelSpace.swift
       - KillCord/Panel/PanelView.swift

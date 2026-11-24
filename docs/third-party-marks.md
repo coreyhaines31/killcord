@@ -40,3 +40,20 @@ Checked 2026-11-17 (the six balance services added the same day).
 | Runway | `Runway_Black_Symbol_SVG.svg`, unmodified | Brand guidelines download on https://runway.com/brand-guidelines | "By downloading you agree you have read and accept the applicable guidelines"; "Do not place the symbol next to the wordmark" (Kill Cord sets it next to plain text). Checked 2026-11-24. | No |
 | SerpApi | `serpapi-logo.svg`: SerpApi's `logo.svg`, unmodified apart from the file name (gradient colour mark, drawn in one colour). The official `logo-black.svg` fills its path with a gradient that isn't in the file, which the asset catalog draws as nothing | https://serpapi.com/media | "Please do not modify the colors or other elements." Checked 2026-11-24. | No, but one-colour rendering differs from its colours |
 | Bright Data | None: it draws its first letter. Its logo is a wordmark, the media kit (https://brightdata.com/media-center) has PNG and PDF files only, and its only symbol is a favicon tile whose "i" reads only by contrast with the tile. | n/a | No logo terms found. Checked 2026-11-24. | Unknown |
+
+## Manual presets
+
+Manual entries named after a preset draw that service's mark, as `preset-<id>.imageset`, by the same rules. Checked 2026-11-24.
+
+| Service | File | Source | Terms | Asks for permission? |
+|---|---|---|---|---|
+| AssemblyAI | `assemblyai-secondary-light.svg`: `secondary-light.svg` (the mark alone), unmodified apart from the file name | https://www.assemblyai.com/media | "Use the logo in black or white only… Never crop, recolor, rotate, or add effects." | No |
+| Cerebras | `cerebras-mark.svg`: the rings and "c" paths from the logo in cerebras.ai's site header, unchanged, canvas cropped to them | https://www.cerebras.ai/ (no brand page) | https://www.cerebras.ai/terms-of-service: nothing may be used "without the express written permission of Cerebras". | Yes |
+| Cohere | `cohere_symbol_black_rgb.svg`, unmodified (monochrome symbol) | Press kit on https://cohere.com/newsroom | The page offers logos and media assets and press@cohere.com; no usage terms found on it. | Unclear |
+| E2B | `e2b-symbol-black-s.svg`, unmodified (the small-size cut), drawn 1.5 times larger for its clear space | https://e2b.dev/brand | "Do not warp, rotate, recolor…" | No |
+| Jina AI | `jina-company-logo_light.svg`, unmodified (dot and lettering; Jina has no separate symbol) | https://github.com/jina-ai/press-kit | "You can use them in post, news, tweets, events." | No |
+| Twelve Labs | `twelvelabs-mark.svg`: the dashed horse paths from the logo in twelvelabs.io's site header, unchanged, canvas cropped to them | https://www.twelvelabs.io/ | https://www.twelvelabs.io/legal/tm-usage-guidelines: logo use "is prohibited… except in accordance with written consent". | Yes |
+| TypeSafe | `typesafe-mark.svg`: the symbol path from the logo on typesafe.ai, unchanged, canvas cropped to it | https://typesafe.ai/ | No trademark terms found (https://typesafe.ai/legal/terms). | Unknown |
+| Unstructured | `unstructured-site-nav-logo.svg`, unmodified (the lettering grid from the site header; the press-kit file sits on a black tile) | https://unstructured.io/press | No logo terms found. | Unknown |
+
+Groq, Perplexity, Replicate and Voyage AI draw their first letter: Groq's logo is a wordmark (its bolt is a favicon on an orange tile, and its brand guidelines are by request), Perplexity's only vector is a white mark traced on a black tile, Replicate publishes no SVG, and Voyage's icon depends on a mask and a white background.

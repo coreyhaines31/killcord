@@ -112,14 +112,17 @@ struct SpendReadout: View {
 struct CapsSummarySection: View {
     let provider: ProviderID
     let model: SpendModel
+    /// Set for one manual entry: its preset's caps rather than every manual entry's.
+    var controls: [CapControl]?
     let openTab: @MainActor (SettingsTab) -> Void
 
     var body: some View {
         let now = Date()
-        let progress = model.audit.progress(for: provider, now: now)
-        if !CapsCatalog.controls(for: provider).isEmpty {
+        let controls = controls ?? model.capControls(for: provider)
+        let progress = model.audit.progress(of: controls, now: now)
+        if !controls.isEmpty {
             Section {
-                ForEach(CapsCatalog.controls(for: provider)) { control in
+                ForEach(controls) { control in
                     let status = model.audit.status(of: control, now: now)
                     HStack(spacing: 8) {
                         StatusLED(status.light.panel)

@@ -71,9 +71,14 @@ struct ProviderEditor: View {
         return isAddingAnother ? "New \(info.name) account" : info.name
     }
 
+    private var preset: ManualPreset? {
+        provider == .manual ? ManualPreset.matching(record?.name ?? values["serviceName"]) : nil
+    }
+
     private var chips: [String] {
         var chips = [info.capabilityLabel]
         if provider == .custom { chips.append("Not verified by Kill Cord") }
+        if preset != nil { chips.append("No billing API") }
         if let record, record.name != info.name { chips.insert(info.name, at: 0) }
         return chips
     }
@@ -100,6 +105,7 @@ struct ProviderEditor: View {
                 } else if isConnected && !replacing {
                     connectedSections
                 } else {
+                    if provider == .manual && !replacing { ManualPresetSection(serviceName: $values["serviceName"]) }
                     setupSection
                 }
             }
@@ -359,7 +365,9 @@ extension ProviderEditor {
                 : "Kill Cord deletes it from your Keychain and stops checking \(title). The key keeps working "
                     + "until you revoke it in the \(info.consoleName).")
         }
-        CapsSummarySection(provider: provider, model: model, openTab: openTab)
+        if let preset { Section(preset.name) { ManualPresetNote(preset: preset) } }
+        CapsSummarySection(provider: provider, model: model, controls: provider == .manual ? preset?.caps ?? [] : nil,
+                           openTab: openTab)
     }
 
     private var connectTitle: String {
