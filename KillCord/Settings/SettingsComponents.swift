@@ -44,6 +44,7 @@ extension ProviderID {
         case .llamacloud: 1.3
         // Plivo's symbol sits in a 2000-unit square with a quarter of it as clear space.
         case .plivo: 1.35
+        case .fireworks: 1.3
         default: 1
         }
     }

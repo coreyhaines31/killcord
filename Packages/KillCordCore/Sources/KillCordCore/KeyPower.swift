@@ -114,6 +114,8 @@ extension ProviderID {
         case .cartesia: .canManage
         // Together keys have full access to their project and can spend the organization's credits.
         case .together: .canSpend
+        // Any Fireworks key reads billing; an Inference user's key can run models but not change resources.
+        case .fireworks: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

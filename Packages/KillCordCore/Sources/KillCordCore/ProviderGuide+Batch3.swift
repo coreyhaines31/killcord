@@ -15,6 +15,7 @@ extension ProviderInfo {
         case .llamacloud: "LlamaCloud settings"
         case .cartesia: "Cartesia playground"
         case .together: "Together settings"
+        case .fireworks: "Fireworks dashboard"
         default: "service's site"
         }
     }
@@ -26,6 +27,7 @@ extension ProviderInfo {
         case .exa: "Runs up to 5 minutes behind."
         case .scrapingbee: "Usage is live."
         case .together: "Runs through yesterday, so today isn't in it."
+        case .fireworks: "Fireworks doesn't say how far behind it runs."
         default: nil
         }
     }
@@ -38,6 +40,7 @@ extension ProviderInfo {
         case .llamacloud: "Shows this billing period's invoice so far. Plans without User API Keys can't connect."
         case .cartesia: "Counts credits used since the 1st of the month (UTC), not since your plan renewed."
         case .together: "Needs Together's billing usage API, a beta that Together turns on per organization."
+        case .fireworks: "Amounts are before credits are applied, so they can read higher than the invoice."
         default: nil
         }
     }
@@ -54,6 +57,7 @@ extension ProviderInfo {
         case .llamacloud: "A user key does what its owner can. Make it from the member with the least access."
         case .cartesia: "Needs an admin key, which can also remove users and send invites. It can't make speech."
         case .together: "Together has no read-only key. This key can use its project and spend your credits."
+        case .fireworks: "No read-only key. An Inference user's key reads billing but can still run models."
         default: nil
         }
     }
@@ -141,6 +145,14 @@ extension ProviderInfo {
                           link: open("Open Together Keys")),
                 SetupStep("Create a key just for Kill Cord and copy it", "It can use the project and spend credits, "
                     + "so keep it to Kill Cord.")
+            ]
+        case .fireworks:
+            return [
+                SetupStep("Open API Keys in Fireworks settings", "Use a service account or user with the "
+                    + "Inference user role, the least-powerful one.", link: open("Open Fireworks Keys")),
+                SetupStep("Create a key and copy it", "Fireworks says any key on the account can read billing."),
+                SetupStep("Add the account ID if the key sees more than one", "With one account, Kill Cord finds "
+                    + "it.")
             ]
         default:
             return []

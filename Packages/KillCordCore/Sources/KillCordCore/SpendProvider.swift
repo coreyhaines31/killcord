@@ -191,6 +191,7 @@ public enum SpendProviders {
         case .llamacloud: LlamaCloudProvider(http: http)
         case .cartesia: CartesiaProvider(http: http)
         case .together: TogetherProvider(http: http)
+        case .fireworks: FireworksProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
