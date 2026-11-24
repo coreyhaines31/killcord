@@ -44,6 +44,8 @@ extension ProviderID {
         case .xai: .canManage
         // DeepSeek documents no key scopes: every key can make paid model calls.
         case .deepseek: .canSpend
+        // Apify tokens can access all account data by default; no read-only token is documented.
+        case .apify: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

@@ -186,7 +186,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let withCaps = ProviderID.allCases.filter {
             $0.info.capability.showsBalance && !CapsCatalog.controls(for: $0).isEmpty
         }
-        #expect(withCaps == [.openrouter, .monid, .fal, .elevenlabs, .xai])
+        #expect(withCaps == [.openrouter, .monid, .fal, .elevenlabs, .xai, .apify])
     }
 
     @Test func everyCapHasHTTPSLinksStepsAndAUniqueID() {
@@ -220,7 +220,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let verifiable = Set(CapsCatalog.controls.filter { $0.verification == .api }.map(\.id))
         #expect(verifiable == [
             OpenAIProvider.hardLimitCapID, GoogleCloudProvider.spendCapID, GoogleCloudProvider.budgetAlertCapID,
-            CloudflareProvider.spendLimitCapID, TwilioProvider.triggerCapID, NeonProvider.thresholdCapID
+            CloudflareProvider.spendLimitCapID, TwilioProvider.triggerCapID, NeonProvider.thresholdCapID,
+            ApifyProvider.usageLimitCapID
         ])
         // Anthropic can't be checked over the API for Console organizations.
         #expect(CapsCatalog.controls(for: .anthropic).allSatisfy { $0.verification == .selfReported })
