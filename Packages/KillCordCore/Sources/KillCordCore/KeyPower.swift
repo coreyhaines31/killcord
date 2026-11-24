@@ -54,6 +54,8 @@ extension ProviderID {
         case .browseruse: .canSpend
         // Novita documents no key scopes: a key can call models and start GPU instances on the balance.
         case .novita: .canSpend
+        // Baseten doesn't say which key permission reads billing; a personal key carries all of its owner's permissions.
+        case .baseten: .canManage
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.
