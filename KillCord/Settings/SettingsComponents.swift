@@ -25,7 +25,7 @@ extension ProviderID {
         // publish raster logos only; lemlist's symbol is a white cut-out on a blue tile; SearchApi's is drawn through masks.
         case .telnyx, .heygen, .zerobounce, .prospeo, .lemlist, .searchapi: nil
         // This batch's vendors that draw their letter.
-        case .stability, .moonshot, .scrapingbee, .scrapfly, .kie, .bland, .cartesia, .together: nil
+        case .stability, .moonshot, .scrapingbee, .scrapfly, .kie, .bland, .cartesia, .together, .retell: nil
         default: "mark-\(rawValue)"
         }
     }

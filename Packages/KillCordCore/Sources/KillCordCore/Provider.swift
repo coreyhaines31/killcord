@@ -41,6 +41,7 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case together
     case fireworks
     case vapi
+    case retell
     case runpod
     case deepinfra
     case xapi

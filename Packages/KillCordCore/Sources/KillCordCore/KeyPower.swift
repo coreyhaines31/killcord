@@ -118,6 +118,8 @@ extension ProviderID {
         case .fireworks: .canSpend
         // A Vapi private key "can access everything in your organization"; public keys are client-only.
         case .vapi: .canManage
+        // Retell keys can be scoped; one with only History › Read reads call history.
+        case .retell: .readOnlyIfChosen
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

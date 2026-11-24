@@ -17,6 +17,7 @@ extension ProviderInfo {
         case .together: "Together settings"
         case .fireworks: "Fireworks dashboard"
         case .vapi: "Vapi dashboard"
+        case .retell: "Retell dashboard"
         default: "service's site"
         }
     }
@@ -29,6 +30,7 @@ extension ProviderInfo {
         case .scrapingbee: "Usage is live."
         case .together: "Runs through yesterday, so today isn't in it."
         case .fireworks: "Fireworks doesn't say how far behind it runs."
+        case .retell: "A call's cost shows once it ends."
         default: nil
         }
     }
@@ -43,6 +45,7 @@ extension ProviderInfo {
         case .together: "Needs Together's billing usage API, a beta that Together turns on per organization."
         case .fireworks: "Amounts are before credits are applied, so they can read higher than the invoice."
         case .vapi: "Adds up call costs only. Other billable usage, such as phone numbers, isn't included."
+        case .retell: "Adds up call costs only: chats, phone numbers and concurrency aren't included."
         default: nil
         }
     }
@@ -61,6 +64,7 @@ extension ProviderInfo {
         case .together: "Together has no read-only key. This key can use its project and spend your credits."
         case .fireworks: "No read-only key. An Inference user's key reads billing but can still run models."
         case .vapi: "Vapi has no read-only key. A private key can do everything in your organization."
+        case .retell: "Limit the key to History › Read. It can then read call history but not make calls."
         default: nil
         }
     }
@@ -163,6 +167,13 @@ extension ProviderInfo {
                           link: open("Open Vapi Keys")),
                 SetupStep("Copy a private key", "Vapi has no read-only key, so this one can do everything in the "
                     + "organization. Kill Cord only reads call costs with it.")
+            ]
+        case .retell:
+            return [
+                SetupStep("Open Settings › API Keys in the Retell dashboard", "Pick the workspace to watch.",
+                          link: open("Open Retell Dashboard")),
+                SetupStep("Create a key with only History › Read and copy it", "Under Monitor › History, choose "
+                    + "Read and nothing else. Retell keys have full access unless you limit them.")
             ]
         default:
             return []
