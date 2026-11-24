@@ -33,15 +33,7 @@ extension ProviderInfo {
         case .twilio: "Twilio Console"
         case .neon: "Neon Console"
         case .supabase: "Supabase dashboard"
-        case .runpod: "Runpod console"
-        case .deepinfra: "DeepInfra dashboard"
-        case .xapi: "X Developer Console"
-        case .bfl: "BFL dashboard"
-        case .digitalocean: "DigitalOcean control panel"
-        case .telnyx: "Telnyx Mission Control Portal"
-        case .luma: "Luma developer dashboard"
-        case .heygen: "HeyGen API dashboard"
-        case .browseruse: "Browser Use Cloud dashboard"
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse: moreConsoleName
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
@@ -105,15 +97,7 @@ extension ProviderInfo {
         case .cloudflare: "Updated once a day."
         case .twilio: "Runs a few minutes behind."
         case .neon: "Runs about 15 minutes behind."
-        case .runpod: "Runpod bills every 5 minutes."
-        case .deepinfra: "DeepInfra doesn't say how far behind usage runs."
-        case .xapi: "Credits are deducted as requests are made."
-        case .bfl: nil
-        case .digitalocean: "Usage is as of the time DigitalOcean last generated it."
-        case .telnyx: nil
-        case .luma: "Credits held for running generations are already taken out."
-        case .heygen: nil
-        case .browseruse: nil
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse: moreDelaySummary
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
@@ -136,12 +120,7 @@ extension ProviderInfo {
         case .deepseek: "If the account holds both dollars and yuan, shows the dollar balance."
         case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
         case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
-        case .xapi: "Pay-per-use accounts only. Shows prepaid and free credits together."
-        case .bfl: "BFL prices 1 credit at $0.01, so the dollar figure is an estimate from that."
-        case .telnyx: "Shows available credit: your balance plus Telnyx's credit limit."
-        case .luma: "Shows your team's whole credit balance. Luma sets no fixed dollar rate, so it stays in credits."
-        case .heygen: "Shows a prepaid wallet, what's left under a usage-based spending cap, or plan credits."
-        case .browseruse: "Shows the credits of the key's project. Each project has its own balance."
+        case .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse: moreRequirement
         default: batch3Requirement
         }
     }
@@ -155,15 +134,7 @@ extension ProviderInfo {
         case .vercel: "A token acts as you on the teams it covers. Scope it to one team and set an expiry."
         case .twilio: "Twilio has no read-only key. A Standard API key can also send messages and calls."
         case .neon: "Neon has no read-only key. This one can manage every project in the organization."
-        case .runpod: "Use a Read Only key. An All key can start Pods and workers on your balance."
-        case .deepinfra: "Give the key only billing:read. New keys start with inference, so untick it."
-        case .xapi: "The X API has no read-only token. This Bearer token can make paid reads on your credits."
-        case .bfl: "BFL has no read-only key. A project key can generate images on your credits."
-        case .digitalocean: "Use a custom-scoped token with only billing:read. It can't change anything."
-        case .telnyx: "Telnyx has no read-only key. This key can send messages, buy numbers and change the account."
-        case .luma: "Luma has no read-only key for the balance. This API key can start generations on your credits."
-        case .heygen: "Restrict the key to account:read. A full-access key can make videos on your balance."
-        case .browseruse: "Browser Use has no read-only key. This key can run agents and browsers on the project's credits."
+        case .runpod, .deepinfra, .xapi, .bfl, .digitalocean, .telnyx, .luma, .heygen, .browseruse: moreKeyPowerSummary
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
