@@ -91,3 +91,5 @@ The services in `ProviderInfo.moreBalanceProviders`, by the same rules. Checked 
 | Prospeo | None: it draws its first letter. prospeo.io serves no vector logo of its own, and no brand page was found. | n/a | No logo terms found. Checked 2026-11-24. | Unknown |
 | lemlist | None: it draws its first letter. Its symbol (`web-assets.lemlist.com/lemlist/brand/lemlist_symbol.svg`) is a white cut-out on a blue tile, which in one colour would draw as a plain square. | n/a | No logo terms found (lemlist.com/brand and /press are 404). Checked 2026-11-24. | Unknown |
 | SearchApi | None: it draws its first letter. Its symbol, in the inline logo on searchapi.io, is drawn through SVG masks rather than as plain paths, and no separate symbol file or brand page was found. | n/a | No logo terms found. Checked 2026-11-24. | Unknown |
+
+Batch 4's manual presets (Apollo, Brave Search API, Clay, Cloudinary, Composio, Enrich Layer, Fly.io, Gladia, Hetzner, Ideogram, Instantly, Lambda, Leonardo.Ai, Linode, n8n Cloud, Netlify, People Data Labs, Railway, Render, SambaNova Cloud, Serper, Vultr, Zapier) draw their first letter for now; their marks weren't collected.
