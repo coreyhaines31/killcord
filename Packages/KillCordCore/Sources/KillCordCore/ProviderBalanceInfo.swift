@@ -218,6 +218,19 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "SerpApi doesn't say how current the search count is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://serpapi.com/dashboard")
+        ),
+        ProviderInfo(
+            id: .brightdata, name: "Bright Data", capability: .balance(spend: []),
+            fields: [apiKeyField("Bright Data API key", help: "A key with the Finance permission level.")],
+            keyKind: "API key with the Finance permission level",
+            keyURL: url("https://brightdata.com/cp/setting/users"),
+            keyPowerWarning: "Bright Data doesn't document a read-only key. It says its Finance level \"allows "
+                + "access to Billing and Financial pages only\", but not whether that includes changing billing "
+                + "settings, so Kill Cord treats the key as able to. An Admin key can do everything. Kill Cord "
+                + "only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "Bright Data doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://brightdata.com/cp/billing/settings")
         )
     ]
 }

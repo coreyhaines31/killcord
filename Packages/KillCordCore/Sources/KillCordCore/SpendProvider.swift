@@ -161,6 +161,7 @@ public enum SpendProviders {
         case .deepgram: DeepgramProvider(http: http)
         case .runway: RunwayProvider(http: http)
         case .serpapi: SerpApiProvider(http: http)
+        case .brightdata: BrightDataProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
