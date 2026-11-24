@@ -70,6 +70,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Scrapfly | Account scrape credits | API key (LIVE) | Credits left of the plan, with the period's end | None (extra credit use off on each project is your checkmark) |
 | Kie.ai | Account credits | API key | Credits left, with a labeled dollar estimate at about $0.005 a credit | None (key usage caps are your checkmark) |
 | Bland AI | Account balance | Restricted API key with only Analytics read (or a full-access key) | Balance left, in dollars | None (auto refill off is your checkmark) |
+| LlamaCloud | Organization usage (this billing period's invoice) | User API key (plus the organization ID if it sees several) | Yes, this billing period, no day | Monthly invoice limit |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -124,6 +125,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Scrapfly | A project's LIVE API key from the dashboard's Projects page. It travels in the request address, as Scrapfly requires, and Kill Cord strips it from errors. |
 | Kie.ai | An API key from kie.ai's API Key page, with small usage caps. |
 | Bland AI | A restricted key (org_s_…) with only Analytics read from Settings › API keys. Restricted keys are rolling out by organization; a full-access key also works but can place calls. |
+| LlamaCloud | A key from the User API Keys table on LlamaCloud's API Key page (not a project key), plus the organization ID if it sees more than one. Choose the EU region for cloud.eu.llamaindex.ai. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
