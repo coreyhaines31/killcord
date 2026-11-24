@@ -22,8 +22,8 @@ extension ProviderID {
         switch self {
         case .custom, .manual, .brightdata, .scrapecreators: nil
         // Batch 4 vendors with no usable vector symbol: Telnyx's logo is a wordmark; HeyGen, ZeroBounce and Prospeo
-        // publish raster logos only; lemlist's symbol is a white cut-out on a blue tile; SearchApi's is drawn through masks.
-        case .telnyx, .heygen, .zerobounce, .prospeo, .lemlist, .searchapi: nil
+        // publish raster logos only.
+        case .telnyx, .heygen, .zerobounce, .prospeo: nil
         // This batch's vendors with no usable one-colour vector: raster only, a wordmark, or colours that carry
         // the shape.
         case .scrapingbee, .kie, .bland, .postmark: nil
@@ -54,13 +54,19 @@ extension ProviderID {
 extension ManualPreset {
     /// Presets whose service publishes a usable official symbol. The rest draw their first letter.
     static let marked: Set<String> = ["assemblyai", "cerebras", "cohere", "e2b", "jina", "modal", "pinecone",
-                                      "truelist", "twelvelabs", "typesafe", "unstructured"]
+                                      "truelist", "twelvelabs", "typesafe", "unstructured", "netlify", "render"]
 
     /// The asset catalog name of the service's official mark. `docs/third-party-marks.md` gives each source.
     var markAssetName: String? { Self.marked.contains(id) ? "preset-\(id)" : nil }
 
-    /// E2B's small-size file leaves wide clear space around its symbol.
-    var markScale: CGFloat { id == "e2b" ? 1.5 : 1 }
+    /// E2B's small-size file leaves wide clear space around its symbol; Render's logomark fills half its canvas.
+    var markScale: CGFloat {
+        switch id {
+        case "e2b": 1.5
+        case "render": 1.8
+        default: 1
+        }
+    }
 }
 
 /// The bundle holding the marks: the app, or the test bundle that compiles these views.
