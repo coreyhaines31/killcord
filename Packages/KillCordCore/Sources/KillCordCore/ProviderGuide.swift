@@ -35,6 +35,7 @@ extension ProviderInfo {
         case .supabase: "Supabase dashboard"
         case .runpod: "Runpod console"
         case .deepinfra: "DeepInfra dashboard"
+        case .xapi: "X Developer Console"
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
@@ -99,6 +100,7 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .runpod: "Runpod bills every 5 minutes."
         case .deepinfra: "DeepInfra doesn't say how far behind usage runs."
+        case .xapi: "Credits are deducted as requests are made."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
@@ -120,6 +122,7 @@ extension ProviderInfo {
         case .deepseek: "If the account holds both dollars and yuan, shows the dollar balance."
         case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
         case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
+        case .xapi: "Pay-per-use accounts only. Shows prepaid and free credits together."
         default: nil
         }
     }
@@ -135,6 +138,7 @@ extension ProviderInfo {
         case .neon: "Neon has no read-only key. This one can manage every project in the organization."
         case .runpod: "Use a Read Only key. An All key can start Pods and workers on your balance."
         case .deepinfra: "Give the key only billing:read. New keys start with inference, so untick it."
+        case .xapi: "The X API has no read-only token. This Bearer token can make paid reads on your credits."
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
@@ -248,6 +252,13 @@ extension ProviderInfo {
                           link: open("Open DeepInfra Keys")),
                 SetupStep("Choose Scoped and leave only billing:read, then copy the key", "A new key starts "
                     + "with inference, models:read, account:read, lora:read and voice:read. Untick them all.")
+            ]
+        case .xapi:
+            return [
+                SetupStep("Open your app in the X Developer Console", "Pick the app, then Keys and tokens.",
+                          link: open("Open X Developer Console")),
+                SetupStep("Copy the app's Bearer token", "Kill Cord reads your credit balance with it. Use an "
+                    + "app made just for Kill Cord, so you can regenerate its token on its own.")
             ]
         case .openrouter:
             return [

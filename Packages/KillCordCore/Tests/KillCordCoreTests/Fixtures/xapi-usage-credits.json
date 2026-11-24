@@ -1,0 +1,8 @@
+{
+  "data": {
+    "total_balance": 12.5,
+    "prepaid_balance": 10,
+    "free_balance": 2.5,
+    "free_grants": []
+  }
+}

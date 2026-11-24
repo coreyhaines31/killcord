@@ -148,6 +148,7 @@ public enum SpendProviders {
         case .supabase: SupabaseProvider()
         case .runpod: RunpodProvider(http: http)
         case .deepinfra: DeepInfraProvider(http: http)
+        case .xapi: XAPIProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)

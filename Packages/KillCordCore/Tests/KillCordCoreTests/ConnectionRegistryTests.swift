@@ -89,6 +89,7 @@ import Testing
             .supabase: [],
             .runpod: ["apiKey"],
             .deepinfra: ["apiKey"],
+            .xapi: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

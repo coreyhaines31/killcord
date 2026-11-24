@@ -44,6 +44,28 @@ extension CapsCatalog {
             caveat: "DeepInfra's docs don't say exactly what stops at the limit. They do say a suspended account, "
                 + "for example one whose balance ran out, has its instances stopped within a minute or two. An "
                 + "API key can't change the limit, so Kill Cord can't check it."
+        ),
+        // X API. https://docs.x.com/x-api/getting-started/pricing
+        CapControl(
+            id: "xapi.spending-limit", provider: .xapi, name: "Spending limit per billing cycle",
+            summary: "When the limit is reached, X blocks API requests until the next billing cycle.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://console.x.com"),
+            docURL: url("https://docs.x.com/x-api/getting-started/pricing"),
+            steps: ["Open billing in the X Developer Console.",
+                    "Set a spending limit: the most you accept per billing cycle."],
+            caveat: "Pay-per-use plans are also capped at 3 million Post reads per monthly billing cycle."
+        ),
+        CapControl(
+            id: "xapi.prepaid-credits", provider: .xapi, name: "Prepaid credits, auto-recharge off",
+            summary: "Requests are blocked when the credits run out. With auto-recharge off, nothing tops them up.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://console.x.com"),
+            docURL: url("https://docs.x.com/x-api/getting-started/pricing"),
+            steps: ["Open billing in the X Developer Console.",
+                    "Leave auto-recharge off, or set a recharge amount and trigger you accept."],
+            caveat: "The balance can go slightly negative before requests are blocked. Auto-recharge charges at "
+                + "most once every 5 minutes."
         )
     ]
 }
