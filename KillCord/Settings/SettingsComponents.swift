@@ -53,8 +53,8 @@ extension ProviderID {
 
 extension ManualPreset {
     /// Presets whose service publishes a usable official symbol. The rest draw their first letter.
-    static let marked: Set<String> = ["assemblyai", "cerebras", "cohere", "e2b", "jina", "twelvelabs",
-                                      "typesafe", "unstructured"]
+    static let marked: Set<String> = ["assemblyai", "cerebras", "cohere", "e2b", "jina", "modal", "pinecone",
+                                      "twelvelabs", "typesafe", "unstructured"]
 
     /// The asset catalog name of the service's official mark. `docs/third-party-marks.md` gives each source.
     var markAssetName: String? { Self.marked.contains(id) ? "preset-\(id)" : nil }
