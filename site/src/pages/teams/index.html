@@ -53,9 +53,9 @@
     <span class="bx-eyebrow">Waitlist</span>
     <h2 id="join-title">Get on the list.</h2>
     <p class="bx-intro">Tell us a little about your company. We’ll email you when Teams opens, and only about Teams.</p>
-    <!-- TODO(needs-corey): the form stays disabled until KIT_TEAMS_FORM_ID and KIT_API_KEY are set in Vercel. See site/README.md, "Teams waitlist". -->
+    <!-- The form stays disabled until WAITLIST_DATABASE_URL is set in Vercel at build time. See site/README.md, "Teams waitlist". -->
     <p class="form-closed"{{waitlist_closed_hidden}}>Signups open in a few days. Check back soon.</p>
-    <form class="waitlist" id="teams-waitlist" action="/api/teams-waitlist" method="post" novalidate>
+    <form class="waitlist" id="teams-waitlist" action="/api/teams-waitlist/" method="post" novalidate>
       <fieldset{{waitlist_disabled}}>
         <div class="field">
           <label for="wl-email">Work email</label>
