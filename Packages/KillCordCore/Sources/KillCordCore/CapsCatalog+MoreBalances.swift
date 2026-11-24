@@ -104,6 +104,21 @@ extension CapsCatalog {
                     "Select the keys and turn on Pause Serverless Inference at threshold."],
             caveat: "In public preview. It covers only the keys you pick, up to 10 per alert, not Droplets or other "
                 + "products."
+        ),
+        // Telnyx. https://developers.telnyx.com/api-reference/autorechargepreferences/list-auto-recharge-preferences
+        // and the suspension terms at https://telnyx.com/terms-and-conditions-of-service
+        CapControl(
+            id: TelnyxProvider.autoRechargeCapID, provider: .telnyx, name: "Prepaid balance, auto recharge off",
+            summary: "With auto recharge off, nothing tops up the balance, and Telnyx's terms let it suspend "
+                + "services once the deposit balance goes negative.",
+            enforcement: .partialStop, verification: .api,
+            consoleURL: url("https://portal.telnyx.com"),
+            docURL: url("https://developers.telnyx.com/api-reference/autorechargepreferences/"
+                + "list-auto-recharge-preferences"),
+            steps: ["Open billing in the Telnyx Mission Control Portal.",
+                    "Turn auto recharge off, or set a threshold and recharge amount you accept."],
+            caveat: "Telnyx \"may\" suspend services at a negative balance; it isn't a promised stop. Spend can also "
+                + "run past zero up to your credit limit."
         )
     ]
 }

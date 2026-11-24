@@ -41,6 +41,13 @@ extension ProviderInfo {
                 SetupStep("Choose Custom Scopes, tick only billing:read, and copy the token", "Pick an expiration "
                     + "too. DigitalOcean doesn't let you change a token's scopes later.")
             ]
+        case .telnyx:
+            return [
+                SetupStep("Open API Keys in the Telnyx portal", "In Mission Control Portal.",
+                          link: open("Open Telnyx API Keys")),
+                SetupStep("Create a key for Kill Cord and copy it", "Telnyx keys reach the whole account, so make "
+                    + "one just for Kill Cord that you can revoke on its own.")
+            ]
         default:
             return []
         }

@@ -151,6 +151,7 @@ public enum SpendProviders {
         case .xapi: XAPIProvider(http: http)
         case .bfl: BFLProvider(http: http)
         case .digitalocean: DigitalOceanProvider(http: http)
+        case .telnyx: TelnyxProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)
