@@ -70,6 +70,8 @@ extension ProviderID {
         case .brightdata: .canManage
         // ScrapeCreators documents one API key per team, with no scopes: it can run scrapes.
         case .scrapecreators: .canSpend
+        // Stability AI documents one kind of API key, with no scopes: it can run generations.
+        case .stability: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

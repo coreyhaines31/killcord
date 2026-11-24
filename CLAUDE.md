@@ -29,7 +29,7 @@ open "build/DerivedData/Build/Products/Debug/Kill Cord.app" --args --demo   # la
   - `HTTP.swift`: `HTTPClient` protocol, `URLSessionHTTPClient` (ephemeral), `MockHTTPClient`.
   - `SpendError.swift`: the error taxonomy; messages are fixed text and never include a key.
   - `SpendProvider.swift`: the adapter protocol, `SpendSnapshot`, `BillingWindow`, `CapVerification`.
-  - `Providers/`: one adapter per provider, doc URLs at the top of each file. Google adds `GoogleAuth.swift` (service account JWT, pluggable `RS256Signer`). `ProviderBalanceInfo.swift` holds the balance services' facts (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid).
+  - `Providers/`: one adapter per provider, doc URLs at the top of each file. Google adds `GoogleAuth.swift` (service account JWT, pluggable `RS256Signer`). `ProviderBalanceInfo.swift` holds the balance services' facts (OpenRouter through ScrapeCreators), and `ProviderInfo+Batch3.swift` the services added from Stability AI on.
   - `Balance.swift`: what's left of a prepaid balance or allowance, on `SpendSnapshot.balance`, never in totals. `SpendCapability.balance(spend:)` says which spend periods such a provider also reports.
   - `CustomConnection.swift`, `JSONPath.swift`, `HostSafety.swift`: the custom connection (every field in the Keychain), its JSON paths, and the public-host check. `HTTPRequest.Limits` adds no cross-host redirects, a size cap, and deadlines.
   - `ManualEntry.swift`: plans the person types in for services with no API (`ManualPlan`), never live, with renewal reminders in `ThresholdPlanner`.

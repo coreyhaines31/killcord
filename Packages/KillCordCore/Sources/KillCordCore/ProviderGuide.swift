@@ -58,6 +58,7 @@ extension ProviderInfo {
         case .scrapecreators: "ScrapeCreators dashboard"
         case .custom: "service's site"
         case .manual: "service's site"
+        default: batch3ConsoleName
         }
     }
 
@@ -113,6 +114,7 @@ extension ProviderInfo {
              .tavily, .deepgram, .runway, .serpapi, .brightdata, .scrapecreators: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
+        default: batch3DelaySummary
         }
     }
 
@@ -131,7 +133,7 @@ extension ProviderInfo {
         case .xapi: "Pay-per-use accounts only. Shows prepaid and free credits together."
         case .bfl: "BFL prices 1 credit at $0.01, so the dollar figure is an estimate from that."
         case .telnyx: "Shows available credit: your balance plus Telnyx's credit limit."
-        default: nil
+        default: batch3Requirement
         }
     }
 
@@ -170,6 +172,7 @@ extension ProviderInfo {
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
+        default: batch3KeyPowerSummary
         }
     }
 
@@ -382,6 +385,8 @@ extension ProviderInfo {
                 SetupStep("Fill in where the number is", "Kill Cord calls it once to test before saving. It can't "
                     + "check that the number is right, so compare it with the service's own dashboard.")
             ]
+        default:
+            return batch3SetupSteps
         }
     }
 }

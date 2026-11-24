@@ -29,6 +29,7 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case serpapi
     case brightdata
     case scrapecreators
+    case stability
     case runpod
     case deepinfra
     case xapi
@@ -325,5 +326,5 @@ extension ProviderInfo {
             billingTimeZone: utc, minimumRefreshInterval: 24 * 3600,
             consoleURL: url("https://supabase.com/dashboard/org/_/billing")
         )
-    ] + balanceProviders + moreBalanceProviders + [custom, manual]).map { ($0.id, $0) })
+    ] + balanceProviders + moreBalanceProviders + batch3Providers + [custom, manual]).map { ($0.id, $0) })
 }
