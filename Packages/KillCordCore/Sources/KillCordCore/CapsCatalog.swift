@@ -247,8 +247,11 @@ public enum CapsCatalog {
     }
 
     public static func control(_ id: String) -> CapControl? {
-        controls.first { $0.id == id }
+        everyControl.first { $0.id == id }
     }
+
+    /// The catalog plus every manual preset's caps, for lookups and re-check reminders.
+    static var everyControl: [CapControl] { controls + ManualPreset.all.flatMap(\.caps) }
 }
 
 /// What the person has done in the audit, per cap. Saved in UserDefaults: it holds no secrets.
@@ -350,7 +353,7 @@ public struct CapAuditState: Sendable, Equatable, Codable {
 
     /// Caps marked done long enough ago that they're worth checking again.
     public func dueForRecheck(now: Date) -> [CapControl] {
-        CapsCatalog.controls.filter {
+        CapsCatalog.everyControl.filter {
             if case .markedDone(_, true) = status(of: $0, now: now) { return true }
             return false
         }
