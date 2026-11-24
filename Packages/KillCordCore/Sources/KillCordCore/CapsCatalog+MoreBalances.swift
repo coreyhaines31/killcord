@@ -66,6 +66,18 @@ extension CapsCatalog {
                     "Leave auto-recharge off, or set a recharge amount and trigger you accept."],
             caveat: "The balance can go slightly negative before requests are blocked. Auto-recharge charges at "
                 + "most once every 5 minutes."
+        ),
+        // Black Forest Labs. https://docs.bfl.ai/account_management/credits_billing
+        CapControl(
+            id: "bfl.prepaid-credits", provider: .bfl, name: "Prepaid credits, auto top-up off",
+            summary: "With insufficient credits, BFL refuses requests (HTTP 402). With auto top-up off, nothing "
+                + "recharges the balance.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://dashboard.bfl.ai"),
+            docURL: url("https://docs.bfl.ai/account_management/credits_billing"),
+            steps: ["Open Credits in the BFL dashboard.",
+                    "Leave Automatic top-up off, or set a threshold and target you accept."],
+            caveat: "BFL's docs describe no spend limit you set: the credits are the cap."
         )
     ]
 }

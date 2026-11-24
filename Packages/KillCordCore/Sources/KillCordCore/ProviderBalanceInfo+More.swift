@@ -44,6 +44,18 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "X says credits are deducted in real time as you make requests."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://console.x.com")
+        ),
+        ProviderInfo(
+            id: .bfl, name: "Black Forest Labs", capability: .balance(spend: []),
+            fields: [apiKeyField("bfl_…")],
+            keyKind: "API key",
+            keyURL: url("https://dashboard.bfl.ai"),
+            keyPowerWarning: "Black Forest Labs keys are scoped to a project, but BFL documents no read-only key: "
+                + "any key can generate images and video that use your credits. Make a key just for Kill Cord so "
+                + "you can delete it on its own. Kill Cord only reads the credit balance.",
+            lag: ProviderLag(typical: 0, note: "BFL doesn't say how current the credit balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://dashboard.bfl.ai")
         )
     ]
 }
