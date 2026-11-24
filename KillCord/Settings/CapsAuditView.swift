@@ -13,15 +13,15 @@ struct CapsAuditView: View {
     init(model: SpendModel, selection: ProviderID? = nil) {
         self.model = model
         // Open on the first provider with something to look at.
-        let first = model.auditProviders.first { model.audit.progress(for: $0, now: Date()).needsAttention > 0 }
+        let first = model.auditProviders.first { model.capProgress(for: $0).needsAttention > 0 }
         _selection = State(initialValue: selection ?? first ?? .anthropic)
     }
 
     var body: some View {
         HStack(spacing: 0) {
-            SidebarPicker(groups: [.init(title: "Providers", items: Self.providers)],
+            SidebarPicker(groups: [.init(title: "Providers", items: Self.providers(model))],
                           selection: $selection) { provider in
-                CapsProviderRow(provider: provider, light: Self.light(model.audit.progress(for: provider, now: Date())),
+                CapsProviderRow(provider: provider, light: Self.light(model.capProgress(for: provider)),
                                 line: line(provider))
             }
             .frame(width: 230)
@@ -33,8 +33,11 @@ struct CapsAuditView: View {
         .frame(height: 600)
     }
 
-    /// Providers with at least one native cap Kill Cord knows about.
-    static var providers: [ProviderID] { ProviderID.allCases.filter { !CapsCatalog.controls(for: $0).isEmpty } }
+    /// Providers with at least one native cap Kill Cord knows about. Manual entries join when one is named after
+    /// a preset with caps.
+    static func providers(_ model: SpendModel) -> [ProviderID] {
+        ProviderID.allCases.filter { !model.capControls(for: $0).isEmpty }
+    }
 
     static func light(_ progress: CapAuditState.Progress) -> SignalLight {
         if progress.isComplete { return .go }
@@ -43,7 +46,7 @@ struct CapsAuditView: View {
     }
 
     private func line(_ provider: ProviderID) -> String {
-        let progress = model.audit.progress(for: provider, now: Date())
+        let progress = model.capProgress(for: provider)
         if progress.isComplete { return "All \(progress.total) done" }
         let attention = progress.needsAttention
         return "\(progress.done) of \(progress.total) done" + (attention > 0 && progress.done > 0
@@ -80,14 +83,14 @@ struct ProviderCapsView: View {
 
     private var canCheck: Bool {
         model.connected.contains(provider)
-            && CapsCatalog.controls(for: provider).contains { $0.verification == .api }
+            && model.capControls(for: provider).contains { $0.verification == .api }
     }
 
     var body: some View {
-        let progress = model.audit.progress(for: provider, now: Date())
+        let progress = model.capProgress(for: provider)
         VStack(spacing: 0) {
             ProviderHeader(
-                provider: provider, title: "\(provider.info.name) caps",
+                provider: provider, title: provider == .manual ? "Manual entries' caps" : "\(provider.info.name) caps",
                 status: CapsAuditView.light(progress).panel,
                 statusLabel: progress.isComplete ? "All done" : "\(progress.done) of \(progress.total) done",
                 chips: [],
@@ -116,7 +119,7 @@ struct ProviderCapsView: View {
                         }
                     }
                 }
-                ForEach(CapsCatalog.controls(for: provider)) { control in
+                ForEach(model.capControls(for: provider)) { control in
                     CapRow(control: control, model: model)
                 }
             }
