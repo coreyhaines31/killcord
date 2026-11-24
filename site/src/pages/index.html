@@ -3,7 +3,7 @@
     <div class="hero-copy">
       <p class="bx-badge"><i aria-hidden="true"></i>Free · Source available · macOS 14+</p>
       <h1 id="hero-title">See your API spend <span>before the bill does.</span></h1>
-      <p class="bx-lede">Today’s and this month’s spend for every provider, one click from your menu bar. Kill Cord says honestly how fresh each number is, and walks you through turning on the caps each provider already offers, since those are what actually stop a runaway bill.</p>
+      <p class="bx-lede">Today’s and this month’s spend for every provider, plus what’s left on your prepaid credits, one click from your menu bar. Kill Cord says honestly how fresh each number is, and walks you through turning on the caps each provider already offers, since those are what actually stop a runaway bill.</p>
       <div class="bx-cta">
         <a class="bx-btn" href="{{download_url}}">Download for Mac <span aria-hidden="true">↓</span></a>
         <a class="bx-btn sec" href="https://github.com/coreyhaines31/killcord">View source <span aria-hidden="true">↗</span></a>
@@ -42,7 +42,7 @@
     <p class="bx-intro">Total spend sits next to a small plug in your menu bar. Click it for each provider’s today and month to date.</p>
     <div class="bx-grid">
       <article class="bx-card"><span class="bx-led">In the menu bar</span><h3>Spend where you already look</h3><p>Today’s total, or this month’s, right in the menu bar. No more opening five billing consoles to add it up.</p></article>
-      <article class="bx-card"><span class="bx-led">Every provider</span><h3>Today and this month, side by side</h3><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon in one panel, each on its own billing clock.</p></article>
+      <article class="bx-card"><span class="bx-led">Every provider</span><h3>Today and this month, side by side</h3><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon in one panel, each on its own billing clock. Connect more than one account per provider, like a work and a personal org.</p></article>
       <article class="bx-card"><span class="bx-led ca">Alerts</span><h3>A nudge at the amount you choose</h3><p>Notifications at daily and monthly amounts you pick, per provider and in total, once per day or month.</p></article>
     </div>
   </div>
@@ -208,7 +208,8 @@
     <div class="bx-faq faq-list">
       <details><summary>Does Kill Cord stop my spending?</summary><p>No. Kill Cord only reads billing and never changes a provider setting. The hard stops are each provider’s own caps, and Kill Cord’s caps audit walks you through turning them on and opens the right console page.</p></details>
       <details><summary>Does it watch my spend while my Mac is asleep?</summary><p>No. Kill Cord checks only while your Mac is awake. After sleep or time offline, numbers say “Last checked 11:42p, not live” until the next check, which happens about 10 seconds after wake. That’s why native caps matter: they keep working when your Mac doesn’t.</p></details>
-      <details><summary>Which providers does it support?</summary><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon for spend, plus Supabase in the caps audit. Neon reports usage rather than dollars, and Supabase has no billing API. <a href="#providers">See what each one needs.</a></p></details>
+      <details><summary>Which providers does it support?</summary><p>Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, and Neon for spend, plus Supabase in the caps audit. Neon reports usage rather than dollars, and Supabase has no billing API. For prepaid balances: OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, and Monid. Anything else connects as a custom service with a balance endpoint, or as a plan you enter by hand. <a href="#providers">See what each one needs.</a></p></details>
+      <details><summary>Can I connect more than one account?</summary><p>Yes. Add as many accounts per provider as you need, like a work and a personal Anthropic organization. Each one has its own name, key, alerts, and numbers.</p></details>
       <details><summary>What key do I need?</summary><p>A billing key for each provider you connect. OpenAI needs an admin key. Anthropic needs a service account, personal, or Admin API key that isn’t scoped to a workspace, in an organization rather than an Individual Org. Cloudflare needs a token with Billing Read, and Google needs a service account that can read your billing export. Never paste a key into a chat or an AI agent to set Kill Cord up. If you already have, revoke it and create a new one.</p></details>
       <details><summary>Is my key safe?</summary><p>Each key lives in your login Keychain and goes only to its own provider’s billing API over HTTPS. It never appears in files, preferences, logs, error messages, or exports. If a key ever leaks, revoke it in the provider’s console.</p></details>
       <details><summary>Why does Google read low?</summary><p>Google’s billing export runs hours behind, typically up to a day, and starts a few hours after you turn it on. Kill Cord shows Google’s own “data current through” time so you know how far behind it is.</p></details>
