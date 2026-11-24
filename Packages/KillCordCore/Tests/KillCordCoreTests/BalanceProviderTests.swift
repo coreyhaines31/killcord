@@ -199,12 +199,13 @@ import Testing
 /// What every new adapter shares: read-only setup copy, one host, a key-power label, and no network for a
 /// missing key.
 @Suite struct BalanceProviderRulesTests {
-    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai]
+    static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai, .deepseek]
     static let hosts: [ProviderID: String] = [
         .openrouter: "openrouter.ai", .dataforseo: "api.dataforseo.com", .ahrefs: "api.ahrefs.com",
         .firecrawl: "api.firecrawl.dev", .treg: "treg.to", .monid: "api.monid.ai", .fal: "api.fal.ai",
         .elevenlabs: "api.elevenlabs.io",
-        .xai: "management-api.x.ai"
+        .xai: "management-api.x.ai",
+        .deepseek: "api.deepseek.com"
     ]
     /// What each provider's docs say its key can do. Anything not listed can make paid calls.
     static let keyPowers: [ProviderID: KeyPower] = [.fal: .readOnlyIfChosen, .elevenlabs: .readOnlyIfChosen, .xai: .canManage]

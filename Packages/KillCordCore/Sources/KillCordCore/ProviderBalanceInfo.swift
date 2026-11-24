@@ -136,6 +136,18 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "xAI doesn't say how current the prepaid balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://console.x.ai/team/default/billing")
+        ),
+        ProviderInfo(
+            id: .deepseek, name: "DeepSeek", capability: .balance(spend: []),
+            fields: [apiKeyField("sk-…")],
+            keyKind: "API key",
+            keyURL: url("https://platform.deepseek.com/api_keys"),
+            keyPowerWarning: "DeepSeek documents no read-only or limited key. An API key can make paid model calls "
+                + "until the balance runs out. Create one just for Kill Cord so you can revoke it on its own. Kill "
+                + "Cord only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "DeepSeek doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://platform.deepseek.com/top_up")
         )
     ]
 }
