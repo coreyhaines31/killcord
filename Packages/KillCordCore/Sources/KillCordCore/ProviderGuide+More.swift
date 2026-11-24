@@ -110,6 +110,20 @@ extension ProviderInfo {
                 SetupStep("Copy the Auth ID and Auth Token", "They work for the whole account, so keep them only in "
                     + "Kill Cord's Keychain item.")
             ]
+        case .prospeo:
+            return [
+                SetupStep("Open API in your Prospeo dashboard", "Prospeo lets you create more than one key.",
+                          link: open("Open Prospeo")),
+                SetupStep("Create a key for Kill Cord and copy it", "Kill Cord reads your account information, "
+                    + "which Prospeo says is free.")
+            ]
+        case .lemlist:
+            return [
+                SetupStep("Open Integrations in lemlist settings", "Your API key is there.",
+                          link: open("Open lemlist Integrations")),
+                SetupStep("Copy the API key", "lemlist keys act as the team member who created them, so make one "
+                    + "from an account that isn't an admin if you can.")
+            ]
         default:
             return []
         }
@@ -133,6 +147,8 @@ extension ProviderInfo {
         case .zerobounce: "ZeroBounce API dashboard"
         case .vonage: "Vonage API Dashboard"
         case .plivo: "Plivo console"
+        case .prospeo: "Prospeo dashboard"
+        case .lemlist: "lemlist settings"
         default: "service's site"
         }
     }
@@ -155,6 +171,8 @@ extension ProviderInfo {
         case .zerobounce: nil
         case .vonage: "Vonage checks the balance for auto reload every six minutes."
         case .plivo: nil
+        case .prospeo: nil
+        case .lemlist: nil
         default: nil
         }
     }
@@ -173,6 +191,7 @@ extension ProviderInfo {
         case .hunter: "Shows the team's credits, or its searches when searches and verifications are separate quotas."
         case .vonage: "Shows the balance in euros, the currency Vonage reports it in."
         case .plivo: "Prepaid accounts only. Shows cash credits in dollars."
+        case .lemlist: "Shows the team's enrichment credits left."
         default: nil
         }
     }
@@ -195,6 +214,8 @@ extension ProviderInfo {
         case .zerobounce: "ZeroBounce has no read-only key. This key can validate emails on your credits."
         case .vonage: "Vonage has no read-only key. The key and secret can send messages, buy numbers and change secrets."
         case .plivo: "Plivo has no read-only credential. The Auth Token can call, send messages and change the account."
+        case .prospeo: "Prospeo has no read-only key. This key can run finders that use your credits."
+        case .lemlist: "lemlist has no read-only key. This key acts as you: it can run campaigns and change leads."
         default: nil
         }
     }

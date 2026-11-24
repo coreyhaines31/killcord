@@ -208,6 +208,30 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Plivo doesn't say how current cash credits are."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://cx.plivo.com")
+        ),
+        ProviderInfo(
+            id: .prospeo, name: "Prospeo", capability: .balance(spend: []),
+            fields: [apiKeyField("Prospeo API key")],
+            keyKind: "API key",
+            keyURL: url("https://app.prospeo.io/api"),
+            keyPowerWarning: "Prospeo documents no read-only or scoped key. The API key can run email and mobile "
+                + "finders and enrichments that use your credits. Kill Cord only reads your account information, "
+                + "which Prospeo says is free.",
+            lag: ProviderLag(typical: 0, note: "Prospeo doesn't say how current the credit count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.prospeo.io")
+        ),
+        ProviderInfo(
+            id: .lemlist, name: "lemlist", capability: .balance(spend: []),
+            fields: [apiKeyField("lemlist API key")],
+            keyKind: "API key",
+            keyURL: url("https://app.lemlist.com/settings/integrations"),
+            keyPowerWarning: "lemlist documents no read-only key. \"An API key acts on behalf of the team member who "
+                + "created it\": it can create and launch campaigns, add and delete leads, and use enrichment "
+                + "credits, and an admin's key can also change the team. Kill Cord only reads the team's credits.",
+            lag: ProviderLag(typical: 0, note: "lemlist doesn't say how current the credit count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.lemlist.com/settings/integrations")
         )
     ]
 }

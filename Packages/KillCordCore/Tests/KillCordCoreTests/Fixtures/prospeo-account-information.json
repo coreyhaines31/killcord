@@ -1,0 +1,11 @@
+{
+  "error": false,
+  "response": {
+    "current_plan": "STARTER",
+    "current_team_members": 1,
+    "remaining_credits": 99,
+    "used_credits": 1,
+    "next_quota_renewal_days": 25,
+    "next_quota_renewal_date": "2026-12-10 20:52:28+00:00"
+  }
+}
