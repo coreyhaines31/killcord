@@ -156,6 +156,8 @@ struct ProviderHeader: View {
     let statusLabel: String
     let chips: [String]
     let message: String
+    /// A provider not yet verified with a live account: a Beta chip, and the reason inline.
+    var isBeta = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -171,12 +173,19 @@ struct ProviderHeader: View {
                 }
                 HStack(spacing: 6) {
                     ForEach(chips, id: \.self) { Chip(text: $0) }
+                    if isBeta { BetaChip() }
                 }
                 Text(message)
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 1)
+                if isBeta {
+                    Text(ProviderVerification.betaDetail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .padding(.horizontal, 20)
