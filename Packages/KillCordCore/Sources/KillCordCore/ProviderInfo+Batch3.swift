@@ -80,6 +80,21 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Kie.ai doesn't say how current the credit balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://kie.ai/logs")
+        ),
+        ProviderInfo(
+            id: .bland, name: "Bland AI", capability: .balance(spend: []),
+            fields: [apiKeyField("org_s_…", help: "A restricted key with only Analytics read, if your organization "
+                + "has restricted keys.")],
+            keyKind: "Restricted API key with only Analytics read",
+            keyURL: url("https://app.bland.ai/dashboard/settings"),
+            keyPowerWarning: "Bland says every restricted key can read your account details, which hold the "
+                + "balance. A restricted key with only Analytics read can also read analytics summaries, but it "
+                + "can't place calls, send messages, or change agents. Bland is still rolling restricted keys out "
+                + "by organization. Without them, a full-access key acts as the admin who made it and can place "
+                + "calls on your credits. Kill Cord only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "Bland doesn't say how current the balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.bland.ai/dashboard/pay")
         )
     ]
 }

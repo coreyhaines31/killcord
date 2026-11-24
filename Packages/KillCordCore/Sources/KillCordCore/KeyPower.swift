@@ -82,6 +82,8 @@ extension ProviderID {
         case .scrapfly: .canSpend
         // Kie.ai documents one kind of API key with no scopes, only usage caps and an IP allow list.
         case .kie: .canSpend
+        // Every Bland restricted key can read the balance; one with only analytics:read can't place calls.
+        case .bland: .readOnlyIfChosen
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

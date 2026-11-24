@@ -175,6 +175,7 @@ public enum SpendProviders {
         case .scrapingbee: ScrapingBeeProvider(http: http)
         case .scrapfly: ScrapflyProvider(http: http)
         case .kie: KieProvider(http: http)
+        case .bland: BlandProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

@@ -11,6 +11,7 @@ extension ProviderInfo {
         case .scrapingbee: "ScrapingBee dashboard"
         case .scrapfly: "Scrapfly dashboard"
         case .kie: "Kie.ai dashboard"
+        case .bland: "Bland dashboard"
         default: "service's site"
         }
     }
@@ -42,6 +43,7 @@ extension ProviderInfo {
         case .scrapingbee: "ScrapingBee has no read-only key. This key can run scrapes on your plan's credits."
         case .scrapfly: "Scrapfly has no read-only key. This key can run scrapes on your plan's credits."
         case .kie: "Kie.ai has no read-only key. This key can run generations on your credits. Give it small caps."
+        case .bland: "Use a restricted key with only Analytics read. A full-access key can place calls."
         default: nil
         }
     }
@@ -93,6 +95,16 @@ extension ProviderInfo {
                 SetupStep("Open API Key on kie.ai", "Sign in to Kie.ai.", link: open("Open Kie.ai Keys")),
                 SetupStep("Create a key for Kill Cord with small usage caps and copy it", "Kie.ai keys have no "
                     + "scopes, but each can carry hourly, daily and total usage caps.")
+            ]
+        case .bland:
+            return [
+                SetupStep("Open Settings › API keys in Bland", "An owner or admin creates keys.",
+                          link: open("Open Bland Settings")),
+                SetupStep("Create a restricted key with only Analytics read and copy it", "Under Permissions, "
+                    + "choose Restricted, then Analytics and Read. It starts with org_s_. Bland says every "
+                    + "restricted key can read the balance."),
+                SetupStep("No Restricted option? Use a full-access key", "Bland is rolling restricted keys out by "
+                    + "organization. A full-access key works, but it can place calls on your credits.")
             ]
         default:
             return []

@@ -89,6 +89,18 @@ extension CapsCatalog {
             steps: ["Open API Key on kie.ai.", "Set hourly, daily and total caps on each key your apps use."],
             caveat: "Kie.ai's docs don't say what happens when a key reaches a cap, so don't count on it to stop "
                 + "usage. Running out of credits does: services stop until you add more."
+        ),
+        // Bland. https://docs.bland.ai/platform/billing
+        CapControl(
+            id: "bland.credits", provider: .bland, name: "Prepaid credits, auto refill off",
+            summary: "Bland bills calls, SMS and voice from prepaid credits. With auto refill off, usage stops when "
+                + "the credits run out.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://app.bland.ai/dashboard/pay"),
+            docURL: url("https://docs.bland.ai/platform/billing"),
+            steps: ["Open Billing & Credits in the Bland dashboard.",
+                    "Leave auto refill off, or set a refill you accept, then mark this done."],
+            caveat: "Bland says usage can pass zero before it stops, leaving a negative balance."
         )
     ]
 }
