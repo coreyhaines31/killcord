@@ -42,6 +42,8 @@ extension ProviderID {
         case .xapi: .canSpend
         // Black Forest Labs keys are scoped to a project, not to reads: any key can generate images.
         case .bfl: .canSpend
+        // DigitalOcean custom-scoped tokens can hold only billing:read, which views billing and invoices.
+        case .digitalocean: .readOnly
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

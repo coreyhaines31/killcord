@@ -91,6 +91,7 @@ import Testing
             .deepinfra: ["apiKey"],
             .xapi: ["apiKey"],
             .bfl: ["apiKey"],
+            .digitalocean: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

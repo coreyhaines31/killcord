@@ -56,6 +56,20 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "BFL doesn't say how current the credit balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://dashboard.bfl.ai")
+        ),
+        ProviderInfo(
+            id: .digitalocean, name: "DigitalOcean", capability: .monthDollars,
+            fields: [apiKeyField("DigitalOcean API token", help: "A custom-scoped token with only billing:read.")],
+            keyKind: "API token with the billing:read scope",
+            keyURL: url("https://cloud.digitalocean.com/account/api/tokens"),
+            keyPowerWarning: "DigitalOcean tokens can have custom scopes. With only billing:read, DigitalOcean says "
+                + "the token can \"View and receive billing and invoice information\" and nothing else. Read Only "
+                + "and Full Access tokens reach far more of your team, so don't use them. Kill Cord only reads your "
+                + "balance and usage.",
+            lag: ProviderLag(typical: 0, note: "DigitalOcean reports the time it last generated the figures, and "
+                + "Kill Cord shows that time. Its docs don't say how often that is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://cloud.digitalocean.com/account/billing")
         )
     ]
 }

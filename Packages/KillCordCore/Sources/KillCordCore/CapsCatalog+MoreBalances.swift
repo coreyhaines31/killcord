@@ -78,6 +78,32 @@ extension CapsCatalog {
             steps: ["Open Credits in the BFL dashboard.",
                     "Leave Automatic top-up off, or set a threshold and target you accept."],
             caveat: "BFL's docs describe no spend limit you set: the credits are the cap."
+        ),
+        // DigitalOcean. https://docs.digitalocean.com/platform/billing/spend-alerts/
+        CapControl(
+            id: "digitalocean.spend-alert", provider: .digitalocean, name: "Spend alert",
+            summary: "Emails when the month's spend crosses percentage thresholds of a budget you set, for the whole "
+                + "team or chosen products.",
+            enforcement: .alertOnly, verification: .selfReported,
+            consoleURL: url("https://cloud.digitalocean.com/account/billing/spend-alerts"),
+            docURL: url("https://docs.digitalocean.com/platform/billing/spend-alerts/"),
+            steps: ["Open the Spend alerts tab on the Billing page.",
+                    "Click Create alert, set a monthly budget and thresholds, and track Total spend."],
+            caveat: "DigitalOcean says a spend alert budget \"is not a spending cap and does not limit how much you "
+                + "can use\". Notifications arrive within an hour of crossing a threshold."
+        ),
+        CapControl(
+            id: "digitalocean.inference-key-pause", provider: .digitalocean,
+            name: "Pause Serverless Inference keys at their budget",
+            summary: "A spend alert on model access keys can pause each key when its spend reaches 100% of its "
+                + "budget, stopping Serverless Inference requests for that key.",
+            enforcement: .partialStop, verification: .selfReported,
+            consoleURL: url("https://cloud.digitalocean.com/account/billing/spend-alerts"),
+            docURL: url("https://docs.digitalocean.com/platform/billing/spend-alerts/"),
+            steps: ["Create a spend alert and choose Managed Access Keys (Serverless Inference).",
+                    "Select the keys and turn on Pause Serverless Inference at threshold."],
+            caveat: "In public preview. It covers only the keys you pick, up to 10 per alert, not Droplets or other "
+                + "products."
         )
     ]
 }
