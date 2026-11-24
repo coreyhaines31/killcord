@@ -110,6 +110,19 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "HeyGen doesn't say how current the balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://platform.heygen.com")
+        ),
+        ProviderInfo(
+            id: .browseruse, name: "Browser Use", capability: .balance(spend: []),
+            fields: [apiKeyField("Browser Use API key")],
+            keyKind: "API key",
+            keyURL: url("https://cloud.browser-use.com/settings"),
+            keyPowerWarning: "Browser Use documents no read-only key. A key belongs to a project and can run agents "
+                + "and browser sessions on that project's credits. Give the key Kill Cord uses a small monthly "
+                + "spending cap. Kill Cord only reads the balance.",
+            lag: ProviderLag(typical: 0, note: "Browser Use says running and simultaneous work can change the "
+                + "balance while you read it."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://cloud.browser-use.com/settings?tab=billing")
         )
     ]
 }

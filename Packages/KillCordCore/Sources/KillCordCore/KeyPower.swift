@@ -50,6 +50,8 @@ extension ProviderID {
         case .luma: .canSpend
         // HeyGen keys can be restricted to account:read; a full-access (*:*) key can make videos.
         case .heygen: .readOnlyIfChosen
+        // Browser Use keys belong to a project and run agents and browsers on its credits; no read-only key.
+        case .browseruse: .canSpend
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

@@ -62,6 +62,13 @@ extension ProviderInfo {
                 SetupStep("Restrict it to account:read and copy it", "That's the only scope GET /v3/users/me "
                     + "needs. A full-access key (*:*) can make videos on your balance.")
             ]
+        case .browseruse:
+            return [
+                SetupStep("Open API Keys in Browser Use Cloud", "Select the project whose credits you want.",
+                          link: open("Open Browser Use Settings")),
+                SetupStep("Create a key for Kill Cord and copy it", "Give it a small monthly spending cap: Kill Cord "
+                    + "only reads the balance.")
+            ]
         default:
             return []
         }

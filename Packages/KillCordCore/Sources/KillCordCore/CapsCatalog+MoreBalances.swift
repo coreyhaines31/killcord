@@ -156,6 +156,27 @@ extension CapsCatalog {
             steps: ["Open billing on the HeyGen API platform.",
                     "Turn auto reload off, or set a threshold and amount you accept."],
             caveat: "Applies only to wallet billing."
+        ),
+        // Browser Use. https://docs.browser-use.com/cloud/guides/billing
+        CapControl(
+            id: "browseruse.key-monthly-cap", provider: .browseruse, name: "Monthly spending cap on each API key",
+            summary: "When a key reaches its cap for the UTC calendar month, Browser Use refuses new runs and browsers "
+                + "for it with HTTP 402.",
+            enforcement: .partialStop, verification: .selfReported,
+            consoleURL: url("https://cloud.browser-use.com/settings"),
+            docURL: url("https://docs.browser-use.com/cloud/guides/billing"),
+            steps: ["Open API key settings in Browser Use Cloud.", "Give each key your apps use a monthly USD cap."],
+            caveat: "Browser Use calls it a soft limit: work already running can finish above the cap."
+        ),
+        CapControl(
+            id: "browseruse.prepaid-credits", provider: .browseruse, name: "Prepaid credits, auto recharge off",
+            summary: "A project spends its credits; with auto recharge off, nothing buys more.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://cloud.browser-use.com/settings?tab=billing"),
+            docURL: url("https://docs.browser-use.com/cloud/guides/billing"),
+            steps: ["Open Settings › Billing with the project selected.",
+                    "Leave auto recharge off, or set a threshold and recharge amount you accept."],
+            caveat: "Turning auto recharge on below the threshold can charge right away."
         )
     ]
 }

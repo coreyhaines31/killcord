@@ -95,6 +95,7 @@ import Testing
             .telnyx: ["apiKey"],
             .luma: ["apiKey"],
             .heygen: ["apiKey"],
+            .browseruse: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],
