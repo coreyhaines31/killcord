@@ -41,6 +41,7 @@ Checked 2026-11-17 (the six balance services added the same day).
 | SerpApi | `serpapi-logo.svg`: SerpApi's `logo.svg`, unmodified apart from the file name (gradient colour mark, drawn in one colour). The official `logo-black.svg` fills its path with a gradient that isn't in the file, which the asset catalog draws as nothing | https://serpapi.com/media | "Please do not modify the colors or other elements." Checked 2026-11-24. | No, but one-colour rendering differs from its colours |
 | Bright Data | None: it draws its first letter. Its logo is a wordmark, the media kit (https://brightdata.com/media-center) has PNG and PDF files only, and its only symbol is a favicon tile whose "i" reads only by contrast with the tile. | n/a | No logo terms found. Checked 2026-11-24. | Unknown |
 | ScrapeCreators | None: it draws its first letter. Its only logo file is a 48-pixel PNG of "{SC}" on a dark tile (https://scrapecreators.com/logo.png); no vector or brand page was found (scrapecreators.com/brand and /press are 404). | n/a | No logo terms found. Checked 2026-11-24. | Unknown |
+| Stability AI | None: it draws its first letter, because its terms ask permission before logo use. Its symbol is https://platform.stability.ai/brand/s-mark.svg (an "s." on a dark tile), with brand resources linked from https://stability.ai/press. | n/a | https://stability.ai/terms-of-service: "You may not use any Stability name, logos, or trademarks ... without Stability's prior written permission." Checked 2026-11-24. | Yes |
 
 ## Manual presets
 
