@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, Scrapfly, Kie.ai, and Bland AI.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, Scrapfly, Kie.ai, Bland AI, Runpod, X API, Black Forest Labs, Telnyx, Luma AI, HeyGen, Browser Use, Novita AI, Hunter, ZeroBounce, Vonage, Plivo, Prospeo, lemlist, and SearchApi, and spend on DeepInfra, DigitalOcean, and Baseten.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
@@ -28,9 +28,9 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, Scrapfly, Kie.ai, Bland AI), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
+- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, Scrapfly, Kie.ai, Bland AI, Runpod, X API, Black Forest Labs, Telnyx, Luma AI, HeyGen, Browser Use, Novita AI, Hunter, ZeroBounce, Vonage, Plivo, Prospeo, lemlist, SearchApi), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
 - **Takes any balance endpoint.** A custom connection reads a service Kill Cord doesn't know from an https address you enter and a path into its JSON. Kill Cord can't verify those numbers and says so.
-- **Remembers plans with no API.** For services with no billing API, enter the plan, price, and renewal date. Sixteen of them (Replicate, Groq, Perplexity, Cohere, AssemblyAI, E2B, Cerebras, Jina AI, Twelve Labs, Unstructured, Voyage AI, TypeSafe Jev, Modal, Pinecone, Truelist, and Gojiberry) are presets: pick one and Kill Cord links its billing page and adds its own spend caps to the audit. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
+- **Remembers plans with no API.** For services with no billing API, enter the plan, price, and renewal date. Thirty-nine of them are presets (Replicate, Groq, Perplexity, Cohere, AssemblyAI, E2B, Cerebras, Jina AI, Twelve Labs, Unstructured, Voyage AI, TypeSafe Jev, Modal, Pinecone, Truelist, Gojiberry, Apollo, Brave Search API, Clay, Cloudinary, Composio, Enrich Layer, Fly.io, Gladia, Hetzner, Ideogram, Instantly, Lambda, Leonardo.Ai, Linode, n8n Cloud, Netlify, People Data Labs, Railway, Render, SambaNova Cloud, Serper, Vultr, and Zapier): pick one and Kill Cord links its billing page and adds its own spend caps to the audit. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
 - **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month. Low-balance alerts fire once when a balance drops to your amount, and again only after a top-up.
 - **Keeps keys in the Keychain.** Not in files, preferences, logs, or exports. No account, no telemetry.
 
@@ -82,6 +82,24 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Mistral | Admin API spend limit (beta, Enterprise) | Admin API key | Yes, this month, no day | Organization spending limit |
 | Hugging Face | Organization Inference Providers usage (Enterprise) | Fine-grained token with org billing read, plus the organization name | Yes, up to 2 hours behind | None (the organization spending limit is your checkmark) |
 | Magister | API credit balance (free call) | Read-only API key | Credits left, with a labeled dollar estimate at Magister's price per credit | None (auto-recharge off is your checkmark) |
+| Runpod | Account balance | API key with billing:read (Read Only works) | Balance left, in dollars (prepaid accounts) | Prepaid balance with auto-pay off; low balance notification |
+| DeepInfra | Monthly usage | API key scoped to billing:read | Yes, this month, no day | Spending limit |
+| X API | Pay-per-use credits | App Bearer token | Balance left, in dollars | Spending limit per billing cycle; prepaid credits |
+| Black Forest Labs | Account credits | API key | Credits left, with a labeled dollar estimate at $0.01 a credit | Prepaid credits with auto top-up off |
+| DigitalOcean | Month-to-date usage | Custom token with only billing:read | Yes, this month, no day | Spend alerts; inference key pausing |
+| Telnyx | Account balance | API key | Available credit, in the account's currency | Auto recharge off (Kill Cord checks it) |
+| Luma AI | Team credits (Luma API Platform) | API key | Credits left | Prepaid credits and key spending caps |
+| HeyGen | Wallet, usage-based cap, or plan credits | API key restricted to account:read | Balance left, in dollars or credits | Spending cap and wallet auto reload (Kill Cord checks both) |
+| Browser Use | Project credits | API key | Balance left, in dollars | Monthly cap on each key; prepaid credits |
+| Novita AI | Account balance | API key | Balance left, in dollars | Prepaid balance |
+| Baseten | Billing usage summary | Personal API key | Yes, after credits | Maximum replicas per deployment |
+| Hunter | Account credits (free call) | API key | Credits left of the plan, with the reset date | None |
+| ZeroBounce | Credit balance | API key (travels in the request address; removed from errors) | Credits left | None |
+| Vonage | Account balance | API key and secret | Balance left, in euros | Auto reload off (Kill Cord checks it) |
+| Plivo | Account cash credits | Auth ID and Auth Token | Balance left, in dollars (prepaid accounts) | Auto recharge off (Kill Cord checks it); monthly recharge limit |
+| Prospeo | Account information (free call) | API key | Credits left of the plan, with the renewal date | None |
+| lemlist | Team credits | API key | Credits left | None |
+| SearchApi | Account searches | API key | Searches left, with the period's end | Early renewal off (Kill Cord checks it) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -148,6 +166,24 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Mistral | An Admin API key from the Admin Panel's enterprise section (Enterprise plans only). It can manage users, keys and the spending limit. |
 | Hugging Face | A fine-grained token from Settings › Access Tokens with only the organization's billing read permission, and the organization's name. Enterprise plan or above. |
 | Magister | A read-only API key (mm_live_…) from Settings › Developers › API keys. |
+| Runpod | A Read Only key (or Restricted with billing:read) from console.runpod.io › Credentials › API Keys. Not an All key. |
+| DeepInfra | A scoped key from deepinfra.com › Dash › API Keys with only billing:read: untick the default inference scopes. |
+| X API | Your app's Bearer token from the X Developer Console › Keys and tokens. Use an app made just for Kill Cord. |
+| Black Forest Labs | A project API key (bfl_…) from dashboard.bfl.ai › API › Keys. |
+| DigitalOcean | A personal access token with Custom Scopes and only billing:read, from API › Tokens. |
+| Telnyx | An API key from Mission Control Portal › API Keys, made just for Kill Cord. It reaches the whole account. |
+| Luma AI | An API key (luma-api-…) from the Luma API Platform. |
+| HeyGen | An API key from platform.heygen.com › API keys, restricted to account:read. |
+| Browser Use | An API key from the project you want, with a small monthly spending cap. |
+| Novita AI | An API key from Settings › Key Management, made just for Kill Cord. |
+| Baseten | A personal API key from Settings › API keys, with an expiry. Baseten doesn't say which team key permission reads billing. |
+| Hunter | An API key from hunter.io › API keys. |
+| ZeroBounce | An API key from the API dashboard's Keys Management. |
+| Vonage | The account's API key and a secret made just for Kill Cord. |
+| Plivo | The account's Auth ID and Auth Token. |
+| Prospeo | A key made just for Kill Cord at app.prospeo.io/api. |
+| lemlist | The API key from Settings › Integrations, ideally from a member who isn't an admin. |
+| SearchApi | The API key from your SearchApi dashboard. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
