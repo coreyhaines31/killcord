@@ -122,6 +122,8 @@ extension ProviderID {
         case .retell: .readOnlyIfChosen
         // Browserbase has one key per project, with no scopes: it can run browser sessions.
         case .browserbase: .canSpend
+        // Only a Resend full-access key can read anything; it can create and delete any resource.
+        case .resend: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

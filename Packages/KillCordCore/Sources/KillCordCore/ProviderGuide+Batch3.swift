@@ -27,6 +27,7 @@ extension ProviderInfo {
         case .vapi: "Vapi dashboard"
         case .retell: "Retell dashboard"
         case .browserbase: "Browserbase dashboard"
+        case .resend: "Resend dashboard"
         default: "service's site"
         }
     }
@@ -56,6 +57,7 @@ extension ProviderInfo {
         case .vapi: "Adds up call costs only. Other billable usage, such as phone numbers, isn't included."
         case .retell: "Adds up call costs only: chats, phone numbers and concurrency aren't included."
         case .browserbase: "One project's usage. Browserbase doesn't say what period it covers."
+        case .resend: "Resend reports emails used, not your plan's quota, so compare it with your plan."
         default: nil
         }
     }
@@ -76,6 +78,7 @@ extension ProviderInfo {
         case .vapi: "Vapi has no read-only key. A private key can do everything in your organization."
         case .retell: "Limit the key to History › Read. It can then read call history but not make calls."
         case .browserbase: "Browserbase has no read-only key. This key can run browser sessions on your plan."
+        case .resend: "Needs a Full access key, which can manage domains and keys. Resend has no read-only key."
         default: nil
         }
     }
@@ -192,6 +195,13 @@ extension ProviderInfo {
                 SetupStep("Open Settings in Browserbase", "The project's API key is there.",
                           link: open("Open Browserbase Settings")),
                 SetupStep("Copy the API key", "Add the project ID too if the key sees more than one project.")
+            ]
+        case .resend:
+            return [
+                SetupStep("Open API Keys in Resend", "Sending access keys can't read anything, so this needs Full "
+                    + "access.", link: open("Open Resend Keys")),
+                SetupStep("Create a Full access key for Kill Cord and copy it", "It can manage domains and other "
+                    + "keys. Kill Cord only reads the quota Resend reports with each reply.")
             ]
         default:
             return []

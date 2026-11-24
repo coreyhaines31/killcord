@@ -195,6 +195,7 @@ public enum SpendProviders {
         case .vapi: VapiProvider(http: http)
         case .retell: RetellProvider(http: http)
         case .browserbase: BrowserbaseProvider(http: http)
+        case .resend: ResendProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

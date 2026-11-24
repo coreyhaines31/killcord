@@ -207,6 +207,20 @@ extension ProviderInfo {
                 + "covers. It reports minutes and bytes, not dollars."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://www.browserbase.com/overview")
+        ),
+        ProviderInfo(
+            id: .resend, name: "Resend", capability: .usageUnitsOnly,
+            fields: [apiKeyField("re_…", help: "A key with Full access. Sending access keys can't read.")],
+            keyKind: "API key with Full access",
+            keyURL: url("https://resend.com/api-keys"),
+            keyPowerWarning: "Resend has two kinds of key, and neither is read-only. A Sending access key \"can only "
+                + "send emails\", and Resend refuses it on every other request, so Kill Cord can't use it. A Full "
+                + "access key \"can create, delete, get, and update any resource\", including domains and other "
+                + "keys. Kill Cord only lists one domain to read the quota headers Resend sends back.",
+            lag: ProviderLag(typical: 0, note: "Resend reports emails used, not dollars or the plan's quota. Sent "
+                + "and received emails both count."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://resend.com/settings/usage")
         )
     ]
 }

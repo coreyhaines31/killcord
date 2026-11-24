@@ -211,6 +211,18 @@ extension CapsCatalog {
                     "Check your plan's hours and proxy data against the usage Kill Cord shows."],
             caveat: "Browserbase has no native hard spend cap: its docs call the allocations \"not limits\", with "
                 + "\"No caps. No cut-offs.\" Only concurrency is limited."
+        ),
+        // Resend. https://resend.com/docs/knowledge-base/account-quotas-and-limits
+        CapControl(
+            id: "resend.overages-off", provider: .resend, name: "Overages off, or an overage limit",
+            summary: "With overages off, the default, sending stops at your monthly quota until the next billing "
+                + "cycle. With them on, sending pauses at the overage limit.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://resend.com/settings/usage"),
+            docURL: url("https://resend.com/docs/knowledge-base/account-quotas-and-limits"),
+            steps: ["Open Settings › Usage in Resend.",
+                    "Leave overages off, or set the overage limit you accept (100% to 1,000% of the plan)."],
+            caveat: "The overage limit defaults to 400% of the plan's quota when overages are on."
         )
     ]
 }
