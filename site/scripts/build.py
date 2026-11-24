@@ -26,6 +26,13 @@ def fill(text):
     return text.replace('{{download_url}}', download_url)
 
 
+def footer_ref(path):
+    # /track/<slug>/ pages attribute waitlist signups to their own page.
+    parts = path.split('/')[:-1]
+    if parts and parts[0] == 'track':
+        return '-'.join(parts)
+    return 'footer'
+
 
 shared = {name: fill(partials[name]) for name in ('header', 'footer')}
 pages = json.loads((source / 'pages.json').read_text()) + directory.pages()
@@ -95,6 +102,7 @@ for page in pages:
     path = page['path']
     values = {key: escape(page[key], quote=True) for key in ('title', 'description', 'og_title', 'og_description', 'body_class')}
     values.update(shared)
+    values['footer'] = shared['footer'].replace('{{footer_ref}}', footer_ref(path))
     values['url'] = site + path.removesuffix('index.html')
     values['structured_data'] = structured_data(page, values['url'])
     values['og_image'] = site + 'og.png'
