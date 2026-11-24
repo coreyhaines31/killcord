@@ -58,8 +58,9 @@ public struct ApifyProvider: SpendProvider {
         guard let start = ISO8601.date(details.monthlyUsageCycle.startAt) else { throw SpendError.unexpectedResponse }
         let used = details.current.monthlyUsageUsd.value
         let limit = details.limits.maxMonthlyUsageUsd.value
-        // What's left before Apify suspends the account's services this cycle.
-        let left = Balance.usd(max(limit - used, 0), kind: .allowance, limit: limit,
+        // What's left before Apify suspends the account's services this cycle. The limit itself isn't passed
+        // on: Balance would call it "in the plan", and a custom limit isn't the plan's.
+        let left = Balance.usd(max(limit - used, 0), kind: .allowance,
                                resetsAt: ISO8601.date(details.monthlyUsageCycle.endAt))
         return SpendSnapshot(provider: id, today: nil, month: Money(used), monthKind: .billingPeriod(start: start),
                              balance: left, fetchedAt: now)

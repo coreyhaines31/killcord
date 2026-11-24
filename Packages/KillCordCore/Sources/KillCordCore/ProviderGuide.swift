@@ -106,6 +106,7 @@ extension ProviderInfo {
         case .ahrefs: "Shows the workspace's API units. Plans without API access can't connect."
         case .custom: "Kill Cord can't verify a custom service's numbers: they're whatever its reply says."
         case .deepseek: "If the account holds both dollars and yuan, shows the dollar balance."
+        case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
         default: nil
         }
     }

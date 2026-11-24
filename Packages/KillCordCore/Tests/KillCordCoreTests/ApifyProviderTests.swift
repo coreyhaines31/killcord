@@ -15,7 +15,7 @@ import Testing
         #expect(snapshot.month == usd("43.27"))
         #expect(snapshot.today == nil)
         #expect(snapshot.monthKind == .billingPeriod(start: ISO8601.date("2026-11-02T00:00:00.000Z")!))
-        #expect(snapshot.balance == .usd(decimal("256.73"), kind: .allowance, limit: 300,
+        #expect(snapshot.balance == .usd(decimal("256.73"), kind: .allowance,
                                          resetsAt: ISO8601.date("2026-12-01T23:59:59.999Z")))
     }
 
