@@ -239,27 +239,8 @@ extension ProviderInfo {
             ]
         case .supabase:
             return []
-        case .runpod:
-            return [
-                SetupStep("Open Credentials in the Runpod console", "On the API Keys tab.",
-                          link: open("Open Runpod Keys")),
-                SetupStep("Create a Read Only key and copy it", "Or a Restricted key with only the billing:read "
-                    + "scope. Don't use an All key: it can start Pods and workers on your balance.")
-            ]
-        case .deepinfra:
-            return [
-                SetupStep("Open API Keys in the DeepInfra dashboard", "Create a new key for Kill Cord.",
-                          link: open("Open DeepInfra Keys")),
-                SetupStep("Choose Scoped and leave only billing:read, then copy the key", "A new key starts "
-                    + "with inference, models:read, account:read, lora:read and voice:read. Untick them all.")
-            ]
-        case .xapi:
-            return [
-                SetupStep("Open your app in the X Developer Console", "Pick the app, then Keys and tokens.",
-                          link: open("Open X Developer Console")),
-                SetupStep("Copy the app's Bearer token", "Kill Cord reads your credit balance with it. Use an "
-                    + "app made just for Kill Cord, so you can regenerate its token on its own.")
-            ]
+        case .runpod, .deepinfra, .xapi:
+            return moreSetupSteps
         case .openrouter:
             return [
                 SetupStep("Open API Keys in OpenRouter", "Under Settings › API Keys.", link: open("Open OpenRouter Keys")),
