@@ -244,7 +244,8 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "planned"
+      "tier": "manual",
+      "note": "Not read live: Apollo’s credit usage API needs a master key, which can call every endpoint. Kill Cord has a preset for it: add Apollo as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": true,
     "sources": [
@@ -921,7 +922,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -929,7 +930,7 @@
       "https://docs.digitalocean.com/reference/api/scopes/",
       "https://docs.digitalocean.com/products/billing/"
     ],
-    "last_verified": "2026-11-17"
+    "last_verified": "2026-11-24"
   },
   {
     "slug": "e2b",
@@ -1223,7 +1224,8 @@
     "native_caps": [],
     "caps_status": "none-documented",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Fly.io removed its billing API. Kill Cord has a preset for it: add Fly.io as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": true,
     "sources": [
@@ -1569,7 +1571,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -1578,7 +1580,7 @@
       "https://help.hunter.io/en/articles/11738860-credit-packs-how-to-buy-extra-credits-in-hunter",
       "https://help.hunter.io/en/articles/14780848-running-out-of-credits-on-a-data-platform-plan"
     ],
-    "last_verified": "2026-11-17"
+    "last_verified": "2026-11-24"
   },
   {
     "slug": "jina-ai",
@@ -1695,7 +1697,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Leonardo’s user endpoint reference is gone, so Kill Cord can’t confirm its fields. Kill Cord has a preset for it: add Leonardo.Ai as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": false,
     "sources": [
@@ -2156,7 +2159,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Netlify shows credit usage in the app only. Kill Cord has a preset for it: add Netlify as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": true,
     "sources": [
@@ -2479,7 +2483,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Railway’s API reports usage, but not clearly in dollars, and needs a token that can manage the workspace. Kill Cord has a preset for it: add Railway as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Railway’s usage hard limit."
     },
     "publish": true,
     "sources": [
@@ -2525,7 +2530,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Render has no billing API. Kill Cord has a preset for it: add Render as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": true,
     "sources": [
@@ -3746,5 +3752,712 @@
       "https://docs.x.ai/docs/key-information/billing"
     ],
     "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "runpod",
+    "name": "Runpod",
+    "search_name": "Runpod",
+    "category": "infra",
+    "noun": "balance",
+    "website": "https://www.runpod.io",
+    "billing_model": "Prepaid USD balance; enterprise accounts can be post-paid.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.runpod.io/v2/billing/balance",
+      "returns": "`balanceAmount` (USD) and `billingMode` (PREPAID or POSTPAID)",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key with billing:read",
+      "key_url": "https://console.runpod.io/user/credentials",
+      "read_only": "partial",
+      "read_only_note": "Keys can be All, Restricted or Read Only; the balance call needs the billing:read scope.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid balance, auto-pay off",
+        "kind": "auto-recharge-off",
+        "where": "Billing",
+        "url": "https://docs.runpod.io/accounts-billing/billing",
+        "note": "When the balance reaches $0, Runpod stops all running Pods."
+      },
+      {
+        "name": "Low balance notification",
+        "kind": "alert-only",
+        "where": "Settings > Notification settings",
+        "url": "https://docs.runpod.io/accounts-billing/billing",
+        "note": "A daily email below a threshold you set."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.runpod.io/api-reference-v2/billing/get-the-account-balance",
+      "https://docs.runpod.io/accounts-billing/billing"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "deepinfra",
+    "name": "DeepInfra",
+    "search_name": "DeepInfra",
+    "category": "llm",
+    "website": "https://deepinfra.com",
+    "billing_model": "Pay as you go, billed monthly, with optional prepaid credit.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.deepinfra.com/payment/usage?from=YYYY.MM",
+      "returns": "`months[].total_cost` in cents, with per-model items",
+      "units": "cents",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key scoped to billing:read",
+      "key_url": "https://deepinfra.com/dash/keys",
+      "read_only": "yes",
+      "read_only_note": "A key with only billing:read reads usage, invoices and key limits; no API key can change payment or limits.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Spending limit",
+        "kind": "partial-stop",
+        "where": "Billing settings",
+        "url": "https://docs.deepinfra.com/private-models/custom-llms",
+        "note": "DeepInfra recommends setting spending limits; its docs don’t say exactly what stops at the limit."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.deepinfra.com/api-reference/billing/usage",
+      "https://docs.deepinfra.com/account/authentication"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "x-api",
+    "name": "X API",
+    "search_name": "X API",
+    "category": "devtools",
+    "noun": "balance",
+    "website": "https://docs.x.com",
+    "billing_model": "Pay-per-use: prepaid credits deducted per read or write.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.x.com/2/usage/credits",
+      "returns": "`total_balance`, `prepaid_balance`, `free_balance` and `free_grants`, in USD",
+      "units": "USD",
+      "auth": "Authorization: Bearer <app Bearer token>",
+      "key_type": "App Bearer token",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "The app Bearer token makes paid reads on the credits.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Spending limit per billing cycle",
+        "kind": "hard-stop",
+        "where": "Developer Console billing",
+        "url": "https://docs.x.com/x-api/getting-started/pricing",
+        "note": "API requests are blocked until the next billing cycle."
+      },
+      {
+        "name": "Prepaid credits, auto-recharge off",
+        "kind": "auto-recharge-off",
+        "where": "Developer Console billing",
+        "url": "https://docs.x.com/x-api/getting-started/pricing",
+        "note": "Requests are blocked when the credits run out."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.x.com/x-api/usage/get-usage-credits",
+      "https://docs.x.com/x-api/getting-started/pricing"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "black-forest-labs",
+    "name": "Black Forest Labs",
+    "search_name": "Black Forest Labs",
+    "category": "ai-media",
+    "noun": "credits",
+    "website": "https://bfl.ai",
+    "billing_model": "Prepaid credits; 1 credit is $0.01.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.bfl.ai/v1/credits",
+      "returns": "`credits`, the current credit balance",
+      "units": "credits",
+      "auth": "x-key: <API key>",
+      "key_type": "Project API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "Keys are scoped to projects, not to reads: any key can generate.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid credits, auto top-up off",
+        "kind": "auto-recharge-off",
+        "where": "Credits",
+        "url": "https://docs.bfl.ai/account_management/credits_billing",
+        "note": "Requests fail with 402 when credits run out."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.bfl.ai/api-reference/get-the-users-credits",
+      "https://docs.bfl.ai/quick_start/pricing"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "telnyx",
+    "name": "Telnyx",
+    "search_name": "Telnyx",
+    "category": "email",
+    "noun": "balance",
+    "website": "https://telnyx.com",
+    "billing_model": "Prepaid balance with an optional credit limit.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.telnyx.com/v2/balance",
+      "returns": "`balance`, `credit_limit`, `available_credit`, `pending` and `currency`",
+      "units": "account currency",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "Telnyx keys reach the whole account.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid balance, auto recharge off",
+        "kind": "auto-recharge-off",
+        "where": "Mission Control Portal billing",
+        "url": "https://developers.telnyx.com/api-reference/autorechargepreferences/list-auto-recharge-preferences",
+        "note": "Kill Cord reads whether auto recharge is on. Telnyx may suspend services at a negative balance."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://developers.telnyx.com/api-reference/billing/get-user-balance-details"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "luma-ai",
+    "name": "Luma AI",
+    "search_name": "Luma AI",
+    "category": "ai-media",
+    "noun": "credits",
+    "website": "https://lumalabs.ai",
+    "billing_model": "Credits, granted or bought, spent per generation.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://agents.lumalabs.ai/v1/credits",
+      "returns": "`balance_credits`, the team’s whole balance",
+      "units": "credits",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "The balance call takes the generation key.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid credits and key spending caps",
+        "kind": "hard-stop",
+        "where": "Developer settings",
+        "url": "https://docs.agents.lumalabs.ai/agents/budgets/",
+        "note": "Requests answer 402 when the balance or a key’s period cap runs out."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.agents.lumalabs.ai/guides/usage/",
+      "https://docs.agents.lumalabs.ai/api/agents/operations/get-credit-balance/"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "heygen",
+    "name": "HeyGen",
+    "search_name": "HeyGen",
+    "category": "ai-media",
+    "noun": "balance",
+    "website": "https://www.heygen.com",
+    "billing_model": "Prepaid wallet, usage-based billing with an optional cap, or plan credits.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.heygen.com/v3/users/me",
+      "returns": "`billing_type` with `wallet`, `usage_based` (`spending_cap_usd`) or `subscription` credits",
+      "units": "USD or credits",
+      "auth": "x-api-key: <API key>",
+      "key_type": "API key restricted to account:read",
+      "key_url": null,
+      "read_only": "partial",
+      "read_only_note": "Keys take resource:read or resource:write scopes; account:read can’t make videos.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Spending cap (usage-based billing)",
+        "kind": "hard-stop",
+        "where": "API platform billing",
+        "url": "https://developers.heygen.com/user-profile",
+        "note": "Kill Cord reads the cap and what’s been spent against it."
+      },
+      {
+        "name": "Prepaid wallet, auto reload off",
+        "kind": "auto-recharge-off",
+        "where": "API platform billing",
+        "url": "https://developers.heygen.com/user-profile",
+        "note": "Kill Cord reads whether auto reload is on."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://developers.heygen.com/reference/get-current-user",
+      "https://developers.heygen.com/docs/api-key-permissions"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "browser-use",
+    "name": "Browser Use",
+    "search_name": "Browser Use",
+    "category": "scraping",
+    "noun": "balance",
+    "website": "https://browser-use.com",
+    "billing_model": "Pay-as-you-go project credits in USD.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.browser-use.com/api/v2/billing/account",
+      "returns": "`totalCreditsBalanceUsd` and its monthly and top-up parts",
+      "units": "USD",
+      "auth": "X-Browser-Use-API-Key: <API key>",
+      "key_type": "Project API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "A key runs agents and browsers on the project’s credits.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Monthly spending cap on each API key",
+        "kind": "partial-stop",
+        "where": "API key settings",
+        "url": "https://docs.browser-use.com/cloud/guides/billing",
+        "note": "A soft limit: work already running can finish above it."
+      },
+      {
+        "name": "Prepaid credits, auto recharge off",
+        "kind": "auto-recharge-off",
+        "where": "Settings > Billing",
+        "url": "https://docs.browser-use.com/cloud/guides/billing",
+        "note": "With auto recharge off, nothing buys more credits."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.browser-use.com/cloud/api-v2/billing/get-account-billing",
+      "https://docs.browser-use.com/cloud/guides/billing"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "novita-ai",
+    "name": "Novita AI",
+    "search_name": "Novita AI",
+    "category": "llm",
+    "noun": "balance",
+    "website": "https://novita.ai",
+    "billing_model": "Prepaid balance with an optional credit limit.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.novita.ai/openapi/v1/billing/balance/detail",
+      "returns": "`availableBalance`, `cashBalance`, `creditLimit`, in 1/10000 USD",
+      "units": "1/10000 USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "No key scopes are documented.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid balance",
+        "kind": "hard-stop",
+        "where": "Billing and Payments",
+        "url": "https://docs.novita.ai/api-reference/basic-error-code",
+        "note": "Paid requests fail with an insufficient balance error."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.novita.ai/api-reference/basic-get-user-balance",
+      "https://docs.novita.ai/api-reference/budget-query-key-list"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "baseten",
+    "name": "Baseten",
+    "search_name": "Baseten",
+    "category": "llm",
+    "website": "https://www.baseten.co",
+    "billing_model": "Usage billing for dedicated models, training, Model APIs and Loops.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.baseten.co/v1/billing/usage_summary",
+      "returns": "Per-product `subtotal`, `credits_used` and `total` in dollars, for up to 31 days",
+      "units": "USD",
+      "auth": "Authorization: Bearer <API key>",
+      "key_type": "Personal API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "Baseten doesn’t say which team key permission reads billing; a personal key carries your permissions.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Maximum replicas on each deployment",
+        "kind": "partial-stop",
+        "where": "Deployment autoscaling settings",
+        "url": "https://docs.baseten.co/deployment/autoscaling/overview",
+        "note": "Caps capacity and cost of dedicated deployments, not dollars."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.baseten.co/reference/management-api/billing/gets-billing-usage-summary-for-a-date-range"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "zerobounce",
+    "name": "ZeroBounce",
+    "search_name": "ZeroBounce",
+    "category": "sales-data",
+    "noun": "credits",
+    "website": "https://www.zerobounce.net",
+    "billing_model": "Prepaid validation credits.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.zerobounce.net/v2/getcredits?api_key=…",
+      "returns": "`Credits` (-1 means an invalid key)",
+      "units": "credits",
+      "auth": "api_key query parameter",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "No read-only key is documented.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://www.zerobounce.net/docs/email-validation-api-quickstart/v2-credit-balance"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "vonage",
+    "name": "Vonage",
+    "search_name": "Vonage",
+    "category": "email",
+    "noun": "balance",
+    "website": "https://www.vonage.com",
+    "billing_model": "Prepaid balance in euros.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://rest.nexmo.com/account/get-balance",
+      "returns": "`value` (EUR) and `autoReload`",
+      "units": "EUR",
+      "auth": "Basic api_key:api_secret",
+      "key_type": "API key and secret",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "The account key and secret reach the whole account.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid balance, auto reload off",
+        "kind": "auto-recharge-off",
+        "where": "Billing & payments",
+        "url": "https://developer.vonage.com/en/account/guides/payments",
+        "note": "At zero you can no longer use the APIs and virtual numbers are cancelled. Kill Cord reads whether auto reload is on."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://developer.vonage.com/en/api/account",
+      "https://developer.vonage.com/en/account/guides/payments"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "plivo",
+    "name": "Plivo",
+    "search_name": "Plivo",
+    "category": "email",
+    "noun": "balance",
+    "website": "https://www.plivo.com",
+    "billing_model": "Prepaid cash credits in USD; some accounts are post-paid.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.plivo.com/v1/Account/{auth_id}/",
+      "returns": "`cash_credits` (USD), `auto_recharge` and `billing_mode`",
+      "units": "USD",
+      "auth": "Basic auth_id:auth_token",
+      "key_type": "Auth ID and Auth Token",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "Every API call uses the account’s Auth ID and Auth Token.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid credits, auto recharge off",
+        "kind": "auto-recharge-off",
+        "where": "Billing > Auto Recharge",
+        "url": "https://www.plivo.com/docs/faq/billing-and-invoices/payments",
+        "note": "Kill Cord reads whether auto recharge is on."
+      },
+      {
+        "name": "Monthly recharge limit",
+        "kind": "partial-stop",
+        "where": "Payment Settings",
+        "url": "https://www.plivo.com/docs/faq/billing-and-invoices/payments",
+        "note": "Caps how much can be added in a month."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://www.plivo.com/docs/account/api/account/retrieve-account-details/"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "prospeo",
+    "name": "Prospeo",
+    "search_name": "Prospeo",
+    "category": "sales-data",
+    "noun": "credits",
+    "website": "https://prospeo.io",
+    "billing_model": "Monthly credits by plan.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.prospeo.io/account-information",
+      "returns": "`remaining_credits`, `used_credits`, `next_quota_renewal_date`",
+      "units": "credits",
+      "auth": "X-KEY: <API key>",
+      "key_type": "API key",
+      "key_url": "https://app.prospeo.io/api",
+      "read_only": "no",
+      "read_only_note": "No key permissions are documented.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "free",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://prospeo.io/api-docs/account-information",
+      "https://prospeo.io/api-docs/authentication"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "lemlist",
+    "name": "lemlist",
+    "search_name": "lemlist",
+    "category": "sales-data",
+    "noun": "credits",
+    "website": "https://www.lemlist.com",
+    "billing_model": "Team credits for enrichment, on top of a plan.",
+    "billing_type": "mixed",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://api.lemlist.com/api/team/credits",
+      "returns": "`credits` and remaining freemium, subscription, gifted and paid",
+      "units": "credits",
+      "auth": "Basic with an empty login and the key as password",
+      "key_type": "API key",
+      "key_url": "https://app.lemlist.com/settings/integrations",
+      "read_only": "no",
+      "read_only_note": "A key acts on behalf of the team member who created it.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://developer.lemlist.com/api-reference/endpoints/team/get-team-credits"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "searchapi",
+    "name": "SearchApi",
+    "search_name": "SearchApi",
+    "category": "seo-data",
+    "noun": "credits",
+    "website": "https://www.searchapi.io",
+    "billing_model": "Monthly search allowance plus extra credits.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "yes",
+      "endpoint": "GET https://www.searchapi.io/api/v1/me",
+      "returns": "`remaining_searches`, `monthly_allowance`, `current_month_usage`, `has_automatic_early_renewal_enabled` and the subscription period",
+      "units": "searches",
+      "auth": "Authorization: Bearer <API key> (or api_key query)",
+      "key_type": "API key",
+      "key_url": null,
+      "read_only": "no",
+      "read_only_note": "No read-only key is documented.",
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": null
+    },
+    "native_caps": [
+      {
+        "name": "Monthly allowance, early renewal off",
+        "kind": "hard-stop",
+        "where": "Dashboard",
+        "url": "https://www.searchapi.io/docs/account-api",
+        "note": "At zero, searches are rejected until the allowance renews. Kill Cord reads whether early renewal is on."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "built-in"
+    },
+    "publish": true,
+    "sources": [
+      "https://www.searchapi.io/docs/account-api"
+    ],
+    "last_verified": "2026-11-24"
   }
 ]

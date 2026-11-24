@@ -67,16 +67,36 @@ builtin_shows = {
     'cartesia': 'the credits you’ve used this month (Cartesia doesn’t report dollars or credits left)',
     'vapi': 'today’s and this month’s call spend in dollars',
     'retell-ai': 'today’s and this month’s call spend in dollars',
+    'runpod': 'your prepaid balance in dollars',
+    'deepinfra': 'this month’s spend in dollars',
+    'x-api': 'your pay-per-use credit balance in dollars',
+    'black-forest-labs': 'your credits left, with a labeled dollar estimate',
+    'digitalocean': 'this month’s usage in dollars',
+    'telnyx': 'your available credit in your account’s currency, and whether auto recharge is on',
+    'luma-ai': 'your team’s credits left',
+    'heygen': 'your wallet balance, or what’s left under your spending cap, and whether the cap is set',
+    'browser-use': 'your project’s credits left in dollars',
+    'novita-ai': 'your available balance in dollars',
+    'baseten': 'today’s and this month’s spend in dollars, after credits',
+    'hunter': 'the credits your plan has left, and when they reset',
+    'zerobounce': 'the credits you have left',
+    'vonage': 'your balance in euros, and whether auto reload is on',
+    'plivo': 'your cash credits in dollars, and whether auto recharge is on',
+    'prospeo': 'the credits your plan has left, and when they renew',
+    'lemlist': 'your team’s credits left',
+    'searchapi': 'the searches you have left, and whether early renewal is on',
 }
 # Built-ins with no native cap in Kill Cord's caps audit: a prepaid balance stops at zero on its own.
 no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi', 'scrapecreators',
-                 'stability-ai', 'browserbase', 'postmark'}
+                 'stability-ai', 'browserbase', 'postmark', 'hunter', 'zerobounce', 'prospeo', 'lemlist'}
 caps_only = {'supabase'}
 builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Mistral, Kimi, Together AI, '
-                 'Fireworks AI, Hugging Face, Vercel, Cloudflare, Twilio, Neon, OpenRouter, fal, ElevenLabs, Runway, '
-                 'Stability AI, Deepgram, Cartesia, Vapi, Retell AI, Bland AI, Kie.ai, Apify, Tavily, Exa, SerpApi, '
-                 'Bright Data, ScrapeCreators, ScrapingBee, Scrapfly, Browserbase, LlamaCloud, Resend, Postmark, '
-                 'Magister, DataForSEO, Ahrefs, Firecrawl, treg, and Monid')
+                 'Fireworks AI, Hugging Face, DeepInfra, Novita AI, Baseten, Runpod, Vercel, Cloudflare, DigitalOcean, '
+                 'Twilio, Telnyx, Vonage, Plivo, Neon, OpenRouter, fal, Black Forest Labs, Luma AI, HeyGen, ElevenLabs, '
+                 'Runway, Stability AI, Deepgram, Cartesia, Vapi, Retell AI, Bland AI, Kie.ai, Apify, Tavily, Exa, '
+                 'SerpApi, SearchApi, Bright Data, ScrapeCreators, ScrapingBee, Scrapfly, Browserbase, Browser Use, '
+                 'X API, LlamaCloud, Resend, Postmark, Hunter, ZeroBounce, Prospeo, lemlist, Magister, DataForSEO, '
+                 'Ahrefs, Firecrawl, treg, and Monid')
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),
                'alert-only': ('alert', 'Alert only'), 'auto-recharge-off': ('part', 'Top-up control')}
