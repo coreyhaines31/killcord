@@ -113,6 +113,7 @@ import Testing
             .stability: ["apiKey"],
             .moonshot: ["apiKey"],
             .exa: ["apiKey"],
+            .scrapingbee: ["apiKey"],
             .custom: ["serviceName", "url", "method", "authStyle", "authName", "authValue", "key", "key2", "body",
                       "remainingPath", "usedPath", "limitPath", "resetPath", "currencyPath", "unit", "scale",
                       "dollarsPerUnit", "kind", "pollMinutes", "costsMoney"],
