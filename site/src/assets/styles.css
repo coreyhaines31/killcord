@@ -105,6 +105,7 @@ img {max-width: 100%}
 .coverage thead th {border-top: 0; font: 600 12px/1.2 var(--bx-display-caps); letter-spacing: .16em; text-transform: uppercase; color: var(--bx-muted); background: var(--bx-bay)}
 .coverage tbody th {font: 600 17px/1.25 var(--bx-display)}
 .coverage td {color: var(--bx-ink2)}
+.beta-tag {display: inline-block; margin-left: 8px; padding: 1px 7px; border: 1px solid var(--bx-rule); border-radius: 999px; font: 600 10.5px/1.5 var(--bx-display-caps); letter-spacing: .12em; text-transform: uppercase; color: var(--bx-muted); vertical-align: 2px}
 
 /* Privacy band */
 .bx-band {border-top: 0}

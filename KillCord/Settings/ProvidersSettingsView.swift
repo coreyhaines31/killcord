@@ -110,7 +110,10 @@ struct ProviderRow: View {
         HStack(spacing: 9) {
             ProviderMark(provider: provider, serviceName: title)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).lineLimit(1).truncationMode(.tail)
+                HStack(spacing: 5) {
+                    Text(title).lineLimit(1).truncationMode(.tail)
+                    if provider.isBeta { BetaChip(compact: true) }
+                }
                 HStack(spacing: 5) {
                     StatusLED(status.light.panel, size: 6)
                     Text(status.line).font(.caption).foregroundStyle(.secondary).lineLimit(1)
@@ -118,8 +121,8 @@ struct ProviderRow: View {
             }
         }
         .padding(.vertical, 3)
-        .help("\(title): \(status.line)")
+        .help("\(title): \(status.line)" + (provider.isBeta ? ". Beta: \(ProviderVerification.betaDetail)" : ""))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(title), \(status.line)")
+        .accessibilityLabel("\(title)\(provider.isBeta ? ", beta" : ""), \(status.line)")
     }
 }
