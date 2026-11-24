@@ -126,6 +126,17 @@ extension CapsCatalog {
                         + "cap you accept."],
             caveat: "If Keep going, bill me for extra usage is chosen, jobs keep starting past zero, and on Starter "
                 + "that has no monthly cap. LlamaCloud doesn't let you choose it again once it's off."
+        ),
+        // Cartesia. https://docs.cartesia.ai/pricing
+        CapControl(
+            id: "cartesia.overages-off", provider: .cartesia, name: "Overages off",
+            summary: "With overages disabled, requests that would exceed your plan's credits fail until the plan "
+                + "renews or you upgrade.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://play.cartesia.ai/subscription"),
+            docURL: url("https://docs.cartesia.ai/pricing"),
+            steps: ["Open Subscription in the Cartesia playground.", "Leave overages off, then mark this done."],
+            caveat: "With overages on, the balance can go negative and keeps billing."
         )
     ]
 }

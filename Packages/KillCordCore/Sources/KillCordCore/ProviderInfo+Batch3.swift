@@ -117,6 +117,20 @@ extension ProviderInfo {
                 + "is your billing period."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://cloud.llamaindex.ai")
+        ),
+        ProviderInfo(
+            id: .cartesia, name: "Cartesia", capability: .usageUnitsOnly,
+            fields: [apiKeyField("sk_car_admin_…", help: "An admin key. Standard keys can't read usage.")],
+            keyKind: "Admin key",
+            keyURL: url("https://play.cartesia.ai/keys/admin"),
+            keyPowerWarning: "Cartesia reads credit usage only with an admin key, which only organization admins can "
+                + "make. Cartesia documents no read-only admin key: one can also list and remove your "
+                + "organization's users and send or cancel invites. It can't call the speech APIs. Kill Cord only "
+                + "reads credits used.",
+            lag: ProviderLag(typical: 0, note: "Cartesia doesn't say how current credit usage is. It reports "
+                + "credits used, not money or credits left."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://play.cartesia.ai/usage")
         )
     ]
 }

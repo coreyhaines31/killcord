@@ -13,6 +13,7 @@ extension ProviderInfo {
         case .kie: "Kie.ai dashboard"
         case .bland: "Bland dashboard"
         case .llamacloud: "LlamaCloud settings"
+        case .cartesia: "Cartesia playground"
         default: "service's site"
         }
     }
@@ -33,6 +34,7 @@ extension ProviderInfo {
         case .exa: "Needs Exa's Team Management API, which Exa turns on per team on request."
         case .scrapfly: "Shows the plan's scrape credits for the whole account."
         case .llamacloud: "Shows this billing period's invoice so far. Plans without User API Keys can't connect."
+        case .cartesia: "Counts credits used since the 1st of the month (UTC), not since your plan renewed."
         default: nil
         }
     }
@@ -47,6 +49,7 @@ extension ProviderInfo {
         case .kie: "Kie.ai has no read-only key. This key can run generations on your credits. Give it small caps."
         case .bland: "Use a restricted key with only Analytics read. A full-access key can place calls."
         case .llamacloud: "A user key does what its owner can. Make it from the member with the least access."
+        case .cartesia: "Needs an admin key, which can also remove users and send invites. It can't make speech."
         default: nil
         }
     }
@@ -118,6 +121,13 @@ extension ProviderInfo {
                     + "offer one."),
                 SetupStep("Add the organization ID if the key sees more than one", "It's on Organization Settings. "
                     + "With one organization, Kill Cord finds it.")
+            ]
+        case .cartesia:
+            return [
+                SetupStep("Open Admin keys in the Cartesia playground", "Only organization admins can make "
+                    + "them.", link: open("Open Cartesia Admin Keys")),
+                SetupStep("Create an admin key and copy it", "It starts with sk_car_admin_. A standard API key "
+                    + "can't read usage.")
             ]
         default:
             return []

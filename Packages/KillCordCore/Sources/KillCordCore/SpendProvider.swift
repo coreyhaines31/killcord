@@ -189,6 +189,7 @@ public enum SpendProviders {
         case .kie: KieProvider(http: http)
         case .bland: BlandProvider(http: http)
         case .llamacloud: LlamaCloudProvider(http: http)
+        case .cartesia: CartesiaProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
@@ -273,7 +274,8 @@ enum ProviderErrorDetail {
     }
 
     private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent",
-                                                           "x-runway-version"]
+                                                           "x-runway-version",
+                                                           "cartesia-version"]
 
     /// Header values, whole and split on spaces ("Bearer abc" gives "abc"), plus what a Basic auth token
     /// decodes to ("sid:token" gives both halves), and query values (SerpApi takes its key as `api_key=`).
