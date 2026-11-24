@@ -97,6 +97,7 @@ import Testing
             .heygen: ["apiKey"],
             .browseruse: ["apiKey"],
             .novita: ["apiKey"],
+            .baseten: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

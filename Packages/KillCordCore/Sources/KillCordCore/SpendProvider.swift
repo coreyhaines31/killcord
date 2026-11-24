@@ -156,6 +156,7 @@ public enum SpendProviders {
         case .heygen: HeyGenProvider(http: http)
         case .browseruse: BrowserUseProvider(http: http)
         case .novita: NovitaProvider(http: http)
+        case .baseten: BasetenProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)

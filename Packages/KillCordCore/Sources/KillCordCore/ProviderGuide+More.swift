@@ -75,6 +75,14 @@ extension ProviderInfo {
                 SetupStep("Create a key for Kill Cord and copy it", "If your team uses API key budgets, give this "
                     + "key a small one: Kill Cord only reads the balance.")
             ]
+        case .baseten:
+            return [
+                SetupStep("Open API keys in your Baseten workspace", "Under Settings › API keys.",
+                          link: open("Open Baseten API Keys")),
+                SetupStep("Create a key and copy it", "Baseten doesn't document which team key permission reads "
+                    + "billing, so a personal key is the one known to work. It carries your permissions; set an "
+                    + "expiry.")
+            ]
         default:
             return []
         }
@@ -93,6 +101,7 @@ extension ProviderInfo {
         case .heygen: "HeyGen API dashboard"
         case .browseruse: "Browser Use Cloud dashboard"
         case .novita: "Novita AI settings"
+        case .baseten: "Baseten workspace"
         default: "service's site"
         }
     }
@@ -110,6 +119,7 @@ extension ProviderInfo {
         case .heygen: nil
         case .browseruse: nil
         case .novita: nil
+        case .baseten: "Reported in whole UTC days."
         default: nil
         }
     }
@@ -124,6 +134,7 @@ extension ProviderInfo {
         case .heygen: "Shows a prepaid wallet, what's left under a usage-based spending cap, or plan credits."
         case .browseruse: "Shows the credits of the key's project. Each project has its own balance."
         case .novita: "Shows available credit: your top-ups plus any credit limit."
+        case .baseten: "Spend is after Baseten credits, across dedicated models, training, Model APIs and Loops."
         default: nil
         }
     }
@@ -141,6 +152,7 @@ extension ProviderInfo {
         case .heygen: "Restrict the key to account:read. A full-access key can make videos on your balance."
         case .browseruse: "Browser Use has no read-only key. This key can run agents and browsers on the project's credits."
         case .novita: "Novita has no read-only key. This key can call models and start GPU instances on your balance."
+        case .baseten: "Baseten has no billing-only key. A personal key can do whatever your account can."
         default: nil
         }
     }

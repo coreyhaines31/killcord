@@ -136,6 +136,20 @@ extension ProviderInfo {
                 + "usage may not be in the balance yet."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://novita.ai/billing")
+        ),
+        ProviderInfo(
+            id: .baseten, name: "Baseten", capability: .dollars,
+            fields: [apiKeyField("Baseten API key")],
+            keyKind: "API key",
+            keyURL: url("https://app.baseten.co/settings/api_keys"),
+            keyPowerWarning: "Baseten has no billing-only key, and its docs don't say which team key permission can "
+                + "read billing. A personal API key carries all of your account's permissions: it can deploy, call "
+                + "and train models, and an admin's can manage the workspace. Baseten requires personal keys to "
+                + "expire within 90 days and revokes them after 30 days unused. Kill Cord only reads the usage summary.",
+            lag: ProviderLag(typical: 0, note: "Baseten reports whole UTC days. It doesn't say how soon usage "
+                + "appears."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.baseten.co")
         )
     ]
 }

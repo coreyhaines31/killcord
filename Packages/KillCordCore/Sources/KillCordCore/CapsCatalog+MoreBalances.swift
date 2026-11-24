@@ -192,6 +192,19 @@ extension CapsCatalog {
             caveat: "A credit limit, if your account has one, lets spending run past your top-ups. Teams can also "
                 + "give each member's API keys a one-time or recurring budget, which Kill Cord can't read without "
                 + "the member's ID."
+        ),
+        // Baseten. https://docs.baseten.co/deployment/autoscaling/overview
+        CapControl(
+            id: "baseten.max-replicas", provider: .baseten, name: "Maximum replicas on each deployment",
+            summary: "max_replica is the ceiling for a deployment's capacity: the autoscaler won't start more "
+                + "replicas, which Baseten says \"limits capacity and cost\".",
+            enforcement: .partialStop, verification: .selfReported,
+            consoleURL: url("https://app.baseten.co"),
+            docURL: url("https://docs.baseten.co/deployment/autoscaling/overview"),
+            steps: ["Open each dedicated deployment's autoscaling settings.",
+                    "Set max replicas to the most you're willing to pay for, and min replicas to 0 to scale to zero."],
+            caveat: "It caps replicas, not dollars. Training, Model APIs and Loops aren't limited by it, and Baseten "
+                + "documents no account-wide spend cap."
         )
     ]
 }
