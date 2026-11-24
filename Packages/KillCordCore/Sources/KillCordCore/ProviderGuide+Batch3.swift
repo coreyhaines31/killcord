@@ -7,6 +7,7 @@ extension ProviderInfo {
         switch id {
         case .stability: "Stability AI platform"
         case .moonshot: "Kimi console"
+        case .exa: "Exa dashboard"
         default: "service's site"
         }
     }
@@ -15,6 +16,7 @@ extension ProviderInfo {
     var batch3DelaySummary: String? {
         switch id {
         case .stability: nil
+        case .exa: "Runs up to 5 minutes behind."
         default: nil
         }
     }
@@ -22,6 +24,7 @@ extension ProviderInfo {
     var batch3Requirement: String? {
         switch id {
         case .moonshot: "Global platform (platform.kimi.ai) accounts only, in dollars."
+        case .exa: "Needs Exa's Team Management API, which Exa turns on per team on request."
         default: nil
         }
     }
@@ -30,6 +33,7 @@ extension ProviderInfo {
         switch id {
         case .stability: "Stability AI has no read-only key. This key can run generations on your credits."
         case .moonshot: "Use an Admin key with only billing:read: it can't call models. An inference key can spend."
+        case .exa: "A service key can also create and delete your API keys. Exa has no read-only one."
         default: nil
         }
     }
@@ -53,6 +57,14 @@ extension ProviderInfo {
                     + "sk-admin-. Kimi says Admin keys can't call any inference endpoint."),
                 SetupStep("No Admin keys? Use an inference API key instead", "From API Keys in the same console. "
                     + "It works, but it can make paid model calls on your balance.")
+            ]
+        case .exa:
+            return [
+                SetupStep("Open the Service keys tab on API Keys", "In the Exa dashboard. If there's no such "
+                    + "tab, ask support@exa.ai to turn on the Team Management API: Exa enables it per team.",
+                          link: open("Open Exa API Keys")),
+                SetupStep("Create a service key and copy it", "It can manage your API keys, so keep it to Kill "
+                    + "Cord. A search API key won't work.")
             ]
         default:
             return []

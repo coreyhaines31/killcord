@@ -29,6 +29,30 @@ extension CapsCatalog {
             docURL: url("https://platform.kimi.ai/docs/api/balance"),
             steps: ["Add only as much as you're willing to spend, then mark this done."],
             caveat: "There's nothing to switch on: the balance is the cap. Vouchers count toward it too."
+        ),
+        // Exa. https://exa.ai/docs/admin/billing
+        CapControl(
+            id: "exa.key-budget", provider: .exa, name: "Budget on each API key",
+            summary: "An API key that reaches its budget gets 402 Payment Required until the next billing period "
+                + "or until an administrator raises it.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://dashboard.exa.ai/api-keys"),
+            docURL: url("https://exa.ai/docs/admin/billing"),
+            steps: ["Open API Keys in the Exa dashboard.",
+                    "Give each key your apps use a budget, then mark this done."],
+            caveat: "A budget covers one key. Keys without one draw on the team's credits until they run out."
+        ),
+        CapControl(
+            id: "exa.auto-recharge", provider: .exa, name: "Auto recharge off, or a monthly maximum",
+            summary: "With auto recharge off, requests return 402 when the team's credits reach zero. With it on, "
+                + "the monthly maximum caps automatic purchases each billing cycle.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://dashboard.exa.ai/billing"),
+            docURL: url("https://exa.ai/docs/admin/billing"),
+            steps: ["Open Billing in the Exa dashboard.",
+                    "Leave auto recharge off, or set a monthly maximum above $0."],
+            caveat: "A monthly maximum of $0, or a blank one, means no cap on automatic purchases. A team with "
+                + "overage turned on keeps running past zero."
         )
     ]
 }
