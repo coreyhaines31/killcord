@@ -24,7 +24,7 @@ extension ProviderID {
         // Batch 4 vendors whose only logo is a wordmark.
         case .telnyx: nil
         // This batch's vendors that draw their letter.
-        case .stability, .moonshot, .scrapingbee, .scrapfly, .kie: nil
+        case .stability, .moonshot, .scrapingbee, .scrapfly, .kie, .bland: nil
         default: "mark-\(rawValue)"
         }
     }

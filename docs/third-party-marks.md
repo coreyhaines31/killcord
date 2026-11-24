@@ -47,6 +47,7 @@ Checked 2026-11-17 (the six balance services added the same day).
 | ScrapingBee | None: it draws its first letter. Its only vector is the lockup in the site header (https://www.scrapingbee.com/images/logo.svg), whose bee symbol is drawn in yellow, white and an outline and doesn't read in one colour; there's no brand page (scrapingbee.com/brand and /press are 404). | n/a | No logo terms found in its terms of service. Checked 2026-11-24. | Unknown |
 | Scrapfly | None: it draws its first letter, because its terms ask permission before logo use. Its symbol is part of the header lockup at https://scrapfly.io/ (no brand page; /brand is 404). | n/a | https://scrapfly.io/terms-of-service §14: "Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Joam Intelligence, LLC." Checked 2026-11-24. | Yes |
 | Kie.ai | None: it draws its first letter. Kie.ai publishes no vector logo: its header image is https://kie.ai/logo-icon.webp, and there's no brand page (kie.ai/brand is 404). | n/a | Its terms only say marks on the site "belong to their respective owners". Checked 2026-11-24. | Unknown |
+| Bland AI | None: it draws its first letter. Its logo is a wordmark (https://www.bland.ai/images/bland-logo.svg) with no separate symbol, and there's no brand page (bland.ai/brand and /press are 404). | n/a | Its terms say only that "Bland AI reserves all rights" (https://www.bland.ai/legal/terms). Checked 2026-11-24. | Unknown |
 
 ## Manual presets
 
