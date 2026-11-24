@@ -159,6 +159,7 @@ public enum SpendProviders {
         case .apify: ApifyProvider(http: http)
         case .tavily: TavilyProvider(http: http)
         case .deepgram: DeepgramProvider(http: http)
+        case .runway: RunwayProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
@@ -238,7 +239,8 @@ enum ProviderErrorDetail {
         return object["err_msg"] as? String
     }
 
-    private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent"]
+    private static let plainHeaders: Set<String> = ["accept", "content-type", "anthropic-version", "user-agent",
+                                                           "x-runway-version"]
 
     /// Header values, whole and split on spaces ("Bearer abc" gives "abc"), plus what a Basic auth token
     /// decodes to ("sid:token" gives both halves), and query values (SerpApi takes its key as `api_key=`).

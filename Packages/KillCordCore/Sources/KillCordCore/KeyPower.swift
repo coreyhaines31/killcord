@@ -50,6 +50,8 @@ extension ProviderID {
         case .tavily: .canSpend
         // Deepgram gives billing:read only to Admin and Owner roles, which can manage the project's keys.
         case .deepgram: .canManage
+        // Runway documents no key scopes: a key can start generations that use credits.
+        case .runway: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
