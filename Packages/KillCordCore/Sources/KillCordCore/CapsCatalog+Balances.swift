@@ -95,6 +95,28 @@ extension CapsCatalog {
                     "Under Custom usage limit, choose Edit limit and set the most you'll spend in a cycle."],
             caveat: "By default the limit matches your plan's prepaid usage. Custom limits top out at $100 on "
                 + "Starter, $1,000 on Scale and $5,000 on Business."
+        ),
+        // Tavily. https://docs.tavily.com/documentation/platform/managing-organizations
+        CapControl(
+            id: "tavily.workspace-limit", provider: .tavily, name: "Workspace credit limit",
+            summary: "A ceiling on the credits a workspace can spend. Every request is checked against it and "
+                + "the plan limit, and whichever is reached first refuses it.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://app.tavily.com"),
+            docURL: url("https://docs.tavily.com/documentation/platform/managing-organizations"),
+            steps: ["On the Overview page, choose Set a limit on the Workspace Usage card.",
+                    "Enter a number of credits. An organization owner or admin can set it."],
+            caveat: "Tavily says enforcement is approximate: requests already in flight can carry a workspace "
+                + "slightly past its limit. Refusals arrive as HTTP 432."
+        ),
+        CapControl(
+            id: "tavily.key-limit", provider: .tavily, name: "Credit limit on each key",
+            summary: "A key with a credit limit is refused once it has used that many credits.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://app.tavily.com"),
+            docURL: url("https://docs.tavily.com/documentation/platform/managing-organizations"),
+            steps: ["On the Overview page, edit each key your apps use.", "Give it a credit limit."],
+            caveat: "Tavily says enforcement is approximate, as for workspace limits."
         )
     ]
 }
