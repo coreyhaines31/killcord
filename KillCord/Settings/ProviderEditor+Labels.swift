@@ -22,6 +22,12 @@ extension ProviderEditor {
         return name.isEmpty ? "the address above" : name
     }
 
+    func connectTitle(replacing: Bool) -> String {
+        if provider == .manual { return replacing ? "Save Changes" : "Save" }
+        if replacing { return "Save New Key" }
+        return provider == .custom ? "Test and Save" : "Connect \(provider.info.name)"
+    }
+
     var sectionTitle: String {
         if provider == .manual { return "Plan" }
         let capability = provider.info.capability

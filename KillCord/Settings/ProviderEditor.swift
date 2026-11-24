@@ -198,7 +198,7 @@ struct ProviderEditor: View {
                 Button("Cancel") { select(.connection(first.id), false) }
                     .keyboardShortcut(.cancelAction)
             }
-            Button(connectTitle, action: connect)
+            Button(connectTitle(replacing: replacing), action: connect)
                 .keyboardShortcut(.defaultAction)
                 .disabled(phase == .checking)
         }
@@ -368,12 +368,6 @@ extension ProviderEditor {
         if let preset { Section(preset.name) { ManualPresetNote(preset: preset) } }
         CapsSummarySection(provider: provider, model: model, controls: provider == .manual ? preset?.caps ?? [] : nil,
                            openTab: openTab)
-    }
-
-    private var connectTitle: String {
-        if provider == .manual { return replacing ? "Save Changes" : "Save" }
-        if replacing { return "Save New Key" }
-        return provider == .custom ? "Test and Save" : "Connect \(info.name)"
     }
 
     private func commitName() {
