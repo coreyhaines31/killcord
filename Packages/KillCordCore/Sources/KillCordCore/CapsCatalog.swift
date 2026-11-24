@@ -258,6 +258,19 @@ public enum CapsCatalog {
             docURL: url("https://monid.ai/SKILL.md"),
             steps: ["Open the Monid dashboard.", "Set a workspace budget or run cap."],
             caveat: "Monid's public docs mention these settings but don't describe them in detail."
+        ),
+        // fal. https://fal.ai/docs/documentation/model-apis/faq
+        CapControl(
+            id: "fal.balance-lock", provider: .fal, name: "Prepaid credits lock",
+            summary: "When the credit balance drops below the account's lock threshold, fal locks the account and "
+                + "rejects API requests.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://fal.ai/dashboard/billing"),
+            docURL: url("https://fal.ai/docs/documentation/model-apis/faq"),
+            steps: ["Open Billing in the fal dashboard.",
+                    "Buy only as many credits as you're willing to spend, then mark this done."],
+            caveat: "There's nothing to switch on: the balance is the cap. fal doesn't document a spend limit you "
+                + "set yourself."
         )
     ]
 
