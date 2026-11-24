@@ -232,6 +232,17 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "lemlist doesn't say how current the credit count is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.lemlist.com/settings/integrations")
+        ),
+        ProviderInfo(
+            id: .searchapi, name: "SearchApi", capability: .balance(spend: []),
+            fields: [apiKeyField("SearchApi API key")],
+            keyKind: "API key",
+            keyURL: url("https://www.searchapi.io/"),
+            keyPowerWarning: "SearchApi documents no read-only or scoped key. The API key can run searches that use "
+                + "your plan's allowance. Kill Cord only reads your account.",
+            lag: ProviderLag(typical: 0, note: "SearchApi doesn't say how current the search count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://www.searchapi.io/")
         )
     ]
 }

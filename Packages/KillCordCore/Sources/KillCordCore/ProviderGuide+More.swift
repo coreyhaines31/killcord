@@ -124,6 +124,11 @@ extension ProviderInfo {
                 SetupStep("Copy the API key", "lemlist keys act as the team member who created them, so make one "
                     + "from an account that isn't an admin if you can.")
             ]
+        case .searchapi:
+            return [
+                SetupStep("Sign in to SearchApi", "Your API key is on your dashboard.", link: open("Open SearchApi")),
+                SetupStep("Copy the API key", "Kill Cord sends it as a Bearer header, not in the address.")
+            ]
         default:
             return []
         }
@@ -149,6 +154,7 @@ extension ProviderInfo {
         case .plivo: "Plivo console"
         case .prospeo: "Prospeo dashboard"
         case .lemlist: "lemlist settings"
+        case .searchapi: "SearchApi dashboard"
         default: "service's site"
         }
     }
@@ -173,6 +179,7 @@ extension ProviderInfo {
         case .plivo: nil
         case .prospeo: nil
         case .lemlist: nil
+        case .searchapi: nil
         default: nil
         }
     }
@@ -192,6 +199,7 @@ extension ProviderInfo {
         case .vonage: "Shows the balance in euros, the currency Vonage reports it in."
         case .plivo: "Prepaid accounts only. Shows cash credits in dollars."
         case .lemlist: "Shows the team's enrichment credits left."
+        case .searchapi: "Shows searches left: the unused monthly allowance plus extra credits."
         default: nil
         }
     }
@@ -216,6 +224,7 @@ extension ProviderInfo {
         case .plivo: "Plivo has no read-only credential. The Auth Token can call, send messages and change the account."
         case .prospeo: "Prospeo has no read-only key. This key can run finders that use your credits."
         case .lemlist: "lemlist has no read-only key. This key acts as you: it can run campaigns and change leads."
+        case .searchapi: "SearchApi has no read-only key. This key can run searches on your plan."
         default: nil
         }
     }

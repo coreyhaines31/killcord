@@ -163,6 +163,7 @@ public enum SpendProviders {
         case .plivo: PlivoProvider(http: http)
         case .prospeo: ProspeoProvider(http: http)
         case .lemlist: LemlistProvider(http: http)
+        case .searchapi: SearchApiProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)
