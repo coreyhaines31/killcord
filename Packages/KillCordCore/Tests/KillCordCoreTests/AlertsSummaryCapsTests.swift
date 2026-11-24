@@ -189,7 +189,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let more = Set(ProviderInfo.moreBalanceProviders.map(\.id))
         #expect(withCaps.filter { !more.contains($0) }
             == [.openrouter, .monid, .fal, .elevenlabs, .xai, .apify, .tavily, .runway, .brightdata])
-        #expect(withCaps.filter { more.contains($0) } == [.runpod, .xapi])
+        #expect(withCaps.filter { more.contains($0) } == [.runpod, .xapi, .bfl])
     }
 
     @Test func everyCapHasHTTPSLinksStepsAndAUniqueID() {

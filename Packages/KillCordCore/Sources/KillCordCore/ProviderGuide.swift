@@ -36,6 +36,7 @@ extension ProviderInfo {
         case .runpod: "Runpod console"
         case .deepinfra: "DeepInfra dashboard"
         case .xapi: "X Developer Console"
+        case .bfl: "BFL dashboard"
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
@@ -101,6 +102,7 @@ extension ProviderInfo {
         case .runpod: "Runpod bills every 5 minutes."
         case .deepinfra: "DeepInfra doesn't say how far behind usage runs."
         case .xapi: "Credits are deducted as requests are made."
+        case .bfl: nil
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
@@ -123,6 +125,7 @@ extension ProviderInfo {
         case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
         case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
         case .xapi: "Pay-per-use accounts only. Shows prepaid and free credits together."
+        case .bfl: "Shows the credits of the key's organization. 1 credit is $0.01."
         default: nil
         }
     }
@@ -139,6 +142,7 @@ extension ProviderInfo {
         case .runpod: "Use a Read Only key. An All key can start Pods and workers on your balance."
         case .deepinfra: "Give the key only billing:read. New keys start with inference, so untick it."
         case .xapi: "The X API has no read-only token. This Bearer token can make paid reads on your credits."
+        case .bfl: "BFL has no read-only key. A project key can generate images on your credits."
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
@@ -239,7 +243,7 @@ extension ProviderInfo {
             ]
         case .supabase:
             return []
-        case .runpod, .deepinfra, .xapi:
+        case .runpod, .deepinfra, .xapi, .bfl:
             return moreSetupSteps
         case .openrouter:
             return [

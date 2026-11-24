@@ -90,6 +90,7 @@ import Testing
             .runpod: ["apiKey"],
             .deepinfra: ["apiKey"],
             .xapi: ["apiKey"],
+            .bfl: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

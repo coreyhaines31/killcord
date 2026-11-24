@@ -27,6 +27,13 @@ extension ProviderInfo {
                 SetupStep("Copy the app's Bearer token", "Kill Cord reads your credit balance with it. Use an "
                     + "app made just for Kill Cord, so you can regenerate its token on its own.")
             ]
+        case .bfl:
+            return [
+                SetupStep("Open your project in the BFL dashboard", "Then API › Keys.",
+                          link: open("Open BFL Dashboard")),
+                SetupStep("Add a key for Kill Cord and copy it", "It starts with bfl_. BFL shows the full key only "
+                    + "once.")
+            ]
         default:
             return []
         }
