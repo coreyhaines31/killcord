@@ -153,6 +153,7 @@ public enum SpendProviders {
         case .digitalocean: DigitalOceanProvider(http: http)
         case .telnyx: TelnyxProvider(http: http)
         case .luma: LumaProvider(http: http)
+        case .heygen: HeyGenProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)

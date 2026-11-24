@@ -1,0 +1,16 @@
+{
+  "data": {
+    "username": "kc_test_user",
+    "email": "kc-test@example.com",
+    "first_name": null,
+    "last_name": null,
+    "billing_type": "wallet",
+    "wallet": {
+      "currency": "usd",
+      "remaining_balance": 125.5,
+      "auto_reload": { "enabled": true, "threshold_usd": 10, "amount_usd": 50 }
+    },
+    "subscription": null,
+    "usage_based": null
+  }
+}
