@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, and Stability AI.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, and Kimi.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
@@ -28,7 +28,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
+- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
 - **Takes any balance endpoint.** A custom connection reads a service Kill Cord doesn't know from an https address you enter and a path into its JSON. Kill Cord can't verify those numbers and says so.
 - **Remembers plans with no API.** For services like Truelist or Gojiberry, enter the plan, price, and renewal date. Twelve AI services with no billing API (Replicate, Groq, Perplexity, Cohere, AssemblyAI, E2B, Cerebras, Jina AI, Twelve Labs, Unstructured, Voyage AI, and TypeSafe Jev) are presets: pick one and Kill Cord links its billing page and adds its own spend caps to the audit. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
 - **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month. Low-balance alerts fire once when a balance drops to your amount, and again only after a top-up.
@@ -64,6 +64,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Bright Data | Account balance | API key with the Finance permission level | Balance left, in dollars | None (zone limits are your checkmark) |
 | ScrapeCreators | Account credits | API key | Credits left | None (the credits are the cap) |
 | Stability AI | Account credits | API key | Credits left, with a labeled dollar estimate at $0.01 a credit | None (Stability AI documents no cap) |
+| Kimi (Moonshot AI) | Account balance (global platform) | Admin key with billing:read, or an API key | Balance left, in dollars | None (project budgets are your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -112,6 +113,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | DeepSeek | An API key from platform.deepseek.com › API Keys, made just for Kill Cord. |
 | Apify | An API token from Apify Console › Settings › API & Integrations. Tokens can do everything in the account unless scoped. |
 | Tavily | An API key (tvly-…) from the Tavily dashboard, with a small credit limit. |
+| Kimi (Moonshot AI) | An Admin key with only the billing:read scope from the Kimi console › Organization › Admin API Keys (verified organizations). An inference API key also works but can spend. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
