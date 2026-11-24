@@ -24,9 +24,35 @@ Copy follows the repo rule: no em dashes anywhere user-facing (`make lint` check
 
 ## Teams waitlist
 
-`/teams/` collects the Kill Cord Teams waitlist. Its form posts to `api/teams-waitlist.js`, a Vercel function that creates the subscriber in Kit with the custom fields `kc_company_size`, `kc_providers`, `kc_ref` and `kc_must_have`, adds them to the Teams form, and tags them `killcord-teams-waitlist` (tag id 26383705, or `KIT_TEAMS_TAG_ID`).
+`/teams/` collects the Kill Cord Teams waitlist. Its form posts to `/api/teams-waitlist/` (with the trailing slash: `trailingSlash: true` 308-redirects the bare path, and a redirected POST loses its body in some clients). `api/teams-waitlist.js`:
 
-The form stays disabled until Vercel has `KIT_TEAMS_FORM_ID` (read at build time to open the form, and by the function) and `KIT_API_KEY` (a Kit v4 API key, function only). Without them the page says signups open soon and the function answers 503.
+- validates the email, company size and providers, and drops bots that fill the hidden `website` field;
+- upserts the row into `site.teams_waitlist`: a repeat signup with the same email updates the answers and keeps the first `ref`;
+- rate-limits: 5 signups an hour per IP (stored only as an HMAC), and one change a minute per email (429);
+- sends one welcome email, once per address, through PostShiba HTTP inject from `corey@mail.killcord.app` (a PostShiba inbox, 7-day retention, so replies land there), with a signed `/api/teams-waitlist-unsubscribe/?token=` link and `List-Unsubscribe` headers. A failed send is logged and retried on the next signup with that email.
+
+`api/teams-waitlist-unsubscribe.js` shows a confirm button on GET (so link scanners can't unsubscribe anyone) and sets `unsubscribed_at` on POST. `api/_waitlist.js` holds the shared code; files starting with `_` aren't routes. No npm dependencies: Postgres goes over Neon's HTTP SQL endpoint.
+
+Vercel env (Production and Preview, all sensitive):
+
+| Name | What |
+|---|---|
+| `WAITLIST_DATABASE_URL` | Neon `killcord-cloud` (`royal-cell-20606862`), branch `main`, database `killcord`, as role `kc_waitlist`. Read at build time to open the form, and by the functions. |
+| `WAITLIST_HMAC_KEY` | Signs unsubscribe tokens and hashes IPs. Rotating it breaks links in emails already sent. |
+| `POSTSHIBA_INJECT_AUTH` | `username:password` of a PostShiba SMTP credential on the `coreys-apps` cluster. |
+
+Without the first two the page says signups open soon and the functions answer 503.
+
+### Database
+
+The table lives in its own `site` schema so the cloud app's Prisma-managed `public` schema never sees it. `kc_waitlist` can only `SELECT`, `INSERT` and `UPDATE` that table. Apply a migration as `kc_owner`, and set the role's password out of band:
+
+```sh
+psql "$(neonctl connection-string main --project-id royal-cell-20606862 --role-name kc_owner --database-name killcord)" \
+  -v ON_ERROR_STOP=1 -f db/migrations/001_teams_waitlist.up.sql   # .down.sql reverts it, dropping every signup
+```
+
+Read the list with `psql ... -c "SELECT email, company_size, providers, ref, must_have, created_at FROM site.teams_waitlist WHERE unsubscribed_at IS NULL ORDER BY created_at"`.
 
 `ref` comes from `?ref=` on the page: `header`, `home`, `footer`, `track-<slug>` from the footer of each `/track/` page, and `app`, `ph`, `hn`, `x`, `li`, `newsletter` or `reddit` from launch links. The page sends `teams_waitlist_view` and `teams_waitlist_submit` to Headstream with `ref`, and pushes the same event names to `tracerkitLayer`.
 
