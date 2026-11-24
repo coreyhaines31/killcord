@@ -266,6 +266,20 @@ extension ProviderInfo {
                 + "made. Each row is rounded to the cent."),
             billingTimeZone: utc, minimumRefreshInterval: 30 * 60,
             consoleURL: url("https://huggingface.co/settings/billing")
+        ),
+        ProviderInfo(
+            id: .magister, name: "Magister", capability: .balance(spend: []),
+            fields: [apiKeyField("mm_live_…", help: "A read-only API key.")],
+            keyKind: "Read-only API key",
+            keyURL: url("https://magistermarketing.com/organization-settings/developers"),
+            keyPowerWarning: "Magister offers read-only API keys. Its docs say one \"can read your balance and jobs "
+                + "and run the free endpoints, and it can never spend credits\". A full key can start paid work, so "
+                + "use a read-only one. Kill Cord reads the API credit balance, which is separate from your plan's "
+                + "credits.",
+            lag: ProviderLag(typical: 0, note: "The balance is what's available now: it leaves out credits held "
+                + "by requests still running."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://magistermarketing.com/developers/billing")
         )
     ]
 }

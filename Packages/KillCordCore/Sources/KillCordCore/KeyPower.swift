@@ -130,6 +130,8 @@ extension ProviderID {
         case .mistral: .canManage
         // A fine-grained Hugging Face token can be limited to reading the organization's billing.
         case .huggingface: .readOnlyIfChosen
+        // Magister documents read-only API keys: they read the balance and can never spend credits.
+        case .magister: .readOnly
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

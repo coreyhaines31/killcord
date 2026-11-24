@@ -272,6 +272,28 @@ extension CapsCatalog {
                     "Set an Inference Providers spending limit, then mark this done."],
             caveat: "Hugging Face's docs don't say exactly what happens at the limit, so check that requests "
                 + "stop. It covers usage billed to the organization, not members' own accounts."
+        ),
+        // Magister. https://magistermarketing.com/docs/api/credits-and-billing
+        CapControl(
+            id: "magister.auto-recharge", provider: .magister, name: "Auto-recharge off, or a monthly limit",
+            summary: "Requests the API credit balance can't cover are refused with a 402 before any work starts. "
+                + "Auto-recharge tops the balance up, at most your monthly limit.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://magistermarketing.com/developers/billing"),
+            docURL: url("https://magistermarketing.com/docs/api/credits-and-billing"),
+            steps: ["Open API billing in Magister.",
+                    "Leave auto-recharge off, or set a monthly limit you accept."],
+            caveat: "Each key can also carry a daily credit cap, set when it's created."
+        ),
+        CapControl(
+            id: "magister.low-balance", provider: .magister, name: "Low-balance alert",
+            summary: "Magister emails owners and admins once each time the API credit balance falls below your "
+                + "threshold (1,000 credits unless you change it).",
+            enforcement: .alertOnly, verification: .selfReported,
+            consoleURL: url("https://magistermarketing.com/developers/billing"),
+            docURL: url("https://magistermarketing.com/docs/api/credits-and-billing"),
+            steps: ["Open API billing in Magister.", "Set the low-balance alert threshold."],
+            caveat: "It only notifies. Nothing stops."
         )
     ]
 }

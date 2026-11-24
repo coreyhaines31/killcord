@@ -193,7 +193,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         #expect(withCaps.filter { more.contains($0) } == [
             .runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .vonage, .plivo, .searchapi
         ])
-        #expect(withCaps.filter { batch3.contains($0) } == [.moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland])
+        #expect(withCaps.filter { batch3.contains($0) }
+            == [.moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland, .magister])
     }
 
     @Test func everyCapHasHTTPSLinksStepsAndAUniqueID() {

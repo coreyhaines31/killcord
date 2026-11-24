@@ -31,6 +31,7 @@ extension ProviderInfo {
         case .postmark: "Postmark account"
         case .mistral: "Mistral Admin Panel"
         case .huggingface: "Hugging Face settings"
+        case .magister: "Magister settings"
         default: "service's site"
         }
     }
@@ -66,6 +67,7 @@ extension ProviderInfo {
         case .mistral: "Uses Mistral's Admin API, a beta on Enterprise plans only. Shows usage counted against the "
             + "monthly limit."
         case .huggingface: "Enterprise organizations only. Counts Inference Providers usage billed to the organization."
+        case .magister: "Shows the API credit balance, not your plan's chat and MCP credits."
         default: nil
         }
     }
@@ -90,6 +92,7 @@ extension ProviderInfo {
         case .postmark: "Postmark has no read-only token. A Server token can also send email."
         case .mistral: "Needs an Admin API key, which can also manage users, keys and the spending limit."
         case .huggingface: "Use a fine-grained token with only the organization's billing read permission."
+        case .magister: "Use a read-only key: Magister says it can never spend credits."
         default: nil
         }
     }
@@ -236,6 +239,13 @@ extension ProviderInfo {
                 SetupStep("Create a fine-grained token that can only read the organization's billing", "Pick the "
                     + "organization and tick only its billing read permission, then copy the token."),
                 SetupStep("Add the organization's name", "The name in its huggingface.co address.")
+            ]
+        case .magister:
+            return [
+                SetupStep("Open Settings › Developers › API keys in Magister", "An owner or admin creates keys.",
+                          link: open("Open Magister API Keys")),
+                SetupStep("Create a read-only key and copy it", "It starts with mm_live_. Magister says a read-only "
+                    + "key can read the balance but never spend credits.")
             ]
         default:
             return []

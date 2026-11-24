@@ -81,6 +81,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Postmark | Outbound send stats (one server) | Server API token | No: emails sent today and this month | None (Postmark can't cap overage) |
 | Mistral | Admin API spend limit (beta, Enterprise) | Admin API key | Yes, this month, no day | Organization spending limit |
 | Hugging Face | Organization Inference Providers usage (Enterprise) | Fine-grained token with org billing read, plus the organization name | Yes, up to 2 hours behind | None (the organization spending limit is your checkmark) |
+| Magister | API credit balance (free call) | Read-only API key | Credits left, with a labeled dollar estimate at Magister's price per credit | None (auto-recharge off is your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -146,6 +147,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Postmark | A Server API token from the server's API Tokens tab. It can send email. |
 | Mistral | An Admin API key from the Admin Panel's enterprise section (Enterprise plans only). It can manage users, keys and the spending limit. |
 | Hugging Face | A fine-grained token from Settings › Access Tokens with only the organization's billing read permission, and the organization's name. Enterprise plan or above. |
+| Magister | A read-only API key (mm_live_…) from Settings › Developers › API keys. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 

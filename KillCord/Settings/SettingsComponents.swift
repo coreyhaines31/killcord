@@ -26,7 +26,7 @@ extension ProviderID {
         case .telnyx, .heygen, .zerobounce, .prospeo, .lemlist, .searchapi: nil
         // This batch's vendors that draw their letter.
         case .stability, .moonshot, .scrapingbee, .scrapfly, .kie, .bland, .cartesia, .together, .retell, .postmark,
-             .huggingface: nil
+             .huggingface, .magister: nil
         default: "mark-\(rawValue)"
         }
     }

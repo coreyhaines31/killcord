@@ -228,8 +228,9 @@ import Testing
         .lemlist: .canManage
     ]
     /// Services in `ProviderInfo.batch3Providers` that read a balance with GETs.
-    static let batch3Providers: [ProviderID] = [.stability, .moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland]
+    static let batch3Providers: [ProviderID] = [.stability, .moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland, .magister]
     static let batch3Hosts: [ProviderID: String] = [
+        .magister: "api.magistermarketing.com",
         .bland: "api.bland.ai",
         .kie: "api.kie.ai",
         .scrapfly: "api.scrapfly.io",
@@ -238,7 +239,7 @@ import Testing
         .moonshot: "api.moonshot.ai",
         .stability: "api.stability.ai"
     ]
-    static let batch3KeyPowers: [ProviderID: KeyPower] = [.moonshot: .readOnlyIfChosen, .exa: .canManage, .bland: .readOnlyIfChosen]
+    static let batch3KeyPowers: [ProviderID: KeyPower] = [.moonshot: .readOnlyIfChosen, .exa: .canManage, .bland: .readOnlyIfChosen, .magister: .readOnly]
     static let balanceProviders: [ProviderID] = [.openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily, .deepgram, .runway, .serpapi, .brightdata, .scrapecreators] + moreProviders
         + batch3Providers
     static let hosts: [ProviderID: String] = [
