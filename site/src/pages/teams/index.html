@@ -1,0 +1,167 @@
+<section class="bx-hero teams-hero" aria-labelledby="teams-title">
+  <div class="bx-wrap bx-hero-grid">
+    <div class="hero-copy">
+      <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Kill Cord</a></li><li aria-current="page">Teams</li></ol></nav>
+      <p class="bx-badge"><i aria-hidden="true"></i>Kill Cord Teams · Waitlist</p>
+      <h1 id="teams-title">Your company’s API spend, <span>and who spent it.</span></h1>
+      <p class="bx-lede">Kill Cord Teams is the version for companies. One total for every API your company pays for, broken down by person, with alerts that keep checking while every laptop is closed.</p>
+      <div class="bx-cta">
+        <a class="bx-btn" href="#join">Join the waitlist <span aria-hidden="true">↓</span></a>
+        <a class="bx-btn sec" href="/">See the free Mac app</a>
+      </div>
+      <p class="bx-meta">In the works, with no launch date yet · The Mac app stays free</p>
+    </div>
+    <figure class="stage" aria-labelledby="teams-caption">
+      <div class="bx-mount stage-mount">
+        <span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span><span class="bx-screw"></span>
+        {{teams_panel}}
+      </div>
+      <figcaption id="teams-caption">A planned Teams view with sample data: the company total, spend by person, and an alert sent overnight.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="bx-section" id="what" aria-labelledby="what-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">What Teams adds</span>
+    <h2 id="what-title">Built for the company card, not one laptop.</h2>
+    <p class="bx-intro">The free app shows one person’s keys on one Mac, and only while it’s awake. Teams covers the whole company, around the clock.</p>
+    <div class="bx-grid">
+      <article class="bx-card"><span class="bx-led">Company spend</span><h3>Every provider, one company total</h3><p>Anthropic, OpenAI, Google Cloud, Vercel, Cloudflare, and the rest of the APIs the company pays for, by day and month, in one dashboard everyone can check.</p></article>
+      <article class="bx-card"><span class="bx-led">Who spent it</span><h3>Spend by person, from the bill itself</h3><p>Per-person spend from Anthropic’s and OpenAI’s own billing APIs. No proxy sits in front of your traffic, and nothing reads your prompts.</p></article>
+      <article class="bx-card"><span class="bx-led ca">Always on</span><h3>Alerts while every Mac sleeps</h3><p>Teams checks from the cloud 24/7, so a job that runs away at 3 a.m. pages someone before the invoice does.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="bx-section" id="pricing" aria-labelledby="pricing-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">Planned pricing</span>
+    <h2 id="pricing-title">Priced by connections, not seats.</h2>
+    <p class="bx-intro">Add everyone on the team at no extra cost. You pay for the provider accounts Teams watches.</p>
+    <div class="plans">
+      <article class="bx-card plan"><span class="bx-strip">Solo</span><p class="price">$10<small> a month</small></p><ul><li>3 connections</li><li>Unlimited members</li><li>30-day trial, no card</li></ul></article>
+      <article class="bx-card plan"><span class="bx-strip">Team</span><p class="price">$49<small> a month</small></p><ul><li>10 connections</li><li>Unlimited members</li><li>30-day trial, no card</li></ul></article>
+    </div>
+    <p class="callout offer"><b>For the first 100 companies on the list:</b> your first 3 months of Team at the Solo price, $10 a month.</p>
+    <p class="fine">Planned pricing. Plans and prices can change before Teams launches, and there’s no launch date yet.</p>
+  </div>
+</section>
+
+<section class="bx-section" id="join" aria-labelledby="join-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">Waitlist</span>
+    <h2 id="join-title">Get on the list.</h2>
+    <p class="bx-intro">Tell us a little about your company. We’ll email you when Teams opens, and only about Teams.</p>
+    <!-- TODO(needs-corey): the form stays disabled until KIT_TEAMS_FORM_ID and KIT_API_KEY are set in Vercel. See site/README.md, "Teams waitlist". -->
+    <p class="form-closed"{{waitlist_closed_hidden}}>Signups open in a few days. Check back soon.</p>
+    <form class="waitlist" id="teams-waitlist" action="/api/teams-waitlist" method="post" novalidate>
+      <fieldset{{waitlist_disabled}}>
+        <div class="field">
+          <label for="wl-email">Work email</label>
+          <input id="wl-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@company.com">
+        </div>
+        <div class="field" role="radiogroup" aria-labelledby="wl-size">
+          <p class="label" id="wl-size">Company size</p>
+          <div class="choices">
+            <label><input type="radio" name="company_size" value="1" required>Just me</label>
+            <label><input type="radio" name="company_size" value="2-10">2 to 10</label>
+            <label><input type="radio" name="company_size" value="11-50">11 to 50</label>
+            <label><input type="radio" name="company_size" value="51+">51 or more</label>
+          </div>
+        </div>
+        <div class="field" role="group" aria-labelledby="wl-providers">
+          <p class="label" id="wl-providers">Which APIs does your company pay for?</p>
+          <div class="choices">
+            <label><input type="checkbox" name="providers" value="anthropic">Anthropic</label>
+            <label><input type="checkbox" name="providers" value="openai">OpenAI</label>
+            <label><input type="checkbox" name="providers" value="google">Google Cloud or Gemini</label>
+            <label><input type="checkbox" name="providers" value="vercel">Vercel</label>
+            <label><input type="checkbox" name="providers" value="cloudflare">Cloudflare</label>
+            <label><input type="checkbox" name="providers" value="openrouter">OpenRouter</label>
+            <label><input type="checkbox" name="providers" value="twilio">Twilio</label>
+            <label><input type="checkbox" name="providers" value="neon">Neon</label>
+            <label><input type="checkbox" name="providers" value="supabase">Supabase</label>
+            <label><input type="checkbox" name="providers" value="other">Something else</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="wl-must">What would make Teams a must-have? <span class="opt">(optional)</span></label>
+          <textarea id="wl-must" name="must_have" maxlength="1000" placeholder="Per-team budgets, Slack alerts, a monthly report for finance…"></textarea>
+        </div>
+        <div class="trap" aria-hidden="true"><label for="wl-website">Website</label><input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <input type="hidden" name="ref" value="">
+        <button class="bx-btn" type="submit">Join the waitlist</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </fieldset>
+    </form>
+  </div>
+</section>
+
+<section class="bx-section" id="faq" aria-labelledby="faq-title">
+  <div class="bx-wrap">
+    <span class="bx-eyebrow">Questions</span>
+    <h2 id="faq-title">Before you sign up.</h2>
+    <div class="bx-faq faq-list">
+      <details><summary>Is the Mac app still free?</summary><p>Yes. Kill Cord for Mac stays free, with no account, and keeps your keys in your Keychain. Teams is a separate, paid service for companies.</p></details>
+      <details><summary>When does Teams launch?</summary><p>There’s no date yet. We’ll open it to a small group of companies first, starting with the waitlist.</p></details>
+      <details><summary>How does it know who spent what?</summary><p>From the providers’ own billing data. Anthropic and OpenAI report usage by API key, and Teams matches each key to the person who owns it, with no proxy and without seeing your requests. Other providers show up in the company total.</p></details>
+      <details><summary>What happens to my email?</summary><p>Kill Cord stores it with your answers. We use it to tell you when Teams opens. Unsubscribe from any email. <a href="/privacy/#site-title">Privacy details</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var form = document.getElementById('teams-waitlist');
+  var status = form.querySelector('.form-status');
+  var ref = (new URLSearchParams(location.search).get('ref') || 'direct').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 64) || 'direct';
+  form.elements.ref.value = ref;
+
+  function track(name) {
+    try {
+      (window.tracerkitLayer = window.tracerkitLayer || []).push({ event: name });
+      var hs = window.headstream;
+      if (hs && typeof hs.track === 'function') hs.track(name, { ref: ref });
+      else (window.headstream = hs || { q: [] }).q.push(['track', name, { ref: ref }]);
+    } catch (e) {}
+  }
+  track('teams_waitlist_view');
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var fields = form.elements;
+    var size = form.querySelector('input[name=company_size]:checked');
+    status.className = 'form-status';
+    if (!fields.email.value.trim() || !fields.email.checkValidity()) { status.className += ' bad'; status.textContent = 'Enter a valid work email.'; fields.email.focus(); return; }
+    if (!size) { status.className += ' bad'; status.textContent = 'Choose a company size.'; return; }
+    var body = {
+      email: fields.email.value.trim(),
+      company_size: size.value,
+      providers: Array.prototype.map.call(form.querySelectorAll('input[name=providers]:checked'), function (box) { return box.value; }),
+      must_have: fields.must_have.value,
+      website: fields.website.value,
+      ref: ref
+    };
+    var button = form.querySelector('button');
+    button.disabled = true;
+    status.textContent = 'Adding you…';
+    fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (response) { return response.json().catch(function () { return {}; }).then(function (data) { return { ok: response.ok, data: data }; }); })
+      .then(function (result) {
+        if (!result.ok) throw new Error(result.data.error || 'Something went wrong. Try again in a minute.');
+        track('teams_waitlist_submit');
+        var done = document.createElement('div');
+        done.className = 'form-done';
+        done.setAttribute('role', 'status');
+        done.innerHTML = '<h3>You’re on the list.</h3><p>We’ll email you when Teams opens. If your company is one of the first 100, your first 3 months of Team are at the Solo price.</p>';
+        form.replaceWith(done);
+      })
+      .catch(function (error) {
+        button.disabled = false;
+        status.className = 'form-status bad';
+        status.textContent = error.message;
+      });
+  });
+})();
+</script>

@@ -2,6 +2,7 @@ from html import escape
 from pathlib import Path
 from string import Template
 import hashlib
+import os
 import json
 import re
 import shutil
@@ -13,12 +14,24 @@ source = root / 'src'
 output = root / 'dist'
 layout = Template((source / 'layouts/base.html').read_text())
 download_url = 'https://github.com/coreyhaines31/killcord/releases/latest/download/KillCord.dmg'
-partials = {name: (source / f'layouts/{name}.html').read_text().strip() for name in ('header', 'footer', 'popover')}
+partials = {name: (source / f'layouts/{name}.html').read_text().strip() for name in ('header', 'footer', 'popover', 'teams-panel')}
+# The Teams waitlist form stays disabled until Kit is wired up (see README: Teams waitlist).
+waitlist_open = bool(os.environ.get('KIT_TEAMS_FORM_ID'))
 
 
 def fill(text):
-    text = text.replace('{{popover}}', partials['popover'])
+    text = text.replace('{{popover}}', partials['popover']).replace('{{teams_panel}}', partials['teams-panel'])
+    text = text.replace('{{waitlist_disabled}}', '' if waitlist_open else ' disabled')
+    text = text.replace('{{waitlist_closed_hidden}}', ' hidden' if waitlist_open else '')
     return text.replace('{{download_url}}', download_url)
+
+
+def footer_ref(path):
+    # /track/<slug>/ pages attribute waitlist signups to their own page.
+    parts = path.split('/')[:-1]
+    if parts and parts[0] == 'track':
+        return '-'.join(parts)
+    return 'footer'
 
 
 shared = {name: fill(partials[name]) for name in ('header', 'footer')}
@@ -89,11 +102,12 @@ for page in pages:
     path = page['path']
     values = {key: escape(page[key], quote=True) for key in ('title', 'description', 'og_title', 'og_description', 'body_class')}
     values.update(shared)
+    values['footer'] = shared['footer'].replace('{{footer_ref}}', footer_ref(path))
     values['url'] = site + path.removesuffix('index.html')
     values['structured_data'] = structured_data(page, values['url'])
     values['og_image'] = site + 'og.png'
-    # Only the homepage mounts the app's popover.
-    values['page_css'] = '  <link rel="stylesheet" href="/popover.css">\n' if path == 'index.html' else ''
+    # Only the homepage and /teams/ mount panel mockups.
+    values['page_css'] = '  <link rel="stylesheet" href="/popover.css">\n' if path in ('index.html', 'teams/index.html') else ''
     values['content'] = fill(page['content'] if 'content' in page else (source / 'pages' / path).read_text().strip())
     target = output / path
     target.parent.mkdir(parents=True, exist_ok=True)

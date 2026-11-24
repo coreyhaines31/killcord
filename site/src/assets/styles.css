@@ -65,6 +65,12 @@ img {max-width: 100%}
 .pmark svg:has(use[href="#m-cloudflare"]) {transform: scale(1.3)}
 
 
+/* Balances: a slice of the panel, without the menu bar arrow */
+.pop.kc-mini::before {display: none}
+.pop.kc-mini .kc-prov:last-child {border-bottom: 0}
+.band-note {margin-top: 22px; color: var(--bx-ink2)}
+.band-note a {color: var(--bx-ink); font-weight: 600}
+
 /* Problem */
 .problem-grid {display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px; align-items: start}
 .problem-copy {display: grid; gap: 14px; color: var(--bx-ink2); font-size: 18px}
@@ -211,3 +217,39 @@ img {max-width: 100%}
 .prose ul.related {gap: 10px}
 .coverage.billing thead th:first-child {width: 18%}
 .coverage.billing td:last-child {font-size: 14.5px}
+
+/* Kill Cord Teams: the planned dashboard mock and the waitlist */
+.pop.kc-team .fh .ts {font-size: 11.5px}
+.pop .kc-src {font-size: 11px; color: var(--sub); text-align: right}
+.teams-grid {display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center}
+.teams-hero .bx-hero-grid {padding-top: 40px}
+.plans {display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 30px; max-width: 760px}
+.plan {display: grid; gap: 10px; align-content: start}
+.plan .price {font: 600 40px/1 var(--bx-display)}
+.plan .price small {font: 400 16px/1 var(--bx-body); color: var(--bx-muted)}
+.plan ul {margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--bx-ink2)}
+.offer {margin-top: 22px; max-width: 760px}
+.waitlist {display: grid; gap: 18px; max-width: 640px; margin-top: 26px}
+.waitlist fieldset {border: 0; margin: 0; padding: 0; display: grid; gap: 18px; min-width: 0}
+.waitlist fieldset[disabled] {opacity: .55}
+.waitlist label, .waitlist .label {font: 600 13px/1.3 var(--bx-display); letter-spacing: .12em; text-transform: uppercase; color: var(--bx-ink2)}
+.waitlist .field {display: grid; gap: 8px}
+.waitlist .opt {font-weight: 400; letter-spacing: .04em; text-transform: none; color: var(--bx-muted)}
+.waitlist input[type=email], .waitlist textarea {width: 100%; font: 17px/1.4 var(--bx-body); color: var(--bx-ink); background: var(--bx-field); border: 1px solid var(--bx-rule); border-radius: 6px; padding: 11px 13px}
+.waitlist textarea {min-height: 92px; resize: vertical}
+.waitlist .choices {display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px}
+.waitlist .choices label {display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--bx-rule); border-radius: 6px; background: var(--bx-card); font: 400 15.5px/1.2 var(--bx-body); letter-spacing: 0; text-transform: none; color: var(--bx-ink); cursor: pointer}
+.waitlist .choices input {accent-color: var(--bx-accent); margin: 0}
+.waitlist .trap {position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden}
+.waitlist .bx-btn {justify-self: start; cursor: pointer}
+.waitlist .bx-btn[disabled] {cursor: not-allowed}
+.form-status {min-height: 1.5em; color: var(--bx-ink2)}
+.form-status.bad {color: var(--bx-st)}
+.form-closed {margin-top: 22px; padding: 14px 18px; border-left: 3px solid var(--bx-ca); background: var(--bx-card); border-radius: 0 8px 8px 0; color: var(--bx-ink2)}
+.form-done {margin-top: 26px; max-width: 640px; padding: 22px 24px; background: var(--bx-card); border: 1px solid var(--bx-rule); border-radius: 10px; display: grid; gap: 8px}
+@media (max-width: 880px) {
+  .teams-grid {grid-template-columns: minmax(0, 1fr); gap: 28px}
+}
+@media (max-width: 640px) {
+  .plans {grid-template-columns: minmax(0, 1fr)}
+}

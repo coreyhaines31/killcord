@@ -22,6 +22,14 @@ The look is the Mac app family's Brushed design: `src/assets/brushed.css`, `popo
 
 Copy follows the repo rule: no em dashes anywhere user-facing (`make lint` checks).
 
+## Teams waitlist
+
+`/teams/` collects the Kill Cord Teams waitlist. Its form posts to `api/teams-waitlist.js`, a Vercel function that creates the subscriber in Kit with the custom fields `kc_company_size`, `kc_providers`, `kc_ref` and `kc_must_have`, adds them to the Teams form, and tags them `killcord-teams-waitlist` (tag id 26383705, or `KIT_TEAMS_TAG_ID`).
+
+The form stays disabled until Vercel has `KIT_TEAMS_FORM_ID` (read at build time to open the form, and by the function) and `KIT_API_KEY` (a Kit v4 API key, function only). Without them the page says signups open soon and the function answers 503.
+
+`ref` comes from `?ref=` on the page: `header`, `home`, `footer`, `track-<slug>` from the footer of each `/track/` page, and `app`, `ph`, `hn`, `x`, `li`, `newsletter` or `reddit` from launch links. The page sends `teams_waitlist_view` and `teams_waitlist_submit` to Headstream with `ref`, and pushes the same event names to `tracerkitLayer`.
+
 ## Caching
 
 The build writes a fingerprinted copy of each stylesheet, image and font to `/_a/` (`styles.<hash>.css`) and points every page at it. `vercel.json` serves `/_a/` with `max-age=31536000, immutable`; everything else, HTML included, keeps Vercel's revalidating default. `og.png` and `favicon.ico` keep fixed URLs because other sites and browsers fetch them by name.
