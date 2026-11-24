@@ -190,6 +190,23 @@ extension ProviderInfo {
                 + "such as phone numbers aren't counted."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://dashboard.retellai.com")
+        ),
+        ProviderInfo(
+            id: .browserbase, name: "Browserbase", capability: .usageUnitsOnly,
+            fields: [
+                apiKeyField("Browserbase API key"),
+                CredentialField(id: "projectID", label: "Project ID", placeholder: "Project ID", isSecret: false,
+                                isOptional: true, help: "Needed only if the key sees more than one project.")
+            ],
+            keyKind: "Project API key",
+            keyURL: url("https://www.browserbase.com/settings"),
+            keyPowerWarning: "Browserbase gives each project one API key, with no scopes or read-only option; only "
+                + "an admin can regenerate it. It can start browser sessions that use your plan's hours and proxy "
+                + "data. Kill Cord only reads the project's usage.",
+            lag: ProviderLag(typical: 0, note: "Browserbase doesn't say how current usage is, or what period it "
+                + "covers. It reports minutes and bytes, not dollars."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://www.browserbase.com/overview")
         )
     ]
 }

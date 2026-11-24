@@ -194,6 +194,7 @@ public enum SpendProviders {
         case .fireworks: FireworksProvider(http: http)
         case .vapi: VapiProvider(http: http)
         case .retell: RetellProvider(http: http)
+        case .browserbase: BrowserbaseProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

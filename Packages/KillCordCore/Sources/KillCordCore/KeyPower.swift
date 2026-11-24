@@ -120,6 +120,8 @@ extension ProviderID {
         case .vapi: .canManage
         // Retell keys can be scoped; one with only History › Read reads call history.
         case .retell: .readOnlyIfChosen
+        // Browserbase has one key per project, with no scopes: it can run browser sessions.
+        case .browserbase: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

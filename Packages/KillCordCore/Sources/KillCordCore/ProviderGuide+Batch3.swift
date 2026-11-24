@@ -3,6 +3,14 @@ import Foundation
 /// Settings copy for the services in `ProviderInfo.batch3Providers`, kept apart so `ProviderGuide.swift` stays
 /// readable. `ProviderGuide.swift` routes each of these providers here.
 extension ProviderInfo {
+    /// What Kill Cord shows, where the capability's usual sentence would mislead.
+    var batch3Shows: String? {
+        switch id {
+        case .browserbase: "Shows Browserbase's browser minutes and proxy data. It doesn't report dollars."
+        default: nil
+        }
+    }
+
     var batch3ConsoleName: String {
         switch id {
         case .stability: "Stability AI platform"
@@ -18,6 +26,7 @@ extension ProviderInfo {
         case .fireworks: "Fireworks dashboard"
         case .vapi: "Vapi dashboard"
         case .retell: "Retell dashboard"
+        case .browserbase: "Browserbase dashboard"
         default: "service's site"
         }
     }
@@ -46,6 +55,7 @@ extension ProviderInfo {
         case .fireworks: "Amounts are before credits are applied, so they can read higher than the invoice."
         case .vapi: "Adds up call costs only. Other billable usage, such as phone numbers, isn't included."
         case .retell: "Adds up call costs only: chats, phone numbers and concurrency aren't included."
+        case .browserbase: "One project's usage. Browserbase doesn't say what period it covers."
         default: nil
         }
     }
@@ -65,6 +75,7 @@ extension ProviderInfo {
         case .fireworks: "No read-only key. An Inference user's key reads billing but can still run models."
         case .vapi: "Vapi has no read-only key. A private key can do everything in your organization."
         case .retell: "Limit the key to History › Read. It can then read call history but not make calls."
+        case .browserbase: "Browserbase has no read-only key. This key can run browser sessions on your plan."
         default: nil
         }
     }
@@ -175,6 +186,12 @@ extension ProviderInfo {
                 SetupStep("Create a key with only History › Read and copy it", "Turn on Restrict permissions, "
                     + "then give Monitor › History Read access and nothing else. A key created without "
                     + "restrictions keeps full access.")
+            ]
+        case .browserbase:
+            return [
+                SetupStep("Open Settings in Browserbase", "The project's API key is there.",
+                          link: open("Open Browserbase Settings")),
+                SetupStep("Copy the API key", "Add the project ID too if the key sees more than one project.")
             ]
         default:
             return []

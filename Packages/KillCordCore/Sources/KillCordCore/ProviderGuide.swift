@@ -85,7 +85,7 @@ extension ProviderInfo {
         case .enteredByHand: "For a service with no API: the plan, price and renewal date you enter, with a "
             + "reminder before it renews. It isn't live and isn't in your totals."
         }
-        return [shows, delaySummary, requirement].compactMap { $0 }.joined(separator: " ")
+        return [batch3Shows ?? shows, delaySummary, requirement].compactMap { $0 }.joined(separator: " ")
     }
 
     /// How far behind the provider's numbers run, in a few words.

@@ -12,7 +12,8 @@ import Testing
         .together,
         .fireworks,
         .vapi,
-        .retell
+        .retell,
+        .browserbase
     ]
     static let hosts: [ProviderID: Set<String>] = [
         .llamacloud: ["api.cloud.llamaindex.ai", "api.cloud.eu.llamaindex.ai"],
@@ -20,7 +21,8 @@ import Testing
         .together: ["api.together.ai"],
         .fireworks: ["api.fireworks.ai"],
         .vapi: ["api.vapi.ai"],
-        .retell: ["api.retellai.com"]
+        .retell: ["api.retellai.com"],
+        .browserbase: ["api.browserbase.com"]
     ]
     static let keyPowers: [ProviderID: KeyPower] = [
         .llamacloud: .canManage,
