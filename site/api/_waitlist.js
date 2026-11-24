@@ -6,6 +6,12 @@ const crypto = require('crypto');
 const INJECT_URL = 'https://inject.postshiba.com/api/inject/v1';
 const FROM = 'corey@mail.killcord.app';
 
+// Replies go to WAITLIST_REPLY_TO when it's a plain address, so the real inbox stays out of the public repo.
+function replyTo() {
+  const address = (process.env.WAITLIST_REPLY_TO || '').trim();
+  return /^[^\s@<>,]+@[^\s@<>,]+\.[^\s@<>,]+$/.test(address) ? address : FROM;
+}
+
 function configured() {
   return Boolean(process.env.WAITLIST_DATABASE_URL && process.env.WAITLIST_HMAC_KEY);
 }
@@ -87,7 +93,7 @@ async function sendWelcome(email, id) {
         headers: {
           From: `Corey Haines <${FROM}>`,
           To: email,
-          'Reply-To': FROM,
+          'Reply-To': replyTo(),
           Subject: 'You’re on the Kill Cord Teams list',
           'List-Unsubscribe': `<${unsubscribeUrl}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
