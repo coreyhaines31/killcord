@@ -101,6 +101,31 @@ extension CapsCatalog {
             steps: ["Open Billing & Credits in the Bland dashboard.",
                     "Leave auto refill off, or set a refill you accept, then mark this done."],
             caveat: "Bland says usage can pass zero before it stops, leaving a negative balance."
+        ),
+        // LlamaCloud. https://developers.llamaindex.ai/llamaparse/general/billing/
+        CapControl(
+            id: LlamaCloudProvider.spendLimitCapID, provider: .llamacloud, name: "Monthly invoice limit",
+            summary: "When the organization's invoice reaches its monthly limit, LlamaCloud refuses new jobs until "
+                + "the next billing period.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://cloud.llamaindex.ai"),
+            docURL: url("https://admin.api.llamaindex.ai/api/resources/organizations/methods/get_usage"),
+            steps: ["Open Settings › Organization › Plan & Credits in LlamaCloud.",
+                    "Set a monthly spending limit if your plan offers one."],
+            caveat: "Kill Cord reads the limit and whether it's been reached from LlamaCloud's usage API."
+        ),
+        CapControl(
+            id: "llamacloud.pause-jobs", provider: .llamacloud, name: "Pause jobs when credits run out",
+            summary: "With Pause jobs chosen, new jobs stop when the credit balance reaches zero and return a 402 "
+                + "error. Jobs already running finish.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://cloud.llamaindex.ai"),
+            docURL: url("https://developers.llamaindex.ai/llamaparse/general/billing/"),
+            steps: ["Open Settings › Organization › Plan & Credits in LlamaCloud.",
+                    "Under When credits run out, choose Pause jobs, or Reload credits automatically with a monthly "
+                        + "cap you accept."],
+            caveat: "If Keep going, bill me for extra usage is chosen, jobs keep starting past zero, and on Starter "
+                + "that has no monthly cap. LlamaCloud doesn't let you choose it again once it's off."
         )
     ]
 }

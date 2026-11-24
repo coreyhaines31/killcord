@@ -40,6 +40,7 @@ extension ProviderID {
         case .elevenlabs: 2.8
         case .apify: 1.45
         case .deepgram: 1.5
+        case .llamacloud: 1.3
         default: 1
         }
     }

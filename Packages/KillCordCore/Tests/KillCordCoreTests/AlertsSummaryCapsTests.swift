@@ -226,7 +226,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         #expect(verifiable == [
             OpenAIProvider.hardLimitCapID, GoogleCloudProvider.spendCapID, GoogleCloudProvider.budgetAlertCapID,
             CloudflareProvider.spendLimitCapID, TwilioProvider.triggerCapID, NeonProvider.thresholdCapID,
-            ApifyProvider.usageLimitCapID, TelnyxProvider.autoRechargeCapID
+            ApifyProvider.usageLimitCapID, TelnyxProvider.autoRechargeCapID,
+            LlamaCloudProvider.spendLimitCapID
         ])
         // Anthropic can't be checked over the API for Console organizations.
         #expect(CapsCatalog.controls(for: .anthropic).allSatisfy { $0.verification == .selfReported })
