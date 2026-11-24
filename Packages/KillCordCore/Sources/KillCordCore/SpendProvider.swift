@@ -159,6 +159,7 @@ public enum SpendProviders {
         case .baseten: BasetenProvider(http: http)
         case .hunter: HunterProvider(http: http)
         case .zerobounce: ZeroBounceProvider(http: http)
+        case .vonage: VonageProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)

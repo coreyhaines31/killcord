@@ -205,6 +205,18 @@ extension CapsCatalog {
                     "Set max replicas to the most you're willing to pay for, and min replicas to 0 to scale to zero."],
             caveat: "It caps replicas, not dollars. Training, Model APIs and Loops aren't limited by it, and Baseten "
                 + "documents no account-wide spend cap."
+        ),
+        // Vonage. https://developer.vonage.com/en/account/guides/payments and https://developer.vonage.com/en/api/account
+        CapControl(
+            id: VonageProvider.autoReloadCapID, provider: .vonage, name: "Prepaid balance, auto reload off",
+            summary: "Vonage says that when the balance reaches zero \"you can no longer use our APIs and your virtual "
+                + "numbers are cancelled\". With auto reload off, nothing tops it up.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://dashboard.nexmo.com/billing-and-payments"),
+            docURL: url("https://developer.vonage.com/en/account/guides/payments"),
+            steps: ["Open Billing & payments in the Vonage API Dashboard.",
+                    "Set Auto reload to off, or choose a reload amount you accept."],
+            caveat: "At zero your virtual numbers are cancelled too, so keep enough balance for the numbers you rent."
         )
     ]
 }

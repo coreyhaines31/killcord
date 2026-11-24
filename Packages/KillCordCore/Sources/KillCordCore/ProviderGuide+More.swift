@@ -96,6 +96,13 @@ extension ProviderInfo {
                 SetupStep("Copy the key", "ZeroBounce takes the key in the address of each request; Kill Cord "
                     + "removes it from any error it shows.")
             ]
+        case .vonage:
+            return [
+                SetupStep("Open the Vonage API Dashboard", "Find your account's API key and secrets.",
+                          link: open("Open Vonage Dashboard")),
+                SetupStep("Copy the API key and a secret", "Create a second secret just for Kill Cord, so you can "
+                    + "revoke it on its own. It works for the whole account.")
+            ]
         default:
             return []
         }
@@ -117,6 +124,7 @@ extension ProviderInfo {
         case .baseten: "Baseten workspace"
         case .hunter: "Hunter dashboard"
         case .zerobounce: "ZeroBounce API dashboard"
+        case .vonage: "Vonage API Dashboard"
         default: "service's site"
         }
     }
@@ -137,6 +145,7 @@ extension ProviderInfo {
         case .baseten: "Reported in whole UTC days."
         case .hunter: nil
         case .zerobounce: nil
+        case .vonage: "Vonage checks the balance for auto reload every six minutes."
         default: nil
         }
     }
@@ -153,6 +162,7 @@ extension ProviderInfo {
         case .novita: "Shows available credit: your top-ups plus any credit limit."
         case .baseten: "Spend is after Baseten credits, across dedicated models, training, Model APIs and Loops."
         case .hunter: "Shows the team's credits, or its searches when searches and verifications are separate quotas."
+        case .vonage: "Shows the balance in euros, the currency Vonage reports it in."
         default: nil
         }
     }
@@ -173,6 +183,7 @@ extension ProviderInfo {
         case .baseten: "Baseten has no billing-only key. A personal key can do whatever your account can."
         case .hunter: "Hunter has no read-only key. This key can run searches and manage leads, sequences and keys."
         case .zerobounce: "ZeroBounce has no read-only key. This key can validate emails on your credits."
+        case .vonage: "Vonage has no read-only key. The key and secret can send messages, buy numbers and change secrets."
         default: nil
         }
     }

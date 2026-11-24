@@ -177,6 +177,22 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "ZeroBounce doesn't say how current the credit balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://www.zerobounce.net/members/signin")
+        ),
+        ProviderInfo(
+            id: .vonage, name: "Vonage", capability: .balance(spend: []),
+            fields: [
+                CredentialField(id: "apiKey", label: "API key", placeholder: "a1b2c3d4", isSecret: false),
+                CredentialField(id: "apiSecret", label: "API secret", placeholder: "API secret", isSecret: true)
+            ],
+            keyKind: "API key and secret",
+            keyURL: url("https://dashboard.nexmo.com"),
+            keyPowerWarning: "Vonage has no read-only key. The account API key and secret work for the whole "
+                + "account: they can send messages, place calls, buy numbers, and create or delete secrets. Vonage "
+                + "lets an account have more than one secret, so make one just for Kill Cord. Kill Cord only reads "
+                + "the balance and the auto reload setting.",
+            lag: ProviderLag(typical: 0, note: "Vonage reports the balance in euros."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://dashboard.nexmo.com/billing-and-payments")
         )
     ]
 }
