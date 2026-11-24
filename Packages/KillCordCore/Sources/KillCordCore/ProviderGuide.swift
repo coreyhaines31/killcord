@@ -49,6 +49,7 @@ extension ProviderInfo {
         case .runway: "Runway developer portal"
         case .serpapi: "SerpApi dashboard"
         case .brightdata: "Bright Data control panel"
+        case .scrapecreators: "ScrapeCreators dashboard"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -96,7 +97,7 @@ extension ProviderInfo {
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
-             .tavily, .deepgram, .runway, .serpapi, .brightdata: nil
+             .tavily, .deepgram, .runway, .serpapi, .brightdata, .scrapecreators: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -143,6 +144,7 @@ extension ProviderInfo {
         case .runway: "Runway has no read-only key. This key can start generations on your credits."
         case .serpapi: "SerpApi has one private key with no scopes. It can run searches on your plan."
         case .brightdata: "Bright Data has no read-only key. Use the Finance level, limited to billing pages."
+        case .scrapecreators: "ScrapeCreators documents no read-only key. This key can run scrapes on your credits."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -335,6 +337,13 @@ extension ProviderInfo {
                 SetupStep("Create a key with the Finance permission level and copy it", "Bright Data says Finance "
                     + "allows access to billing and financial pages only. Its docs don't name the level this call "
                     + "needs; Admin and Finance keys read billing elsewhere in its API.")
+            ]
+        case .scrapecreators:
+            return [
+                SetupStep("Open the ScrapeCreators dashboard", "Your API key is on it.",
+                          link: open("Open ScrapeCreators")),
+                SetupStep("Copy the API key", "Kill Cord reads your credit balance, which ScrapeCreators says is "
+                    + "free and doesn't use credits.")
             ]
         case .manual:
             return [

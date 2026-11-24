@@ -49,6 +49,7 @@ enum FakeKeys {
     static let runway = "key_TESTrunwaysecret0022"
     static let serpapi = "serpapiTESTsecret0023abcdef"
     static let brightdata = "brightdata-TEST-secret-0024"
+    static let scrapecreators = "scrapecreators-TEST-secret-0025"
 
     static var googleJSON: String {
         let object: [String: String] = [
@@ -92,6 +93,7 @@ enum FakeKeys {
         case .runway: ["apiKey": runway]
         case .serpapi: ["apiKey": serpapi]
         case .brightdata: ["apiKey": brightdata]
+        case .scrapecreators: ["apiKey": scrapecreators]
         case .custom: ["serviceName": "Example", "url": "https://api.example.com/v1/balance", "key": custom,
                        "remainingPath": "data.balance"]
         // Values long enough not to turn up by chance inside an id or a date.
@@ -104,7 +106,7 @@ enum FakeKeys {
     /// Every fake secret, for leak checks.
     static let all = [anthropic, openai, vercel, cloudflare, twilio, neon, "TESTPRIVATEKEYgooglesecret0007",
                       "ya29.TEST-ACCESS-TOKEN", openrouter, dataforseo, ahrefs, firecrawl, treg, monid, custom,
-                      fal, elevenlabs, xai, deepseek, apify, tavily, deepgram, runway, serpapi, brightdata]
+                      fal, elevenlabs, xai, deepseek, apify, tavily, deepgram, runway, serpapi, brightdata, scrapecreators]
 }
 
 /// Stands in for RSA signing, which needs the Security framework. Records what it was asked to sign.

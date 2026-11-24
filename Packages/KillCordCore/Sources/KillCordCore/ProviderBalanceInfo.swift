@@ -231,6 +231,18 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Bright Data doesn't say how current the balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://brightdata.com/cp/billing/settings")
+        ),
+        ProviderInfo(
+            id: .scrapecreators, name: "ScrapeCreators", capability: .balance(spend: []),
+            fields: [apiKeyField("ScrapeCreators API key")],
+            keyKind: "API key",
+            keyURL: url("https://app.scrapecreators.com/"),
+            keyPowerWarning: "ScrapeCreators doesn't document a read-only or scoped key. The API key can run "
+                + "scrapes that use your credits. Kill Cord only reads the credit balance, which ScrapeCreators "
+                + "says is free.",
+            lag: ProviderLag(typical: 0, note: "ScrapeCreators doesn't say how current the credit count is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.scrapecreators.com/")
         )
     ]
 }

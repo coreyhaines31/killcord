@@ -16,10 +16,11 @@ extension SignalLight {
 extension ProviderID {
     /// The asset catalog name of the provider's official mark. `docs/third-party-marks.md` gives each source.
     /// Nil for custom and manual connections, which aren't a vendor and draw a symbol instead, and for vendors
-    /// with no usable official symbol (Bright Data's logo is a wordmark), which draw their first letter.
+    /// with no usable official symbol (Bright Data's logo is a wordmark, ScrapeCreators' a small raster tile),
+    /// which draw their first letter.
     var markAssetName: String? {
         switch self {
-        case .custom, .manual, .brightdata: nil
+        case .custom, .manual, .brightdata, .scrapecreators: nil
         default: "mark-\(rawValue)"
         }
     }
