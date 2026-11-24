@@ -191,7 +191,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         #expect(withCaps.filter { !more.contains($0) && !batch3.contains($0) }
             == [.openrouter, .monid, .fal, .elevenlabs, .xai, .apify, .tavily, .runway, .brightdata])
         #expect(withCaps.filter { more.contains($0) } == [
-            .runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita
+            .runpod, .xapi, .bfl, .telnyx, .luma, .heygen, .browseruse, .novita, .vonage
         ])
         #expect(withCaps.filter { batch3.contains($0) } == [.moonshot, .exa, .scrapingbee, .scrapfly, .kie, .bland])
     }
@@ -230,7 +230,8 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
             CloudflareProvider.spendLimitCapID, TwilioProvider.triggerCapID, NeonProvider.thresholdCapID,
             ApifyProvider.usageLimitCapID, TelnyxProvider.autoRechargeCapID,
             LlamaCloudProvider.spendLimitCapID,
-            HeyGenProvider.spendingCapID, HeyGenProvider.autoReloadCapID
+            HeyGenProvider.spendingCapID, HeyGenProvider.autoReloadCapID,
+            HeyGenProvider.spendingCapID, HeyGenProvider.autoReloadCapID, VonageProvider.autoReloadCapID
         ])
         // Anthropic can't be checked over the API for Console organizations.
         #expect(CapsCatalog.controls(for: .anthropic).allSatisfy { $0.verification == .selfReported })

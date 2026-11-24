@@ -100,6 +100,7 @@ import Testing
             .baseten: ["apiKey"],
             .hunter: ["apiKey"],
             .zerobounce: ["apiKey"],
+            .vonage: ["apiKey", "apiSecret"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

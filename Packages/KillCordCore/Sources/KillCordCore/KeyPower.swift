@@ -60,6 +60,8 @@ extension ProviderID {
         case .hunter: .canManage
         // ZeroBounce documents no read-only key: an API key validates emails on the account's credits.
         case .zerobounce: .canSpend
+        // Vonage's account API key and secret reach the whole account: messages, calls, numbers and secrets.
+        case .vonage: .canManage
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.
