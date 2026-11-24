@@ -154,6 +154,7 @@ public enum SpendProviders {
         case .monid: MonidProvider(http: http)
         case .fal: FalProvider(http: http)
         case .elevenlabs: ElevenLabsProvider(http: http)
+        case .xai: XAIProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

@@ -39,6 +39,7 @@ enum FakeKeys {
     static let treg = "treg-TEST-token-secret-0012"
     static let monid = "monid_test_TEST-secret-0013"
     static let custom = "custom-TEST-key-secret-0014"
+    static let xai = "xai-mgmt-TEST-secret-0017"
     static let elevenlabs = "sk_TEST-elevenlabs-secret-0016"
     static let fal = "fal-TEST-key-id:fal-TEST-secret-0015"
 
@@ -76,6 +77,7 @@ enum FakeKeys {
         case .monid: ["apiKey": monid]
         case .fal: ["apiKey": fal]
         case .elevenlabs: ["apiKey": elevenlabs]
+        case .xai: ["managementKey": xai, "teamID": "65c1e471-205f-4566-9c5a-07198bcdf4ce"]
         case .custom: ["serviceName": "Example", "url": "https://api.example.com/v1/balance", "key": custom,
                        "remainingPath": "data.balance"]
         // Values long enough not to turn up by chance inside an id or a date.
@@ -88,7 +90,7 @@ enum FakeKeys {
     /// Every fake secret, for leak checks.
     static let all = [anthropic, openai, vercel, cloudflare, twilio, neon, "TESTPRIVATEKEYgooglesecret0007",
                       "ya29.TEST-ACCESS-TOKEN", openrouter, dataforseo, ahrefs, firecrawl, treg, monid, custom,
-                      fal, elevenlabs]
+                      fal, elevenlabs, xai]
 }
 
 /// Stands in for RSA signing, which needs the Security framework. Records what it was asked to sign.

@@ -41,6 +41,7 @@ extension ProviderInfo {
         case .monid: "Monid dashboard"
         case .fal: "fal dashboard"
         case .elevenlabs: "ElevenLabs settings"
+        case .xai: "xAI Console"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -87,7 +88,7 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -123,6 +124,7 @@ extension ProviderInfo {
         case .monid: "No read-only key is documented. This key can start paid runs."
         case .fal: "Use a BILLING-preset key: fal lists only billing reads for it. A FULL key can run models."
         case .elevenlabs: "Limit the key to User read access, so it can't call the speech endpoints."
+        case .xai: "xAI has no read-only management key. This one can also create keys and change limits."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -255,6 +257,15 @@ extension ProviderInfo {
                 SetupStep("Create a key that can only read User and copy it", "Turn off every other endpoint, "
                     + "so the key can't make speech. ElevenLabs doesn't say which permission this call needs; "
                     + "User read is the likely one.")
+            ]
+        case .xai:
+            return [
+                SetupStep("Open Management Keys in the xAI Console", "Under Settings › Management Keys. Your "
+                    + "account needs the Management Keys Read and Write permissions.",
+                          link: open("Open xAI Management Keys")),
+                SetupStep("Create a management key and copy it", "It's separate from the API keys that call Grok."),
+                SetupStep("Copy your team ID", "On Settings › Team in the same console.",
+                          link: ("Open Team Settings", URL(string: "https://console.x.ai/team/default/settings/team")!))
             ]
         case .manual:
             return [

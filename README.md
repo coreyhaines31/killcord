@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, and ElevenLabs.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, and xAI.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
@@ -28,7 +28,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
+- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
 - **Takes any balance endpoint.** A custom connection reads a service Kill Cord doesn't know from an https address you enter and a path into its JSON. Kill Cord can't verify those numbers and says so.
 - **Remembers plans with no API.** For services like Truelist or Gojiberry, enter the plan, price, and renewal date. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
 - **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month. Low-balance alerts fire once when a balance drops to your amount, and again only after a top-up.
@@ -54,6 +54,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Monid | Wallet balance | API key | Balance left, in dollars | None (budgets are your checkmark) |
 | fal | Account credits | API key with the BILLING preset | Balance left, in dollars | None (the balance is the cap) |
 | ElevenLabs | Subscription credits | API key limited to User read | Credits left this period | None (key quotas are your checkmark) |
+| xAI | Prepaid credits (Management API) | Management key and team ID | Balance left, in dollars | None (the invoiced billing limit is your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -92,6 +93,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Monid | An API key from app.monid.ai › Access › API keys. |
 | fal | A key with the BILLING preset from fal.ai › Dashboard › Keys. Don't use a FULL key. |
 | ElevenLabs | An API key from Settings › API Keys with every endpoint off except User (read). |
+| xAI | A management key from the xAI Console › Settings › Management Keys, and the team ID from Settings › Team. A management key can also manage API keys and limits. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
