@@ -31,6 +31,12 @@ import Testing
         #expect(detail(#"{"err_code":"FORBIDDEN","err_msg":"Insufficient permissions.","request_id":"r1"}"#) == "Insufficient permissions.")
     }
 
+    @Test func readsJSONAPIErrors() {
+        // Telnyx: https://developers.telnyx.com/api-reference/billing/get-user-balance-details
+        #expect(detail(#"{"errors":[{"code":"10010","title":"Authorization failed","detail":"You do not have permission."}]}"#) == "You do not have permission.")
+        #expect(detail(#"{"errors":[{"code":"10007","title":"Unexpected error"}]}"#) == "Unexpected error")
+    }
+
     @Test func removesAKeyCarriedInTheQueryString() throws {
         let key = "serpapi-TEST-query-secret-0099"
         let queryRequest = HTTPRequest(url: URL(string: "https://serpapi.com/account.json?api_key=\(key)")!)

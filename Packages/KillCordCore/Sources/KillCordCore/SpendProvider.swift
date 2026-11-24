@@ -230,7 +230,9 @@ enum ProviderErrorDetail {
 
     private static func text(in object: [String: Any]) -> String? {
         if let error = object["error"] as? [String: Any], let message = error["message"] as? String { return message }
-        if let errors = object["errors"] as? [[String: Any]], let message = errors.first?["message"] as? String {
+        // `{errors: [{title, detail}]}` is the JSON:API shape (Telnyx).
+        if let errors = object["errors"] as? [[String: Any]], let first = errors.first,
+           let message = first["message"] as? String ?? first["detail"] as? String ?? first["title"] as? String {
             return message
         }
         if let message = object["message"] as? String { return message }
