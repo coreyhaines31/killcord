@@ -39,6 +39,7 @@ extension ProviderInfo {
         case .firecrawl: "Firecrawl dashboard"
         case .treg: "treg dashboard"
         case .monid: "Monid dashboard"
+        case .fal: "fal dashboard"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -85,7 +86,7 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -119,6 +120,7 @@ extension ProviderInfo {
         case .firecrawl: "No read-only key is documented. This key can run scrapes on your credits."
         case .treg: "Every treg token can call tools on the balance. Use a limited agent token."
         case .monid: "No read-only key is documented. This key can start paid runs."
+        case .fal: "Use a BILLING-preset key: fal lists only billing reads for it. A FULL key can run models."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -237,6 +239,12 @@ extension ProviderInfo {
             return [
                 SetupStep("Open API Keys in Monid", "In the Monid dashboard.", link: open("Open Monid Keys")),
                 SetupStep("Create a key and copy it", "It starts with monid_.")
+            ]
+        case .fal:
+            return [
+                SetupStep("Open API Keys in fal", "In the fal dashboard.", link: open("Open fal Keys")),
+                SetupStep("Create a key with the BILLING preset and copy it", "fal lists only billing reads for "
+                    + "it. Don't use a FULL key: it can run models on your credits.")
             ]
         case .manual:
             return [

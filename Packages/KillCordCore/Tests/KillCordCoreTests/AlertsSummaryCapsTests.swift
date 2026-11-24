@@ -186,7 +186,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         let withCaps = ProviderID.allCases.filter {
             $0.info.capability.showsBalance && !CapsCatalog.controls(for: $0).isEmpty
         }
-        #expect(withCaps == [.openrouter, .monid])
+        #expect(withCaps == [.openrouter, .monid, .fal])
     }
 
     @Test func everyCapHasHTTPSLinksStepsAndAUniqueID() {
