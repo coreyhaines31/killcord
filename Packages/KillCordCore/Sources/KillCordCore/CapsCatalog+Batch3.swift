@@ -53,6 +53,18 @@ extension CapsCatalog {
                     "Leave auto recharge off, or set a monthly maximum above $0."],
             caveat: "A monthly maximum of $0, or a blank one, means no cap on automatic purchases. A team with "
                 + "overage turned on keeps running past zero."
+        ),
+        // ScrapingBee. https://help.scrapingbee.com/en/article/auto-renewal-f79j19/
+        CapControl(
+            id: "scrapingbee.auto-renew", provider: .scrapingbee, name: "Auto renew off",
+            summary: "With auto renew on, ScrapingBee renews your subscription, and charges for it, once 98% of "
+                + "your credits are used. With it off, requests stop when the credits run out.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://app.scrapingbee.com/account/manage/manage_subscription"),
+            docURL: url("https://help.scrapingbee.com/en/article/auto-renewal-f79j19/"),
+            steps: ["Open Manage subscription in the ScrapingBee dashboard.",
+                    "Leave auto renew off, then mark this done."],
+            caveat: "Auto renew also moves your renewal date. ScrapingBee documents no spend limit or alert."
         )
     ]
 }

@@ -172,6 +172,7 @@ public enum SpendProviders {
         case .stability: StabilityProvider(http: http)
         case .moonshot: KimiProvider(http: http)
         case .exa: ExaProvider(http: http)
+        case .scrapingbee: ScrapingBeeProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }

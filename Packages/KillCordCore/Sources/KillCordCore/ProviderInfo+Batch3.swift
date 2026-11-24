@@ -43,6 +43,18 @@ extension ProviderInfo {
                 + "minutes."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://dashboard.exa.ai/billing")
+        ),
+        ProviderInfo(
+            id: .scrapingbee, name: "ScrapingBee", capability: .balance(spend: []),
+            fields: [apiKeyField("ScrapingBee API key")],
+            keyKind: "API key",
+            keyURL: url("https://dashboard.scrapingbee.com/account/manage/api_key"),
+            keyPowerWarning: "ScrapingBee documents one API key per account, with no scopes or read-only option. It "
+                + "can run scrapes that use your plan's credits. Kill Cord only reads credit usage, which "
+                + "ScrapingBee says doesn't add to your concurrency.",
+            lag: ProviderLag(typical: 0, note: "ScrapingBee says usage results are available in real time."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.scrapingbee.com/billing/plans")
         )
     ]
 }

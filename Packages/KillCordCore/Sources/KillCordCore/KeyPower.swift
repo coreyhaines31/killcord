@@ -76,6 +76,8 @@ extension ProviderID {
         case .moonshot: .readOnlyIfChosen
         // Exa's Team Management service keys create, rotate and delete API keys; none is read-only.
         case .exa: .canManage
+        // ScrapingBee has one API key per account, with no documented scopes: it can run scrapes.
+        case .scrapingbee: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

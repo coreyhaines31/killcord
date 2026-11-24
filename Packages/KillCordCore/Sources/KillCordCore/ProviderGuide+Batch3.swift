@@ -8,6 +8,7 @@ extension ProviderInfo {
         case .stability: "Stability AI platform"
         case .moonshot: "Kimi console"
         case .exa: "Exa dashboard"
+        case .scrapingbee: "ScrapingBee dashboard"
         default: "service's site"
         }
     }
@@ -17,6 +18,7 @@ extension ProviderInfo {
         switch id {
         case .stability: nil
         case .exa: "Runs up to 5 minutes behind."
+        case .scrapingbee: "Usage is live."
         default: nil
         }
     }
@@ -34,6 +36,7 @@ extension ProviderInfo {
         case .stability: "Stability AI has no read-only key. This key can run generations on your credits."
         case .moonshot: "Use an Admin key with only billing:read: it can't call models. An inference key can spend."
         case .exa: "A service key can also create and delete your API keys. Exa has no read-only one."
+        case .scrapingbee: "ScrapingBee has no read-only key. This key can run scrapes on your plan's credits."
         default: nil
         }
     }
@@ -65,6 +68,13 @@ extension ProviderInfo {
                           link: open("Open Exa API Keys")),
                 SetupStep("Create a service key and copy it", "It can manage your API keys, so keep it to Kill "
                     + "Cord. A search API key won't work.")
+            ]
+        case .scrapingbee:
+            return [
+                SetupStep("Open your API key in the ScrapingBee dashboard", "Under Account › Manage › API key.",
+                          link: open("Open ScrapingBee Key")),
+                SetupStep("Copy the API key", "Kill Cord reads your plan's credit usage. ScrapingBee keys have no "
+                    + "scopes, so regenerate it there if it leaks.")
             ]
         default:
             return []
