@@ -1,0 +1,35 @@
+{
+  "account": {
+    "account_id": "4d1b8e8f-0000-4000-8000-000000000000",
+    "timezone": "Europe/Paris",
+    "currency": "USD"
+  },
+  "project": {
+    "allow_extra_usage": true,
+    "allowed_networks": [],
+    "budget_limit": 700,
+    "budget_spent": 0,
+    "concurrency_limit": null,
+    "name": "default",
+    "quota_reached": false,
+    "scrape_request_count": 315004,
+    "scrape_request_limit": 7000000,
+    "tags": []
+  },
+  "subscription": {
+    "plan_name": "PRO",
+    "period": {
+      "start": "2026-11-03",
+      "end": "2026-12-03"
+    },
+    "extra_scrape_allowed": false,
+    "billing": {
+      "ongoing_payment": { "amount": "0", "currency": "USD" }
+    },
+    "usage": {
+      "scrape": { "current": 315004, "limit": 1000000, "remaining": 684996, "concurrent_usage": 2, "concurrent_limit": 10 },
+      "schedule": { "current": 1, "limit": 5 },
+      "spider": { "current": 0, "limit": 5 }
+    }
+  }
+}

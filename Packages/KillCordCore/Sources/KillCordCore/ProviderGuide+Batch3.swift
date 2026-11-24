@@ -9,6 +9,7 @@ extension ProviderInfo {
         case .moonshot: "Kimi console"
         case .exa: "Exa dashboard"
         case .scrapingbee: "ScrapingBee dashboard"
+        case .scrapfly: "Scrapfly dashboard"
         default: "service's site"
         }
     }
@@ -27,6 +28,7 @@ extension ProviderInfo {
         switch id {
         case .moonshot: "Global platform (platform.kimi.ai) accounts only, in dollars."
         case .exa: "Needs Exa's Team Management API, which Exa turns on per team on request."
+        case .scrapfly: "Shows the plan's scrape credits for the whole account."
         default: nil
         }
     }
@@ -37,6 +39,7 @@ extension ProviderInfo {
         case .moonshot: "Use an Admin key with only billing:read: it can't call models. An inference key can spend."
         case .exa: "A service key can also create and delete your API keys. Exa has no read-only one."
         case .scrapingbee: "ScrapingBee has no read-only key. This key can run scrapes on your plan's credits."
+        case .scrapfly: "Scrapfly has no read-only key. This key can run scrapes on your plan's credits."
         default: nil
         }
     }
@@ -75,6 +78,13 @@ extension ProviderInfo {
                           link: open("Open ScrapingBee Key")),
                 SetupStep("Copy the API key", "Kill Cord reads your plan's credit usage. ScrapingBee keys have no "
                     + "scopes, so regenerate it there if it leaks.")
+            ]
+        case .scrapfly:
+            return [
+                SetupStep("Open Projects in the Scrapfly dashboard", "Pick a project and its LIVE environment.",
+                          link: open("Open Scrapfly Projects")),
+                SetupStep("Copy the LIVE API key", "Kill Cord reads your account's credit usage with it. It "
+                    + "travels in the request address, as Scrapfly requires, and Kill Cord strips it from errors.")
             ]
         default:
             return []

@@ -212,8 +212,9 @@ import Testing
         .telnyx: .canManage
     ]
     /// Services in `ProviderInfo.batch3Providers` that read a balance with GETs.
-    static let batch3Providers: [ProviderID] = [.stability, .moonshot, .exa, .scrapingbee]
+    static let batch3Providers: [ProviderID] = [.stability, .moonshot, .exa, .scrapingbee, .scrapfly]
     static let batch3Hosts: [ProviderID: String] = [
+        .scrapfly: "api.scrapfly.io",
         .scrapingbee: "app.scrapingbee.com",
         .exa: "admin-api.exa.ai",
         .moonshot: "api.moonshot.ai",

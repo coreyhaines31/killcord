@@ -65,6 +65,19 @@ extension CapsCatalog {
             steps: ["Open Manage subscription in the ScrapingBee dashboard.",
                     "Leave auto renew off, then mark this done."],
             caveat: "Auto renew also moves your renewal date. ScrapingBee documents no spend limit or alert."
+        ),
+        // Scrapfly. https://scrapfly.io/docs/project and https://scrapfly.io/docs/billing
+        CapControl(
+            id: "scrapfly.extra-usage", provider: .scrapfly, name: "No extra credit use on each project",
+            summary: "With extra use off, a project's calls past its quota are refused instead of billed as extra "
+                + "credits.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://scrapfly.io/dashboard/project"),
+            docURL: url("https://scrapfly.io/docs/billing"),
+            steps: ["Open Projects in the Scrapfly dashboard and edit each project.",
+                    "Uncheck Allow PAG, or keep it and set the project's Budget Limit, then mark this done."],
+            caveat: "Each project has its own settings. Paid plans also cap extra use at 50% of the monthly quota by "
+                + "default, then suspend the account."
         )
     ]
 }

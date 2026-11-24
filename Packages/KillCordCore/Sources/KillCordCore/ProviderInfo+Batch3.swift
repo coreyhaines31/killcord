@@ -55,6 +55,19 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "ScrapingBee says usage results are available in real time."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.scrapingbee.com/billing/plans")
+        ),
+        ProviderInfo(
+            id: .scrapfly, name: "Scrapfly", capability: .balance(spend: []),
+            fields: [apiKeyField("Scrapfly API key", help: "The LIVE key of a project.")],
+            keyKind: "API key",
+            keyURL: url("https://scrapfly.io/dashboard/project"),
+            keyPowerWarning: "Scrapfly gives each project one key per environment (LIVE and TEST), and a key reaches "
+                + "every Scrapfly product. Scrapfly documents no read-only key, so this one can run scrapes that use "
+                + "your plan's credits. Scrapfly takes the key in the request address; Kill Cord removes it from "
+                + "any error it shows. Kill Cord only reads your account's credit usage.",
+            lag: ProviderLag(typical: 0, note: "Scrapfly doesn't say how current the account usage is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://scrapfly.io/dashboard/billing")
         )
     ]
 }
