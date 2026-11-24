@@ -384,7 +384,7 @@ extension ProviderEditor {
         if let error = connectionID.flatMap({ model.states[$0] })?.lastError {
             ResultBox(light: error.isTransient ? .caution : .stop, title: error.shortLabel,
                       message: error.message(for: provider), fix: error.isTransient ? nil : error.fix(for: provider)) {
-                if provider.isBeta { BetaReportLine() }
+                if provider.isBeta, !error.isTransient { BetaReportLine() }
                 if !error.isTransient {
                     Button("Replace Key…") {
                         replacing = true

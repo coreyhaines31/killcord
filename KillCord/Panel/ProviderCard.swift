@@ -151,7 +151,7 @@ struct ProviderCard: View {
             Label(error.message(for: provider), systemImage: "exclamationmark.circle")
                 .font(.system(size: 12))
                 .fixedSize(horizontal: false, vertical: true)
-            if provider.isBeta { BetaReportLine(fontSize: 11) }
+            if provider.isBeta, !error.isTransient { BetaReportLine(fontSize: 11) }
             if !error.isTransient {
                 Button("Fix in Settings…") { openSettings(.providers) }
                     .buttonStyle(.panelCompact)
