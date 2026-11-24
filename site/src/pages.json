@@ -16,6 +16,16 @@
     "og_title": "Kill Cord privacy",
     "og_description": "Keys stay in your Mac's Keychain and go only to the provider they belong to. No telemetry, no analytics, no account.",
     "body_class": "article-page",
-    "updated": "2026-11-16"
+    "updated": "2026-11-24"
+  },
+  {
+    "path": "teams/index.html",
+    "title": "Kill Cord Teams: Company API Spend, by Person",
+    "crumb": "Teams",
+    "description": "Kill Cord Teams shows your company's API spend across every provider, who spent it, and sends alerts while every Mac sleeps. Join the waitlist.",
+    "og_title": "Kill Cord Teams: your company's API spend, and who spent it",
+    "og_description": "Company API spend across every provider, spend by person from Anthropic and OpenAI billing, and alerts that run 24/7. Join the waitlist.",
+    "body_class": "teams-page",
+    "updated": "2026-11-24"
   }
 ]
