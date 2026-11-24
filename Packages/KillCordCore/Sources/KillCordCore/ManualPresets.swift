@@ -53,7 +53,9 @@ extension ManualPreset {
     private static func cap(_ preset: String, _ id: String, _ name: String, _ summary: String,
                             _ enforcement: CapControl.Enforcement, console: String, doc: String,
                             steps: [String], caveat: String?) -> CapControl {
-        CapControl(id: "manual.\(preset).\(id)", provider: .manual, name: name, summary: summary,
+        // Named with the service, since Caps Audit lists every manual entry's caps together.
+        CapControl(id: "manual.\(ManualPreset.normalized(preset)).\(id)", provider: .manual,
+                   name: "\(preset): \(name)", summary: summary,
                    enforcement: enforcement, verification: .selfReported, consoleURL: url(console),
                    docURL: url(doc), steps: steps, caveat: caveat)
     }
@@ -65,13 +67,13 @@ extension ManualPreset {
             docURL: url("https://www.assemblyai.com/docs/account-management"),
             note: "AssemblyAI shows its balance on the dashboard only.",
             caps: [
-                cap("assemblyai", "balance", "Prepaid balance, auto-pay off",
+                cap("AssemblyAI", "balance", "Prepaid balance, auto-pay off",
                     "Without auto-pay, API access pauses when the balance reaches $0, until you top up.",
                     .hardStop, console: "https://www.assemblyai.com/dashboard/home",
                     doc: "https://www.assemblyai.com/docs/account-management",
                     steps: ["Open Workspace › Settings › Billing.", "Leave auto-pay off, or set a refill you accept."],
                     caveat: nil),
-                cap("assemblyai", "alerts", "Usage and balance alerts",
+                cap("AssemblyAI", "alerts", "Usage and balance alerts",
                     "Emails when usage or the balance crosses an amount you set.",
                     .alertOnly, console: "https://www.assemblyai.com/dashboard/home",
                     doc: "https://www.assemblyai.com/docs/account-management",
@@ -83,7 +85,7 @@ extension ManualPreset {
             docURL: url("https://inference-docs.cerebras.ai/console/account-billing"),
             note: "Cerebras shows its credit balance in the console, with a CSV export.",
             caps: [
-                cap("cerebras", "auto-recharge", "Auto-recharge off",
+                cap("Cerebras", "auto-recharge", "Auto-recharge off",
                     "Cerebras runs on prepaid credits. Auto-recharge is off by default; with it off, nothing tops "
                         + "the credits up for you.",
                     .alertOnly, console: "https://cloud.cerebras.ai",
@@ -103,7 +105,7 @@ extension ManualPreset {
             docURL: url("https://e2b.dev/docs/billing"),
             note: "E2B shows usage on its console's Usage page.",
             caps: [
-                cap("e2b", "spending-limit", "Spending limit",
+                cap("E2B", "spending-limit", "Spending limit",
                     "E2B lets you set spending limits on the console's Limits page.",
                     .alertOnly, console: "https://console.e2b.dev/?tab=limits", doc: "https://e2b.dev/docs/billing",
                     steps: ["Open Limits in the E2B console.", "Set a spending limit."],
@@ -114,14 +116,14 @@ extension ManualPreset {
             docURL: url("https://console.groq.com/docs/spend-limits"),
             note: "Groq shows spend in its console only.",
             caps: [
-                cap("groq", "spend-limit", "Monthly spend limit",
+                cap("Groq", "spend-limit", "Monthly spend limit",
                     "Past the limit, API calls from every key in the organization are refused until the 1st.",
                     .hardStop, console: "https://console.groq.com/settings/billing/limits",
                     doc: "https://console.groq.com/docs/spend-limits",
                     steps: ["Open Settings › Billing › Limits in the Groq console.", "Set a monthly spend limit."],
                     caveat: "Paid tier, organization owners only. Groq's spend tracking runs 10 to 15 minutes "
                         + "behind, so it can pass the limit by a little."),
-                cap("groq", "spend-alerts", "Spend alerts",
+                cap("Groq", "spend-alerts", "Spend alerts",
                     "Emails at amounts you choose.",
                     .alertOnly, console: "https://console.groq.com/settings/billing/limits",
                     doc: "https://console.groq.com/docs/spend-limits",
@@ -138,7 +140,7 @@ extension ManualPreset {
             docURL: url("https://docs.perplexity.ai/docs/getting-started/projects"),
             note: "Perplexity's API runs on prepaid credits shown in its console only.",
             caps: [
-                cap("perplexity", "credits", "Prepaid credits, auto reload off",
+                cap("Perplexity", "credits", "Prepaid credits, auto reload off",
                     "When the credits run out, Perplexity blocks your API keys until you add more.",
                     .hardStop, console: "https://console.perplexity.ai/project/billing",
                     doc: "https://docs.perplexity.ai/docs/getting-started/projects",
@@ -151,7 +153,7 @@ extension ManualPreset {
             docURL: url("https://replicate.com/docs/topics/billing/prepaid-credit"),
             note: "Replicate's account API has no billing data.",
             caps: [
-                cap("replicate", "prepaid", "Prepaid credit, auto reload off",
+                cap("Replicate", "prepaid", "Prepaid credit, auto reload off",
                     "When a prepaid balance hits zero, Replicate stops new work from starting and shuts down "
                         + "what it's running for you.",
                     .hardStop, console: "https://replicate.com/account/billing",
@@ -166,7 +168,7 @@ extension ManualPreset {
             docURL: url("https://docs.twelvelabs.io/docs/get-started/plans-and-billing/plans-allowances-and-overage"),
             note: "Twelve Labs shows plans and usage in its Playground settings.",
             caps: [
-                cap("twelvelabs", "overage-off", "Overage off",
+                cap("Twelve Labs", "overage-off", "Overage off",
                     "With overage off, requests fail once you reach the plan's allowance.",
                     .hardStop, console: "https://playground.twelvelabs.io",
                     doc: "https://docs.twelvelabs.io/docs/get-started/plans-and-billing/plans-allowances-and-overage",
@@ -184,7 +186,7 @@ extension ManualPreset {
             docURL: url("https://docs.unstructured.io/transform/billing"),
             note: "Unstructured shows its prepaid balance on the Billing page only.",
             caps: [
-                cap("unstructured", "prepaid", "Prepaid balance",
+                cap("Unstructured", "prepaid", "Prepaid balance",
                     "Each job's cost is reserved first. If the balance can't cover it, the request fails before "
                         + "a job starts.",
                     .hardStop, console: "https://transform.unstructured.io",
