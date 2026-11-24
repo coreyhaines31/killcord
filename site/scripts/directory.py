@@ -90,6 +90,10 @@ builtin_shows = {
 no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi', 'scrapecreators',
                  'stability-ai', 'browserbase', 'postmark', 'hunter', 'zerobounce', 'prospeo', 'lemlist'}
 caps_only = {'supabase'}
+# Built-in providers read with a real account. The rest were built from the provider's docs and are labeled
+# beta in the app (ProviderVerification.swift) until verified, so the directory says so too.
+live_verified = {'anthropic', 'google-cloud', 'openai', 'vercel', 'cloudflare', 'twilio', 'neon', 'supabase',
+                 'openrouter', 'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'monid'}
 builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Mistral, Kimi, Together AI, '
                  'Fireworks AI, Hugging Face, DeepInfra, Novita AI, Baseten, Runpod, Vercel, Cloudflare, DigitalOcean, '
                  'Twilio, Telnyx, Vonage, Plivo, Neon, OpenRouter, fal, Black Forest Labs, Luma AI, HeyGen, ElevenLabs, '
@@ -173,6 +177,8 @@ def tier_badge(s):
     tier = s['killcord']['tier']
     if s['slug'] in caps_only:
         return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>In Kill Cord’s caps audit</p>'
+    if tier == 'built-in' and s['slug'] not in live_verified:
+        return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Built into Kill Cord (beta)</p>'
     if tier == 'built-in':
         return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Built into Kill Cord</p>'
     if tier == 'planned':
@@ -288,6 +294,13 @@ def caps_section(s):
 '''
 
 
+def beta_note(s):
+    if s['slug'] in live_verified:
+        return ''
+    return (f' {s["name"]} is in beta in Kill Cord: it isn’t yet verified with a live account, so the numbers come from '
+            f'{s["name"]}’s documented API.')
+
+
 def killcord_text(s):
     name, tier = s['name'], s['killcord']['tier']
     if s['slug'] in caps_only:
@@ -295,10 +308,11 @@ def killcord_text(s):
                 f'walks you through turning on {name}’s own cap and reminds you to re-check it.')
     if tier == 'built-in' and s['slug'] in no_caps_audit:
         return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, for one account or several, says how fresh each number is, '
-                f'and can alert you once when it runs low. A balance is what’s left, not spend, so it stays out of your spend totals.')
+                f'and can alert you once when it runs low. A balance is what’s left, not spend, so it stays out of your spend totals.'
+                + beta_note(s))
     if tier == 'built-in':
         return (f'Yes. Kill Cord shows {builtin_shows[s["slug"]]} in your Mac’s menu bar, for one account or several, says how fresh each number is, '
-                f'and walks you through {name}’s own caps in its caps audit.')
+                f'and walks you through {name}’s own caps in its caps audit.' + beta_note(s))
     if s['killcord'].get('note'):
         return s['killcord']['note']
     if tier == 'planned':
@@ -496,7 +510,8 @@ def table(rows, billing=False):
         stops = [c for c in s['native_caps'] if c['kind'] in ('hard-stop', 'partial-stop')]
         cap_cell = 'Hard stop' if any(c['kind'] == 'hard-stop' for c in stops) else 'Partial stop' if stops else \
             'Alert only' if s['native_caps'] else 'None found'
-        kc = 'Caps audit' if s['slug'] in caps_only else {'built-in': 'Built in', 'manual': 'Manual entry', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
+        kc = 'Caps audit' if s['slug'] in caps_only else 'Built in (beta)' if (
+            s['killcord']['tier'] == 'built-in' and s['slug'] not in live_verified) else {'built-in': 'Built in', 'manual': 'Manual entry', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
         body.append(f'<tr><th scope="row"><a href="{url_for(s)}">{e(s["search_name"])}</a></th>'
                     f'<td data-label="Spend API">{api_cell}</td><td data-label="Native cap">{cap_cell}</td>'
                     f'<td data-label="Kill Cord">{kc}</td>'
@@ -626,7 +641,7 @@ def hub_pages():
     <ul>
       <li><b>Spend API</b> is Yes when an endpoint returns your balance, credits left, or spend in money. Partly means it returns usage counts or spend without a balance.</li>
       <li><b>Native cap</b> is the service’s own control. A hard stop refuses requests past the limit. An alert only tells you.</li>
-      <li><b>Kill Cord</b> is Built in for the eight providers the app reads today. Not yet means the API is suitable, but no adapter exists.</li>
+      <li><b>Kill Cord</b> is Built in for providers the app reads today. Built in (beta) means it isn’t yet verified with a live account: the numbers come from the provider’s documented API. Not yet means the API is suitable, but no adapter exists.</li>
     </ul>
     <p>Facts come from each service’s official docs, checked {max(s['last_verified'] for s in published)}. Anything the docs don’t say is marked “Not documented”.</p>
   </section>
