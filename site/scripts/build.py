@@ -15,8 +15,8 @@ output = root / 'dist'
 layout = Template((source / 'layouts/base.html').read_text())
 download_url = 'https://github.com/coreyhaines31/killcord/releases/latest/download/KillCord.dmg'
 partials = {name: (source / f'layouts/{name}.html').read_text().strip() for name in ('header', 'footer', 'popover', 'teams-panel')}
-# The Teams waitlist form stays disabled until Kit is wired up (see README: Teams waitlist).
-waitlist_open = bool(os.environ.get('KIT_TEAMS_FORM_ID'))
+# The Teams waitlist form stays disabled until its database is set (see README: Teams waitlist).
+waitlist_open = bool(os.environ.get('WAITLIST_DATABASE_URL'))
 
 
 def fill(text):
