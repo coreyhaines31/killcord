@@ -73,10 +73,12 @@ Manual entries named after a preset draw that service's mark, as `preset-<id>.im
 | E2B | `e2b-symbol-black-s.svg`, unmodified (the small-size cut), drawn 1.5 times larger for its clear space | https://e2b.dev/brand | "Do not warp, rotate, recolor…" | No |
 | Jina AI | `jina-company-logo_light.svg`, unmodified (dot and lettering; Jina has no separate symbol) | https://github.com/jina-ai/press-kit | "You can use them in post, news, tweets, events." | No |
 | Twelve Labs | `twelvelabs-mark.svg`: the dashed horse paths from the logo in twelvelabs.io's site header, unchanged, canvas cropped to them | https://www.twelvelabs.io/ | https://www.twelvelabs.io/legal/tm-usage-guidelines: logo use "is prohibited… except in accordance with written consent". | Yes |
+| Modal | `modal-favicon.svg`: Modal's `favicon.svg`, unmodified apart from the file name (two green blocks with gradient shading, drawn in one colour) | https://modal.com/favicon.svg (modal.com/brand redirects to a shared drive folder) | No logo terms found. Checked 2026-11-24. | Unknown |
+| Pinecone | `pinecone-logomark-black.svg`: the black logomark, with its stylesheet's two fill rules moved onto the paths as attributes (the asset catalog doesn't read CSS); geometry unchanged | https://www.pinecone.io/brand/ | "Here is what you can do without asking… Show that your product uses, integrates with, or is built on Pinecone." "Don't use any color other than black or white." Checked 2026-11-24. | No |
 | TypeSafe | `typesafe-mark.svg`: the symbol path from the logo on typesafe.ai, unchanged, canvas cropped to it | https://typesafe.ai/ | No trademark terms found (https://typesafe.ai/legal/terms). | Unknown |
 | Unstructured | `unstructured-site-nav-logo.svg`, unmodified (the lettering grid from the site header; the press-kit file sits on a black tile) | https://unstructured.io/press | No logo terms found. | Unknown |
 
-Groq, Perplexity, Replicate and Voyage AI draw their first letter: Groq's logo is a wordmark (its bolt is a favicon on an orange tile, and its brand guidelines are by request), Perplexity's only vector is a white mark traced on a black tile, Replicate publishes no SVG, and Voyage's icon depends on a mask and a white background.
+Gojiberry, Groq, Perplexity, Replicate, Truelist and Voyage AI draw their first letter: Gojiberry publishes only PNG logos, Truelist publishes no brand page or logo terms, Groq's logo is a wordmark (its bolt is a favicon on an orange tile, and its brand guidelines are by request), Perplexity's only vector is a white mark traced on a black tile, Replicate publishes no SVG, and Voyage's icon depends on a mask and a white background.
 
 ## More balance services
 
