@@ -2,7 +2,7 @@
 
 Logos are trademarks of their owners and are used only to identify the services Kill Cord reads. Kill Cord is not affiliated with, sponsored by, or endorsed by any of them.
 
-Corey decided on 2026-11-17 to show every provider's official mark next to its name, as identification (nominative use), and to accept the risk where a vendor's guidelines ask for permission first. Those vendors are flagged below so the decision can be revisited. On 2026-11-24 Corey confirmed it for fal and DeepSeek, whose terms ask for permission: keep their official marks as nominative use.
+Corey decided on 2026-11-17 to show every provider's official mark next to its name, as identification (nominative use), and to accept the risk where a vendor's guidelines ask for permission first. Those vendors are flagged below so the decision can be revisited. On 2026-11-24 Corey confirmed it for every vendor here whose terms ask for permission first, or are unclear: keep their official marks as nominative use. That covers Anthropic, Google Cloud and Gemini, OpenAI, Cloudflare and Twilio, the batch 2 services fal and DeepSeek, and the manual presets Cerebras, Twelve Labs and Cohere.
 
 Rules for a mark:
 
