@@ -41,7 +41,8 @@ enum FakeKeys {
     static let custom = "custom-TEST-key-secret-0014"
     // Services in `ProviderInfo.moreBalanceProviders`.
     static let runpod = "rpa_TEST-runpod-secret-0101"
-    static let more = [runpod]
+    static let deepinfra = "deepinfra-TEST-secret-0102"
+    static let more = [runpod, deepinfra]
     static let xai = "xai-mgmt-TEST-secret-0017"
     static let elevenlabs = "sk_TEST-elevenlabs-secret-0016"
     static let fal = "fal-TEST-key-id:fal-TEST-secret-0015"
@@ -81,6 +82,7 @@ enum FakeKeys {
                        "billingAccountID": "0123AB-4567CD-89EF01"]
         case .supabase: [:]
         case .runpod: ["apiKey": runpod]
+        case .deepinfra: ["apiKey": deepinfra]
         case .openrouter: ["apiKey": openrouter]
         case .dataforseo: ["login": "kc-test@example.com", "password": dataforseo]
         case .ahrefs: ["apiKey": ahrefs]

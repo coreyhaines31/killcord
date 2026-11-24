@@ -30,6 +30,20 @@ extension CapsCatalog {
                     "Under Notification settings, edit General notifications.",
                     "Turn on Low balance notification and set the threshold in dollars."],
             caveat: nil
+        ),
+        // DeepInfra. https://docs.deepinfra.com/private-models/custom-llms and
+        // https://docs.deepinfra.com/agents/introduction
+        CapControl(
+            id: "deepinfra.spending-limit", provider: .deepinfra, name: "Spending limit",
+            summary: "DeepInfra tells you to set spending limits in its billing settings so a forgotten "
+                + "deployment can't run up a bill.",
+            enforcement: .partialStop, verification: .selfReported,
+            consoleURL: url("https://deepinfra.com/dash/billing"),
+            docURL: url("https://docs.deepinfra.com/private-models/custom-llms"),
+            steps: ["Open Billing in the DeepInfra dashboard.", "Set a spending limit you accept."],
+            caveat: "DeepInfra's docs don't say exactly what stops at the limit. They do say a suspended account, "
+                + "for example one whose balance ran out, has its instances stopped within a minute or two. An "
+                + "API key can't change the limit, so Kill Cord can't check it."
         )
     ]
 }

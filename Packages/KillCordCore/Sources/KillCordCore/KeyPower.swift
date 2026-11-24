@@ -36,6 +36,8 @@ extension ProviderID {
         case .supabase, .manual: .noKey
         // Runpod offers Read Only keys, and Restricted keys scoped to billing:read; an All key can start Pods.
         case .runpod: .readOnlyIfChosen
+        // DeepInfra keys take scopes; billing:read only reads usage, invoices and key limits.
+        case .deepinfra: .readOnly
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.

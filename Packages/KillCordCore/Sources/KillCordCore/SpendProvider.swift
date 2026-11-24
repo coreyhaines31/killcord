@@ -147,6 +147,7 @@ public enum SpendProviders {
         case .neon: NeonProvider(http: http)
         case .supabase: SupabaseProvider()
         case .runpod: RunpodProvider(http: http)
+        case .deepinfra: DeepInfraProvider(http: http)
         case .openrouter: OpenRouterProvider(http: http)
         case .dataforseo: DataForSEOProvider(http: http)
         case .ahrefs: AhrefsProvider(http: http)

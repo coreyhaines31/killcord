@@ -30,6 +30,7 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case brightdata
     case scrapecreators
     case runpod
+    case deepinfra
     /// A service the person sets up: an https address and where the balance is in its JSON.
     case custom
     /// A paid service with no API: a plan, price and renewal date the person types in.

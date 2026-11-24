@@ -34,6 +34,7 @@ extension ProviderInfo {
         case .neon: "Neon Console"
         case .supabase: "Supabase dashboard"
         case .runpod: "Runpod console"
+        case .deepinfra: "DeepInfra dashboard"
         case .openrouter: "OpenRouter settings"
         case .dataforseo: "DataForSEO dashboard"
         case .ahrefs: "Ahrefs app"
@@ -97,6 +98,7 @@ extension ProviderInfo {
         case .twilio: "Runs a few minutes behind."
         case .neon: "Runs about 15 minutes behind."
         case .runpod: "Runpod bills every 5 minutes."
+        case .deepinfra: "DeepInfra doesn't say how far behind usage runs."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
         case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
@@ -132,6 +134,7 @@ extension ProviderInfo {
         case .twilio: "Twilio has no read-only key. A Standard API key can also send messages and calls."
         case .neon: "Neon has no read-only key. This one can manage every project in the organization."
         case .runpod: "Use a Read Only key. An All key can start Pods and workers on your balance."
+        case .deepinfra: "Give the key only billing:read. New keys start with inference, so untick it."
         case .openrouter: "An API key can spend up to its limit. Make one for Kill Cord with a small limit."
         case .dataforseo: "No read-only credential. The API password can run paid calls on your balance."
         case .ahrefs: "No read-only key is documented. Give this key a small unit limit."
@@ -238,6 +241,13 @@ extension ProviderInfo {
                           link: open("Open Runpod Keys")),
                 SetupStep("Create a Read Only key and copy it", "Or a Restricted key with only the billing:read "
                     + "scope. Don't use an All key: it can start Pods and workers on your balance.")
+            ]
+        case .deepinfra:
+            return [
+                SetupStep("Open API Keys in the DeepInfra dashboard", "Create a new key for Kill Cord.",
+                          link: open("Open DeepInfra Keys")),
+                SetupStep("Choose Scoped and leave only billing:read, then copy the key", "A new key starts "
+                    + "with inference, models:read, account:read, lora:read and voice:read. Untick them all.")
             ]
         case .openrouter:
             return [
