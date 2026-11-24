@@ -88,6 +88,7 @@ import Testing
             .neon: ["apiKey", "orgID"],
             .supabase: [],
             .runpod: ["apiKey"],
+            .deepinfra: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],

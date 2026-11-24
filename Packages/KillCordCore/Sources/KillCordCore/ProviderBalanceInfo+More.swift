@@ -1,6 +1,6 @@
 import Foundation
 
-/// More services Kill Cord reads a prepaid balance or plan allowance from: GPU clouds, model hosts, media
+/// More services Kill Cord reads a prepaid balance, plan allowance, or spend from: GPU clouds, model hosts, media
 /// generators, cloud hosts, messaging, and data APIs. Each one's API and key are documented at the top of its
 /// adapter in `Providers/`. Kept apart from `balanceProviders` so the two lists grow without colliding.
 extension ProviderInfo {
@@ -17,6 +17,21 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 5 * 60, note: "Runpod bills running resources every 5 minutes."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://www.console.runpod.io/user/billing")
+        ),
+        ProviderInfo(
+            id: .deepinfra, name: "DeepInfra", capability: .monthDollars,
+            fields: [apiKeyField("DeepInfra API key", help: "A scoped key with only billing:read.")],
+            keyKind: "API key scoped to billing:read",
+            keyURL: url("https://deepinfra.com/dash/keys"),
+            keyPowerWarning: "DeepInfra keys carry scopes. With only billing:read, DeepInfra says the key can "
+                + "\"Read usage, invoices, key spending limits and request costs\", and no API key can change "
+                + "payment details, set spending limits, or top up. A new key starts with inference and other "
+                + "scopes, and an unrestricted key can run models on your account, so untick everything but "
+                + "billing:read. Kill Cord only reads this month's usage.",
+            lag: ProviderLag(typical: 0, note: "DeepInfra doesn't say how far behind its usage runs, or which "
+                + "time zone its months follow. Kill Cord reads the month by its UTC name."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://deepinfra.com/dash/billing")
         )
     ]
 }

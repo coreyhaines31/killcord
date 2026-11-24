@@ -30,6 +30,7 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
     case brightdata
     case scrapecreators
     case runpod
+    case deepinfra
     /// A service the person sets up: an https address and where the balance is in its JSON.
     case custom
     /// A paid service with no API: a plan, price and renewal date the person types in.
@@ -50,6 +51,8 @@ public enum ProviderID: String, CaseIterable, Codable, Sendable, Comparable, Ide
 public enum SpendCapability: Hashable, Sendable {
     /// The API returns spend in money.
     case dollars
+    /// The API returns this month's spend in money, but nothing finer than a month (DeepInfra).
+    case monthDollars
     /// The API returns usage (compute hours, bytes) but not money.
     case usageUnitsOnly
     /// There is no API for spend or usage. The caps audit still works.
@@ -64,6 +67,7 @@ public enum SpendCapability: Hashable, Sendable {
     public var summary: String {
         switch self {
         case .dollars: "Shows spend in dollars."
+        case .monthDollars: "Shows this month's spend in dollars. The API doesn't report a day."
         case .usageUnitsOnly: "Shows usage, not dollars: the API doesn't report money."
         case .noUsageAPI: "No spend API. Kill Cord can't show spend here, but the caps audit still works."
         case .requiresSetup(let what): "Shows spend after one-time setup: \(what)."
@@ -77,7 +81,7 @@ public enum SpendCapability: Hashable, Sendable {
     public var countsToday: Bool {
         switch self {
         case .dollars, .requiresSetup: true
-        case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
+        case .monthDollars, .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
         case .balance(let spend): spend.contains(.today)
         }
     }
@@ -85,7 +89,7 @@ public enum SpendCapability: Hashable, Sendable {
     /// Whether this month's spend is reported.
     public var countsMonth: Bool {
         switch self {
-        case .dollars, .requiresSetup: true
+        case .dollars, .monthDollars, .requiresSetup: true
         case .usageUnitsOnly, .noUsageAPI, .enteredByHand: false
         case .balance(let spend): spend.contains(.month)
         }
