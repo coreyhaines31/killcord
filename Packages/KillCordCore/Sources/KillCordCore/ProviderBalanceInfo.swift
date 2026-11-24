@@ -162,6 +162,19 @@ extension ProviderInfo {
                 + "usage cycle, which may not start on the 1st."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://console.apify.com/billing#/limits")
+        ),
+        ProviderInfo(
+            id: .tavily, name: "Tavily", capability: .balance(spend: []),
+            fields: [apiKeyField("tvly-…")],
+            keyKind: "API key",
+            keyURL: url("https://app.tavily.com"),
+            keyPowerWarning: "Tavily doesn't document a read-only key. An API key can run searches, extracts, and "
+                + "crawls that use your credits. Tavily lets a key carry its own credit limit, so set a small one. "
+                + "Kill Cord only reads usage.",
+            lag: ProviderLag(typical: 0, note: "Tavily doesn't say how current usage is. Its usage call allows "
+                + "10 requests every 10 minutes, so Kill Cord checks it at most every 15 minutes."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://app.tavily.com/billing")
         )
     ]
 }

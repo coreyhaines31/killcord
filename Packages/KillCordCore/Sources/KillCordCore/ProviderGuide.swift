@@ -44,6 +44,7 @@ extension ProviderInfo {
         case .xai: "xAI Console"
         case .deepseek: "DeepSeek Platform"
         case .apify: "Apify Console"
+        case .tavily: "Tavily dashboard"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -90,7 +91,7 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -107,6 +108,7 @@ extension ProviderInfo {
         case .custom: "Kill Cord can't verify a custom service's numbers: they're whatever its reply says."
         case .deepseek: "If the account holds both dollars and yuan, shows the dollar balance."
         case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
+        case .tavily: "Shows your plan's credits. Pay-as-you-go credits aren't included."
         default: nil
         }
     }
@@ -131,6 +133,7 @@ extension ProviderInfo {
         case .xai: "xAI has no read-only management key. This one can also create keys and change limits."
         case .deepseek: "DeepSeek has no read-only key. This key can make paid model calls on your balance."
         case .apify: "Apify tokens can do everything in your account unless you scope them. Kill Cord only reads limits."
+        case .tavily: "Tavily has no read-only key. This key can run searches on your credits. Give it a credit limit."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -286,6 +289,13 @@ extension ProviderInfo {
                           link: open("Open Apify Tokens")),
                 SetupStep("Create a token for Kill Cord and copy it", "Apify's docs don't say which scoped-token "
                     + "permission reads usage limits. If a scoped token is refused, Kill Cord says so.")
+            ]
+        case .tavily:
+            return [
+                SetupStep("Open the Tavily dashboard", "API keys are on the Overview page.",
+                          link: open("Open Tavily Dashboard")),
+                SetupStep("Create a key for Kill Cord and copy it", "It starts with tvly-. Give it a small credit "
+                    + "limit: Kill Cord only reads usage.")
             ]
         case .manual:
             return [

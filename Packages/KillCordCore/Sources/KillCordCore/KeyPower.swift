@@ -46,6 +46,8 @@ extension ProviderID {
         case .deepseek: .canSpend
         // Apify tokens can access all account data by default; no read-only token is documented.
         case .apify: .canManage
+        // Tavily documents no read-only key; any key can run searches on the plan's credits.
+        case .tavily: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
