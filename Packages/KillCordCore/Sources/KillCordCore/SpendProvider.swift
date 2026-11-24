@@ -196,6 +196,7 @@ public enum SpendProviders {
         case .retell: RetellProvider(http: http)
         case .browserbase: BrowserbaseProvider(http: http)
         case .resend: ResendProvider(http: http)
+        case .postmark: PostmarkProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
@@ -265,6 +266,8 @@ enum ProviderErrorDetail {
             return message
         }
         if let message = object["message"] as? String { return message }
+        // Postmark's `{ErrorCode, Message}`.
+        if let message = object["Message"] as? String { return message }
         if let message = object["error"] as? String { return message }
         // `{detail: "…"}`, `{detail: {message | error}}` and `{detail: [{msg}]}` (ElevenLabs, Tavily), and
         // Deepgram's older `{err_msg}`.

@@ -28,6 +28,7 @@ extension ProviderInfo {
         case .retell: "Retell dashboard"
         case .browserbase: "Browserbase dashboard"
         case .resend: "Resend dashboard"
+        case .postmark: "Postmark account"
         default: "service's site"
         }
     }
@@ -58,6 +59,7 @@ extension ProviderInfo {
         case .retell: "Adds up call costs only: chats, phone numbers and concurrency aren't included."
         case .browserbase: "One project's usage. Browserbase doesn't say what period it covers."
         case .resend: "Resend reports emails used, not your plan's quota, so compare it with your plan."
+        case .postmark: "One server's sent emails from the 1st (UTC). Postmark bills received email too, on your own cycle."
         default: nil
         }
     }
@@ -79,6 +81,7 @@ extension ProviderInfo {
         case .retell: "Limit the key to History › Read. It can then read call history but not make calls."
         case .browserbase: "Browserbase has no read-only key. This key can run browser sessions on your plan."
         case .resend: "Needs a Full access key, which can manage domains and keys. Resend has no read-only key."
+        case .postmark: "Postmark has no read-only token. A Server token can also send email."
         default: nil
         }
     }
@@ -202,6 +205,13 @@ extension ProviderInfo {
                     + "access.", link: open("Open Resend Keys")),
                 SetupStep("Create a Full access key for Kill Cord and copy it", "It can manage domains and other "
                     + "keys. Kill Cord only reads the quota Resend reports with each reply.")
+            ]
+        case .postmark:
+            return [
+                SetupStep("Open your server in Postmark", "Pick the server to watch, then its API Tokens tab.",
+                          link: open("Open Postmark Servers")),
+                SetupStep("Copy a Server API token", "It can send email, so keep it to Kill Cord. Connect each "
+                    + "server you want to count.")
             ]
         default:
             return []

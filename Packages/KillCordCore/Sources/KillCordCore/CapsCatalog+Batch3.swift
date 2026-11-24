@@ -223,6 +223,19 @@ extension CapsCatalog {
             steps: ["Open Settings › Usage in Resend.",
                     "Leave overages off, or set the overage limit you accept (100% to 1,000% of the plan)."],
             caveat: "The overage limit defaults to 400% of the plan's quota when overages are on."
+        ),
+        // Postmark. https://postmarkapp.com/support/article/1285-pricing-billing-faq
+        CapControl(
+            id: "postmark.no-cap", provider: .postmark, name: "Plan emails, watched by hand",
+            summary: "Postmark keeps sending past your plan's emails and bills the extra as overage. It emails you "
+                + "when the plan's emails are used up.",
+            enforcement: .alertOnly, verification: .selfReported,
+            consoleURL: url("https://account.postmarkapp.com/servers"),
+            docURL: url("https://postmarkapp.com/support/article/1285-pricing-billing-faq"),
+            steps: ["Check the sent counts Kill Cord shows against your plan.",
+                    "Watch for Postmark's \"You've used all your Postmark emails\" email."],
+            caveat: "Postmark has no native hard spend cap: \"it is not possible to disable the sending of "
+                + "Additional emails or set up any limits to your sending.\" The Free plan allows no overage."
         )
     ]
 }

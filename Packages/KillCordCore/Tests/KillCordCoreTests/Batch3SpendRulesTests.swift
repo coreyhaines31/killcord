@@ -14,7 +14,8 @@ import Testing
         .vapi,
         .retell,
         .browserbase,
-        .resend
+        .resend,
+        .postmark
     ]
     static let hosts: [ProviderID: Set<String>] = [
         .llamacloud: ["api.cloud.llamaindex.ai", "api.cloud.eu.llamaindex.ai"],
@@ -24,7 +25,8 @@ import Testing
         .vapi: ["api.vapi.ai"],
         .retell: ["api.retellai.com"],
         .browserbase: ["api.browserbase.com"],
-        .resend: ["api.resend.com"]
+        .resend: ["api.resend.com"],
+        .postmark: ["api.postmarkapp.com"]
     ]
     static let keyPowers: [ProviderID: KeyPower] = [
         .llamacloud: .canManage,
