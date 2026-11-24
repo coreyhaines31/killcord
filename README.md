@@ -71,6 +71,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Kie.ai | Account credits | API key | Credits left, with a labeled dollar estimate at about $0.005 a credit | None (key usage caps are your checkmark) |
 | Bland AI | Account balance | Restricted API key with only Analytics read (or a full-access key) | Credits left | None (auto refill off is your checkmark) |
 | LlamaCloud | Organization usage (this billing period's invoice) | User API key (plus the organization ID if it sees several) | Yes, this billing period, no day | Monthly invoice limit |
+| Cartesia | Credit usage | Admin key | No: credits used this month | None (overages off is your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -126,6 +127,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Kie.ai | An API key from kie.ai's API Key page, with small usage caps. |
 | Bland AI | A restricted key (org_s_…) with only Analytics read from Settings › API keys. Restricted keys are rolling out by organization; a full-access key also works but can place calls. |
 | LlamaCloud | A key from the User API Keys table on LlamaCloud's API Key page (not a project key), plus the organization ID if it sees more than one. Choose the EU region for cloud.eu.llamaindex.ai. |
+| Cartesia | An admin key (sk_car_admin_…) from the playground's Admin keys page. Only organization admins can make one, and it can also manage users and invites. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
