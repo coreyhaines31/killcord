@@ -56,6 +56,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | ElevenLabs | Subscription credits | API key limited to User read | Credits left this period | None (key quotas are your checkmark) |
 | xAI | Prepaid credits (Management API) | Management key and team ID | Balance left, in dollars | None (the invoiced billing limit is your checkmark) |
 | DeepSeek | Account balance | API key | Balance left, in dollars or yuan | None (DeepSeek documents no cap) |
+| Apify | Usage this cycle and the usage limit | API token | Yes, this usage cycle, plus what's left before the limit | Usage limit |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -96,6 +97,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | ElevenLabs | An API key from Settings › API Keys with every endpoint off except User (read). |
 | xAI | A management key from the xAI Console › Settings › Management Keys, and the team ID from Settings › Team. A management key can also manage API keys and limits. |
 | DeepSeek | An API key from platform.deepseek.com › API Keys, made just for Kill Cord. |
+| Apify | An API token from Apify Console › Settings › API & Integrations. Tokens can do everything in the account unless scoped. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 

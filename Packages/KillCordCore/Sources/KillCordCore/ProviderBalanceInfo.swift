@@ -148,6 +148,20 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "DeepSeek doesn't say how current the balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://platform.deepseek.com/top_up")
+        ),
+        ProviderInfo(
+            id: .apify, name: "Apify", capability: .balance(spend: [.month]),
+            fields: [apiKeyField("apify_api_…")],
+            keyKind: "API token",
+            keyURL: url("https://console.apify.com/settings/integrations"),
+            keyPowerWarning: "Apify has no read-only token. By default a token can access all data in your account "
+                + "and run Actors on it. Apify's scoped tokens can be limited to chosen resources, but its docs "
+                + "don't say which permission reads usage limits. Kill Cord only reads this cycle's usage and "
+                + "your usage limit.",
+            lag: ProviderLag(typical: 0, note: "Apify doesn't say how current usage is. The month is Apify's "
+                + "usage cycle, which may not start on the 1st."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://console.apify.com/billing#/limits")
         )
     ]
 }

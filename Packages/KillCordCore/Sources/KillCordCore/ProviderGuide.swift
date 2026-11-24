@@ -43,6 +43,7 @@ extension ProviderInfo {
         case .elevenlabs: "ElevenLabs settings"
         case .xai: "xAI Console"
         case .deepseek: "DeepSeek Platform"
+        case .apify: "Apify Console"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -89,7 +90,7 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -105,6 +106,7 @@ extension ProviderInfo {
         case .ahrefs: "Shows the workspace's API units. Plans without API access can't connect."
         case .custom: "Kill Cord can't verify a custom service's numbers: they're whatever its reply says."
         case .deepseek: "If the account holds both dollars and yuan, shows the dollar balance."
+        case .apify: "What's left is what you can spend before your usage limit, when Apify suspends its services."
         default: nil
         }
     }
@@ -128,6 +130,7 @@ extension ProviderInfo {
         case .elevenlabs: "Limit the key to User read access, so it can't call the speech endpoints."
         case .xai: "xAI has no read-only management key. This one can also create keys and change limits."
         case .deepseek: "DeepSeek has no read-only key. This key can make paid model calls on your balance."
+        case .apify: "Apify tokens can do everything in your account unless you scope them. Kill Cord only reads limits."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -276,6 +279,13 @@ extension ProviderInfo {
                           link: open("Open DeepSeek Keys")),
                 SetupStep("Create a key just for Kill Cord and copy it", "DeepSeek shows it once. It starts "
                     + "with sk-.")
+            ]
+        case .apify:
+            return [
+                SetupStep("Open API & Integrations in Apify Console", "Under Settings › API & Integrations.",
+                          link: open("Open Apify Tokens")),
+                SetupStep("Create a token for Kill Cord and copy it", "Apify's docs don't say which scoped-token "
+                    + "permission reads usage limits. If a scoped token is refused, Kill Cord says so.")
             ]
         case .manual:
             return [

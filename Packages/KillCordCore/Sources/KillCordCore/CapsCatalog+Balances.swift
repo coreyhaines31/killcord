@@ -82,6 +82,19 @@ extension CapsCatalog {
             steps: ["Open Billing in the xAI Console.",
                     "Turn auto top-up off, or set its maximum total of top-ups per month."],
             caveat: "It stops spend only while the invoiced billing limit is $0."
+        ),
+        // Apify. https://docs.apify.com/platform/console/billing
+        CapControl(
+            id: ApifyProvider.usageLimitCapID, provider: .apify, name: "Usage limit",
+            summary: "How much the account can spend in a usage cycle. Once it's reached, Apify suspends its "
+                + "services to protect you against unwanted charges.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://console.apify.com/billing#/limits"),
+            docURL: url("https://docs.apify.com/platform/console/billing"),
+            steps: ["Open Billing › Limits in Apify Console.",
+                    "Under Custom usage limit, choose Edit limit and set the most you'll spend in a cycle."],
+            caveat: "By default the limit matches your plan's prepaid usage. Custom limits top out at $100 on "
+                + "Starter, $1,000 on Scale and $5,000 on Business."
         )
     ]
 }

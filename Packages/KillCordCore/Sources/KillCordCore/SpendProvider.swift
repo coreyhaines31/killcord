@@ -156,6 +156,7 @@ public enum SpendProviders {
         case .elevenlabs: ElevenLabsProvider(http: http)
         case .xai: XAIProvider(http: http)
         case .deepseek: DeepSeekProvider(http: http)
+        case .apify: ApifyProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
