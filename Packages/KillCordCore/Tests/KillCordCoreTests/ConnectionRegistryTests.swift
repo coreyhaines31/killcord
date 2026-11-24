@@ -93,6 +93,7 @@ import Testing
             .bfl: ["apiKey"],
             .digitalocean: ["apiKey"],
             .telnyx: ["apiKey"],
+            .luma: ["apiKey"],
             .openrouter: ["apiKey"],
             .dataforseo: ["login", "password"],
             .ahrefs: ["apiKey"],
