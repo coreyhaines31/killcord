@@ -32,6 +32,18 @@ extension ProviderInfo {
                 + "time zone its months follow. Kill Cord reads the month by its UTC name."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://deepinfra.com/dash/billing")
+        ),
+        ProviderInfo(
+            id: .xapi, name: "X API", capability: .balance(spend: []),
+            fields: [apiKeyField("App Bearer token", help: "From your app's Keys and tokens.")],
+            keyKind: "app Bearer token",
+            keyURL: url("https://console.x.com"),
+            keyPowerWarning: "The X API has no billing-only token. The app's Bearer token reads public X data, and "
+                + "on pay-per-use every read is paid from your credits. Use an app made just for Kill Cord so you can "
+                + "regenerate its token on its own. Kill Cord only reads the credit balance.",
+            lag: ProviderLag(typical: 0, note: "X says credits are deducted in real time as you make requests."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://console.x.com")
         )
     ]
 }

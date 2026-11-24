@@ -38,6 +38,8 @@ extension ProviderID {
         case .runpod: .readOnlyIfChosen
         // DeepInfra keys take scopes; billing:read only reads usage, invoices and key limits.
         case .deepinfra: .readOnly
+        // The X API's app Bearer token makes paid reads on the credits; there's no billing-only token.
+        case .xapi: .canSpend
         // Keys that can make paid calls but, as far as each provider documents, not manage the account.
         // DataForSEO's API password, treg's tokens (every role can call tools), and Monid, Firecrawl and Ahrefs
         // keys have no read-only form. OpenRouter's account settings need a separate management key.
