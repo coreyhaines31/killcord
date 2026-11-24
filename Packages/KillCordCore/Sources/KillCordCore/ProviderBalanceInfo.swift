@@ -118,6 +118,24 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "ElevenLabs doesn't say how current the credit count is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://elevenlabs.io/app/subscription")
+        ),
+        ProviderInfo(
+            id: .xai, name: "xAI", capability: .balance(spend: []),
+            fields: [
+                CredentialField(id: "managementKey", label: "Management key", placeholder: "Management API key",
+                                isSecret: true, help: "From Settings › Management Keys, not an API key."),
+                CredentialField(id: "teamID", label: "Team ID", placeholder: "65c1e471-205f-…", isSecret: false,
+                                help: "On Settings › Team in the xAI Console.")
+            ],
+            keyKind: "Management API key",
+            keyURL: url("https://console.x.ai/team/default/management-keys"),
+            keyPowerWarning: "xAI has no read-only management key. A management key can create, change, and "
+                + "delete API keys, top up your prepaid credits with the default payment method, and change "
+                + "spending limits. Kill Cord only reads the prepaid balance, and the key stays in your Mac's "
+                + "Keychain. Revoke it in the xAI Console if it leaks.",
+            lag: ProviderLag(typical: 0, note: "xAI doesn't say how current the prepaid balance is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://console.x.ai/team/default/billing")
         )
     ]
 }

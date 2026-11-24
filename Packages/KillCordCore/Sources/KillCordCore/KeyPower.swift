@@ -40,6 +40,8 @@ extension ProviderID {
         case .openrouter, .dataforseo, .ahrefs, .firecrawl, .treg, .monid: .canSpend
         // ElevenLabs keys can be limited to some endpoints; one limited to User read can't make speech.
         case .elevenlabs: .readOnlyIfChosen
+        // An xAI management key can also create and delete API keys, top up, and change spending limits.
+        case .xai: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
