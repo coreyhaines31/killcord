@@ -58,3 +58,11 @@ Manual entries named after a preset draw that service's mark, as `preset-<id>.im
 | Unstructured | `unstructured-site-nav-logo.svg`, unmodified (the lettering grid from the site header; the press-kit file sits on a black tile) | https://unstructured.io/press | No logo terms found. | Unknown |
 
 Groq, Perplexity, Replicate and Voyage AI draw their first letter: Groq's logo is a wordmark (its bolt is a favicon on an orange tile, and its brand guidelines are by request), Perplexity's only vector is a white mark traced on a black tile, Replicate publishes no SVG, and Voyage's icon depends on a mask and a white background.
+
+## More balance services
+
+The services in `ProviderInfo.moreBalanceProviders`, by the same rules. Checked 2026-11-24.
+
+| Provider | File | Source | Terms | Asks for permission? |
+|---|---|---|---|---|
+| Runpod | `Logomark_Dark Black RGB.svg`, unmodified (the cube brand mark, from the RGB SVG folder) | `Runpod Logos.zip` from https://www.runpod.io/brand | "Use the logo exactly as supplied. Don't change its shape, color, or parts." "Using our brand doesn't mean we've partnered with or endorsed you. If something isn't covered here, ask us before you publish." Co-branded work needs approval. | No for plain identification; asks first for uses its guide doesn't cover |
