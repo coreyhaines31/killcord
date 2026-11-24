@@ -105,8 +105,9 @@ enum FakeKeys {
     static let retell = "retell-TEST-secret-0039"
     static let browserbase = "bb_live_TEST-browserbase-secret-0040"
     static let resend = "re_TEST-resend-secret-0041"
+    static let postmark = "postmark-server-TEST-secret-0042"
     static let batch3 = [stability, moonshot, exa, scrapingbee, scrapfly, kie, bland, llamacloud, cartesia, together,
-                         fireworks, vapi, retell, browserbase, resend]
+                         fireworks, vapi, retell, browserbase, resend, postmark]
 
     static var googleJSON: String {
         let object: [String: String] = [
@@ -184,6 +185,7 @@ enum FakeKeys {
         case .retell: ["apiKey": retell]
         case .browserbase: ["apiKey": browserbase]
         case .resend: ["apiKey": resend]
+        case .postmark: ["apiKey": postmark]
         case .custom: ["serviceName": "Example", "url": "https://api.example.com/v1/balance", "key": custom,
                        "remainingPath": "data.balance"]
         // Values long enough not to turn up by chance inside an id or a date.

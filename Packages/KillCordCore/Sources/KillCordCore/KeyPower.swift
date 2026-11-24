@@ -124,6 +124,8 @@ extension ProviderID {
         case .browserbase: .canSpend
         // Only a Resend full-access key can read anything; it can create and delete any resource.
         case .resend: .canManage
+        // A Postmark Server API token has server-level privileges, including sending email.
+        case .postmark: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

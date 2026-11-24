@@ -221,6 +221,19 @@ extension ProviderInfo {
                 + "and received emails both count."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://resend.com/settings/usage")
+        ),
+        ProviderInfo(
+            id: .postmark, name: "Postmark", capability: .usageUnitsOnly,
+            fields: [apiKeyField("Server API token", help: "From the server's API Tokens tab.")],
+            keyKind: "Server API token",
+            keyURL: url("https://account.postmarkapp.com/servers"),
+            keyPowerWarning: "Postmark has no read-only token. Stats need a Server API token, which has the "
+                + "server's full privileges, including sending email that counts toward your bill. An Account token "
+                + "can't read stats. Kill Cord only reads the server's sent counts.",
+            lag: ProviderLag(typical: 0, note: "Postmark doesn't say how current its stats are. It reports emails "
+                + "sent, not dollars."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://account.postmarkapp.com/servers")
         )
     ]
 }
