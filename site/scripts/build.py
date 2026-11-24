@@ -2,6 +2,7 @@ from html import escape
 from pathlib import Path
 from string import Template
 import hashlib
+import os
 import json
 import re
 import shutil
@@ -13,12 +14,17 @@ source = root / 'src'
 output = root / 'dist'
 layout = Template((source / 'layouts/base.html').read_text())
 download_url = 'https://github.com/coreyhaines31/killcord/releases/latest/download/KillCord.dmg'
-partials = {name: (source / f'layouts/{name}.html').read_text().strip() for name in ('header', 'footer', 'popover')}
+partials = {name: (source / f'layouts/{name}.html').read_text().strip() for name in ('header', 'footer', 'popover', 'teams-panel')}
+# The Teams waitlist form stays disabled until Kit is wired up (see README: Teams waitlist).
+waitlist_open = bool(os.environ.get('KIT_TEAMS_FORM_ID'))
 
 
 def fill(text):
-    text = text.replace('{{popover}}', partials['popover'])
+    text = text.replace('{{popover}}', partials['popover']).replace('{{teams_panel}}', partials['teams-panel'])
+    text = text.replace('{{waitlist_disabled}}', '' if waitlist_open else ' disabled')
+    text = text.replace('{{waitlist_closed_hidden}}', ' hidden' if waitlist_open else '')
     return text.replace('{{download_url}}', download_url)
+
 
 
 shared = {name: fill(partials[name]) for name in ('header', 'footer')}
@@ -92,8 +98,8 @@ for page in pages:
     values['url'] = site + path.removesuffix('index.html')
     values['structured_data'] = structured_data(page, values['url'])
     values['og_image'] = site + 'og.png'
-    # Only the homepage mounts the app's popover.
-    values['page_css'] = '  <link rel="stylesheet" href="/popover.css">\n' if path == 'index.html' else ''
+    # Only the homepage and /teams/ mount panel mockups.
+    values['page_css'] = '  <link rel="stylesheet" href="/popover.css">\n' if path in ('index.html', 'teams/index.html') else ''
     values['content'] = fill(page['content'] if 'content' in page else (source / 'pages' / path).read_text().strip())
     target = output / path
     target.parent.mkdir(parents=True, exist_ok=True)
