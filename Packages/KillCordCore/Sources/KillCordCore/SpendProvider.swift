@@ -157,6 +157,7 @@ public enum SpendProviders {
         case .xai: XAIProvider(http: http)
         case .deepseek: DeepSeekProvider(http: http)
         case .apify: ApifyProvider(http: http)
+        case .tavily: TavilyProvider(http: http)
         case .custom: CustomProvider(http: http)
         case .manual: ManualProvider()
         }
