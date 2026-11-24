@@ -17,10 +17,8 @@ final class ProviderMarkTests: XCTestCase {
             XCTAssertTrue(image.isTemplate, "\(name) must be a template image")
         }
         // Every vendor with an official symbol has its mark; custom and manual connections draw a symbol, and
-        // Bright Data and ScrapeCreators (no usable symbol) and Stability AI (permission first) their letter.
         XCTAssertEqual(Set(ProviderID.allCases.filter { $0.markAssetName == nil }),
-                       Set([.brightdata, .scrapecreators, .stability, .moonshot, .scrapingbee, .scrapfly, .kie,
-                            .bland, .telnyx, .heygen, .zerobounce, .prospeo, .lemlist, .searchapi, .cartesia,
-                            .together, .retell, .postmark, .huggingface, .magister, .custom, .manual]))
+                       Set([.brightdata, .scrapecreators, .scrapingbee, .kie, .bland, .postmark, .telnyx, .heygen,
+                            .zerobounce, .prospeo, .lemlist, .searchapi, .custom, .manual]))
     }
 }
