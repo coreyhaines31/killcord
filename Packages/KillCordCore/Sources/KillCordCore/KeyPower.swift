@@ -126,6 +126,8 @@ extension ProviderID {
         case .resend: .canManage
         // A Postmark Server API token has server-level privileges, including sending email.
         case .postmark: .canSpend
+        // A Mistral Admin API key reaches every admin endpoint: users, workspaces, keys and the spend limit.
+        case .mistral: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
