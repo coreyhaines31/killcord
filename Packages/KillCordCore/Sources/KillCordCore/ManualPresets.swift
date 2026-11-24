@@ -46,13 +46,13 @@ extension CapAuditState {
 }
 
 extension ManualPreset {
-    private static func url(_ string: String) -> URL { URL(string: string)! }
+    static func url(_ string: String) -> URL { URL(string: string)! }
 
     // The same fields as CapControl's, with the provider and verification every preset cap shares.
     // swiftlint:disable:next function_parameter_count
-    private static func cap(_ preset: String, _ id: String, _ name: String, _ summary: String,
-                            _ enforcement: CapControl.Enforcement, console: String, doc: String,
-                            steps: [String], caveat: String?) -> CapControl {
+    static func cap(_ preset: String, _ id: String, _ name: String, _ summary: String,
+                    _ enforcement: CapControl.Enforcement, console: String, doc: String,
+                    steps: [String], caveat: String?) -> CapControl {
         // Named with the service, since Caps Audit lists every manual entry's caps together.
         CapControl(id: "manual.\(ManualPreset.normalized(preset)).\(id)", provider: .manual,
                    name: "\(preset): \(name)", summary: summary,
@@ -61,7 +61,10 @@ extension ManualPreset {
     }
 
     /// Alphabetical, the order the picker lists them.
-    public static let all: [ManualPreset] = [
+    public static let all: [ManualPreset] = (corePresets + morePresets)
+        .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+
+    static let corePresets: [ManualPreset] = [
         ManualPreset(
             id: "assemblyai", name: "AssemblyAI", billingURL: url("https://www.assemblyai.com/dashboard/home"),
             docURL: url("https://www.assemblyai.com/docs/account-management"),

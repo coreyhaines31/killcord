@@ -228,10 +228,7 @@ func reading(_ provider: ProviderID, today: String?, month: String?, at: Date = 
         #expect(verifiable == [
             OpenAIProvider.hardLimitCapID, GoogleCloudProvider.spendCapID, GoogleCloudProvider.budgetAlertCapID,
             CloudflareProvider.spendLimitCapID, TwilioProvider.triggerCapID, NeonProvider.thresholdCapID,
-            ApifyProvider.usageLimitCapID, TelnyxProvider.autoRechargeCapID,
-            LlamaCloudProvider.spendLimitCapID,
-            HeyGenProvider.spendingCapID, HeyGenProvider.autoReloadCapID,
-            HeyGenProvider.spendingCapID, HeyGenProvider.autoReloadCapID, VonageProvider.autoReloadCapID,
+            ApifyProvider.usageLimitCapID, TelnyxProvider.autoRechargeCapID, LlamaCloudProvider.spendLimitCapID,
             HeyGenProvider.spendingCapID, HeyGenProvider.autoReloadCapID, VonageProvider.autoReloadCapID,
             PlivoProvider.autoRechargeCapID, SearchApiProvider.earlyRenewalCapID
         ])
