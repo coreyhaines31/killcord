@@ -34,6 +34,13 @@ extension ProviderInfo {
                 SetupStep("Add a key for Kill Cord and copy it", "It starts with bfl_. BFL shows the full key only "
                     + "once.")
             ]
+        case .digitalocean:
+            return [
+                SetupStep("Open API in the DigitalOcean control panel", "Applications & API › Tokens, then "
+                    + "Generate New Token.", link: open("Open DigitalOcean Tokens")),
+                SetupStep("Choose Custom Scopes, tick only billing:read, and copy the token", "Pick an expiration "
+                    + "too. DigitalOcean doesn't let you change a token's scopes later.")
+            ]
         default:
             return []
         }

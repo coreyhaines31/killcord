@@ -44,7 +44,8 @@ enum FakeKeys {
     static let deepinfra = "deepinfra-TEST-secret-0102"
     static let xapi = "AAAAAAAAAAAAAAAAAAAAA-TEST-xapi-bearer-0103"
     static let bfl = "bfl_TEST-bfl-secret-0104"
-    static let more = [bfl, xapi, runpod, deepinfra]
+    static let digitalocean = "do-TEST-digitalocean-secret-0105"
+    static let more = [digitalocean, bfl, xapi, runpod, deepinfra]
     static let xai = "xai-mgmt-TEST-secret-0017"
     static let elevenlabs = "sk_TEST-elevenlabs-secret-0016"
     static let fal = "fal-TEST-key-id:fal-TEST-secret-0015"
@@ -87,6 +88,7 @@ enum FakeKeys {
         case .deepinfra: ["apiKey": deepinfra]
         case .xapi: ["apiKey": xapi]
         case .bfl: ["apiKey": bfl]
+        case .digitalocean: ["apiKey": digitalocean]
         case .openrouter: ["apiKey": openrouter]
         case .dataforseo: ["login": "kc-test@example.com", "password": dataforseo]
         case .ahrefs: ["apiKey": ahrefs]
