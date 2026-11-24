@@ -48,13 +48,35 @@ builtin_shows = {
     'serpapi': 'the searches you have left this month, and when your plan renews',
     'bright-data': 'the funds left in your account, in dollars',
     'scrapecreators': 'the credits you have left',
+    'stability-ai': 'your credits left, with a labeled dollar estimate',
+    'moonshot-ai': 'your balance in dollars (global platform)',
+    'exa': 'your team’s credit balance in dollars',
+    'scrapingbee': 'the credits your plan has left, and when it renews',
+    'together-ai': 'this month’s spend in dollars, through yesterday',
+    'fireworks-ai': 'today’s and this month’s spend in dollars, and whether the monthly spend limit is set',
+    'browserbase': 'your project’s browser minutes and proxy data (Browserbase doesn’t report dollars)',
+    'resend': 'the emails you’ve used this month (Resend doesn’t report dollars or your quota)',
+    'postmark': 'one server’s emails sent today and this month (Postmark doesn’t report dollars)',
+    'mistral': 'this month’s spend in dollars against your spending limit, and whether the limit is set',
+    'hugging-face': 'your organization’s Inference Providers spend today and this month (Enterprise)',
+    'magister': 'your API credits left, with a labeled dollar estimate',
+    'scrapfly': 'the credits your plan has left, and when the period ends',
+    'kie-ai': 'your credits left, with a labeled dollar estimate',
+    'bland-ai': 'your balance in dollars',
+    'llamacloud': 'this billing period’s invoice in dollars, and whether the monthly invoice limit is set',
+    'cartesia': 'the credits you’ve used this month (Cartesia doesn’t report dollars or credits left)',
+    'vapi': 'today’s and this month’s call spend in dollars',
+    'retell-ai': 'today’s and this month’s call spend in dollars',
 }
 # Built-ins with no native cap in Kill Cord's caps audit: a prepaid balance stops at zero on its own.
-no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi', 'scrapecreators'}
+no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi', 'scrapecreators',
+                 'stability-ai', 'browserbase', 'postmark'}
 caps_only = {'supabase'}
-builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Vercel, Cloudflare, Twilio, Neon, '
-                 'OpenRouter, fal, ElevenLabs, Runway, Deepgram, Apify, Tavily, SerpApi, Bright Data, ScrapeCreators, DataForSEO, '
-                 'Ahrefs, Firecrawl, treg, and Monid')
+builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Mistral, Kimi, Together AI, '
+                 'Fireworks AI, Hugging Face, Vercel, Cloudflare, Twilio, Neon, OpenRouter, fal, ElevenLabs, Runway, '
+                 'Stability AI, Deepgram, Cartesia, Vapi, Retell AI, Bland AI, Kie.ai, Apify, Tavily, Exa, SerpApi, '
+                 'Bright Data, ScrapeCreators, ScrapingBee, Scrapfly, Browserbase, LlamaCloud, Resend, Postmark, '
+                 'Magister, DataForSEO, Ahrefs, Firecrawl, treg, and Monid')
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),
                'alert-only': ('alert', 'Alert only'), 'auto-recharge-off': ('part', 'Top-up control')}
