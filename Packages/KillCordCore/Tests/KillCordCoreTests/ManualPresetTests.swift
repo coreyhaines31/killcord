@@ -5,10 +5,18 @@ import Testing
 /// Presets for services with no billing API. Each link comes from the service's docs.
 @Suite struct ManualPresetTests {
     @Test func coversTheServicesWithNoBillingAPI() {
-        #expect(ManualPreset.all.map(\.name) == [
+        #expect(ManualPreset.corePresets.map(\.name) == [
             "AssemblyAI", "Cerebras", "Cohere", "E2B", "Groq", "Jina AI", "Perplexity", "Replicate", "Twelve Labs",
             "TypeSafe Jev", "Unstructured", "Voyage AI"
         ])
+        #expect(ManualPreset.morePresets.map(\.name) == [
+            "Apollo", "Brave Search API", "Clay", "Cloudinary", "Composio", "Enrich Layer", "Fly.io", "Gladia",
+            "Hetzner", "Ideogram", "Instantly", "Lambda", "Leonardo.Ai", "Linode (Akamai Cloud)", "n8n Cloud",
+            "Netlify", "People Data Labs", "Railway", "Render", "SambaNova Cloud", "Serper", "Vultr", "Zapier"
+        ])
+        // The picker lists every preset alphabetically.
+        let names = ManualPreset.all.map(\.name)
+        #expect(names == names.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending })
         #expect(Set(ManualPreset.all.map(\.id)).count == ManualPreset.all.count)
     }
 
