@@ -78,6 +78,8 @@ extension ProviderID {
         case .exa: .canManage
         // ScrapingBee has one API key per account, with no documented scopes: it can run scrapes.
         case .scrapingbee: .canSpend
+        // Scrapfly has one key per project environment, giving access to every product: it can scrape.
+        case .scrapfly: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

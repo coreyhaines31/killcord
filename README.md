@@ -4,7 +4,7 @@
 
 <h1 align="center">Kill Cord</h1>
 
-<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, and ScrapingBee.</p>
+<p align="center">See today's and this month's API spend in your menu bar, and get each provider's own spend caps turned on. A free macOS menu bar app for Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, and Supabase, plus prepaid balances on OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, and Scrapfly.</p>
 
 <p align="center">
   <a href="https://github.com/coreyhaines31/killcord/releases/latest">Download</a> ·
@@ -28,7 +28,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 - **Shows provider lag.** Some providers run behind. Google's billing export can be most of a day behind, and the panel says so.
 - **Says what it can't see.** Neon reports usage, not dollars. Supabase has no billing API. Totals list what they leave out.
 - **Walks you through native caps.** For each provider: the spend controls it offers, whether each is a hard stop or only an alert, and a button that opens the exact console page. Where an API can confirm a cap, Kill Cord checks it. Elsewhere it's your checkmark, and it asks you to look again after 30 days.
-- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
+- **Shows prepaid balances.** For services you pay up front or that come with credits (OpenRouter, DataForSEO, Ahrefs, Firecrawl, treg, Monid, fal, ElevenLabs, xAI, DeepSeek, Tavily, Deepgram, Runway, SerpApi, Bright Data, ScrapeCreators, Stability AI, Kimi, Exa, ScrapingBee, Scrapfly), what's left, in dollars, credits, or API units. A balance is what's left, not spend, so it never adds into your totals.
 - **Takes any balance endpoint.** A custom connection reads a service Kill Cord doesn't know from an https address you enter and a path into its JSON. Kill Cord can't verify those numbers and says so.
 - **Remembers plans with no API.** For services like Truelist or Gojiberry, enter the plan, price, and renewal date. Twelve AI services with no billing API (Replicate, Groq, Perplexity, Cohere, AssemblyAI, E2B, Cerebras, Jina AI, Twelve Labs, Unstructured, Voyage AI, and TypeSafe Jev) are presets: pick one and Kill Cord links its billing page and adds its own spend caps to the audit. It's marked "Not live: entered by you", stays out of your totals, and Kill Cord reminds you before it renews.
 - **Alerts you.** Notifications at daily and monthly amounts you choose, per account, per provider, and in total, once per day or month. Low-balance alerts fire once when a balance drops to your amount, and again only after a top-up.
@@ -67,6 +67,7 @@ It's free, the source is on GitHub, and your keys stay in your Mac's Keychain. T
 | Kimi (Moonshot AI) | Account balance (global platform) | Admin key with billing:read, or an API key | Balance left, in dollars | None (project budgets are your checkmark) |
 | Exa | Team credits (Team Management API) | Service key | Balance left, in dollars | None (key budgets and the auto-recharge maximum are your checkmark) |
 | ScrapingBee | Plan credit usage | API key | Credits left of the plan, with the renewal date | None (auto renew off is your checkmark) |
+| Scrapfly | Account scrape credits | API key (LIVE) | Credits left of the plan, with the period's end | None (extra credit use off on each project is your checkmark) |
 | Custom service | The https address you enter | Whatever the service uses | What its reply says; Kill Cord can't verify it | None |
 | Manual entry | You | Nothing | No: not live, never in totals | None |
 
@@ -118,6 +119,7 @@ Click the plug in the menu bar, then **Connect a Provider**. In **Settings › P
 | Kimi (Moonshot AI) | An Admin key with only the billing:read scope from the Kimi console › Organization › Admin API Keys (verified organizations). An inference API key also works but can spend. |
 | Exa | A service key from the dashboard's API Keys › Service keys tab. Exa turns the Team Management API on per team when you ask support. The key can manage your API keys. |
 | ScrapingBee | The API key from the dashboard's Account › Manage › API key page. |
+| Scrapfly | A project's LIVE API key from the dashboard's Projects page. It travels in the request address, as Scrapfly requires, and Kill Cord strips it from errors. |
 | Custom service | The service's balance address, how it wants the key, and where the number is in its JSON. **Test and Save** calls it once first. Addresses on your own network are refused. |
 | Manual entry | Nothing to connect: the plan, price, and next renewal date. |
 
