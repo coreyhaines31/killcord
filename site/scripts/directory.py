@@ -37,12 +37,23 @@ builtin_shows = {
     'firecrawl': 'the credits your team has left, and when the billing period ends',
     'treg': 'your team’s prepaid balance in dollars',
     'monid': 'your wallet balance',
+    'fal': 'your credit balance in dollars',
+    'elevenlabs': 'the credits your plan has left this period, and when they reset',
+    'xai': 'your prepaid credit balance in dollars',
+    'deepseek': 'your balance in dollars or yuan',
+    'apify': 'this usage cycle’s spend in dollars and what’s left before your usage limit',
+    'tavily': 'the credits your plan has left this cycle',
+    'deepgram': 'your project’s balance in dollars',
+    'runway': 'your credits left, with a labeled dollar estimate',
+    'serpapi': 'the searches you have left this month, and when your plan renews',
+    'bright-data': 'the funds left in your account, in dollars',
 }
 # Built-ins with no native cap in Kill Cord's caps audit: a prepaid balance stops at zero on its own.
-no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg'}
+no_caps_audit = {'dataforseo', 'ahrefs', 'firecrawl', 'treg', 'deepseek', 'deepgram', 'serpapi'}
 caps_only = {'supabase'}
-builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, Vercel, Cloudflare, Twilio, Neon, OpenRouter, '
-                 'DataForSEO, Ahrefs, Firecrawl, treg, and Monid')
+builtin_names = ('Anthropic, Google Cloud and Gemini, OpenAI, xAI, DeepSeek, Vercel, Cloudflare, Twilio, Neon, '
+                 'OpenRouter, fal, ElevenLabs, Runway, Deepgram, Apify, Tavily, SerpApi, Bright Data, DataForSEO, '
+                 'Ahrefs, Firecrawl, treg, and Monid')
 
 kind_labels = {'hard-stop': ('stop', 'Hard stop'), 'partial-stop': ('part', 'Partial stop'),
                'alert-only': ('alert', 'Alert only'), 'auto-recharge-off': ('part', 'Top-up control')}
@@ -123,6 +134,8 @@ def tier_badge(s):
         return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Built into Kill Cord</p>'
     if tier == 'planned':
         return '<p class="bx-badge tier-planned"><i aria-hidden="true"></i>Not in Kill Cord yet</p>'
+    if tier == 'manual':
+        return '<p class="bx-badge tier-on"><i aria-hidden="true"></i>Tracked by Kill Cord as a manual entry</p>'
     return '<p class="bx-badge tier-off"><i aria-hidden="true"></i>Not tracked by Kill Cord</p>'
 
 
@@ -257,11 +270,13 @@ def killcord_text(s):
 def killcord_section(s):
     tier = s['killcord']['tier']
     heading = {'built-in': f'Track {e(s["name"])} in your menu bar' if s['slug'] not in caps_only else f'Kill Cord and {e(s["name"])}', 'planned': 'Kill Cord and ' + e(s['name']),
-               'none': 'Kill Cord and ' + e(s['name'])}[tier]
+               'manual': f'Track {e(s["name"])} by hand in Kill Cord', 'none': 'Kill Cord and ' + e(s['name'])}[tier]
     extra = ('<p>To connect it, click the plug in your menu bar, choose Connect a Provider, and paste the key. Kill Cord '
              f'checks it with {e(s["name"])} before it saves it. The key stays in your Mac’s Keychain and goes only to '
              f'{e(s["name"])}’s billing API. Kill Cord is free, with no account.</p>' if tier == 'built-in' and s['slug'] not in caps_only else
              '<p>Kill Cord is free, with no account, and it reads spend for ' + builtin_names + '.</p>' if tier == 'built-in' else
+             ('<p>To add it, open Settings › Providers in Kill Cord, choose Manual entry, and pick it from the services '
+              'with no billing API. Kill Cord is free, with no account.</p>') if tier == 'manual' else
              (f'<p>Today Kill Cord tracks {builtin_names}. If you use any of those, it puts their spend in one glance and gets their caps turned on.</p>'
               if s['killcord'].get('note') else
               '<p>If you also use any of those, Kill Cord puts their spend in one glance and gets their caps turned on.</p>'))
@@ -407,7 +422,8 @@ def description_clauses(s):
     tier = s['killcord']['tier']
     out.append(' Kill Cord audits its cap.' if s['slug'] in caps_only else
                ' Kill Cord shows it in your menu bar.' if tier == 'built-in' else
-               ' Not in Kill Cord yet.' if tier == 'planned' else '')
+               ' Not in Kill Cord yet.' if tier == 'planned' else
+               ' Kill Cord tracks it as a manual entry.' if tier == 'manual' else '')
     if a['endpoint']:
         out.append({'yes': ' A read-only key works.', 'no': ' No key is read-only.'}.get(a['read_only'], ''))
     elif a['status'] == 'partial':
@@ -437,7 +453,7 @@ def table(rows, billing=False):
         stops = [c for c in s['native_caps'] if c['kind'] in ('hard-stop', 'partial-stop')]
         cap_cell = 'Hard stop' if any(c['kind'] == 'hard-stop' for c in stops) else 'Partial stop' if stops else \
             'Alert only' if s['native_caps'] else 'None found'
-        kc = 'Caps audit' if s['slug'] in caps_only else {'built-in': 'Built in', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
+        kc = 'Caps audit' if s['slug'] in caps_only else {'built-in': 'Built in', 'manual': 'Manual entry', 'planned': 'Not yet', 'none': 'No'}[s['killcord']['tier']]
         body.append(f'<tr><th scope="row"><a href="{url_for(s)}">{e(s["search_name"])}</a></th>'
                     f'<td data-label="Spend API">{api_cell}</td><td data-label="Native cap">{cap_cell}</td>'
                     f'<td data-label="Kill Cord">{kc}</td>'
@@ -449,7 +465,7 @@ def table(rows, billing=False):
 
 
 def order(rows):
-    tiers = {'built-in': 0, 'planned': 1, 'none': 2}
+    tiers = {'built-in': 0, 'manual': 1, 'planned': 2, 'none': 3}
     return sorted(rows, key=lambda s: (tiers[s['killcord']['tier']], s['search_name'].lower()))
 
 
@@ -619,8 +635,10 @@ def validate():
     allowed = {'billing_type': {'prepaid', 'usage', 'quota', 'mixed'}, 'caps_status': {'found', 'none-documented', 'unknown'}}
     for s in services:
         assert s['category'] in categories, f'{s["slug"]}: unknown category {s["category"]}'
-        assert s['killcord']['tier'] in ('built-in', 'planned', 'none'), f'{s["slug"]}: unknown tier'
+        assert s['killcord']['tier'] in ('built-in', 'manual', 'planned', 'none'), f'{s["slug"]}: unknown tier'
         assert set(s['killcord']) <= {'tier', 'note'}, f'{s["slug"]}: unknown killcord field'
+        # A manual preset says what Kill Cord does for it, since there's no API to read.
+        assert s['killcord']['tier'] != 'manual' or s['killcord'].get('note'), f'{s["slug"]}: manual without a note'
         assert s.get('noun', 'spend') in ('balance', 'credits', 'usage', 'spend'), f'{s["slug"]}: unknown noun'
         assert s['spend_api']['status'] in ('yes', 'partial', 'no', 'unknown'), f'{s["slug"]}: unknown API status'
         assert s['spend_api']['read_only'] in ('yes', 'no', 'partial', 'unknown'), f'{s["slug"]}: unknown read_only'

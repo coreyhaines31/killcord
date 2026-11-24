@@ -206,7 +206,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -294,7 +294,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: AssemblyAI has no billing API. Kill Cord has a preset for it: add AssemblyAI as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through AssemblyAI’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -486,7 +487,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -569,7 +570,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Cerebras has no billing API. Kill Cord has a preset for it: add Cerebras as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Cerebras’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -664,7 +666,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Cohere has no billing API. Kill Cord has a preset for it: add Cohere as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": false,
     "sources": [
@@ -743,7 +746,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -779,7 +782,7 @@
     "native_caps": [],
     "caps_status": "none-documented",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -841,6 +844,49 @@
     "last_verified": "2026-11-17"
   },
   {
+    "slug": "e2b",
+    "name": "E2B",
+    "search_name": "E2B",
+    "category": "devtools",
+    "website": "https://e2b.dev",
+    "billing_model": "Usage-based billing for cloud sandboxes, shown on the console’s Usage and Billing pages.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "E2B documents usage and billing in its console only (the Usage and Billing tabs). No usage or billing API is documented."
+    },
+    "native_caps": [
+      {
+        "name": "Spending limit",
+        "kind": "alert-only",
+        "where": "Console › Limits",
+        "url": "https://e2b.dev/docs/billing",
+        "note": "E2B says you can set spending limits on the Limits page, but its docs don’t say whether usage stops at the limit."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "manual",
+      "note": "Not read live: E2B has no billing API. Kill Cord has a preset for it: add E2B as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through E2B’s own spend controls."
+    },
+    "publish": true,
+    "sources": [
+      "https://e2b.dev/docs/billing"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
     "slug": "elevenlabs",
     "name": "ElevenLabs",
     "search_name": "ElevenLabs",
@@ -874,7 +920,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -968,7 +1014,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "planned"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -1334,7 +1380,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Groq has no billing API. Kill Cord has a preset for it: add Groq as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Groq’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -1472,7 +1519,8 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Jina AI has no billing API. Kill Cord has a preset for it: add Jina AI as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": false,
     "sources": [
@@ -2017,7 +2065,8 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Perplexity API has no billing API. Kill Cord has a preset for it: add Perplexity API as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Perplexity API’s own spend controls."
     },
     "publish": true,
     "sources": [
@@ -2273,17 +2322,27 @@
       "cost_to_call": "unknown",
       "notes": "The billing docs point only to the account billing page. No billing API is documented."
     },
-    "native_caps": [],
-    "caps_status": "none-documented",
+    "native_caps": [
+      {
+        "name": "Prepaid credit at zero",
+        "kind": "hard-stop",
+        "where": "Account › Billing",
+        "url": "https://replicate.com/docs/topics/billing/prepaid-credit",
+        "note": "On prepaid credit, when the balance hits zero Replicate stops new work from starting and shuts down what it’s running for you. Auto reload tops it up if it’s on. The monthly spend limit was retired in 2025; accounts billed in arrears have no cap."
+      }
+    ],
+    "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Replicate has no billing API. Kill Cord has a preset for it: add Replicate as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Replicate’s own spend controls."
     },
     "publish": true,
     "sources": [
       "https://replicate.com/docs/topics/billing",
-      "https://replicate.com/changelog/2025-07-01-set-a-monthly-spend-limit"
+      "https://replicate.com/changelog/2025-07-01-set-a-monthly-spend-limit",
+      "https://replicate.com/docs/topics/billing/prepaid-credit"
     ],
-    "last_verified": "2026-11-17"
+    "last_verified": "2026-11-24"
   },
   {
     "slug": "resend",
@@ -2360,7 +2419,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -2658,7 +2717,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
@@ -2806,7 +2865,7 @@
     "native_caps": [],
     "caps_status": "unknown",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": false,
     "sources": [
@@ -2947,6 +3006,49 @@
     "last_verified": "2026-11-17"
   },
   {
+    "slug": "twelve-labs",
+    "name": "Twelve Labs",
+    "search_name": "Twelve Labs API",
+    "category": "ai-media",
+    "website": "https://www.twelvelabs.io",
+    "billing_model": "Plans with allowances; past an allowance, requests fail unless overage is on.",
+    "billing_type": "quota",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Twelve Labs shows plans and usage in the Playground under Settings › Billing & Plans. No usage or billing API is documented."
+    },
+    "native_caps": [
+      {
+        "name": "Overage off",
+        "kind": "hard-stop",
+        "where": "Playground › Settings › Billing & Plans",
+        "url": "https://docs.twelvelabs.io/docs/get-started/plans-and-billing/plans-allowances-and-overage",
+        "note": "With overage off, requests fail with an error at the allowance. Overage is off by default on Pro and on by default on Enterprise."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "manual",
+      "note": "Not read live: Twelve Labs has no billing API. Kill Cord has a preset for it: add Twelve Labs as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Twelve Labs’s own spend controls."
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.twelvelabs.io/docs/get-started/plans-and-billing/plans-allowances-and-overage"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
     "slug": "twilio",
     "name": "Twilio",
     "search_name": "Twilio",
@@ -2989,6 +3091,85 @@
       "https://www.twilio.com/docs/usage/api/usage-trigger"
     ],
     "last_verified": "2026-11-17"
+  },
+  {
+    "slug": "typesafe-jev",
+    "name": "TypeSafe Jev",
+    "search_name": "TypeSafe Jev API",
+    "category": "llm",
+    "website": "https://typesafe.ai",
+    "billing_model": "Per input token ($0.042 per million); output tokens are currently free.",
+    "billing_type": "usage",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "TypeSafe’s API documents only POST /v1/systemone and GET /v1/models. Responses carry usage.input_tokens and usage.output_tokens; no balance, usage or billing endpoint is documented."
+    },
+    "native_caps": [],
+    "caps_status": "none-documented",
+    "killcord": {
+      "tier": "manual",
+      "note": "Not read live: TypeSafe Jev has no billing API. Kill Cord has a preset for it: add TypeSafe Jev as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.typesafe.ai/api",
+      "https://docs.typesafe.ai/pricing"
+    ],
+    "last_verified": "2026-11-24"
+  },
+  {
+    "slug": "unstructured",
+    "name": "Unstructured",
+    "search_name": "Unstructured API",
+    "category": "devtools",
+    "website": "https://unstructured.io",
+    "billing_model": "A prepaid balance in dollars (at least $50 at a time) that each job draws on; it expires 12 months after your last payment.",
+    "billing_type": "prepaid",
+    "spend_api": {
+      "status": "no",
+      "endpoint": null,
+      "returns": null,
+      "units": "unknown",
+      "auth": null,
+      "key_type": "unknown",
+      "key_url": null,
+      "read_only": "unknown",
+      "read_only_note": null,
+      "rate_limit": "unknown",
+      "lag": "unknown",
+      "cost_to_call": "unknown",
+      "notes": "Unstructured shows the prepaid balance on its Billing page. No balance or billing API is documented; a job that the balance can’t cover fails with HTTP 402 insufficient_balance."
+    },
+    "native_caps": [
+      {
+        "name": "Prepaid balance",
+        "kind": "hard-stop",
+        "where": "Transform › Billing",
+        "url": "https://docs.unstructured.io/transform/billing",
+        "note": "Each job’s estimated cost is reserved first; if the balance can’t cover it, the request fails before a job starts. There’s no auto top-up."
+      }
+    ],
+    "caps_status": "found",
+    "killcord": {
+      "tier": "manual",
+      "note": "Not read live: Unstructured has no billing API. Kill Cord has a preset for it: add Unstructured as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews. Its caps audit also walks you through Unstructured’s own spend controls."
+    },
+    "publish": true,
+    "sources": [
+      "https://docs.unstructured.io/transform/billing"
+    ],
+    "last_verified": "2026-11-24"
   },
   {
     "slug": "upstash",
@@ -3112,7 +3293,8 @@
     "native_caps": [],
     "caps_status": "none-documented",
     "killcord": {
-      "tier": "none"
+      "tier": "manual",
+      "note": "Not read live: Voyage AI has no billing API. Kill Cord has a preset for it: add Voyage AI as a manual entry with your plan, price and renewal date, and Kill Cord shows it as not live, keeps it out of your totals, and reminds you before it renews."
     },
     "publish": true,
     "sources": [
@@ -3163,7 +3345,7 @@
     ],
     "caps_status": "found",
     "killcord": {
-      "tier": "none"
+      "tier": "built-in"
     },
     "publish": true,
     "sources": [
