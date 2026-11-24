@@ -28,6 +28,21 @@ extension ProviderInfo {
             lag: ProviderLag(typical: 0, note: "Kimi doesn't say how current the balance is."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://platform.kimi.ai/console")
+        ),
+        ProviderInfo(
+            id: .exa, name: "Exa", capability: .balance(spend: []),
+            fields: [apiKeyField("Exa service key", help: "A service key from the Service keys tab, not a "
+                + "search API key.")],
+            keyKind: "Team Management service key",
+            keyURL: url("https://dashboard.exa.ai/api-keys"),
+            keyPowerWarning: "Exa reads team credits only through its Team Management API, with a service key. "
+                + "A service key can create, update, rotate and delete your team's API keys, and Exa documents no "
+                + "read-only one. Exa turns the API on per team when you ask support@exa.ai. Kill Cord only reads "
+                + "the credit balance.",
+            lag: ProviderLag(typical: 5 * 60, note: "Exa says the balance can lag recent usage by up to 5 "
+                + "minutes."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://dashboard.exa.ai/billing")
         )
     ]
 }

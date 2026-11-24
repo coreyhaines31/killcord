@@ -74,6 +74,8 @@ extension ProviderID {
         case .stability: .canSpend
         // Kimi Admin keys carry chosen scopes and can't call inference; billing:read alone reads bills.
         case .moonshot: .readOnlyIfChosen
+        // Exa's Team Management service keys create, rotate and delete API keys; none is read-only.
+        case .exa: .canManage
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }
