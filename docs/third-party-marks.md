@@ -57,6 +57,7 @@ Checked 2026-11-17 (the six balance services added the same day).
 | Browserbase | `browserbase-logomark-black.svg`, unmodified | Brand kit on https://www.browserbase.com/brand | "Use approved artwork as supplied, preserve its proportions… Don't use the logo in other colors." No permission clause. Checked 2026-11-24. | No |
 | Resend | `resend-icon-black.svg`, unmodified | `resend-brand-assets.zip` and files on https://resend.com/brand | "Do not alter these files in any way." No permission clause. Checked 2026-11-24. | No |
 | Postmark | None: it draws its first letter. Its stamp symbol (https://postmarkapp.com/images/logo-stamp-simple.svg) is two colours, and its terms grant no right to display its content, with no brand page (postmarkapp.com/brand is 404). | n/a | https://postmarkapp.com/terms-of-service §8: no right to "publicly display AC PM Content, except as expressly permitted". Checked 2026-11-24. | Yes, in effect |
+| Mistral | `mistral-favicon.svg`: Mistral's `favicon.svg`, unmodified apart from the file name (the pixel M in five colour steps, drawn in one colour). The 2026 brand kit's zip refuses scripted downloads, so check it in a browser in case the mark changed | https://mistral.ai/favicon.svg, brand page https://mistral.ai/brand | "Partners and collaborators are welcome to use our brand… Please use them responsibly." "Do not recolor." Checked 2026-11-24. | No, but one-colour rendering differs from its colours |
 
 ## Manual presets
 
