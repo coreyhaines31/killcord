@@ -15,7 +15,8 @@ import Testing
         .retell,
         .browserbase,
         .resend,
-        .postmark
+        .postmark,
+        .mistral
     ]
     static let hosts: [ProviderID: Set<String>] = [
         .llamacloud: ["api.cloud.llamaindex.ai", "api.cloud.eu.llamaindex.ai"],
@@ -26,14 +27,16 @@ import Testing
         .retell: ["api.retellai.com"],
         .browserbase: ["api.browserbase.com"],
         .resend: ["api.resend.com"],
-        .postmark: ["api.postmarkapp.com"]
+        .postmark: ["api.postmarkapp.com"],
+        .mistral: ["api.mistral.ai"]
     ]
     static let keyPowers: [ProviderID: KeyPower] = [
         .llamacloud: .canManage,
         .cartesia: .canManage,
         .vapi: .canManage,
         .retell: .readOnlyIfChosen,
-        .resend: .canManage
+        .resend: .canManage,
+        .mistral: .canManage
     ]
 
     @Test(arguments: providers)

@@ -29,6 +29,7 @@ extension ProviderInfo {
         case .browserbase: "Browserbase dashboard"
         case .resend: "Resend dashboard"
         case .postmark: "Postmark account"
+        case .mistral: "Mistral Admin Panel"
         default: "service's site"
         }
     }
@@ -60,6 +61,8 @@ extension ProviderInfo {
         case .browserbase: "One project's usage. Browserbase doesn't say what period it covers."
         case .resend: "Resend reports emails used, not your plan's quota, so compare it with your plan."
         case .postmark: "One server's sent emails from the 1st (UTC). Postmark bills received email too, on your own cycle."
+        case .mistral: "Uses Mistral's Admin API, a beta on Enterprise plans only. Shows usage counted against the "
+            + "monthly limit."
         default: nil
         }
     }
@@ -82,6 +85,7 @@ extension ProviderInfo {
         case .browserbase: "Browserbase has no read-only key. This key can run browser sessions on your plan."
         case .resend: "Needs a Full access key, which can manage domains and keys. Resend has no read-only key."
         case .postmark: "Postmark has no read-only token. A Server token can also send email."
+        case .mistral: "Needs an Admin API key, which can also manage users, keys and the spending limit."
         default: nil
         }
     }
@@ -212,6 +216,13 @@ extension ProviderInfo {
                           link: open("Open Postmark Servers")),
                 SetupStep("Copy a Server API token", "It can send email, so keep it to Kill Cord. Connect each "
                     + "server you want to count.")
+            ]
+        case .mistral:
+            return [
+                SetupStep("Open API keys in the Mistral Admin Panel", "In the enterprise section. Enterprise "
+                    + "plans only: on other plans there's no Admin API key.", link: open("Open Mistral Admin")),
+                SetupStep("Create an Admin API key and copy it", "Pick the Organization and set an expiration "
+                    + "date. Mistral shows the key once.")
             ]
         default:
             return []

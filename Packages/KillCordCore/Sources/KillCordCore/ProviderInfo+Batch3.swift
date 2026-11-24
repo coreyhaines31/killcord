@@ -234,6 +234,20 @@ extension ProviderInfo {
                 + "sent, not dollars."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://account.postmarkapp.com/servers")
+        ),
+        ProviderInfo(
+            id: .mistral, name: "Mistral", capability: .monthDollars,
+            fields: [apiKeyField("Mistral Admin API key", help: "From the Admin Panel's enterprise section. A "
+                + "standard API key won't work.")],
+            keyKind: "Admin API key",
+            keyURL: url("https://admin.mistral.ai/"),
+            keyPowerWarning: "Mistral reads spend only through its Admin API, which is in beta and only on "
+                + "Enterprise plans. An Admin API key \"grants access to that Organization's admin endpoints\": it "
+                + "can invite and remove users, manage workspaces and API keys, and change the spending limit. "
+                + "Mistral has no read-only admin key. Kill Cord only reads usage against the spending limit.",
+            lag: ProviderLag(typical: 0, note: "Mistral doesn't say how current usage against the limit is."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://admin.mistral.ai/organization/usage")
         )
     ]
 }

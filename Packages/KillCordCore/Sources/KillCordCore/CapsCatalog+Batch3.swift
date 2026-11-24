@@ -236,6 +236,29 @@ extension CapsCatalog {
                     "Watch for Postmark's \"You've used all your Postmark emails\" email."],
             caveat: "Postmark has no native hard spend cap: \"it is not possible to disable the sending of "
                 + "Additional emails or set up any limits to your sending.\" The Free plan allows no overage."
+        ),
+        // Mistral. https://docs.mistral.ai/admin/billing-usage/usage-limits
+        CapControl(
+            id: MistralProvider.spendLimitCapID, provider: .mistral, name: "Organization monthly spending limit",
+            summary: "If the Organization reaches its monthly spending limit, Mistral can suspend API access until "
+                + "the next month or until an admin raises the limit.",
+            enforcement: .hardStop, verification: .api,
+            consoleURL: url("https://admin.mistral.ai/organization/billing"),
+            docURL: url("https://docs.mistral.ai/admin/billing-usage/usage-limits"),
+            steps: ["Open Subscriptions › Billing in the Mistral Admin Panel.", "Set a monthly spending limit."],
+            caveat: "Kill Cord reads the limit and whether it's reached from the Admin API. Mistral says access "
+                + "\"can be\" suspended, not that it always is."
+        ),
+        CapControl(
+            id: "mistral.workspace-limits", provider: .mistral, name: "Workspace spending limits",
+            summary: "Each Workspace can have its own spending cap, so one app can't use the Organization's whole "
+                + "budget.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://admin.mistral.ai/organization/workspaces"),
+            docURL: url("https://docs.mistral.ai/admin/billing-usage/usage-limits"),
+            steps: ["Open Administration › Workspaces in the Mistral Admin Panel.",
+                    "Set a spending limit on each Workspace your apps use."],
+            caveat: nil
         )
     ]
 }

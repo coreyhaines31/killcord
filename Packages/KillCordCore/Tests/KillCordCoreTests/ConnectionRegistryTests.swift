@@ -138,6 +138,7 @@ import Testing
             .browserbase: ["apiKey", "projectID"],
             .resend: ["apiKey"],
             .postmark: ["apiKey"],
+            .mistral: ["apiKey"],
             .custom: ["serviceName", "url", "method", "authStyle", "authName", "authValue", "key", "key2", "body",
                       "remainingPath", "usedPath", "limitPath", "resetPath", "currencyPath", "unit", "scale",
                       "dollarsPerUnit", "kind", "pollMinutes", "costsMoney"],
