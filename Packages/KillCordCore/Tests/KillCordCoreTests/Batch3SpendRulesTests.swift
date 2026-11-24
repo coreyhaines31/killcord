@@ -6,10 +6,11 @@ import Testing
 /// `BalanceProviderRulesTests`): https only, its documented host, a key-power label, and no network for a
 /// missing key.
 @Suite struct Batch3SpendRulesTests {
-    static let providers: [ProviderID] = [.llamacloud, .cartesia]
+    static let providers: [ProviderID] = [.llamacloud, .cartesia, .together]
     static let hosts: [ProviderID: Set<String>] = [
         .llamacloud: ["api.cloud.llamaindex.ai", "api.cloud.eu.llamaindex.ai"],
-        .cartesia: ["api.cartesia.ai"]
+        .cartesia: ["api.cartesia.ai"],
+        .together: ["api.together.ai"]
     ]
     static let keyPowers: [ProviderID: KeyPower] = [.llamacloud: .canManage, .cartesia: .canManage]
 

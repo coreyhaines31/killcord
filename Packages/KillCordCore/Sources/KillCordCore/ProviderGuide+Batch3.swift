@@ -14,6 +14,7 @@ extension ProviderInfo {
         case .bland: "Bland dashboard"
         case .llamacloud: "LlamaCloud settings"
         case .cartesia: "Cartesia playground"
+        case .together: "Together settings"
         default: "service's site"
         }
     }
@@ -24,6 +25,7 @@ extension ProviderInfo {
         case .stability: nil
         case .exa: "Runs up to 5 minutes behind."
         case .scrapingbee: "Usage is live."
+        case .together: "Runs through yesterday, so today isn't in it."
         default: nil
         }
     }
@@ -35,6 +37,7 @@ extension ProviderInfo {
         case .scrapfly: "Shows the plan's scrape credits for the whole account."
         case .llamacloud: "Shows this billing period's invoice so far. Plans without User API Keys can't connect."
         case .cartesia: "Counts credits used since the 1st of the month (UTC), not since your plan renewed."
+        case .together: "Needs Together's billing usage API, a beta that Together turns on per organization."
         default: nil
         }
     }
@@ -50,6 +53,7 @@ extension ProviderInfo {
         case .bland: "Use a restricted key with only Analytics read. A full-access key can place calls."
         case .llamacloud: "A user key does what its owner can. Make it from the member with the least access."
         case .cartesia: "Needs an admin key, which can also remove users and send invites. It can't make speech."
+        case .together: "Together has no read-only key. This key can use its project and spend your credits."
         default: nil
         }
     }
@@ -128,6 +132,15 @@ extension ProviderInfo {
                     + "them.", link: open("Open Cartesia Admin Keys")),
                 SetupStep("Create an admin key and copy it", "It starts with sk_car_admin_. A standard API key "
                     + "can't read usage.")
+            ]
+        case .together:
+            return [
+                SetupStep("Open API Keys in your Together project", "Any project in the organization works. "
+                    + "The billing usage API is a beta Together turns on per organization, so ask Together "
+                    + "support to enable it first.",
+                          link: open("Open Together Keys")),
+                SetupStep("Create a key just for Kill Cord and copy it", "It can use the project and spend credits, "
+                    + "so keep it to Kill Cord.")
             ]
         default:
             return []

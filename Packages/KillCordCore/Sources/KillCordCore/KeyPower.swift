@@ -112,6 +112,8 @@ extension ProviderID {
         case .llamacloud: .canManage
         // Cartesia admin keys read usage and key metadata, and can remove users and send invites.
         case .cartesia: .canManage
+        // Together keys have full access to their project and can spend the organization's credits.
+        case .together: .canSpend
         // Unknown: Kill Cord can't know what another service's key can do, so it assumes the worst.
         case .custom: .canManage
         }

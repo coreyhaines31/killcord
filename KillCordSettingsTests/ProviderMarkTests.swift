@@ -21,6 +21,6 @@ final class ProviderMarkTests: XCTestCase {
         XCTAssertEqual(Set(ProviderID.allCases.filter { $0.markAssetName == nil }),
                        Set([.brightdata, .scrapecreators, .stability, .moonshot, .scrapingbee, .scrapfly, .kie,
                             .bland, .telnyx, .heygen, .zerobounce, .prospeo, .lemlist, .searchapi, .cartesia,
-                            .custom, .manual]))
+                            .together, .custom, .manual]))
     }
 }

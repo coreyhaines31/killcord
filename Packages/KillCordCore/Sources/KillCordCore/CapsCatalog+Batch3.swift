@@ -137,6 +137,19 @@ extension CapsCatalog {
             docURL: url("https://docs.cartesia.ai/pricing"),
             steps: ["Open Subscription in the Cartesia playground.", "Leave overages off, then mark this done."],
             caveat: "With overages on, the balance can go negative and keeps billing."
+        ),
+        // Together AI. https://docs.together.ai/docs/billing-spend-controls
+        CapControl(
+            id: "together.zero-balance", provider: .together, name: "Prepaid balance, auto-recharge off",
+            summary: "API access stops when the organization's balance reaches zero. Auto-recharge tops it up and "
+                + "doesn't cap spend.",
+            enforcement: .hardStop, verification: .selfReported,
+            consoleURL: url("https://api.together.ai/settings/organization/~current/billing"),
+            docURL: url("https://docs.together.ai/docs/billing-spend-controls"),
+            steps: ["Open Billing in Together's organization settings.",
+                    "Leave auto-recharge off, and buy only the credits you're willing to spend."],
+            caveat: "Together says this \"does not guarantee an exact spending cap\". Budgets and spend alerts "
+                + "aren't available yet, and keys can't have their own limits."
         )
     ]
 }
