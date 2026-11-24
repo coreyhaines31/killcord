@@ -45,6 +45,7 @@ extension ProviderInfo {
         case .deepseek: "DeepSeek Platform"
         case .apify: "Apify Console"
         case .tavily: "Tavily dashboard"
+        case .deepgram: "Deepgram Console"
         case .custom: "service's site"
         case .manual: "service's site"
         }
@@ -91,7 +92,8 @@ extension ProviderInfo {
         case .neon: "Runs about 15 minutes behind."
         case .openrouter: "Recent requests settle after a short delay."
         case .treg: "The balance is live."
-        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify, .tavily: nil
+        case .supabase, .dataforseo, .ahrefs, .firecrawl, .monid, .fal, .elevenlabs, .xai, .deepseek, .apify,
+             .tavily, .deepgram: nil
         case .custom: "Checked every 15 minutes at most."
         case .manual: nil
         }
@@ -134,6 +136,7 @@ extension ProviderInfo {
         case .deepseek: "DeepSeek has no read-only key. This key can make paid model calls on your balance."
         case .apify: "Apify tokens can do everything in your account unless you scope them. Kill Cord only reads limits."
         case .tavily: "Tavily has no read-only key. This key can run searches on your credits. Give it a credit limit."
+        case .deepgram: "Reading balances needs an Admin or Owner key, which can also manage the project's keys."
         case .custom: "Kill Cord can't know what this key can do. Use the most limited one the service offers."
         case .manual: nil
         case .cloudflare, .supabase: nil
@@ -296,6 +299,15 @@ extension ProviderInfo {
                           link: open("Open Tavily Dashboard")),
                 SetupStep("Create a key for Kill Cord and copy it", "It starts with tvly-. Give it a small credit "
                     + "limit: Kill Cord only reads usage.")
+            ]
+        case .deepgram:
+            return [
+                SetupStep("Open the Deepgram Console", "Pick the project, then Settings › API Keys.",
+                          link: open("Open Deepgram Console")),
+                SetupStep("Create an Admin key and copy it", "Deepgram gives billing:read to the Admin and Owner "
+                    + "roles only, so a Member key can't read balances."),
+                SetupStep("Add the project ID if the key sees more than one", "It's in the project's settings. "
+                    + "With one project, Kill Cord finds it.")
             ]
         case .manual:
             return [

@@ -175,6 +175,24 @@ extension ProviderInfo {
                 + "10 requests every 10 minutes, so Kill Cord checks it at most every 15 minutes."),
             billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
             consoleURL: url("https://app.tavily.com/billing")
+        ),
+        ProviderInfo(
+            id: .deepgram, name: "Deepgram", capability: .balance(spend: []),
+            fields: [
+                apiKeyField("Deepgram API key", help: "A key with the Admin role."),
+                CredentialField(id: "projectID", label: "Project ID", placeholder: "Project ID", isSecret: false,
+                                isOptional: true,
+                                help: "Only if the key can see more than one project.")
+            ],
+            keyKind: "API key with the Admin role",
+            keyURL: url("https://console.deepgram.com"),
+            keyPowerWarning: "Deepgram has no read-only key for balances. Its role table gives billing:read to the "
+                + "Admin and Owner roles only, and an Admin key can also manage the project's keys and members "
+                + "and make paid requests. Deepgram lets you create a key with chosen scopes, but its docs don't "
+                + "say which scope the balance call needs. Kill Cord only reads balances.",
+            lag: ProviderLag(typical: 0, note: "Deepgram doesn't say how current balances are."),
+            billingTimeZone: utc, minimumRefreshInterval: 15 * 60,
+            consoleURL: url("https://console.deepgram.com")
         )
     ]
 }
