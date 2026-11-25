@@ -116,8 +116,8 @@ public enum CapsCatalog {
         // OpenAI. https://developers.openai.com/api/docs/guides/spend-limits
         CapControl(
             id: OpenAIProvider.hardLimitCapID, provider: .openai, name: "Organization hard limit",
-            summary: "A monthly spend limit for the organization with Enforce a hard limit on. Past it, API "
-                + "requests are refused.",
+            summary: "A monthly spend limit for the organization, with \"Enforce a hard limit\" turned on. Past it, "
+                + "API requests are refused.",
             enforcement: .hardStop, verification: .api,
             consoleURL: url("https://platform.openai.com/settings/organization/limits"),
             docURL: url("https://developers.openai.com/api/docs/guides/spend-limits"),
