@@ -62,6 +62,7 @@ targets:
       - KillCord/Settings/SidebarPicker.swift
       - KillCord/Settings/SettingsComponents.swift
       - KillCord/Settings/BetaLabel.swift
+      - KillCord/Settings/TeamsWaitlistSection.swift
       - KillCord/Settings/SettingsTab.swift
       - KillCord/Settings/TeamsSettingsView.swift
       - KillCord/Model/TeamsModel.swift

@@ -78,6 +78,7 @@ struct GeneralSettingsView: View {
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             }
+            TeamsWaitlistSection()
             uninstallSection
         }
         .formStyle(.grouped)
